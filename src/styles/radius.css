@@ -1,0 +1,44 @@
+@theme {
+  --radius-0: 0px;
+  --radius-2: 2px;
+  --radius-4: 4px;
+  --radius-6: 6px;
+  --radius-10: 10px;
+  --radius-12: 12px;
+  --radius-99: 9999px;
+
+  --radius: var(--radius-6);
+}
+
+/* 기본 */
+@utility rounded {
+  border-radius: var(--radius);
+}
+
+@utility rounded-0 {
+  border-radius: var(--radius-0);
+}
+
+@utility rounded-2 {
+  border-radius: var(--radius-2);
+}
+
+@utility rounded-4 {
+  border-radius: var(--radius-4);
+}
+
+@utility rounded-6 {
+  border-radius: var(--radius-6);
+}
+
+@utility rounded-10 {
+  border-radius: var(--radius-10);
+}
+
+@utility rounded-12 {
+  border-radius: var(--radius-12);
+}
+
+@utility rounded-full {
+  border-radius: var(--radius-99);
+}

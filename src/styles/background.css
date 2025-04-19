@@ -1,0 +1,17 @@
+@theme {
+  --color-bg-white: #ffffff;
+  --color-bg-alternative: #f5f5f5;
+  --color-bg-strong: #ebebeb;
+}
+
+@utility bg-white {
+  background-color: var(--color-bg-white);
+}
+
+@utility bg-alternative {
+  background-color: var(--color-bg-alternative);
+}
+
+@utility bg-strong {
+  background-color: var(--color-bg-strong);
+}

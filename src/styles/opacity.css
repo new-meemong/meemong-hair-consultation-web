@@ -1,0 +1,52 @@
+@theme {
+  --opacity-10: 0.1;
+  --opacity-20: 0.2;
+  --opacity-30: 0.3;
+  --opacity-40: 0.4;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+  --opacity-70: 0.7;
+  --opacity-80: 0.8;
+  --opacity-90: 0.9;
+  --opacity-100: 1;
+}
+
+@utility opacity-10 {
+  opacity: var(--opacity-10);
+}
+
+@utility opacity-20 {
+  opacity: var(--opacity-20);
+}
+
+@utility opacity-30 {
+  opacity: var(--opacity-30);
+}
+
+@utility opacity-40 {
+  opacity: var(--opacity-40);
+}
+
+@utility opacity-50 {
+  opacity: var(--opacity-50);
+}
+
+@utility opacity-60 {
+  opacity: var(--opacity-60);
+}
+
+@utility opacity-70 {
+  opacity: var(--opacity-70);
+}
+
+@utility opacity-80 {
+  opacity: var(--opacity-80);
+}
+
+@utility opacity-90 {
+  opacity: var(--opacity-90);
+}
+
+@utility opacity-100 {
+  opacity: var(--opacity-100);
+}

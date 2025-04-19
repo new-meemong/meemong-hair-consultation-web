@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@import "./background.css";
+@import "./border.css";
+@import "./chip.css";
+@import "./opacity.css";
+@import "./radius.css";
+@import "./status.css";
+@import "./typography.css";
+
+@theme inline {
+  --font-pretendard: "Pretendard Variable", system-ui, sans-serif;
+
+  /* 기본 색상 */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* 딤처리 색상 */
+  --color-dimmer: rgba(38, 37, 36, 70%);
+}
+
+@layer base {
+  * {
+    font-family: var(--font-pretendard);
+    color: var(--color-black);
+  }
+  body {
+    background-color: var(--color-bg-white);
+  }
+}
