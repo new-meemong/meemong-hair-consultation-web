@@ -1,9 +1,3 @@
-@theme {
-  --border-width-default: 1px;
-  --border-width-alternative: 2px;
-  --border-width-strong: 3px;
-}
-
 @utility border-default {
   border-width: var(--border-width-default);
 }

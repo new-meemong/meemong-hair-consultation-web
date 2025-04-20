@@ -1,0 +1,31 @@
+@theme {
+  /* Static */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Label */
+  --color-label-default: #262524;
+  --color-label-strong: #000000;
+  --color-label-sub: #51514f;
+  --color-label-info: #8b8b89;
+  --color-label-placeholder: #cececc;
+  --color-label-disable: #e1e2e4;
+
+  /* Background */
+  --color-bg-white: #ffffff;
+  --color-bg-alternative: #f4f4f4;
+
+  /* Border */
+  --color-border-default: #e5e5e5;
+  --color-border-alternative: #f4f4f5;
+  --color-border-strong: #b6b6b6;
+
+  /* Dimmer */
+  --color-dimmer: rgba(38, 37, 36, 70%);
+
+  /* Status */
+  --color-positive: #2cb36d;
+  --color-cautionary: #ff9142;
+  --color-negative: #ff3300;
+  --color-negative-light: #ff613a;
+}

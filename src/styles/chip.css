@@ -1,7 +1,0 @@
-@theme {
-  --color-chip-default: #f7f7f5;
-}
-
-@utility chip-default {
-  background-color: var(--color-chip-default);
-}

@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-pretendard)]">
@@ -20,6 +22,13 @@ export default function Home() {
             <p className="text-body-1-long-medium">
               Body 1 Long Medium (16px Medium, 170% 행간)
             </p>
+          </div>
+        </section>
+        {/* 버튼(Button) 섹션 */}
+        <section className="w-full">
+          <h2 className="text-title-1 mb-6">버튼 (Button)</h2>
+          <div className="grid gap-4 p-6 rounded-10 bg-white border border-border">
+            <Button variant="cta">CTA Button</Button>
           </div>
         </section>
         {/* 반경(Radius) 섹션 */}

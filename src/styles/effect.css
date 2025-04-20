@@ -1,0 +1,29 @@
+@theme {
+  --shadow-normal-1: 2px 2px 20px rgba(0, 0, 0, 0.06);
+  --shadow-normal-2: 2px 2px 10px rgba(0, 0, 0, 0.04);
+
+  --shadow-emphasize-1: 2px 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-emphasize-2: 0px 0px 4px rgba(0, 0, 0, 0.1);
+
+  --shadow-strong-1: 0px 8px 20px rgba(0, 0, 0, 0.1);
+  --shadow-strong-2: 0px 2px 8px rgba(0, 0, 0, 0.1);
+
+  --shadow-heavy-1: 0px 4px 12px rgba(0, 0, 0, 0.16);
+  --shadow-heavy-2: 4px 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+@utility shadow-normal {
+  box-shadow: var(--shadow-normal-1), var(--shadow-normal-2);
+}
+
+@utility shadow-emphasize {
+  box-shadow: var(--shadow-emphasize-1), var(--shadow-emphasize-2);
+}
+
+@utility shadow-strong {
+  box-shadow: var(--shadow-strong-1), var(--shadow-strong-2);
+}
+
+@utility shadow-heavy {
+  box-shadow: var(--shadow-heavy-1), var(--shadow-heavy-2);
+}
