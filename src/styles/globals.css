@@ -17,8 +17,8 @@
 @layer base {
   * {
     font-family: var(--font-pretendard);
-    color: var(--color-black);
   }
+
   body {
     background-color: var(--color-bg-white);
   }

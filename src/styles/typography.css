@@ -26,6 +26,14 @@
   --letter-spacing: -2.5%;
 }
 
+@utility text-white {
+  color: var(--color-white) !important;
+}
+
+@utility text-black {
+  color: var(--color-black);
+}
+
 @utility text-display-large {
   font-size: var(--title-large-size);
   line-height: var(--line-height-normal);

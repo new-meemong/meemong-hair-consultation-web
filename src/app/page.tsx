@@ -1,14 +1,6 @@
 import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import { DrawerClose } from "@/components/ui/drawer";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
 
 export default function Home() {
   return (
@@ -45,31 +37,38 @@ export default function Home() {
         {/* 바텀시트 섹션 */}
         <section className="w-full">
           <h2 className="text-title-1 mb-6">바텀시트 (Bottom Sheet)</h2>
-          <Drawer direction="bottom">
-            <DrawerTrigger asChild>
-              <Button variant="outline">Open Drawer</Button>
-            </DrawerTrigger>
-            <DrawerContent className="w-full bg-white border-none rounded-12">
-              <div className="mx-auto w-full max-w-screen-sm bg-white">
-                <DrawerHeader>
-                  <DrawerTitle>Move Goal</DrawerTitle>
-                  <DrawerDescription>
-                    Set your daily activity goal.
-                  </DrawerDescription>
-                </DrawerHeader>
-                <div className="p-4 pb-0">
-                  바텀 시트 내용 <br />
-                  온보딩
-                </div>
+          {/* 공통화된 방식: BottomSheet 컴포넌트 사용 */}
 
-                <DrawerFooter>
+          <div className="flex flex-wrap gap-4">
+            <BottomSheet
+              trigger={<Button>기본 바텀시트</Button>}
+              title="Move Goal"
+              description="Set your daily activity goal."
+            >
+              바텀 시트 내용 <br />
+              온보딩
+            </BottomSheet>
+            <BottomSheet
+              trigger={<Button>바텀시트 커스텀</Button>}
+              title="바텀시트 커스텀"
+              description="기본 설정에서 변형하고 싶을 경우 className을 사용해 커스텀"
+              showCloseButton={false}
+              footerContent={
+                <div className="flex gap-2 w-full">
                   <DrawerClose asChild>
-                    <Button>완료</Button>
+                    <Button variant="secondary" className="flex-1">
+                      취소
+                    </Button>
                   </DrawerClose>
-                </DrawerFooter>
-              </div>
-            </DrawerContent>
-          </Drawer>
+                  <DrawerClose asChild>
+                    <Button className="flex-1">확인</Button>
+                  </DrawerClose>
+                </div>
+              }
+            >
+              바텀시트 커스텀 예시
+            </BottomSheet>
+          </div>
         </section>
 
         {/* 반경(Radius) 섹션 */}

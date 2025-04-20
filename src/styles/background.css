@@ -14,6 +14,14 @@
   background-color: var(--color-label-default);
 }
 
+@utility bg-label-sub {
+  background-color: var(--color-label-sub);
+}
+
+@utility bg-label-info {
+  background-color: var(--color-label-info);
+}
+
 @utility bg-label-strong {
   background-color: var(--color-label-strong);
 }
