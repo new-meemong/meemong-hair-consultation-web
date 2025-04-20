@@ -1,4 +1,14 @@
 import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 export default function Home() {
   return (
@@ -28,9 +38,40 @@ export default function Home() {
         <section className="w-full">
           <h2 className="text-title-1 mb-6">버튼 (Button)</h2>
           <div className="grid gap-4 p-6 rounded-10 bg-white border border-border">
-            <Button variant="cta">CTA Button</Button>
+            <Button>CTA Button</Button>
+            <Button disabled> CTA Button (Disabled)</Button>
           </div>
         </section>
+        {/* 바텀시트 섹션 */}
+        <section className="w-full">
+          <h2 className="text-title-1 mb-6">바텀시트 (Bottom Sheet)</h2>
+          <Drawer direction="bottom">
+            <DrawerTrigger asChild>
+              <Button variant="outline">Open Drawer</Button>
+            </DrawerTrigger>
+            <DrawerContent className="w-full bg-white border-none rounded-12">
+              <div className="mx-auto w-full max-w-screen-sm bg-white">
+                <DrawerHeader>
+                  <DrawerTitle>Move Goal</DrawerTitle>
+                  <DrawerDescription>
+                    Set your daily activity goal.
+                  </DrawerDescription>
+                </DrawerHeader>
+                <div className="p-4 pb-0">
+                  바텀 시트 내용 <br />
+                  온보딩
+                </div>
+
+                <DrawerFooter>
+                  <DrawerClose asChild>
+                    <Button>완료</Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </div>
+            </DrawerContent>
+          </Drawer>
+        </section>
+
         {/* 반경(Radius) 섹션 */}
         <section className="w-full">
           <h2 className="text-title-1 mb-6">반경 (Radius)</h2>

@@ -17,3 +17,11 @@
 @utility bg-label-strong {
   background-color: var(--color-label-strong);
 }
+
+@utility bg-border-default {
+  background-color: var(--color-border-default);
+}
+
+@utility bg-border-alternative {
+  background-color: var(--color-border-alternative);
+}
