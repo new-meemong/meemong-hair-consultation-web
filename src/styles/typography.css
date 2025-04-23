@@ -25,70 +25,63 @@
   --letter-spacing: -2.5%;
 }
 
-@utility text-display-large {
+@utility typo-title-large-bold {
   font-size: var(--title-large-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 700;
 }
 
-@utility text-display-large-medium {
+@utility typo-title-large-medium {
   font-size: var(--title-large-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 500;
 }
 
-@utility text-title-1 {
+@utility typo-title-1-bold {
   font-size: var(--title-1-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 700;
 }
 
-@utility text-title-1-medium {
+@utility typo-title-1-medium {
   font-size: var(--title-1-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 500;
 }
 
-@utility text-title-2 {
+@utility typo-title-2-semibold {
   font-size: var(--title-2-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 600;
 }
 
-@utility text-title-2-medium {
+@utility typo-title-2-medium {
   font-size: var(--title-2-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 500;
 }
 
-@utility text-title-2-semibold {
-  font-size: var(--title-2-size);
-  line-height: var(--line-height-normal);
-  letter-spacing: var(--letter-spacing);
-  font-weight: 600;
-}
-
-@utility text-title-3 {
+@utility typo-title-3-bold {
   font-size: var(--title-3-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 700;
 }
 
-@utility text-title-3-semibold {
+@utility typo-title-3-semibold {
   font-size: var(--title-3-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 600;
 }
 
-@utility text-title-3-medium {
+@utility typo-title-3-medium {
   font-size: var(--title-3-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
@@ -96,21 +89,21 @@
 }
 
 /* Headline */
-@utility text-headline {
+@utility typo-headline-bold {
   font-size: var(--headline-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 700;
 }
 
-@utility text-headline-medium {
+@utility typo-headline-medium {
   font-size: var(--headline-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 500;
 }
 
-@utility text-headline-regular {
+@utility typo-headline-regular {
   font-size: var(--headline-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
@@ -118,21 +111,21 @@
 }
 
 /* Body 1 */
-@utility text-body-1-semibold {
+@utility typo-body-1-semibold {
   font-size: var(--body-1-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 600;
 }
 
-@utility text-body-1-medium {
+@utility typo-body-1-medium {
   font-size: var(--body-1-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 500;
 }
 
-@utility text-body-1-regular {
+@utility typo-body-1-regular {
   font-size: var(--body-1-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
@@ -140,23 +133,133 @@
 }
 
 /* Body 1 long */
-@utility text-body-1-long-semibold {
+@utility typo-body-1-long-semibold {
   font-size: var(--body-1-size);
   line-height: var(--line-height-long);
   letter-spacing: var(--letter-spacing);
   font-weight: 600;
 }
 
-@utility text-body-1-long-medium {
+@utility typo-body-1-long-medium {
   font-size: var(--body-1-size);
   line-height: var(--line-height-long);
   letter-spacing: var(--letter-spacing);
   font-weight: 500;
 }
 
-@utility text-body-1-long-regular {
+@utility typo-body-1-long-regular {
   font-size: var(--body-1-size);
   line-height: var(--line-height-long);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 400;
+}
+
+/* Body 2 */
+@utility typo-body-2-semibold {
+  font-size: var(--body-2-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 600;
+}
+
+@utility typo-body-2-medium {
+  font-size: var(--body-2-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 500;
+}
+
+@utility typo-body-2-regular {
+  font-size: var(--body-2-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 400;
+}
+
+/* Body 2 long */
+@utility typo-body-2-long-semibold {
+  font-size: var(--body-2-size);
+  line-height: var(--line-height-long);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 600;
+}
+
+@utility typo-body-2-long-medium {
+  font-size: var(--body-2-size);
+  line-height: var(--line-height-long);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 500;
+}
+
+@utility typo-body-2-long-regular {
+  font-size: var(--body-2-size);
+  line-height: var(--line-height-long);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 400;
+}
+
+/* Body 3 */
+@utility typo-body-3-semibold {
+  font-size: var(--body-3-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 600;
+}
+
+@utility typo-body-3-medium {
+  font-size: var(--body-3-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 500;
+}
+
+@utility typo-body-3-regular {
+  font-size: var(--body-3-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 400;
+}
+
+/* Caption 1 */
+@utility typo-caption-1-semibold {
+  font-size: var(--caption-1-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 600;
+}
+
+@utility typo-caption-1-medium {
+  font-size: var(--caption-1-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 500;
+}
+
+@utility typo-caption-1-regular {
+  font-size: var(--caption-1-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 400;
+}
+
+/* Caption 2 */
+@utility typo-caption-2-semibold {
+  font-size: var(--caption-2-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 600;
+}
+
+@utility typo-caption-2-medium {
+  font-size: var(--caption-2-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 500;
+}
+
+@utility typo-caption-2-regular {
+  font-size: var(--caption-2-size);
+  line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 400;
 }

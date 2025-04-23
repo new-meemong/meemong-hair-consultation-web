@@ -3,22 +3,11 @@
 
 /* 색상 정의 */
 @import "./theme.css";
-@import "./background.css";
-@import "./opacity.css";
 @import "./radius.css";
-@import "./status.css";
 @import "./typography.css";
 @import "./effect.css";
 
-@theme inline {
-  --font-pretendard: "Pretendard Variable", system-ui, sans-serif;
-}
-
 @layer base {
-  * {
-    font-family: var(--font-pretendard);
-  }
-
   body {
     background-color: var(--color-bg-white);
   }
