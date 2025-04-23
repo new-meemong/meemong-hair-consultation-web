@@ -3,6 +3,7 @@ import { DrawerClose } from "@/components/ui/drawer";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { LikeButton } from "@/components/ui/like-button";
 
 export default function Home() {
   return (
@@ -42,6 +43,14 @@ export default function Home() {
               <AvatarImage src="/profile.svg" />
               <AvatarFallback>empty profile</AvatarFallback>
             </Avatar>
+          </div>
+        </section>
+        {/* 좋아요 버튼 섹션 */}
+        <section className="w-full">
+          <h2 className="typo-title-1-bold mb-6">좋아요 버튼</h2>
+          <div className="flex gap-4 items-center">
+            <LikeButton />
+            <span className="typo-body-1-medium">클릭해서 좋아요를 표시</span>
           </div>
         </section>
         {/* 버튼(Button) 섹션 */}
