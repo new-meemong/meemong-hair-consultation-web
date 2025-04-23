@@ -5,16 +5,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2 text-body-1-semibold text-white transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-2 transition-all disabled:pointer-events-none disabled:bg-label-disable",
   {
     variants: {
       variant: {
         default:
-          "bg-label-default text-body-1-semibold text-white hover:bg-label-sub rounded-2",
-        primary:
-          "bg-label-default text-body-1-semibold text-white hover:bg-label-sub rounded-2",
-        secondary:
-          "bg-label-info text-body-1-semibold text-white hover:bg-label-sub rounded-2",
+          "bg-label-default hover:bg-label-sub rounded-2 typo-body-1-semibold",
+        primary: "bg-label-default hover:bg-label-sub rounded-2",
+        secondary: "bg-label-info hover:bg-label-sub rounded-2",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
@@ -46,7 +44,7 @@ function Button({
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size, className }), "text-white")}
       {...props}
     />
   );

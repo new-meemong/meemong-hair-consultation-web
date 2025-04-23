@@ -99,7 +99,7 @@ function DrawerTitle({
   return (
     <DrawerPrimitive.Title
       data-slot="drawer-title"
-      className={cn("text-title-3-semibold", className)}
+      className={cn("typo-title-3-semibold", className)}
       {...props}
     />
   );
@@ -112,7 +112,7 @@ function DrawerDescription({
   return (
     <DrawerPrimitive.Description
       data-slot="drawer-description"
-      className={cn("text-body-1-medium", className)}
+      className={cn("typo-body-1-medium", className)}
       {...props}
     />
   );
