@@ -19,19 +19,10 @@
 
   /* 행간 */
   --line-height-normal: 130%;
-  --line-height-medium: 150%;
   --line-height-long: 170%;
 
   /* 자간 */
   --letter-spacing: -2.5%;
-}
-
-@utility text-white {
-  color: var(--color-white) !important;
-}
-
-@utility text-black {
-  color: var(--color-black);
 }
 
 @utility text-display-large {
@@ -66,12 +57,12 @@
   font-size: var(--title-2-size);
   line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 @utility text-title-2-medium {
   font-size: var(--title-2-size);
-  line-height: var(--line-height-medium);
+  line-height: var(--line-height-normal);
   letter-spacing: var(--letter-spacing);
   font-weight: 500;
 }
