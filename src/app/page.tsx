@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { DrawerClose } from "@/components/ui/drawer";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Home() {
   return (
@@ -27,6 +28,20 @@ export default function Home() {
             <p className="typo-body-1-long-medium">
               Body 1 Long Medium (16px Medium, 170% 행간)
             </p>
+          </div>
+        </section>
+        {/* 아바타 섹션 */}
+        <section className="w-full">
+          <h2 className="typo-title-1-bold mb-6">아바타 (Avatar)</h2>
+          <div className="flex gap-4">
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <Avatar>
+              <AvatarImage src="/profile.svg" />
+              <AvatarFallback>empty profile</AvatarFallback>
+            </Avatar>
           </div>
         </section>
         {/* 버튼(Button) 섹션 */}
