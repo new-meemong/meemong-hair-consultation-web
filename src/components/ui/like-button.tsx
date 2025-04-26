@@ -1,25 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { Heart } from "lucide-react";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
+import HeartIcon from "@/assets/icons/mdi_heart.svg";
 
 interface LikeButtonProps {
-  className?: string;
   initialLiked?: boolean;
+  initialCount?: number;
   onToggle?: (pressed: boolean) => void;
 }
 
 export function LikeButton({
-  className,
   initialLiked = false,
+  initialCount = 0,
   onToggle,
 }: LikeButtonProps) {
   const [liked, setLiked] = useState(initialLiked);
+  const [count, setCount] = useState(initialCount);
 
   const handleToggle = (pressed: boolean) => {
     setLiked(pressed);
+    setCount((prev) => (pressed ? prev + 1 : prev - 1));
+    console.log(pressed);
     onToggle?.(pressed);
   };
 
@@ -31,12 +34,25 @@ export function LikeButton({
       variant="outline"
       size="default"
       className={cn(
-        "bg-white rounded-full p-0 h-9 w-9 border-none",
-        liked && "text-negative-light data-[state=on]:text-negative-light",
-        className
+        "flex items-center justify-center gap-1 bg-transparent min-w-0 min-h-0 rounded-full p-0 border-none"
       )}
     >
-      <Heart className={`h-5 w-5 ${liked ? "fill-current" : ""}`} />
+      <HeartIcon
+        className={cn(
+          "size-5 transition-colors duration-200",
+          liked ? "text-negative-light" : "text-label-placeholder",
+          "active:text-label-disable"
+        )}
+      />
+      <p
+        className={cn(
+          "typo-body-1-medium",
+          liked ? "text-negative-light" : "text-label-info",
+          "active:text-label-placeholder"
+        )}
+      >
+        {count}
+      </p>
     </Toggle>
   );
 }
