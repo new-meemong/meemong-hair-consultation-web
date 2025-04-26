@@ -4,6 +4,8 @@ import { BottomSheet } from "@/components/ui/bottom-sheet";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LikeButton } from "@/components/ui/like-button";
+import { ToggleChip, ToggleChipGroup } from "@/components/ui/toggle-chip";
+import { HeartIcon } from "lucide-react";
 
 export default function Home() {
   return (
@@ -104,7 +106,25 @@ export default function Home() {
             </BottomSheet>
           </div>
         </section>
-
+        {/* 토글 칩스 섹션 */}
+        <section className="w-full">
+          <h2 className="typo-title-1-bold mb-6">토글 가능한 칩스</h2>
+          <div className="p-6 rounded-10 bg-white border border-border">
+            <ToggleChipGroup>
+              <ToggleChip>최신글</ToggleChip>
+              <ToggleChip>인기글</ToggleChip>
+              <ToggleChip>내 상담글</ToggleChip>
+              <ToggleChip>댓글 단 글</ToggleChip>
+              <ToggleChip
+                icon={
+                  <HeartIcon className="size-5 fill-negative-light text-transparent" />
+                }
+              >
+                좋아한 글
+              </ToggleChip>
+            </ToggleChipGroup>
+          </div>
+        </section>
         {/* 반경(Radius) 섹션 */}
         <section className="w-full">
           <h2 className="typo-title-1-bold mb-6">반경 (Radius)</h2>
