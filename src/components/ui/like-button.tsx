@@ -34,21 +34,22 @@ export function LikeButton({
       variant="outline"
       size="default"
       className={cn(
-        "flex items-center justify-center gap-1 bg-transparent min-w-0 min-h-0 rounded-full p-0 border-none"
+        "flex items-center justify-center gap-1 bg-transparent min-w-0 min-h-0 p-0 border-none",
       )}
     >
       <HeartIcon
         className={cn(
           "size-5 transition-colors duration-200",
-          liked ? "text-negative-light" : "text-label-placeholder",
-          "active:text-label-disable"
+          liked ? "fill-negative-light" : "fill-label-placeholder",
+          "active:fill-label-disable",
         )}
       />
       <p
         className={cn(
           "typo-body-1-medium",
           liked ? "text-negative-light" : "text-label-info",
-          "active:text-label-placeholder"
+          "active:text-label-placeholder",
+          "pt-0.5",
         )}
       >
         {count}
