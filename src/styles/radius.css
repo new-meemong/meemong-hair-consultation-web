@@ -10,11 +10,6 @@
   --radius: var(--radius-6);
 }
 
-/* 기본 */
-@utility rounded {
-  border-radius: var(--radius);
-}
-
 @utility rounded-0 {
   border-radius: var(--radius-0);
 }

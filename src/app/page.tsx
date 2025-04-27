@@ -11,6 +11,7 @@ import CommentIcon from "@/assets/icons/iconamoon_comment-fill.svg";
 import UserIcon from "@/assets/icons/lets-icons_user-duotone.svg";
 import PopularIcon from "@/assets/icons/gridicons_recent.svg";
 import { WriteButton } from "@/components/ui/write-button";
+import { ChatExamples } from "@/components/chatExample";
 
 export default function Home() {
   return (
@@ -71,8 +72,6 @@ export default function Home() {
         {/* 바텀시트 섹션 */}
         <section className="w-full">
           <h2 className="typo-title-1-bold mb-6">바텀시트 (Bottom Sheet)</h2>
-          {/* 공통화된 방식: BottomSheet 컴포넌트 사용 */}
-
           <div className="flex flex-wrap gap-4">
             <BottomSheet
               trigger={<Button>기본 바텀시트</Button>}
@@ -158,6 +157,8 @@ export default function Home() {
             </ToggleChipGroup>
           </div>
         </section>
+        {/* chat input 컴포넌트 */}
+        <ChatExamples />
         {/* 반경(Radius) 섹션 */}
         <section className="w-full">
           <h2 className="typo-title-1-bold mb-6">반경 (Radius)</h2>
