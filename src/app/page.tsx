@@ -10,6 +10,7 @@ import RecentIcon from "@/assets/icons/mdi_recent.svg";
 import CommentIcon from "@/assets/icons/iconamoon_comment-fill.svg";
 import UserIcon from "@/assets/icons/lets-icons_user-duotone.svg";
 import PopularIcon from "@/assets/icons/gridicons_recent.svg";
+import { WriteButton } from "@/components/ui/write-button";
 
 export default function Home() {
   return (
@@ -108,6 +109,13 @@ export default function Home() {
             >
               바텀시트 커스텀 예시
             </BottomSheet>
+          </div>
+        </section>
+        {/* 글쓰기 버튼 */}
+        <section className="w-full">
+          <h2 className="typo-title-1-bold mb-6">글쓰기 버튼</h2>
+          <div className="grid gap-4 p-6 rounded-10 bg-white border border-border">
+            <WriteButton />
           </div>
         </section>
         {/* 토글 칩스 섹션 */}
