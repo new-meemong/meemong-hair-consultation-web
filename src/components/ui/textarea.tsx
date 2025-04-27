@@ -13,7 +13,7 @@ function Textarea({ className, maxRows, ...props }: TextareaProps) {
     <textarea
       data-slot="textarea"
       className={cn(
-        "border-input text-label-default placeholder:text-label-placeholder typo-body-2-long-regular flex field-sizing-content w-full bg-alternative p-2.5 break-words break-all resize-none focus:outline-none scrollbar-hide overflow-y-scroll p-0",
+        "border-input text-label-default placeholder:text-label-placeholder typo-body-2-long-regular flex field-sizing-content w-full bg-transparent p-2.5 break-words break-all resize-none focus:outline-none scrollbar-hide overflow-y-scroll p-0",
         className,
       )}
       style={{

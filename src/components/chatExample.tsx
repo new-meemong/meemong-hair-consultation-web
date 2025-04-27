@@ -25,7 +25,7 @@ export function ChatExamples() {
       </div>
 
       <div className="space-y-2">
-        <h2 className="typo-title-1-bold">확장 가능한 채팅 입력</h2>
+        <h2 className="typo-title-1-bold">비밀 채팅 입력</h2>
         <div className="p-4 border rounded-lg">
           <PrivateChatInput onSend={handleExpandableSend} />
         </div>

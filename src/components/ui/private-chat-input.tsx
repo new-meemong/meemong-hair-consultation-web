@@ -2,7 +2,11 @@
 import React, { useState } from "react";
 import { Button } from "./button";
 import { Textarea } from "./textarea";
-
+import LockIcon from "@/assets/icons/lock.svg";
+import ArrowUpIcon from "@/assets/icons/arrow-up.svg";
+import { Separator } from "@radix-ui/react-separator";
+import { Checkbox } from "./checkbox";
+import { Label } from "./label";
 interface PrivateChatInputProps {
   onSend: (message: string) => void;
   placeholder?: string;
@@ -34,28 +38,33 @@ export const PrivateChatInput = React.forwardRef<
     };
 
     return (
-      <div
-        ref={ref}
-        className={`flex w-full p-2.5 rounded-6 bg-alternative items-center gap-2 outline-none ${className}`}
-      >
-        <form onSubmit={handleSubmit} className="flex w-full gap-2">
-          <Textarea
-            onChange={(e) => setMessage(e.target.value)}
-            value={message}
-            placeholder={placeholder}
-            disabled={disabled}
-            maxRows={3}
-          />
-          <Button
-            type="submit"
-            size="sm"
-            variant="default"
-            className="typo-body-2-medium rounded-4 self-end"
-          >
-            등록
-          </Button>
-        </form>
-      </div>
+      <>
+        <div
+          ref={ref}
+          className={`flex w-full p-2.5 rounded-6 bg-alternative items-center gap-2 outline-none ${className}`}
+        >
+          <LockIcon className="size-3.5 fill-negative" />
+          <form onSubmit={handleSubmit} className="flex w-full gap-2">
+            <Textarea
+              onChange={(e) => setMessage(e.target.value)}
+              value={message}
+              placeholder={placeholder}
+              disabled={disabled}
+              maxRows={3}
+            />
+            <Button type="submit" size="icon" variant="icon">
+              <ArrowUpIcon className="fill-white" />
+            </Button>
+          </form>
+        </div>
+        <Separator className="w-full mt-3 mb-3 bg-border-default h-0.25" />
+        <div className="flex items-center space-x-2">
+          <Checkbox id="lock" />
+          <Label htmlFor="lock" className="typo-body-3-regular">
+            모델에게만 공개할게요
+          </Label>
+        </div>
+      </>
     );
   },
 );

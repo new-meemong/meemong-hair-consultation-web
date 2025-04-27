@@ -11,14 +11,11 @@ const buttonVariants = cva(
       variant: {
         default:
           "bg-label-default hover:bg-label-sub rounded-2 typo-body-1-semibold",
-        primary: "bg-label-default hover:bg-label-sub rounded-2",
-        secondary: "bg-label-info hover:bg-label-sub rounded-2",
-        link: "text-primary underline-offset-4 hover:underline",
+        icon: "bg-label-default hover:bg-label-sub rounded-6",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-6.5 px-2 py-1",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         icon: "size-7",
       },
     },
