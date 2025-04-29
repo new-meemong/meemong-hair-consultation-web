@@ -7,6 +7,8 @@ import ArrowUpIcon from '@/assets/icons/arrow-up.svg';
 import { Separator } from '@radix-ui/react-separator';
 import { Checkbox } from './checkbox';
 import { Label } from './label';
+import { CheckedState } from '@radix-ui/react-checkbox';
+
 interface PrivateChatInputProps {
   onSend: (message: string) => void;
   placeholder?: string;
@@ -17,6 +19,7 @@ interface PrivateChatInputProps {
 export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInputProps>(
   ({ onSend, placeholder = '댓글을 입력하세요', disabled = false, className = '' }, ref) => {
     const [message, setMessage] = useState('');
+    const [isLocked, setIsLocked] = useState<CheckedState>(false);
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
@@ -26,13 +29,17 @@ export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInpu
       }
     };
 
+    const handleCheckedChange = (checked: CheckedState) => {
+      setIsLocked(checked === true);
+    };
+
     return (
       <>
         <div
           ref={ref}
           className={`flex w-full p-2.5 rounded-6 bg-alternative items-center gap-2 outline-none ${className}`}
         >
-          <LockIcon className="size-3.5 fill-negative" />
+          <LockIcon className={`size-3.5 ${isLocked ? 'fill-negative' : 'fill-label-disable'}`} />
           <form onSubmit={handleSubmit} className="flex w-full gap-2">
             <Textarea
               onChange={(e) => setMessage(e.target.value)}
@@ -48,7 +55,7 @@ export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInpu
         </div>
         <Separator className="w-full mt-3 mb-3 bg-border-default h-0.25" />
         <div className="flex items-center space-x-2">
-          <Checkbox id="lock" />
+          <Checkbox id="lock" checked={isLocked} onCheckedChange={handleCheckedChange} />
           <Label htmlFor="lock" className="typo-body-3-regular">
             모델에게만 공개할게요
           </Label>
