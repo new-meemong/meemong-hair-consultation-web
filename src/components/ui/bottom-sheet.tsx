@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   Drawer,
   DrawerClose,
@@ -10,9 +10,9 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/drawer';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface BottomSheetProps {
   trigger?: React.ReactNode;
@@ -34,22 +34,18 @@ export function BottomSheet({
   className,
   footerContent,
   showCloseButton = true,
-  closeButtonText = "완료",
+  closeButtonText = '완료',
   closeButtonClassName,
 }: BottomSheetProps) {
   return (
     <Drawer direction="bottom">
       {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
-      <DrawerContent
-        className={cn("w-full bg-white border-none rounded-12", className)}
-      >
+      <DrawerContent className={cn('w-full bg-white border-none rounded-12', className)}>
         <div className="mx-auto w-full max-w-screen-sm bg-white">
           {(title || description) && (
             <DrawerHeader>
               {title && <DrawerTitle>{title}</DrawerTitle>}
-              {description && (
-                <DrawerDescription>{description}</DrawerDescription>
-              )}
+              {description && <DrawerDescription>{description}</DrawerDescription>}
             </DrawerHeader>
           )}
 
@@ -60,9 +56,7 @@ export function BottomSheet({
               {footerContent}
               {showCloseButton && (
                 <DrawerClose asChild>
-                  <Button className={closeButtonClassName}>
-                    {closeButtonText}
-                  </Button>
+                  <Button className={closeButtonClassName}>{closeButtonText}</Button>
                 </DrawerClose>
               )}
             </DrawerFooter>

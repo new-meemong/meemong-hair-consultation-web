@@ -1,12 +1,12 @@
-"use client";
-import React, { useState } from "react";
-import { Button } from "./button";
-import { Textarea } from "./textarea";
-import LockIcon from "@/assets/icons/lock.svg";
-import ArrowUpIcon from "@/assets/icons/arrow-up.svg";
-import { Separator } from "@radix-ui/react-separator";
-import { Checkbox } from "./checkbox";
-import { Label } from "./label";
+'use client';
+import React, { useState } from 'react';
+import { Button } from './button';
+import { Textarea } from './textarea';
+import LockIcon from '@/assets/icons/lock.svg';
+import ArrowUpIcon from '@/assets/icons/arrow-up.svg';
+import { Separator } from '@radix-ui/react-separator';
+import { Checkbox } from './checkbox';
+import { Label } from './label';
 interface PrivateChatInputProps {
   onSend: (message: string) => void;
   placeholder?: string;
@@ -14,26 +14,15 @@ interface PrivateChatInputProps {
   className?: string;
 }
 
-export const PrivateChatInput = React.forwardRef<
-  HTMLDivElement,
-  PrivateChatInputProps
->(
-  (
-    {
-      onSend,
-      placeholder = "댓글을 입력하세요",
-      disabled = false,
-      className = "",
-    },
-    ref,
-  ) => {
-    const [message, setMessage] = useState("");
+export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInputProps>(
+  ({ onSend, placeholder = '댓글을 입력하세요', disabled = false, className = '' }, ref) => {
+    const [message, setMessage] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       if (message.trim()) {
         onSend(message);
-        setMessage("");
+        setMessage('');
       }
     };
 
@@ -69,4 +58,4 @@ export const PrivateChatInput = React.forwardRef<
   },
 );
 
-PrivateChatInput.displayName = "PrivateChatInput";
+PrivateChatInput.displayName = 'PrivateChatInput';

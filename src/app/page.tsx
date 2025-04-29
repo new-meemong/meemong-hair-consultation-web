@@ -1,25 +1,23 @@
-import { Button } from "@/components/ui/button";
-import { DrawerClose } from "@/components/ui/drawer";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LikeButton } from "@/components/ui/like-button";
-import { ToggleChip, ToggleChipGroup } from "@/components/ui/toggle-chip";
-import HeartIcon from "@/assets/icons/mdi_heart.svg";
-import RecentIcon from "@/assets/icons/mdi_recent.svg";
-import CommentIcon from "@/assets/icons/iconamoon_comment-fill.svg";
-import UserIcon from "@/assets/icons/lets-icons_user-duotone.svg";
-import PopularIcon from "@/assets/icons/gridicons_recent.svg";
-import { WriteButton } from "@/components/ui/write-button";
-import { ChatExamples } from "@/components/chatExample";
+import { Button } from '@/components/ui/button';
+import { DrawerClose } from '@/components/ui/drawer';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { LikeButton } from '@/components/ui/like-button';
+import { ToggleChip, ToggleChipGroup } from '@/components/ui/toggle-chip';
+import HeartIcon from '@/assets/icons/mdi_heart.svg';
+import RecentIcon from '@/assets/icons/mdi_recent.svg';
+import CommentIcon from '@/assets/icons/iconamoon_comment-fill.svg';
+import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
+import PopularIcon from '@/assets/icons/gridicons_recent.svg';
+import { WriteButton } from '@/components/ui/write-button';
+import { ChatExamples } from '@/components/chatExample';
 
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-pretendard)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center max-w-4xl w-full">
-        <div className="typo-title-large-bold text-center mb-8">
-          디자인 시스템
-        </div>
+        <div className="typo-title-large-bold text-center mb-8">디자인 시스템</div>
         {/* 타이포그래피 섹션 */}
         <section className="w-full">
           <h2 className="typo-title-1-bold mb-6">타이포그래피</h2>
@@ -29,14 +27,10 @@ export default function Home() {
             <h3 className="typo-title-2-semibold">Title 2 (22px Bold)</h3>
             <h4 className="typo-title-3-bold">Title 3 (20px Bold)</h4>
             <p className="typo-headline-bold">Headline (18px Bold)</p>
-            <p className="typo-body-1-semibold">
-              Body 1 Semibold (16px Semibold)
-            </p>
+            <p className="typo-body-1-semibold">Body 1 Semibold (16px Semibold)</p>
             <p className="typo-body-1-medium">Body 1 Medium (16px Medium)</p>
             <p className="typo-body-1-regular">Body 1 Regular (16px Regular)</p>
-            <p className="typo-body-1-long-medium">
-              Body 1 Long Medium (16px Medium, 170% 행간)
-            </p>
+            <p className="typo-body-1-long-medium">Body 1 Long Medium (16px Medium, 170% 행간)</p>
           </div>
         </section>
         {/* 아바타 섹션 */}
@@ -73,10 +67,7 @@ export default function Home() {
         <section className="w-full">
           <h2 className="typo-title-1-bold mb-6">바텀시트 (Bottom Sheet)</h2>
           <div className="flex flex-wrap gap-4">
-            <BottomSheet
-              trigger={<Button>기본 바텀시트</Button>}
-              title="바텀 시트 제목"
-            >
+            <BottomSheet trigger={<Button>기본 바텀시트</Button>} title="바텀 시트 제목">
               <p className="text-label-info typo-body-2-medium">
                 버튼을 눌러 디자이너에게만 공개할 수 있어요
               </p>
@@ -96,7 +87,7 @@ export default function Home() {
               footerContent={
                 <div className="flex gap-2 w-full">
                   <DrawerClose asChild>
-                    <Button variant="secondary" className="flex-1">
+                    <Button variant="default" className="flex-1">
                       취소
                     </Button>
                   </DrawerClose>
@@ -144,14 +135,10 @@ export default function Home() {
               >
                 내 상담글
               </ToggleChip>
-              <ToggleChip
-                icon={<CommentIcon className="size-5 fill-positive" />}
-              >
+              <ToggleChip icon={<CommentIcon className="size-5 fill-positive" />}>
                 댓글 단 글
               </ToggleChip>
-              <ToggleChip
-                icon={<HeartIcon className="size-5 fill-negative-light" />}
-              >
+              <ToggleChip icon={<HeartIcon className="size-5 fill-negative-light" />}>
                 좋아한 글
               </ToggleChip>
             </ToggleChipGroup>
@@ -212,10 +199,9 @@ export default function Home() {
           <h2 className="typo-title-1-bold mb-6">반응형</h2>
           <div className="rounded-6 bg-white border border-border p-6">
             <p className="typo-body-2-medium sm:typo-body-1-medium md:typo-headline-bold lg:typo-title-3-bold">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
-              quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Quisquam, quos.
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum
+              dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit
+              amet consectetur adipisicing elit. Quisquam, quos.
             </p>
           </div>
         </section>

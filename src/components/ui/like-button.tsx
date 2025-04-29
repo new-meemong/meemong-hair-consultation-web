@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Toggle } from "@/components/ui/toggle";
-import { cn } from "@/lib/utils";
-import HeartIcon from "@/assets/icons/mdi_heart.svg";
+import { useState } from 'react';
+import { Toggle } from '@/components/ui/toggle';
+import { cn } from '@/lib/utils';
+import HeartIcon from '@/assets/icons/mdi_heart.svg';
 
 interface LikeButtonProps {
   initialLiked?: boolean;
@@ -11,11 +11,7 @@ interface LikeButtonProps {
   onToggle?: (pressed: boolean) => void;
 }
 
-export function LikeButton({
-  initialLiked = false,
-  initialCount = 0,
-  onToggle,
-}: LikeButtonProps) {
+export function LikeButton({ initialLiked = false, initialCount = 0, onToggle }: LikeButtonProps) {
   const [liked, setLiked] = useState(initialLiked);
   const [count, setCount] = useState(initialCount);
 
@@ -34,22 +30,22 @@ export function LikeButton({
       variant="outline"
       size="default"
       className={cn(
-        "flex items-center justify-center gap-1 bg-transparent min-w-0 min-h-0 p-0 border-none",
+        'flex items-center justify-center gap-1 bg-transparent min-w-0 min-h-0 p-0 border-none',
       )}
     >
       <HeartIcon
         className={cn(
-          "size-5 transition-colors duration-200",
-          liked ? "fill-negative-light" : "fill-label-placeholder",
-          "active:fill-label-disable",
+          'size-5 transition-colors duration-200',
+          liked ? 'fill-negative-light' : 'fill-label-placeholder',
+          'active:fill-label-disable',
         )}
       />
       <p
         className={cn(
-          "typo-body-1-medium",
-          liked ? "text-negative-light" : "text-label-info",
-          "active:text-label-placeholder",
-          "pt-0.5",
+          'typo-body-1-medium',
+          liked ? 'text-negative-light' : 'text-label-info',
+          'active:text-label-placeholder',
+          'pt-0.5',
         )}
       >
         {count}

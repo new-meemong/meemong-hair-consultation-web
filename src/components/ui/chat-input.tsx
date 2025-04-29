@@ -1,7 +1,7 @@
-"use client";
-import React, { useState } from "react";
-import { Button } from "./button";
-import { Textarea } from "./textarea";
+'use client';
+import React, { useState } from 'react';
+import { Button } from './button';
+import { Textarea } from './textarea';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -11,22 +11,14 @@ interface ChatInputProps {
 }
 
 export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
-  (
-    {
-      onSend,
-      placeholder = "댓글을 입력하세요",
-      disabled = false,
-      className = "",
-    },
-    ref,
-  ) => {
-    const [message, setMessage] = useState("");
+  ({ onSend, placeholder = '댓글을 입력하세요', disabled = false, className = '' }, ref) => {
+    const [message, setMessage] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       if (message.trim()) {
         onSend(message);
-        setMessage("");
+        setMessage('');
       }
     };
 
@@ -57,4 +49,4 @@ export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
   },
 );
 
-ChatInput.displayName = "ChatInput";
+ChatInput.displayName = 'ChatInput';

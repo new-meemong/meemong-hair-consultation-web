@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import React from "react";
-import { ChatInput } from "./ui/chat-input";
-import { PrivateChatInput } from "./ui/private-chat-input";
+import React from 'react';
+import { ChatInput } from './ui/chat-input';
+import { PrivateChatInput } from './ui/private-chat-input';
 
 export function ChatExamples() {
   const handleSend = (message: string) => {
-    console.log("일반 메시지:", message);
+    console.log('일반 메시지:', message);
     // 메시지 처리 로직
   };
 
   const handleExpandableSend = (message: string) => {
-    console.log("확장형 메시지:", message);
+    console.log('확장형 메시지:', message);
     // 메시지 처리 로직
   };
 

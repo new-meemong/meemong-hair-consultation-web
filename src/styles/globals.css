@@ -1,11 +1,11 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 /* 색상 정의 */
-@import "./theme.css";
-@import "./radius.css";
-@import "./typography.css";
-@import "./effect.css";
+@import './theme.css';
+@import './radius.css';
+@import './typography.css';
+@import './effect.css';
 
 @layer base {
   body {
