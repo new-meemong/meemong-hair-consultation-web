@@ -110,7 +110,7 @@ export function CommentCard({
             />
           </div>
         </div>
-        <div>
+        <div className="flex-1 flex-col gap-3">
           {isEditing ? (
             <CommentEditForm
               commentId={comment.id}
@@ -120,9 +120,8 @@ export function CommentCard({
               className="mt-2"
             />
           ) : (
-            <div>
+            <>
               <p className="typo-body-2-medium mt-1 break-words">{content}</p>
-
               {showReplyButton && !isReply && (
                 <button
                   className="typo-body-3-medium text-label-info mt-2"
@@ -131,9 +130,9 @@ export function CommentCard({
                   답글 달기
                 </button>
               )}
-            </div>
+            </>
           )}
-        </div>
+        </div>{' '}
       </div>
     </div>
   );

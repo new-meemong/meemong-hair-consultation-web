@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { CommentList } from '@/widgets/comments/ui/comment-list';
 import { MOCK_COMMENTS, CURRENT_USER } from '@/entities/comment/model/mock-data';
-import type { CommentWithReplies } from '@/entities/comment/model/types';
+import type { CommentWithReplies, Author } from '@/entities/comment/model/types';
 
 export default function CommentsPage() {
   const [comments, setComments] = useState<CommentWithReplies[]>(MOCK_COMMENTS);
@@ -12,11 +12,14 @@ export default function CommentsPage() {
     const newComment = {
       id: `new-${Date.now()}`,
       content,
-      author: CURRENT_USER,
+      author: {
+        id: CURRENT_USER.id,
+        name: CURRENT_USER.name,
+        avatarUrl: CURRENT_USER.avatarUrl || '',
+      } as Author,
       createdAt: new Date().toISOString(),
       isPrivate,
       parentId,
-      replies: [],
     };
 
     if (parentId) {
@@ -34,7 +37,7 @@ export default function CommentsPage() {
       );
     } else {
       // 새 댓글 추가
-      setComments([...comments, { ...newComment, replies: [] }]);
+      setComments([...comments, { ...newComment, replies: [] } as CommentWithReplies]);
     }
   };
 

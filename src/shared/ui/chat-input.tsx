@@ -8,11 +8,21 @@ interface ChatInputProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  initialMessage?: string;
 }
 
 export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
-  ({ onSend, placeholder = '댓글을 입력하세요', disabled = false, className = '' }, ref) => {
-    const [message, setMessage] = useState('');
+  (
+    {
+      onSend,
+      placeholder = '댓글을 입력하세요',
+      disabled = false,
+      className = '',
+      initialMessage = '',
+    },
+    ref,
+  ) => {
+    const [message, setMessage] = useState(initialMessage);
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();

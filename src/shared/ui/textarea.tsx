@@ -36,7 +36,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           }
         }}
         className={cn(
-          'flex w-full scroll rounded-4 placeholder:text-label-disable outline-none resize-none',
+          'flex w-full rounded-4 placeholder:text-label-disable outline-none resize-none',
           className,
         )}
         onInput={adjustHeight}
