@@ -5,10 +5,16 @@ export interface User {
   isPrivate?: boolean;
 }
 
+export interface Author {
+  id: string;
+  name: string;
+  avatarUrl: string;
+}
+
 export interface Comment {
   id: string;
+  author: Author;
   content: string;
-  author: User;
   createdAt: string;
   isPrivate: boolean;
   parentId?: string; // 대댓글일 경우 부모 댓글 ID

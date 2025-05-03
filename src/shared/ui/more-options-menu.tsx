@@ -1,0 +1,49 @@
+'use client';
+
+import React from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/shared/ui/dropdown-menu';
+import { cn } from '@/shared/lib/utils';
+
+export type OptionItem = {
+  label: string;
+  onClick: () => void;
+  className?: string;
+};
+
+interface MoreOptionsMenuProps {
+  trigger?: React.ReactNode;
+  options: OptionItem[];
+  triggerClassName?: string;
+  contentClassName?: string;
+}
+
+export const MoreOptionsMenu = ({
+  trigger,
+  options,
+  triggerClassName,
+  contentClassName,
+}: MoreOptionsMenuProps) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className={cn('outline-none', triggerClassName)}>
+        {trigger}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className={contentClassName}>
+        {options.map((option, index) => (
+          <DropdownMenuItem
+            key={index}
+            onClick={option.onClick}
+            className={cn('cursor-pointer', option.className)}
+          >
+            {option.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
