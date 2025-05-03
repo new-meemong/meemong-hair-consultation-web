@@ -10,9 +10,9 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/components/ui/drawer';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+} from '@/shared/ui/drawer';
+import { Button } from '@/shared/ui/button';
+import { cn } from '@/shared/lib/utils';
 
 interface BottomSheetProps {
   trigger?: React.ReactNode;

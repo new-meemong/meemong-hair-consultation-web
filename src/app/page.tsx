@@ -1,17 +1,17 @@
-import { Button } from '@/components/ui/button';
-import { DrawerClose } from '@/components/ui/drawer';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { Button } from '@/shared/ui/button';
+import { DrawerClose } from '@/shared/ui/drawer';
+import { BottomSheet } from '@/shared/ui/bottom-sheet';
 import Image from 'next/image';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LikeButton } from '@/components/ui/like-button';
-import { ToggleChip, ToggleChipGroup } from '@/components/ui/toggle-chip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
+import { LikeButton } from '@/features/likes/ui/like-button';
+import { ToggleChip, ToggleChipGroup } from '@/shared/ui/toggle-chip';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
 import CommentIcon from '@/assets/icons/iconamoon_comment-fill.svg';
 import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
 import PopularIcon from '@/assets/icons/gridicons_recent.svg';
-import { WriteButton } from '@/components/ui/write-button';
-import { ChatExamples } from '@/components/chatExample';
+import { WriteButton } from '@/features/posts/ui/write-button';
+import { ChatExamples } from '@/widgets/chat/chat-examples';
 
 export default function Home() {
   return (

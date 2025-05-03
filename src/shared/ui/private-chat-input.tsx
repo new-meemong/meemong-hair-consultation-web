@@ -14,10 +14,20 @@ interface PrivateChatInputProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  onCheckedChange?: (checked: CheckedState) => void;
 }
 
 export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInputProps>(
-  ({ onSend, placeholder = '댓글을 입력하세요', disabled = false, className = '' }, ref) => {
+  (
+    {
+      onSend,
+      placeholder = '댓글을 입력하세요',
+      disabled = false,
+      className = '',
+      onCheckedChange,
+    },
+    ref,
+  ) => {
     const [message, setMessage] = useState('');
     const [isLocked, setIsLocked] = useState<CheckedState>(false);
 
@@ -31,6 +41,7 @@ export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInpu
 
     const handleCheckedChange = (checked: CheckedState) => {
       setIsLocked(checked === true);
+      onCheckedChange?.(checked);
     };
 
     return (

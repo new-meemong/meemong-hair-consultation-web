@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { ChatInput } from './ui/chat-input';
-import { PrivateChatInput } from './ui/private-chat-input';
+import { ChatInput } from '@/shared/ui/chat-input';
+import { PrivateChatInput } from '@/shared/ui/private-chat-input';
 
 export function ChatExamples() {
   const handleSend = (message: string) => {

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Toggle } from '@/components/ui/toggle';
-import { cn } from '@/lib/utils';
+import { Toggle } from '@/shared/ui/toggle';
+import { cn } from '@/shared/lib/utils';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 
 interface LikeButtonProps {
