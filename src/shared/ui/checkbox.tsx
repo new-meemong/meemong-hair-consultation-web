@@ -10,7 +10,7 @@ const Checkbox = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      'peer h-4 w-4 shrink-0 rounded-lg border border-border-default ring-offset-background focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all hover:border-primary-default data-[state=checked]:bg-label-default data-[state=checked]:border-0',
+      'peer h-4 w-4 shrink-0 rounded-4 border border-border-default focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-label-default data-[state=checked]:border-0',
       className,
     )}
     {...props}
@@ -20,7 +20,7 @@ const Checkbox = React.forwardRef<
       <svg
         width="14"
         height="14"
-        viewBox="0 0 14 14"
+        viewBox="-1 0 14 14"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
