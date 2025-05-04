@@ -43,7 +43,6 @@ export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
             value={message}
             placeholder={placeholder}
             disabled={disabled}
-            maxRows={3}
           />
           <Button
             type="submit"

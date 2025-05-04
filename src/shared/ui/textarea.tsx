@@ -6,24 +6,28 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 }
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, maxRows = 2, ...props }, ref) => {
+  ({ className, maxRows = 2, value, ...props }, ref) => {
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
     const adjustHeight = useCallback(() => {
       const textarea = textareaRef.current;
       if (!textarea) return;
 
-      textarea.style.height = 'auto';
-      const lineHeight = 8;
-      const newHeight = Math.min(textarea.scrollHeight, maxRows * lineHeight);
-      textarea.style.height = `${newHeight}px`;
+      textarea.style.height = '0';
+
+      const lineHeight = 22;
+
+      const scrollHeight = textarea.scrollHeight;
+      const newHeight = Math.min(scrollHeight, maxRows * lineHeight);
+
+      textarea.style.height = `${Math.max(newHeight, lineHeight)}px`;
     }, [maxRows]);
 
     useEffect(() => {
       if (textareaRef.current) {
         adjustHeight();
       }
-    }, [adjustHeight, props.value]);
+    }, [adjustHeight, value]);
 
     return (
       <textarea
@@ -36,10 +40,11 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           }
         }}
         className={cn(
-          'flex w-full rounded-4 placeholder:text-label-disable outline-none resize-none',
+          'flex w-full h-auto placeholder:text-label-disable outline-none resize-none overflow-hidden',
           className,
         )}
         onInput={adjustHeight}
+        rows={1}
         {...props}
       />
     );

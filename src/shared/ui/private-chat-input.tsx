@@ -57,7 +57,6 @@ export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInpu
               value={message}
               placeholder={placeholder}
               disabled={disabled}
-              maxRows={3}
             />
             <Button type="submit" size="icon" variant="icon">
               <ArrowUpIcon className="fill-white" />
