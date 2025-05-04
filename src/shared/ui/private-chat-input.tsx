@@ -50,7 +50,9 @@ export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInpu
           ref={ref}
           className={`flex w-full p-2.5 rounded-6 bg-alternative items-center gap-2 outline-none ${className}`}
         >
-          <LockIcon className={`size-3.5 ${isLocked ? 'fill-negative' : 'fill-label-disable'}`} />
+          <LockIcon
+            className={`size-3.5 ${isLocked ? 'fill-negative' : 'fill-label-placeholder'}`}
+          />
           <form onSubmit={handleSubmit} className="flex w-full gap-2">
             <Textarea
               onChange={(e) => setMessage(e.target.value)}

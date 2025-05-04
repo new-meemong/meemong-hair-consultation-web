@@ -121,7 +121,7 @@ export function CommentCard({
             />
           ) : (
             <>
-              <p className="typo-body-2-medium mt-1 break-words">{content}</p>
+              <p className="typo-body-2-medium mt-1 break-words whitespace-pre-line">{content}</p>
               {showReplyButton && !isReply && (
                 <button
                   className="typo-body-3-medium text-label-info mt-2"
