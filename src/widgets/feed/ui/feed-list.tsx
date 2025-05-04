@@ -27,19 +27,19 @@ export const FeedList: FC<FeedListProps> = ({ feeds, isLoading = false }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="[&>*:last-child]:border-b-0">
       {feeds.map((feed) => (
         <FeedItem
           key={feed.id}
           id={feed.id}
           author={feed.author}
+          title={feed.title}
           content={feed.content}
           imageUrl={feed.imageUrl}
           createdAt={feed.createdAt}
           views={feed.views}
           likes={feed.likes}
           comments={feed.comments}
-          location={feed.location}
         />
       ))}
     </div>
