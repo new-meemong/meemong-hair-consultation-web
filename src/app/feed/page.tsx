@@ -62,13 +62,11 @@ export default function FeedPage() {
   const [activeTab, setActiveTab] = useState<TabType>('recent');
   const [feeds, setFeeds] = useState<FeedData[]>(RECENT_FEEDS);
   const [isPending, startTransition] = useTransition();
-  const [prevFeeds, setPrevFeeds] = useState<FeedData[]>(RECENT_FEEDS);
 
   const handleTabChange = (tab: TabType) => {
     if (activeTab === tab) return;
 
     setActiveTab(tab);
-    setPrevFeeds(feeds);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     startTransition(async () => {
@@ -132,7 +130,7 @@ export default function FeedPage() {
 
       {/* 피드 리스트 */}
       <div className="relative">
-        <FeedList feeds={isPending ? prevFeeds : feeds} isLoading={isPending} />
+        <FeedList feeds={feeds} isLoading={isPending} />
 
         {isPending && (
           <div className="absolute top-0 left-0 right-0 h-1 bg-gray-100 overflow-hidden">
