@@ -26,4 +26,23 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
+
+  @keyframes progressBar {
+    0% {
+      width: 0%;
+      left: 0;
+    }
+    50% {
+      width: 30%;
+      left: 35%;
+    }
+    100% {
+      width: 0%;
+      left: 100%;
+    }
+  }
+
+  .progress-bar-animation {
+    animation: progressBar 1.5s ease-in-out infinite;
+  }
 }

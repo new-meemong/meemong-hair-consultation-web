@@ -10,14 +10,6 @@ interface FeedListProps {
 }
 
 export const FeedList: FC<FeedListProps> = ({ feeds, isLoading = false }) => {
-  if (isLoading) {
-    return (
-      <div className="w-full flex justify-center py-8">
-        <div className="animate-pulse h-10 w-10 rounded-full bg-gray-200" />
-      </div>
-    );
-  }
-
   if (feeds.length === 0) {
     return (
       <div className="w-full flex justify-center py-12">
@@ -27,7 +19,9 @@ export const FeedList: FC<FeedListProps> = ({ feeds, isLoading = false }) => {
   }
 
   return (
-    <div className="[&>*:last-child]:border-b-0">
+    <div
+      className={`[&>*:last-child]:border-b-0 ${isLoading ? 'opacity-70 transition-opacity duration-300' : ''}`}
+    >
       {feeds.map((feed) => (
         <FeedItem
           key={feed.id}

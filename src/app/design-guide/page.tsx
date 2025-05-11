@@ -9,7 +9,7 @@ import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
 import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
-import PopularIcon from '@/assets/icons/gridicons_recent.svg';
+import PopularIcon from '@/assets/icons/recent.svg';
 import { WriteButton } from '@/features/posts/ui/write-button';
 import { ChatExamples } from '@/widgets/chat/chat-examples';
 

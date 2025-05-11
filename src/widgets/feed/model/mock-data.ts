@@ -105,3 +105,160 @@ export const MOCK_FEEDS: FeedData[] = [
     comments: 28,
   },
 ];
+
+// 최신글 데이터
+export const RECENT_FEEDS: FeedData[] = [
+  {
+    id: '1',
+    author: '익명',
+    title: '제 머리 스타일 어떤가요? 저는 좀 마음에 드는...',
+    content:
+      '미용실에서 이정도 머리는 얼마인가요? 미용실에서 이정도 머리는 얼마인가요?미용실에서 이정도 머리는 얼마인가요? 미용실에서 이정도 머리는 얼마인가요?',
+    createdAt: '방금 전',
+    views: 36,
+    likes: 36,
+    comments: 36,
+  },
+  {
+    id: '2',
+    author: '익명',
+    title: '제 머리 스타일 어떤가요? 저는...',
+    content:
+      '미용실에서 이정도 머리는 얼마인가요? 미용실에서 이정도 머리는 얼마인가요?미용실에서 이정도 머리는 얼마인가요?',
+    imageUrl: '/sample-hair.jpg',
+    createdAt: '12분전',
+    views: 36,
+    likes: 36,
+    comments: 36,
+  },
+  {
+    id: '3',
+    author: '익명',
+    title: '제 머리 스타일 어떤가요? 저는 좀 마음에 드는...',
+    content:
+      '미용실에서 이정도 머리는 얼마인가요? 미용실에서 이정도 머리는 얼마인가요?미용실에서 이정도 머리는 얼마인가요? 미용실에서 이정도 머리는 얼마인가요?',
+    createdAt: '18시간 전',
+    views: 36,
+    likes: 36,
+    comments: 36,
+  },
+];
+
+// 인기글 데이터
+export const POPULAR_FEEDS: FeedData[] = [
+  {
+    id: '4',
+    author: '익명',
+    title: '펌 했는데 어떤가요? 디자이너가 추천해줬어요',
+    content:
+      '오늘 미용실에서 디자이너분이 추천해주신 스타일로 했는데 어떤가요? 제 얼굴형에 어울리나요?',
+    imageUrl: '/sample-hair.jpg',
+    createdAt: '2일 전',
+    views: 256,
+    likes: 120,
+    comments: 58,
+  },
+  {
+    id: '5',
+    author: '익명',
+    title: '염색 색상 추천해주세요! 밝은 색상 vs 어두운 색상',
+    content:
+      '머리 염색하려고 하는데 밝은 색상과 어두운 색상 중에 고민이에요. 제 피부톤에는 어떤 게 어울릴까요?',
+    createdAt: '3일 전',
+    views: 189,
+    likes: 95,
+    comments: 42,
+  },
+  {
+    id: '6',
+    author: '익명',
+    title: '남자 투블럭 길이 어느 정도가 적당할까요?',
+    content: '투블럭 하려고 하는데 위에 얼마나 남겨야 할지 모르겠어요. 전문가분들 조언 부탁드려요!',
+    createdAt: '1주일 전',
+    views: 320,
+    likes: 150,
+    comments: 60,
+  },
+];
+
+// 내 상담글 데이터
+export const MY_FEEDS: FeedData[] = [
+  {
+    id: '7',
+    author: '나',
+    title: '앞머리 어떻게 잘라야 할까요?',
+    content:
+      '앞머리를 바꾸고 싶은데 어떤 스타일이 좋을지 고민이에요. 제 얼굴형에 맞는 스타일 추천해주세요.',
+    createdAt: '1일 전',
+    views: 45,
+    likes: 20,
+    comments: 15,
+  },
+  {
+    id: '8',
+    author: '나',
+    title: '파마 유지하는 방법 알려주세요',
+    content: '일주일 전에 파마했는데 벌써 많이 풀려버렸어요. 파마를 오래 유지하는 방법 있을까요?',
+    createdAt: '5일 전',
+    views: 78,
+    likes: 32,
+    comments: 24,
+  },
+];
+
+// 댓글 단 글 데이터
+export const COMMENTED_FEEDS: FeedData[] = [
+  {
+    id: '9',
+    author: '익명',
+    title: '댓글 단 글 제목',
+    content: '댓글 단 글 내용',
+    createdAt: '1일 전',
+    views: 100,
+    likes: 50,
+    comments: 20,
+  },
+];
+
+// 좋아한 글 데이터
+export const LIKED_FEEDS: FeedData[] = [
+  {
+    id: '10',
+    author: '익명',
+    title: '좋아한 글 제목',
+    content: '좋아한 글 내용',
+    createdAt: '1일 전',
+    views: 100,
+    likes: 50,
+    comments: 20,
+  },
+];
+
+// 배너 데이터
+export interface Banner {
+  id: string;
+  title: string;
+  subtitle: string;
+  bgColor: string;
+}
+
+export const BANNERS: Banner[] = [
+  {
+    id: '1',
+    title: 'MEEMONG',
+    subtitle: '우리동네 헤어상담은',
+    bgColor: 'bg-emerald-500',
+  },
+  {
+    id: '2',
+    title: '헤어상담',
+    subtitle: '디자이너에게 물어보세요',
+    bgColor: 'bg-blue-500',
+  },
+  {
+    id: '3',
+    title: '머리 고민',
+    subtitle: '다양한 스타일을 찾아보세요',
+    bgColor: 'bg-purple-500',
+  },
+];
