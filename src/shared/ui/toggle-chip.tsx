@@ -13,7 +13,7 @@ export function ToggleChip({ className, icon, children, ...props }: ToggleChipPr
   return (
     <Toggle
       className={cn(
-        'group flex items-center justify-center gap-1 px-4 py-2 rounded-full transition-colors h-10',
+        'group flex flex-shrink-0 items-center justify-center gap-1 px-4 py-2 rounded-full transition-colors h-10',
         'typo-body-2-medium',
         'data-[state=on]:bg-label-default data-[state=on]:text-white data-[state=on]:border data-[state=on]:border-label-default',
         'data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-border-default',
@@ -34,5 +34,5 @@ export function ToggleChipGroup({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={cn('flex flex-wrap gap-2', className)}>{children}</div>;
+  return <div className={cn('flex gap-2', className)}>{children}</div>;
 }
