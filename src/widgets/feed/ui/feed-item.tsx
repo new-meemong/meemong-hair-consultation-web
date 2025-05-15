@@ -5,16 +5,9 @@ import Image from 'next/image';
 import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
-interface FeedItemProps {
-  id: string;
-  author: string;
-  title: string;
-  content: string;
-  imageUrl?: string;
-  createdAt: string;
-  views: number;
-  likes: number;
-  comments: number;
+import { Feed } from '@/entities/feed';
+interface FeedItemProps extends Feed {
+  onClick?: () => void;
 }
 
 export const FeedItem: FC<FeedItemProps> = ({

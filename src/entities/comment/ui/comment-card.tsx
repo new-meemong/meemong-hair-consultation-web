@@ -6,7 +6,6 @@ import { format } from 'date-fns';
 import { cn } from '@/shared/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
 import { MoreOptionsMenu } from '@/shared/ui/more-options-menu';
-import { CommentEditForm } from '@/features/comments/ui/comment-edit-form';
 import type { Comment } from '../model/types';
 import LockIcon from '@/assets/icons/lock.svg';
 import MoreIcon from '@/assets/icons/more-vertical.svg';
@@ -17,11 +16,11 @@ interface CommentCardProps {
   isCurrentUser: boolean;
   showReplyButton?: boolean;
   onReply?: (commentId: string) => void;
-  onEdit?: (commentId: string, newContent: string) => void;
   onDelete?: (commentId: string) => void;
   onReport?: (commentId: string) => void;
   className?: string;
   isReply?: boolean;
+  renderEditForm?: (commentId: string, content: string, onCancel: () => void) => React.ReactNode;
 }
 
 export function CommentCard({
@@ -29,11 +28,11 @@ export function CommentCard({
   isCurrentUser,
   showReplyButton = true,
   onReply,
-  onEdit,
   onDelete,
   onReport,
   className,
   isReply = false,
+  renderEditForm,
 }: CommentCardProps) {
   const { author, content, createdAt, isPrivate } = comment;
   const [isEditing, setIsEditing] = useState(false);
@@ -43,11 +42,6 @@ export function CommentCard({
   };
 
   const handleCancelEdit = () => {
-    setIsEditing(false);
-  };
-
-  const handleSubmitEdit = (commentId: string, newContent: string) => {
-    onEdit?.(commentId, newContent);
     setIsEditing(false);
   };
 
@@ -112,13 +106,11 @@ export function CommentCard({
         </div>
         <div className="flex-1 flex-col gap-3">
           {isEditing ? (
-            <CommentEditForm
-              commentId={comment.id}
-              initialContent={content}
-              onCancel={handleCancelEdit}
-              onSubmit={handleSubmitEdit}
-              className="mt-2"
-            />
+            renderEditForm ? (
+              renderEditForm(comment.id, content, handleCancelEdit)
+            ) : (
+              <p>수정 중...</p>
+            )
           ) : (
             <>
               <p className="typo-body-2-medium mt-1 break-words whitespace-pre-line">{content}</p>
