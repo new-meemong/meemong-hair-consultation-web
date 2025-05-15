@@ -1,4 +1,4 @@
-export interface FeedData {
+export interface Feed {
   id: string;
   author: string;
   title: string;
@@ -8,4 +8,11 @@ export interface FeedData {
   views: number;
   likes: number;
   comments: number;
+}
+
+export interface Banner {
+  id: string;
+  title: string;
+  subtitle: string;
+  bgColor: string;
 }

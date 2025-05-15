@@ -1,4 +1,4 @@
-import type { CommentWithReplies, User } from './types';
+import type { CommentWithReplies, User } from '@/entities/comment';
 
 export const CURRENT_USER: User = {
   id: 'current-user',

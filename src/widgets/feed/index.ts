@@ -7,5 +7,6 @@ export {
   COMMENTED_FEEDS,
   LIKED_FEEDS,
   BANNERS,
-} from './model/mock-data';
-export type { FeedData } from './model/types';
+  type Feed,
+  type Banner,
+} from '@/entities/feed';

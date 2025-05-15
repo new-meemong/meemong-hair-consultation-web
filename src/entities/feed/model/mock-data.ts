@@ -1,7 +1,7 @@
-import { FeedData } from './types';
+import { Banner, Feed } from './types';
 
 // 예시 데이터
-export const MOCK_FEEDS: FeedData[] = [
+export const MOCK_FEEDS: Feed[] = [
   {
     id: '1',
     author: '김민수',
@@ -107,7 +107,7 @@ export const MOCK_FEEDS: FeedData[] = [
 ];
 
 // 최신글 데이터
-export const RECENT_FEEDS: FeedData[] = [
+export const RECENT_FEEDS: Feed[] = [
   {
     id: '1',
     author: '익명',
@@ -145,7 +145,7 @@ export const RECENT_FEEDS: FeedData[] = [
 ];
 
 // 인기글 데이터
-export const POPULAR_FEEDS: FeedData[] = [
+export const POPULAR_FEEDS: Feed[] = [
   {
     id: '4',
     author: '익명',
@@ -182,7 +182,7 @@ export const POPULAR_FEEDS: FeedData[] = [
 ];
 
 // 내 상담글 데이터
-export const MY_FEEDS: FeedData[] = [
+export const MY_FEEDS: Feed[] = [
   {
     id: '7',
     author: '나',
@@ -207,7 +207,7 @@ export const MY_FEEDS: FeedData[] = [
 ];
 
 // 댓글 단 글 데이터
-export const COMMENTED_FEEDS: FeedData[] = [
+export const COMMENTED_FEEDS: Feed[] = [
   {
     id: '9',
     author: '익명',
@@ -221,7 +221,7 @@ export const COMMENTED_FEEDS: FeedData[] = [
 ];
 
 // 좋아한 글 데이터
-export const LIKED_FEEDS: FeedData[] = [
+export const LIKED_FEEDS: Feed[] = [
   {
     id: '10',
     author: '익명',
@@ -233,14 +233,6 @@ export const LIKED_FEEDS: FeedData[] = [
     comments: 20,
   },
 ];
-
-// 배너 데이터
-export interface Banner {
-  id: string;
-  title: string;
-  subtitle: string;
-  bgColor: string;
-}
 
 export const BANNERS: Banner[] = [
   {

@@ -1,11 +1,11 @@
 'use client';
 
 import { FC } from 'react';
-import { FeedData } from '../model/types';
+import { Feed } from '../../../entities/feed/model/types';
 import { FeedItem } from './feed-item';
 
 interface FeedListProps {
-  feeds: FeedData[];
+  feeds: Feed[];
   isLoading?: boolean;
 }
 
