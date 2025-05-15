@@ -6,8 +6,6 @@
 
 ## 주요 레이어
 
-프로젝트는 다음과 같은 레이어로 구성되어 있습니다:
-
 ### 1. `app` 레이어
 
 - Next.js의 App Router를 활용한 페이지 구성
@@ -40,8 +38,6 @@
 
 ## 슬라이스 구조
 
-각 레이어는 비즈니스 도메인별로 슬라이스로 나뉘며, 다음과 같은 세그먼트를 포함할 수 있습니다:
-
 - `ui`: 컴포넌트
 - `model`: 상태 관리 (컨텍스트, 훅 등)
 - `api`: 데이터 요청 로직
@@ -60,11 +56,9 @@
 
 3. 모든 imports는 절대 경로를 사용합니다.
 
-## Next.js 통합
+## Next.js + FSD
 
 - App Router를 사용하여 페이지 구성
-- Server Components와 Client Components를 적절히 구분
-- 각 페이지는 다양한 레이어의 컴포넌트를 조합하여 구성
 
 ## UI 컴포넌트 분류 원칙
 
@@ -79,20 +73,24 @@ UI 컴포넌트는 그 성격과 사용 범위에 따라 다음과 같이 분류
 
 ### 2. `features/{feature-name}/ui`
 
-- 특정 기능에 종속된 컴포넌트: `LikeButton`, `WriteButton` 등
 - 비즈니스 로직을 포함하거나 특정 도메인 개념을 표현
+- 예: `LikeButton`, `WriteButton` 등
 
 ### 3. `widgets/{widget-name}/ui`
 
 - 여러 feature 컴포넌트를 조합한 복합 UI 블록
-- 예: `ChatExamples`, `UserProfileCard` 등
+- 비즈니스 로직보다는 UI 구성과 레이아웃에 중점을 두며, 페이지 단위보다 작은 독립적인 UI 섹션을 구성합니다.
+- 예: `CommentList`, `FeedList` 등
+- CommentList(위젯)는 "댓글들을 어떻게 모아서 보여줄 것인가"를 정의
 
 ### 4. `entities/{entity-name}/ui`
 
 - 비즈니스 엔티티를 표현하는 컴포넌트
-- 예: `PostCard`, `UserCard` 등
+- 도메인 모델의 데이터를 시각적으로 표현하는 가장 기본적인 UI 컴포넌트로, 비즈니스 로직이나 상태 관리 없이 단순히 데이터를 표시하는 데 집중합니다.
+- 예: `CommentCard`, `FeedItem` 등
+- CommentCard(엔티티)는 "하나의 댓글이 어떻게 생겼는가"를 정의
 
-## 컴포넌트 확장 사례
+## 사례
 
 기존 컴포넌트를 확장해 새로운 컴포넌트를 만들 때의 레이어 결정:
 
@@ -103,30 +101,7 @@ UI 컴포넌트는 그 성격과 사용 범위에 따라 다음과 같이 분류
 2. **기능 특화 확장**: 기본 컴포넌트를 확장했지만 특정 기능에 특화된 경우 `features`
    - 예: `Toggle`을 확장한 `like-button.tsx`
 
-## 예시
-
-```tsx
-// app/page.tsx (app 레이어)
-import { PostList } from '@/widgets/posts/ui/post-list';
-import { FilterPanel } from '@/features/filter/ui/filter-panel';
-
-export default function HomePage() {
-  return (
-    <main>
-      <FilterPanel />
-      <PostList />
-    </main>
-  );
-}
-
-// widgets/posts/ui/post-list.tsx (widgets 레이어)
-import { PostCard } from '@/entities/post/ui/post-card';
-import { LikeButton } from '@/features/likes/ui/like-button';
-
-// features/likes/ui/like-button.tsx (features 레이어)
-import { Button } from '@/shared/ui/button';
-```
-
 ## 참고 문헌
 
 - [Feature-Sliced Design 공식 문서](https://feature-sliced.design/)
+- [(번역) 기능 분할 설계 - 최고의 프런트엔드 아키텍처](https://emewjin.github.io/feature-sliced-design/)
