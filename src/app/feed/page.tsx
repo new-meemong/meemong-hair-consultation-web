@@ -1,9 +1,18 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
-import { WriteButton } from '@/features/posts/ui/write-button';
-import { ToggleChip, ToggleChipGroup } from '@/shared/ui/toggle-chip';
-import { FeedList } from '@/widgets/feed/ui/feed-list';
+import React, { useState, useEffect, useTransition } from 'react';
+import { WriteButton } from '@/features/posts';
+import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
+import {
+  FeedList,
+  RECENT_FEEDS,
+  POPULAR_FEEDS,
+  MY_FEEDS,
+  COMMENTED_FEEDS,
+  LIKED_FEEDS,
+  BANNERS,
+  type FeedData,
+} from '@/widgets/feed';
 import { SiteHeader } from '@/widgets/header';
 import { BannerCarousel } from '@/widgets/banner';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
@@ -11,15 +20,6 @@ import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
 import PopularIcon from '@/assets/icons/recent.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
-import {
-  RECENT_FEEDS,
-  POPULAR_FEEDS,
-  MY_FEEDS,
-  COMMENTED_FEEDS,
-  LIKED_FEEDS,
-  BANNERS,
-} from '@/widgets/feed/model/mock-data';
-import { FeedData } from '@/widgets/feed/model/types';
 
 type TabType = 'recent' | 'popular' | 'my' | 'commented' | 'liked';
 
@@ -60,8 +60,13 @@ const fetchFeedData = (tab: TabType) => {
 
 export default function FeedPage() {
   const [activeTab, setActiveTab] = useState<TabType>('recent');
-  const [feeds, setFeeds] = useState<FeedData[]>(RECENT_FEEDS);
+  const [feeds, setFeeds] = useState<FeedData[]>([]);
   const [isPending, startTransition] = useTransition();
+
+  // mocking data
+  useEffect(() => {
+    setFeeds(RECENT_FEEDS);
+  }, []);
 
   const handleTabChange = (tab: TabType) => {
     if (activeTab === tab) return;

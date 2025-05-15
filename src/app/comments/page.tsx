@@ -1,14 +1,26 @@
 'use client';
 
-import React, { useState } from 'react';
-import { CommentList } from '@/widgets/comments/ui/comment-list';
-import { MOCK_COMMENTS, CURRENT_USER } from '@/entities/comment/model/mock-data';
-import type { CommentWithReplies, Author } from '@/entities/comment/model/types';
+import React, { useState, useEffect } from 'react';
+import { CommentList } from '@/widgets/comments';
+import {
+  MOCK_COMMENTS,
+  CURRENT_USER,
+  type CommentWithReplies,
+  type Author,
+} from '@/entities/comment';
 
 export default function CommentsPage() {
-  const [comments, setComments] = useState<CommentWithReplies[]>(MOCK_COMMENTS);
+  const [comments, setComments] = useState<CommentWithReplies[]>([]);
+
+  // mocking data
+  useEffect(() => {
+    setComments(MOCK_COMMENTS);
+  }, []);
 
   const handleAddComment = (content: string, isPrivate: boolean, parentId?: string) => {
+    // 하이드레이션 오류 방지
+    const currentTime = new Date().toISOString();
+
     const newComment = {
       id: `new-${Date.now()}`,
       content,
@@ -17,7 +29,7 @@ export default function CommentsPage() {
         name: CURRENT_USER.name,
         avatarUrl: CURRENT_USER.avatarUrl || '',
       } as Author,
-      createdAt: new Date().toISOString(),
+      createdAt: currentTime,
       isPrivate,
       parentId,
     };

@@ -1,17 +1,22 @@
-import { Button } from '@/shared/ui/button';
-import { DrawerClose } from '@/shared/ui/drawer';
-import { BottomSheet } from '@/shared/ui/bottom-sheet';
+import {
+  Button,
+  DrawerClose,
+  BottomSheet,
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  ToggleChip,
+  ToggleChipGroup,
+} from '@/shared/ui';
 import Image from 'next/image';
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
-import { LikeButton } from '@/features/likes/ui/like-button';
-import { ToggleChip, ToggleChipGroup } from '@/shared/ui/toggle-chip';
+import { LikeButton } from '@/features/likes';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
 import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
 import PopularIcon from '@/assets/icons/recent.svg';
-import { WriteButton } from '@/features/posts/ui/write-button';
-import { ChatExamples } from '@/widgets/chat/chat-examples';
+import { WriteButton } from '@/features/posts';
+import { ChatExamples } from '@/widgets/chat';
 
 export default function DesignGuide() {
   return (

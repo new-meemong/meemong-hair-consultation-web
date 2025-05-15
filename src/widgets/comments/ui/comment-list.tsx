@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { CommentCard } from '@/entities/comment/ui/comment-card';
-import { CommentForm } from '@/features/comments/ui/comment-form';
+import { CommentCard, type CommentWithReplies } from '@/entities/comment';
+import { CommentForm } from '@/features/comments';
 import { cn } from '@/shared/lib/utils';
-import type { CommentWithReplies } from '@/entities/comment/model/types';
 
 interface CommentListProps {
   comments: CommentWithReplies[];
