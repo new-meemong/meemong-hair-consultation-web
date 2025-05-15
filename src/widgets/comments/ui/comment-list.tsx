@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { CommentCard, type CommentWithReplies } from '@/entities/comment';
-import { CommentForm } from '@/features/comments';
+import { type CommentWithReplies } from '@/entities/comment';
+import { CommentForm, EditableCommentCard } from '@/features/comments';
 import { cn } from '@/shared/lib/utils';
 
 interface CommentListProps {
@@ -42,7 +42,7 @@ export function CommentList({
       {comments.map((comment) => (
         <div key={comment.id}>
           <div className="relative">
-            <CommentCard
+            <EditableCommentCard
               comment={comment}
               isCurrentUser={comment.author.id === currentUserId}
               onReply={handleReply}
@@ -51,7 +51,6 @@ export function CommentList({
               onReport={onReportComment}
             />
           </div>
-
           {replyingTo === comment.id && (
             <CommentForm
               onSubmit={(content, isPrivate) => handleSubmitReply(content, isPrivate, comment.id)}
@@ -64,11 +63,9 @@ export function CommentList({
             comment.replies.length > 0 &&
             comment.replies.map((reply) => (
               <div key={reply.id} className="relative">
-                <CommentCard
+                <EditableCommentCard
                   comment={reply}
                   isCurrentUser={reply.author.id === currentUserId}
-                  showReplyButton={false}
-                  isReply
                   onEdit={onEditComment}
                   onDelete={onDeleteComment}
                   onReport={onReportComment}
