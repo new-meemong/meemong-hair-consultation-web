@@ -19,9 +19,10 @@ export const FeedItem: FC<FeedItemProps> = ({
   views,
   likes,
   comments,
+  onClick,
 }) => {
   return (
-    <div className="border-b border-gray-200 p-5 w-full">
+    <div className="border-b border-gray-200 p-5 w-full cursor-pointer" onClick={onClick}>
       <div className="flex items-center gap-2 mb-1">
         <div className="flex items-center gap-2">
           <p className="typo-body-3-regular text-label-info">{author}</p>

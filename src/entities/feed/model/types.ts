@@ -1,6 +1,12 @@
+export interface Author {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+}
+
 export interface Feed {
   id: string;
-  author: string;
+  author: Author;
   title: string;
   content: string;
   imageUrl?: string;

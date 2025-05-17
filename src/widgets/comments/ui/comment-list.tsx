@@ -37,8 +37,6 @@ export function CommentList({
 
   return (
     <div className={cn(className)}>
-      <CommentForm onSubmit={(content, isPrivate) => onAddComment(content, isPrivate)} />
-
       {comments.map((comment) => (
         <div key={comment.id}>
           <div className="relative">

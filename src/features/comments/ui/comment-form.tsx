@@ -18,7 +18,7 @@ export function CommentForm({
   parentAuthorName,
   className,
 }: CommentFormProps) {
-  const [isPrivate, setIsPrivate] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(true);
 
   const handleSubmit = (message: string) => {
     if (message.trim()) {
@@ -31,15 +31,11 @@ export function CommentForm({
 
   return (
     <div className={cn('w-full', isReply && 'pl-8', className)}>
-      {isPrivate ? (
-        <PrivateChatInput
-          onSend={handleSubmit}
-          placeholder={placeholder}
-          onCheckedChange={(checked) => setIsPrivate(!!checked)}
-        />
-      ) : (
-        <ChatInput onSend={handleSubmit} placeholder={placeholder} />
-      )}
+      <PrivateChatInput
+        onSend={handleSubmit}
+        placeholder={placeholder}
+        onCheckedChange={(checked) => setIsPrivate(!!checked)}
+      />
     </div>
   );
 }

@@ -46,27 +46,29 @@ export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInpu
 
     return (
       <>
-        <div
-          ref={ref}
-          className={`flex w-full p-2.5 rounded-6 bg-alternative items-center gap-2 outline-none ${className}`}
-        >
-          <LockIcon
-            className={`size-3.5 ${isLocked ? 'fill-negative' : 'fill-label-placeholder'}`}
-          />
-          <form onSubmit={handleSubmit} className="flex w-full gap-2">
-            <Textarea
-              onChange={(e) => setMessage(e.target.value)}
-              value={message}
-              placeholder={placeholder}
-              disabled={disabled}
+        <div className="flex flex-col px-5 py-3">
+          <div
+            ref={ref}
+            className={`flex w-full p-2.5 rounded-6 bg-alternative items-center gap-2 outline-none ${className}`}
+          >
+            <LockIcon
+              className={`size-3.5 ${isLocked ? 'fill-negative' : 'fill-label-placeholder'}`}
             />
-            <Button type="submit" size="icon" variant="icon">
-              <ArrowUpIcon className="fill-white" />
-            </Button>
-          </form>
+            <form onSubmit={handleSubmit} className="flex w-full gap-2">
+              <Textarea
+                onChange={(e) => setMessage(e.target.value)}
+                value={message}
+                placeholder={placeholder}
+                disabled={disabled}
+              />
+              <Button type="submit" size="icon" variant="icon">
+                <ArrowUpIcon className="fill-white" />
+              </Button>
+            </form>
+          </div>
         </div>
-        <Separator className="w-full mt-3 mb-3 bg-border-default h-0.25" />
-        <div className="flex items-center space-x-2">
+        <Separator className="w-full bg-border-default h-0.25" />
+        <div className="flex items-center px-5 py-3">
           <Checkbox id="lock" checked={isLocked} onCheckedChange={handleCheckedChange} />
           <Label htmlFor="lock" className="typo-body-3-regular">
             모델에게만 공개할게요

@@ -70,7 +70,7 @@ export function CommentCard({
   };
 
   return (
-    <div className={cn('flex gap-3 p-5', isReply && 'bg-alternative', className)}>
+    <div className={cn('flex gap-3 py-4 break-words', isReply && 'bg-alternative', className)}>
       {isReply && <ReplyIcon className="size-4.5 fill-label-info self-start flex-shrink-0" />}
 
       <div className="flex flex-col flex-1 gap-3">

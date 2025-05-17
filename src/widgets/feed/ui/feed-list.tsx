@@ -1,6 +1,7 @@
 'use client';
 
 import { FC } from 'react';
+import { useRouter } from 'next/navigation';
 import { Feed } from '../../../entities/feed/model/types';
 import { FeedItem } from './feed-item';
 
@@ -10,6 +11,12 @@ interface FeedListProps {
 }
 
 export const FeedList: FC<FeedListProps> = ({ feeds, isLoading = false }) => {
+  const router = useRouter();
+
+  const handleFeedClick = (feedId: string) => {
+    router.push(`/feed/${feedId}`);
+  };
+
   if (feeds.length === 0) {
     return (
       <div className="w-full flex justify-center py-12">
@@ -34,6 +41,7 @@ export const FeedList: FC<FeedListProps> = ({ feeds, isLoading = false }) => {
           views={feed.views}
           likes={feed.likes}
           comments={feed.comments}
+          onClick={() => handleFeedClick(feed.id)}
         />
       ))}
     </div>

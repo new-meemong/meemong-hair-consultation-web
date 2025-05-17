@@ -83,7 +83,7 @@ export default function FeedPage() {
   return (
     <div className="min-w-[375px] w-full mx-auto pb-20">
       {/* 헤더 */}
-      <SiteHeader />
+      <SiteHeader showBellButton />
 
       {/* 배너 캐러셀 */}
       <div className="my-4">
