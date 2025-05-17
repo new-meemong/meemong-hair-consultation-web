@@ -1,22 +1,21 @@
 'use client';
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import BellIcon from '@/assets/icons/bell.svg';
 import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
 
 interface SiteHeaderProps {
   title?: string;
   showBackButton?: boolean;
-  showBellButton?: boolean;
   onBackClick?: () => void;
+  rightComponent?: ReactNode;
 }
 
 export const SiteHeader = ({
   title = '헤어 상담',
   showBackButton = false,
-  showBellButton = false,
   onBackClick,
+  rightComponent,
 }: SiteHeaderProps) => {
   const router = useRouter();
 
@@ -39,23 +38,13 @@ export const SiteHeader = ({
             </button>
           </div>
           <h1 className="typo-title-3-semibold flex-1 text-center">{title}</h1>
-          <div className="flex-1 flex justify-end">
-            {showBellButton && (
-              <button aria-label="알림">
-                <BellIcon />
-              </button>
-            )}
-          </div>
+          <div className="flex-1 flex justify-end">{rightComponent}</div>
         </>
       ) : (
         /* 메인 페이지 헤더 디자인 (좌측 정렬 제목) */
         <>
           <h1 className="typo-title-2-semibold flex-1">{title}</h1>
-          {showBellButton && (
-            <button aria-label="알림">
-              <BellIcon />
-            </button>
-          )}
+          <div className="flex-1 flex justify-end">{rightComponent}</div>
         </>
       )}
     </header>
