@@ -25,7 +25,7 @@ export const FeedItem: FC<FeedItemProps> = ({
     <div className="border-b border-gray-200 p-5 w-full cursor-pointer" onClick={onClick}>
       <div className="flex items-center gap-2 mb-1">
         <div className="flex items-center gap-2">
-          <p className="typo-body-3-regular text-label-info">{author}</p>
+          <p className="typo-body-3-regular text-label-info">{author.name}</p>
           <div className="w-1 h-1 bg-label-placeholder rounded-full" />
           <p className="typo-body-3-regular text-label-info">{createdAt}</p>
         </div>
