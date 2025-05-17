@@ -3,27 +3,17 @@
 import React, { useState, useEffect, useTransition } from 'react';
 import { WriteButton } from '@/features/posts';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
-import {
-  FeedList,
-  RECENT_FEEDS,
-  POPULAR_FEEDS,
-  MY_FEEDS,
-  COMMENTED_FEEDS,
-  LIKED_FEEDS,
-  BANNERS,
-  type Feed,
-} from '@/widgets/feed';
-import { SiteHeader } from '@/widgets/header';
+import { FeedList } from '@/widgets/feed';
+import { SiteHeader, BellButton } from '@/widgets/header';
 import { BannerCarousel } from '@/widgets/banner';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
 import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
 import PopularIcon from '@/assets/icons/recent.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
-import BellIcon from '@/assets/icons/bell.svg';
 import { useRouter } from 'next/navigation';
-
-type TabType = 'recent' | 'popular' | 'my' | 'commented' | 'liked';
+import { fetchFeedsByTab, type TabType } from '@/features/feed';
+import { BANNERS, type Feed } from '@/entities/feed';
 
 const TAB_LABELS: Record<TabType, string> = {
   recent: '최신글',
@@ -33,42 +23,27 @@ const TAB_LABELS: Record<TabType, string> = {
   liked: '좋아한 글',
 };
 
-const fetchFeedData = (tab: TabType) => {
-  // TODO : 추후 실제 API로 변경해야함
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      switch (tab) {
-        case 'recent':
-          resolve(RECENT_FEEDS);
-          break;
-        case 'popular':
-          resolve(POPULAR_FEEDS);
-          break;
-        case 'my':
-          resolve(MY_FEEDS);
-          break;
-        case 'commented':
-          resolve(COMMENTED_FEEDS);
-          break;
-        case 'liked':
-          resolve(LIKED_FEEDS);
-          break;
-        default:
-          resolve(RECENT_FEEDS);
-      }
-    }, 500);
-  });
-};
-
 export default function FeedPage() {
   const [activeTab, setActiveTab] = useState<TabType>('recent');
   const [feeds, setFeeds] = useState<Feed[]>([]);
   const [isPending, startTransition] = useTransition();
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const router = useRouter();
 
-  // mocking data
+  // 초기 데이터 로드
   useEffect(() => {
-    setFeeds(RECENT_FEEDS);
+    const loadInitialData = async () => {
+      try {
+        const data = await fetchFeedsByTab('recent');
+        setFeeds(data);
+      } catch (error) {
+        console.error('피드 데이터 로드 실패:', error);
+      } finally {
+        setIsInitialLoading(false);
+      }
+    };
+
+    loadInitialData();
   }, []);
 
   const handleTabChange = (tab: TabType) => {
@@ -78,7 +53,7 @@ export default function FeedPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     startTransition(async () => {
-      const data = await fetchFeedData(tab);
+      const data = await fetchFeedsByTab(tab);
       setFeeds(data as Feed[]);
     });
   };
@@ -89,17 +64,10 @@ export default function FeedPage() {
     console.log('알림 버튼 클릭');
   };
 
-  // 알림 버튼 컴포넌트
-  const BellButton = () => (
-    <button onClick={handleBellClick} aria-label="알림">
-      <BellIcon />
-    </button>
-  );
-
   return (
     <div className="min-w-[375px] w-full mx-auto pb-20">
       {/* 헤더 */}
-      <SiteHeader rightComponent={<BellButton />} />
+      <SiteHeader rightComponent={<BellButton onClick={handleBellClick} />} />
 
       {/* 배너 캐러셀 */}
       <div className="my-4">
@@ -151,7 +119,7 @@ export default function FeedPage() {
 
       {/* 피드 리스트 */}
       <div className="relative">
-        <FeedList feeds={feeds} isLoading={isPending} />
+        <FeedList feeds={feeds} isLoading={isPending || isInitialLoading} />
 
         {isPending && (
           <div className="absolute top-0 left-0 right-0 h-1 bg-gray-100 overflow-hidden">

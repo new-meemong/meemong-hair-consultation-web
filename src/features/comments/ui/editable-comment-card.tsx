@@ -1,5 +1,5 @@
-import { CommentEditForm } from '@/features/comments';
 import { CommentCard, type Comment } from '@/entities/comment';
+import { CommentEditForm } from '../ui/comment-edit-form';
 
 interface EditableCommentCardProps {
   comment: Comment;

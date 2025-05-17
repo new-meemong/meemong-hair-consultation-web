@@ -2,13 +2,7 @@
 
 import React from 'react';
 import { Carousel, CarouselContent, CarouselItem } from '@/shared/ui/carousel';
-
-interface Banner {
-  id: string;
-  title: string;
-  subtitle: string;
-  bgColor: string;
-}
+import { type Banner } from '@/entities/feed';
 
 interface BannerCarouselProps {
   banners: Banner[];

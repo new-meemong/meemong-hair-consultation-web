@@ -2,7 +2,7 @@
 
 import { FC } from 'react';
 import { useRouter } from 'next/navigation';
-import { Feed } from '../../../entities/feed/model/types';
+import { type Feed } from '@/entities/feed';
 import { FeedItem } from './feed-item';
 
 interface FeedListProps {

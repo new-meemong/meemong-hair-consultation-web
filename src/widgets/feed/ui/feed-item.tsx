@@ -5,7 +5,8 @@ import Image from 'next/image';
 import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
-import { Feed } from '@/entities/feed';
+import { type Feed } from '@/entities/feed';
+
 interface FeedItemProps extends Feed {
   onClick?: () => void;
 }

@@ -5,14 +5,14 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { SiteHeader } from '@/widgets/header';
 import { CommentList } from '@/widgets/comments';
-import { ImageViewer, Separator } from '@/shared/ui';
-import { RECENT_FEEDS, POPULAR_FEEDS, MY_FEEDS } from '@/entities/feed';
+import { ImageViewer, Separator, Avatar, AvatarImage, AvatarFallback } from '@/shared/ui';
 import { Feed } from '@/entities/feed/model/types';
-import { CommentWithReplies, MOCK_COMMENTS, CURRENT_USER } from '@/entities/comment';
+import { CommentWithReplies, CURRENT_USER } from '@/entities/comment';
 import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { CommentForm } from '@/features/comments';
+import { fetchComments, createComment, updateComment, deleteComment } from '@/features/comments';
+import { fetchFeedDetail } from '@/features/feed';
 import { LikeButton } from '@/features/likes';
 
 export default function FeedDetailPage() {
@@ -22,89 +22,115 @@ export default function FeedDetailPage() {
   const [comments, setComments] = useState<CommentWithReplies[]>([]);
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 피드 데이터 불러오기 (임시로 모든 피드 데이터를 합쳐서 ID로 찾음)
+  // 피드 및 댓글 데이터 불러오기
   useEffect(() => {
-    const allFeeds = [...RECENT_FEEDS, ...POPULAR_FEEDS, ...MY_FEEDS].filter(
-      (feed, index, self) => self.findIndex((f) => f.id === feed.id) === index,
-    );
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        // 피드 상세 정보 조회
+        const feedData = await fetchFeedDetail(feedId);
+        setFeed(feedData);
 
-    const foundFeed = allFeeds.find((item) => item.id === feedId);
-    if (foundFeed) {
-      setFeed(foundFeed);
-    }
+        // 댓글 목록 조회
+        const commentData = await fetchComments(feedId);
+        setComments(commentData);
+      } catch (error) {
+        console.error('데이터 로드 실패:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // 댓글 데이터 불러오기
-    setComments(MOCK_COMMENTS);
+    loadData();
   }, [feedId]);
 
   // 댓글 추가
-  const handleAddComment = (content: string, isPrivate: boolean, parentId?: string) => {
-    const newComment = {
-      id: `new-${Date.now()}`,
-      content,
-      author: {
-        id: CURRENT_USER.id,
-        name: CURRENT_USER.name,
-        avatarUrl: CURRENT_USER.avatarUrl || '',
-      },
-      createdAt: new Date().toISOString(),
-      isPrivate,
-      parentId,
-    };
+  const handleAddComment = async (content: string, isPrivate: boolean, parentId?: string) => {
+    try {
+      // 댓글 생성 API 호출
+      const newComment = await createComment({
+        content,
+        isPrivate,
+        parentId,
+        feedId,
+      });
 
-    if (parentId) {
-      // 대댓글 추가
-      setComments(
-        comments.map((comment) => {
-          if (comment.id === parentId) {
-            return {
-              ...comment,
-              replies: [...comment.replies, newComment],
-            };
-          }
-          return comment;
-        }),
-      );
-    } else {
-      // 새 댓글 추가
-      setComments([...comments, { ...newComment, replies: [] } as CommentWithReplies]);
+      // 응답 받은 댓글을 상태에 추가
+      if (parentId) {
+        // 대댓글 추가
+        setComments((prev) =>
+          prev.map((comment) => {
+            if (comment.id === parentId) {
+              return {
+                ...comment,
+                replies: [...comment.replies, newComment],
+              };
+            }
+            return comment;
+          }),
+        );
+      } else {
+        // 새 댓글 추가
+        setComments((prev) => [...prev, { ...newComment, replies: [] } as CommentWithReplies]);
+      }
+    } catch (error) {
+      console.error('댓글 추가 실패:', error);
     }
   };
 
   // 댓글 수정
-  const handleEditComment = (commentId: string, newContent: string) => {
-    setComments(
-      comments.map((comment) => {
-        // 메인 댓글 수정
-        if (comment.id === commentId) {
-          return { ...comment, content: newContent };
-        }
+  const handleEditComment = async (commentId: string, newContent: string) => {
+    try {
+      // 댓글 수정 API 호출
+      const updatedComment = await updateComment({ commentId, content: newContent });
 
-        // 대댓글 수정
-        if (comment.replies.some((reply) => reply.id === commentId)) {
-          return {
-            ...comment,
-            replies: comment.replies.map((reply) =>
-              reply.id === commentId ? { ...reply, content: newContent } : reply,
-            ),
-          };
-        }
+      // 수정된 댓글 반영
+      setComments((prev) => {
+        return prev.map((comment) => {
+          // 메인 댓글 수정
+          if (comment.id === commentId) {
+            return { ...comment, content: updatedComment.content };
+          }
 
-        return comment;
-      }),
-    );
+          // 대댓글 수정
+          if (comment.replies.some((reply) => reply.id === commentId)) {
+            return {
+              ...comment,
+              replies: comment.replies.map((reply) =>
+                reply.id === commentId ? { ...reply, content: updatedComment.content } : reply,
+              ),
+            };
+          }
+
+          return comment;
+        });
+      });
+    } catch (error) {
+      console.error('댓글 수정 실패:', error);
+    }
   };
 
   // 댓글 삭제
-  const handleDeleteComment = (commentId: string) => {
-    const filteredComments = comments.filter((comment) => comment.id !== commentId);
-    const updatedComments = filteredComments.map((comment) => ({
-      ...comment,
-      replies: comment.replies.filter((reply) => reply.id !== commentId),
-    }));
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      // 댓글 삭제 API 호출
+      const result = await deleteComment(commentId);
 
-    setComments(updatedComments);
+      if (result.success) {
+        // 삭제 성공 시 댓글 상태 업데이트
+        const filteredComments = comments.filter((comment) => comment.id !== commentId);
+        const updatedComments = filteredComments.map((comment) => ({
+          ...comment,
+          replies: comment.replies.filter((reply) => reply.id !== commentId),
+        }));
+
+        setComments(updatedComments);
+      }
+    } catch (error) {
+      console.error('댓글 삭제 실패:', error);
+    }
   };
 
   // 이미지 클릭 핸들러
@@ -113,7 +139,7 @@ export default function FeedDetailPage() {
     setImageViewerOpen(true);
   };
 
-  if (!feed) {
+  if (isLoading || !feed) {
     return <div className="min-w-[375px] w-full mx-auto pb-20">로딩 중...</div>;
   }
 
