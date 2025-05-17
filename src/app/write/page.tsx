@@ -91,7 +91,7 @@ export default function WritePage() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="내 헤어 고민을 자유롭게 작성해보세요"
-            className="w-full flex-1 typo-body-1-long-regular resize-none placeholder:text-label-placeholder"
+            className="w-full flex-1 typo-body-1-long-regular resize-none placeholder:text-label-placeholder overflow-y-auto"
           />
         </div>
 
