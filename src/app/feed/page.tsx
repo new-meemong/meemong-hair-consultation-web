@@ -11,7 +11,7 @@ import {
   COMMENTED_FEEDS,
   LIKED_FEEDS,
   BANNERS,
-  type FeedData,
+  type Feed,
 } from '@/widgets/feed';
 import { SiteHeader } from '@/widgets/header';
 import { BannerCarousel } from '@/widgets/banner';
@@ -20,6 +20,8 @@ import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
 import PopularIcon from '@/assets/icons/recent.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
+import BellIcon from '@/assets/icons/bell.svg';
+import { useRouter } from 'next/navigation';
 
 type TabType = 'recent' | 'popular' | 'my' | 'commented' | 'liked';
 
@@ -60,8 +62,9 @@ const fetchFeedData = (tab: TabType) => {
 
 export default function FeedPage() {
   const [activeTab, setActiveTab] = useState<TabType>('recent');
-  const [feeds, setFeeds] = useState<FeedData[]>([]);
+  const [feeds, setFeeds] = useState<Feed[]>([]);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   // mocking data
   useEffect(() => {
@@ -76,14 +79,27 @@ export default function FeedPage() {
 
     startTransition(async () => {
       const data = await fetchFeedData(tab);
-      setFeeds(data as FeedData[]);
+      setFeeds(data as Feed[]);
     });
   };
+
+  // 알림 버튼 핸들러
+  const handleBellClick = () => {
+    // 알림 페이지로 이동 혹은 알림 팝업 표시 로직
+    console.log('알림 버튼 클릭');
+  };
+
+  // 알림 버튼 컴포넌트
+  const BellButton = () => (
+    <button onClick={handleBellClick} aria-label="알림">
+      <BellIcon />
+    </button>
+  );
 
   return (
     <div className="min-w-[375px] w-full mx-auto pb-20">
       {/* 헤더 */}
-      <SiteHeader showBellButton />
+      <SiteHeader rightComponent={<BellButton />} />
 
       {/* 배너 캐러셀 */}
       <div className="my-4">
@@ -146,7 +162,7 @@ export default function FeedPage() {
 
       {/* 글쓰기 버튼 */}
       <div className="fixed bottom-10 right-0 left-0 mx-auto w-max">
-        <WriteButton />
+        <WriteButton onClick={() => router.push('/write')} />
       </div>
     </div>
   );

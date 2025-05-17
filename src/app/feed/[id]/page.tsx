@@ -138,8 +138,8 @@ export default function FeedDetailPage() {
               <Image
                 src="/profile.svg"
                 alt="프로필"
-                width={35}
-                height={35}
+                width={36}
+                height={36}
                 className="object-cover"
               />
             </AvatarFallback>
@@ -158,7 +158,9 @@ export default function FeedDetailPage() {
           {feedImages.map((image, index) => (
             <div
               key={index}
-              className="relative min-w-35 h-35 rounded-6 overflow-hidden cursor-pointer"
+              className={`relative min-w-35 h-35 rounded-6 overflow-hidden cursor-pointer ${
+                index === feedImages.length - 1 ? 'mr-5' : ''
+              }`}
               onClick={() => handleImageClick(index)}
             >
               <Image src={image} alt={`피드 이미지 ${index + 1}`} fill className="object-cover" />

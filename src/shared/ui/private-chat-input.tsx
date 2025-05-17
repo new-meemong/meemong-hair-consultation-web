@@ -46,7 +46,7 @@ export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInpu
 
     return (
       <>
-        <div className="flex flex-col px-5 py-3">
+        <div className="flex flex-col px-5 py-3 shrink-0">
           <div
             ref={ref}
             className={`flex w-full p-2.5 rounded-6 bg-alternative items-center gap-2 outline-none ${className}`}
@@ -61,7 +61,7 @@ export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInpu
                 placeholder={placeholder}
                 disabled={disabled}
               />
-              <Button type="submit" size="icon" variant="icon">
+              <Button type="submit" size="icon" variant="icon" className="px-1">
                 <ArrowUpIcon className="fill-white" />
               </Button>
             </form>
