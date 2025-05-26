@@ -13,6 +13,9 @@ export type TabType = 'recent' | 'popular' | 'my' | 'commented' | 'liked';
  */
 export const fetchFeedDetail = (feedId: string): Promise<Feed | null> => {
   return new Promise((resolve) => {
+    // 개발용 지연 시간 (스켈레톤 확인용)
+    const delay = process.env.NODE_ENV === 'development' ? 2000 : 300;
+
     setTimeout(() => {
       // 모든 피드 데이터를 합쳐서 중복을 제거
       const allFeeds = [...RECENT_FEEDS, ...POPULAR_FEEDS, ...MY_FEEDS].filter(
@@ -22,7 +25,7 @@ export const fetchFeedDetail = (feedId: string): Promise<Feed | null> => {
       // ID로 피드 찾기
       const foundFeed = allFeeds.find((item) => item.id === feedId);
       resolve(foundFeed || null);
-    }, 300);
+    }, delay);
   });
 };
 
@@ -33,6 +36,9 @@ export const fetchFeedDetail = (feedId: string): Promise<Feed | null> => {
  */
 export const fetchFeedsByTab = (tab: TabType): Promise<Feed[]> => {
   return new Promise((resolve) => {
+    // 개발용 지연 시간 (스켈레톤 확인용)
+    const delay = process.env.NODE_ENV === 'development' ? 2000 : 300;
+
     setTimeout(() => {
       switch (tab) {
         case 'recent':
@@ -53,6 +59,6 @@ export const fetchFeedsByTab = (tab: TabType): Promise<Feed[]> => {
         default:
           resolve(RECENT_FEEDS);
       }
-    }, 300);
+    }, delay);
   });
 };
