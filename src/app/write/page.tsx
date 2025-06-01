@@ -1,68 +1,64 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useForm } from '@tanstack/react-form';
+import { z } from 'zod';
 import { SiteHeader } from '@/widgets/header';
 import { Textarea, Input, Checkbox, Label, Separator, Button } from '@/shared/ui';
 import { CheckedState } from '@radix-ui/react-checkbox';
 import { XIcon } from 'lucide-react';
 import GalleryIcon from '@/assets/icons/gallery.svg';
 
+const formSchema = z.object({
+  title: z.string().min(1, '제목을 입력해주세요').max(100, '제목은 100자 이하로 입력해주세요'),
+  content: z.string().min(1, '내용을 입력해주세요').max(1000, '내용은 1000자 이하로 입력해주세요'),
+  isPrivate: z.boolean(),
+  images: z.array(z.string()).max(10, '이미지는 최대 10개까지 업로드할 수 있습니다'),
+});
+
+type FormData = z.infer<typeof formSchema>;
+
 export default function WritePage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [isPrivate, setIsPrivate] = useState<CheckedState>(false);
-  const [images, setImages] = useState<string[]>([]);
 
-  // 제출 핸들러
-  const handleSubmit = (e?: React.FormEvent) => {
-    if (e) {
-      e.preventDefault();
-    }
+  const form = useForm({
+    defaultValues: {
+      title: '',
+      content: '',
+      isPrivate: false,
+      images: [],
+    } as FormData,
+    validators: {
+      onChange: formSchema,
+    },
+    onSubmit: async ({ value }) => {
+      // TODO : 게시글 제출 로직 추가
+      console.log(value);
+    },
+  });
 
-    // 내용이 비어있으면 제출하지 않음
-    if (!title.trim() || !content.trim()) {
-      return;
-    }
-
-    // 여기에 게시글 제출 로직 추가
-    console.log({ title, content, isPrivate, images });
-    router.push('/feed'); // 제출 후 피드 페이지로 이동
-  };
-
-  // 뒤로가기 핸들러
-  const handleBackClick = () => {
-    router.back();
-  };
-
-  // 이미지 업로드 핸들러
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const newImageUrls = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
-      setImages((prev) => [...prev, ...newImageUrls]);
-    }
-  };
-
-  // 이미지 삭제 핸들러
-  const handleRemoveImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  // 등록 버튼 컴포넌트
   const SubmitButton = () => {
-    const isValid = title.trim() && content.trim();
-
     return (
-      <button
-        onClick={handleSubmit}
-        disabled={!isValid}
-        className={`typo-body-2-semibold ${isValid ? 'text-positive' : 'text-label-placeholder'}`}
-      >
-        등록
-      </button>
+      <form.Subscribe selector={(state) => [state.isSubmitting, state.values]}>
+        {([isSubmitting, values]) => {
+          // formSchema를 사용하여 검증 상태 확인
+          const formValues = values as FormData;
+          const isValid = formSchema.safeParse(formValues).success && !isSubmitting;
+
+          return (
+            <button
+              onClick={() => form.handleSubmit()}
+              disabled={!isValid}
+              className={`typo-body-2-semibold ${isValid ? 'text-positive' : 'text-label-placeholder'}`}
+            >
+              {isSubmitting ? '등록 중...' : '등록'}
+            </button>
+          );
+        }}
+      </form.Subscribe>
     );
   };
 
@@ -71,77 +67,139 @@ export default function WritePage() {
       <SiteHeader
         title="게시글 작성"
         showBackButton
-        onBackClick={handleBackClick}
+        onBackClick={() => router.back()}
         rightComponent={<SubmitButton />}
       />
 
-      <form onSubmit={handleSubmit} className="flex flex-col flex-1">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="flex flex-col flex-1"
+      >
         <div className="px-5 pt-6">
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="제목을 입력하세요"
-            className="w-full px-0 py-3 typo-title-3-semibold text-label-default placeholder:text-label-placeholder"
-          />
+          <form.Field name="title">
+            {(field) => (
+              <div>
+                <Input
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  placeholder="제목을 입력하세요"
+                  className="w-full px-0 py-3 typo-title-3-semibold text-label-default placeholder:text-label-placeholder"
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-negative typo-body-3-regular mt-1">
+                    {String(field.state.meta.errors[0]?.message)}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
           <Separator className="w-full bg-border-default h-0.25" />
         </div>
 
         <div className="px-5 pt-5 flex-1 flex flex-col">
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="내 헤어 고민을 자유롭게 작성해보세요"
-            className="w-full flex-1 typo-body-1-long-regular resize-none placeholder:text-label-placeholder overflow-y-auto"
-          />
+          <form.Field name="content">
+            {(field) => (
+              <div className="flex-1 flex flex-col">
+                <Textarea
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  placeholder="내 헤어 고민을 자유롭게 작성해보세요"
+                  className="w-full flex-1 typo-body-1-long-regular resize-none placeholder:text-label-placeholder overflow-y-auto"
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-negative typo-body-3-regular mt-1">
+                    {String(field.state.meta.errors[0]?.message)}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
         </div>
 
-        {images.length > 0 && (
-          <>
-            <Separator className="w-full bg-border-default h-0.25" />
-            <div className="pl-5 py-4">
-              <div className="flex gap-2 overflow-x-auto">
-                {images.map((src, index) => (
-                  <div key={index} className="relative w-25 h-25 flex-shrink-0">
-                    <Image
-                      src={src}
-                      alt={`업로드 이미지 ${index + 1}`}
-                      fill
-                      className="object-cover rounded-md"
-                    />
-                    <Button
-                      variant="icon"
-                      size="icon"
-                      className="absolute top-1 right-1"
-                      onClick={() => handleRemoveImage(index)}
-                    >
-                      <XIcon />
-                    </Button>
+        <form.Field name="images">
+          {(field) => (
+            <>
+              {field.state.value.length > 0 && (
+                <>
+                  <Separator className="w-full bg-border-default h-0.25" />
+                  <div className="pl-5 py-4">
+                    <div className="flex gap-2 overflow-x-auto">
+                      {field.state.value.map((src, index) => (
+                        <div key={index} className="relative w-25 h-25 flex-shrink-0">
+                          <Image
+                            src={src}
+                            alt={`업로드 이미지 ${index + 1}`}
+                            fill
+                            className="object-cover rounded-md"
+                          />
+                          <Button
+                            variant="icon"
+                            size="icon"
+                            className="absolute top-1 right-1"
+                            onClick={() => {
+                              const newImages = field.state.value.filter((_, i) => i !== index);
+                              field.handleChange(newImages);
+                            }}
+                          >
+                            <XIcon />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                    {field.state.meta.errors.length > 0 && (
+                      <p className="text-negative typo-body-3-regular mt-1">
+                        {String(field.state.meta.errors[0]?.message)}
+                      </p>
+                    )}
                   </div>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
+                </>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                ref={fileInputRef}
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    const newImageUrls = Array.from(e.target.files).map((file) =>
+                      URL.createObjectURL(file),
+                    );
+                    const updatedImages = [...field.state.value, ...newImageUrls];
+                    field.handleChange(updatedImages);
+                  }
+                }}
+              />
+            </>
+          )}
+        </form.Field>
 
         <div className="mt-auto">
           <Separator className="w-full h-0.25 bg-border-default" />
 
           <div className="flex items-center px-5 py-3">
             <div className="flex flex-1 items-center">
-              <Checkbox id="private" checked={isPrivate} onCheckedChange={setIsPrivate} />
-              <Label htmlFor="private" className="ml-2 typo-body-3-regular">
-                디자이너에게만 공개할게요
-              </Label>
+              <form.Field name="isPrivate">
+                {(field) => (
+                  <>
+                    <Checkbox
+                      id="private"
+                      checked={field.state.value as CheckedState}
+                      onCheckedChange={(checked) => field.handleChange(!!checked)}
+                    />
+                    <Label htmlFor="private" className="ml-2 typo-body-3-regular">
+                      디자이너에게만 공개할게요
+                    </Label>
+                  </>
+                )}
+              </form.Field>
             </div>
-
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleImageUpload}
-            />
 
             <Button
               type="button"
