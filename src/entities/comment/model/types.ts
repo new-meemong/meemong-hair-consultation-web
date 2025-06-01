@@ -8,7 +8,7 @@ export interface User {
 export interface Author {
   id: string;
   name: string;
-  avatarUrl: string;
+  avatarUrl?: string;
 }
 
 export interface Comment {
