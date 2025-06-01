@@ -1,28 +1,12 @@
 import { Suspense, ReactNode } from 'react';
 import { Skeleton } from '@/shared/ui/skeleton';
-
-// 기본 로딩 스피너
-export function LoadingSpinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  const sizeClasses = {
-    sm: 'h-4 w-4',
-    md: 'h-8 w-8',
-    lg: 'h-12 w-12',
-  };
-
-  return (
-    <div className="flex justify-center items-center">
-      <div
-        className={`animate-spin rounded-full border-b-2 border-gray-900 ${sizeClasses[size]}`}
-      />
-    </div>
-  );
-}
+import { Loader } from '@/shared';
 
 export function PageLoading() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="flex flex-col items-center space-y-4">
-        <LoadingSpinner size="lg" />
+        <Loader size="lg" />
         <p className="text-gray-600">페이지를 불러오는 중...</p>
       </div>
     </div>
@@ -88,7 +72,7 @@ export function SuspenseWrapper({ children, fallback, type = 'spinner' }: Suspen
       case 'comment':
         return <CommentLoading />;
       default:
-        return <LoadingSpinner />;
+        return <Loader />;
     }
   };
 

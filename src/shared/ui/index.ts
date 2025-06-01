@@ -5,6 +5,7 @@ export { Toggle } from './toggle';
 export { DropdownMenu } from './dropdown-menu';
 export { Input } from './input';
 export { Label } from './label';
+export { Loader } from './loader';
 export { MoreOptionsMenu } from './more-options-menu';
 export { PrivateChatInput } from './private-chat-input';
 export { Separator } from './separator';
