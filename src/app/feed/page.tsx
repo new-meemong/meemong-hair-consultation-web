@@ -30,7 +30,6 @@ export default function FeedPage() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const router = useRouter();
 
-  // 초기 데이터 로드
   useEffect(() => {
     const loadInitialData = async () => {
       try {
@@ -58,9 +57,7 @@ export default function FeedPage() {
     });
   };
 
-  // 알림 버튼 핸들러
   const handleBellClick = () => {
-    // 알림 페이지로 이동 혹은 알림 팝업 표시 로직
     console.log('알림 버튼 클릭');
   };
 
@@ -130,7 +127,7 @@ export default function FeedPage() {
 
       {/* 글쓰기 버튼 */}
       <div className="fixed bottom-10 right-0 left-0 mx-auto w-max">
-        <WriteButton onClick={() => router.push('/write')} />
+        <WriteButton onClick={() => router.push('/posts/create')} />
       </div>
     </div>
   );

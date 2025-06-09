@@ -11,16 +11,17 @@ import { CheckedState } from '@radix-ui/react-checkbox';
 import { XIcon } from 'lucide-react';
 import GalleryIcon from '@/assets/icons/gallery.svg';
 
+// TODO : 폼 별도 파일로 분리
 const formSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요').max(100, '제목은 100자 이하로 입력해주세요'),
   content: z.string().min(1, '내용을 입력해주세요').max(1000, '내용은 1000자 이하로 입력해주세요'),
-  isPrivate: z.boolean(),
+  isPhotoVisibleToDesigner: z.boolean(),
   images: z.array(z.string()).max(10, '이미지는 최대 10개까지 업로드할 수 있습니다'),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-export default function WritePage() {
+export default function CreatePostPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -28,15 +29,17 @@ export default function WritePage() {
     defaultValues: {
       title: '',
       content: '',
-      isPrivate: false,
+      isPhotoVisibleToDesigner: true,
       images: [],
     } as FormData,
     validators: {
       onChange: formSchema,
     },
     onSubmit: async ({ value }) => {
-      // TODO : 게시글 제출 로직 추가
-      console.log(value);
+      // TODO: 헤어 상담 게시글 제출 로직 추가
+      console.log('게시글 제출:', value);
+      // 성공 시 posts 목록으로 이동
+      // router.push('/posts');
     },
   });
 
@@ -44,7 +47,6 @@ export default function WritePage() {
     return (
       <form.Subscribe selector={(state) => [state.isSubmitting, state.values]}>
         {([isSubmitting, values]) => {
-          // formSchema를 사용하여 검증 상태 확인
           const formValues = values as FormData;
           const isValid = formSchema.safeParse(formValues).success && !isSubmitting;
 
@@ -185,15 +187,15 @@ export default function WritePage() {
 
           <div className="flex items-center px-5 py-3">
             <div className="flex flex-1 items-center">
-              <form.Field name="isPrivate">
+              <form.Field name="isPhotoVisibleToDesigner">
                 {(field) => (
                   <>
                     <Checkbox
-                      id="private"
+                      id="photo-visible"
                       checked={field.state.value as CheckedState}
                       onCheckedChange={(checked) => field.handleChange(!!checked)}
                     />
-                    <Label htmlFor="private" className="ml-2 typo-body-3-regular">
+                    <Label htmlFor="photo-visible" className="ml-2 typo-body-3-regular">
                       디자이너에게만 공개할게요
                     </Label>
                   </>
