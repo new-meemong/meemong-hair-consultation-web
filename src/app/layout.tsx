@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${pretendard.variable} antialiased`}>
+      <body className={`${pretendard.variable} antialiased max-w-2xl mx-auto`}>
         <QueryProvider>
           <Suspense fallback={<PageLoading />}>{children}</Suspense>
         </QueryProvider>

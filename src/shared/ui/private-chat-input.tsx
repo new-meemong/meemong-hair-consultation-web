@@ -68,7 +68,7 @@ export const PrivateChatInput = React.forwardRef<HTMLDivElement, PrivateChatInpu
           </div>
         </div>
         <Separator className="w-full bg-border-default h-0.25" />
-        <div className="flex items-center px-5 py-3">
+        <div className="flex items-center px-5 py-3 gap-1">
           <Checkbox id="lock" checked={isLocked} onCheckedChange={handleCheckedChange} />
           <Label htmlFor="lock" className="typo-body-3-regular">
             모델에게만 공개할게요
