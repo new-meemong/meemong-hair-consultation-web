@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { Suspense } from 'react';
 import { PageLoading } from '@/shared/ui/loading';
+import { QueryProvider } from '@/shared/ui/providers/query-provider';
 import '../styles/globals.css';
 
 const pretendard = localFont({
@@ -24,7 +25,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${pretendard.variable} antialiased`}>
-        <Suspense fallback={<PageLoading />}>{children}</Suspense>
+        <QueryProvider>
+          <Suspense fallback={<PageLoading />}>{children}</Suspense>
+        </QueryProvider>
       </body>
     </html>
   );
