@@ -13,7 +13,7 @@ export function PageLoading() {
   );
 }
 
-export function FeedLoading() {
+export function PostLoading() {
   return (
     <div className="py-5 px-5 space-y-6">
       {Array.from({ length: 3 }).map((_, i) => (
@@ -57,7 +57,7 @@ export function CommentLoading() {
 interface SuspenseWrapperProps {
   children: ReactNode;
   fallback?: ReactNode;
-  type?: 'page' | 'feed' | 'comment' | 'spinner';
+  type?: 'page' | 'post' | 'comment' | 'spinner';
 }
 
 export function SuspenseWrapper({ children, fallback, type = 'spinner' }: SuspenseWrapperProps) {
@@ -67,8 +67,8 @@ export function SuspenseWrapper({ children, fallback, type = 'spinner' }: Suspen
     switch (type) {
       case 'page':
         return <PageLoading />;
-      case 'feed':
-        return <FeedLoading />;
+      case 'post':
+        return <PostLoading />;
       case 'comment':
         return <CommentLoading />;
       default:

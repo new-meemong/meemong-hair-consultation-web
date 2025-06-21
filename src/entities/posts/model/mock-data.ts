@@ -1,7 +1,7 @@
-import { Banner, Feed } from './types';
+import { Banner, Post } from './types';
 
 // 예시 데이터
-export const MOCK_FEEDS: Feed[] = [
+export const MOCK_POSTS: Post[] = [
   {
     id: '1',
     author: {
@@ -143,7 +143,7 @@ export const MOCK_FEEDS: Feed[] = [
 ];
 
 // 최신글 데이터
-export const RECENT_FEEDS: Feed[] = [
+export const RECENT_POSTS: Post[] = [
   {
     id: '1',
     author: {
@@ -193,7 +193,7 @@ export const RECENT_FEEDS: Feed[] = [
 ];
 
 // 인기글 데이터
-export const POPULAR_FEEDS: Feed[] = [
+export const POPULAR_POSTS: Post[] = [
   {
     id: '4',
     author: {
@@ -242,7 +242,7 @@ export const POPULAR_FEEDS: Feed[] = [
 ];
 
 // 내 상담글 데이터
-export const MY_FEEDS: Feed[] = [
+export const MY_POSTS: Post[] = [
   {
     id: '7',
     author: {
@@ -275,7 +275,7 @@ export const MY_FEEDS: Feed[] = [
 ];
 
 // 댓글 단 글 데이터
-export const COMMENTED_FEEDS: Feed[] = [
+export const COMMENTED_POSTS: Post[] = [
   {
     id: '9',
     author: {
@@ -293,7 +293,7 @@ export const COMMENTED_FEEDS: Feed[] = [
 ];
 
 // 좋아한 글 데이터
-export const LIKED_FEEDS: Feed[] = [
+export const LIKED_POSTS: Post[] = [
   {
     id: '10',
     author: {

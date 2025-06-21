@@ -5,13 +5,13 @@ import Image from 'next/image';
 import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
-import { type Feed } from '@/entities/feed';
+import { type Post } from '@/entities/posts';
 
-interface FeedItemProps extends Feed {
+interface PostItemProps extends Post {
   onClick?: () => void;
 }
 
-export const FeedItem: FC<FeedItemProps> = ({
+export const PostItem: FC<PostItemProps> = ({
   author,
   title,
   content,

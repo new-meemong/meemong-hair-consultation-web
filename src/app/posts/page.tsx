@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useTransition } from 'react';
 import { WriteButton } from '@/features/posts';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
-import { FeedList } from '@/widgets/feed';
+import { PostList } from '@/widgets/posts';
 import { SiteHeader, BellButton } from '@/widgets/header';
 import { BannerCarousel } from '@/widgets/banner';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
@@ -12,8 +12,9 @@ import PopularIcon from '@/assets/icons/recent.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
 import { useRouter } from 'next/navigation';
-import { fetchFeedsByTab, type TabType } from '@/features/feed';
-import { BANNERS, type Feed } from '@/entities/feed';
+import { fetchPostsByTab, type TabType } from '@/features/posts';
+import { BANNERS, type Post } from '@/entities/posts';
+import { ROUTES } from '@/shared';
 
 const TAB_LABELS: Record<TabType, string> = {
   recent: '최신글',
@@ -23,9 +24,9 @@ const TAB_LABELS: Record<TabType, string> = {
   liked: '좋아한 글',
 };
 
-export default function FeedPage() {
+export default function PostsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('recent');
-  const [feeds, setFeeds] = useState<Feed[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const router = useRouter();
@@ -33,8 +34,8 @@ export default function FeedPage() {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const data = await fetchFeedsByTab('recent');
-        setFeeds(data);
+        const data = await fetchPostsByTab('recent');
+        setPosts(data);
       } catch (error) {
         console.error('피드 데이터 로드 실패:', error);
       } finally {
@@ -52,8 +53,8 @@ export default function FeedPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     startTransition(async () => {
-      const data = await fetchFeedsByTab(tab);
-      setFeeds(data as Feed[]);
+      const data = await fetchPostsByTab(tab);
+      setPosts(data as Post[]);
     });
   };
 
@@ -64,7 +65,7 @@ export default function FeedPage() {
   return (
     <div className="min-w-[375px] w-full mx-auto pb-20">
       {/* 헤더 */}
-      <SiteHeader rightComponent={<BellButton onClick={handleBellClick} />} />
+      <SiteHeader title="헤어상담" rightComponent={<BellButton onClick={handleBellClick} />} />
 
       {/* 배너 캐러셀 */}
       <div className="my-4">
@@ -114,9 +115,9 @@ export default function FeedPage() {
         </ToggleChipGroup>
       </div>
 
-      {/* 피드 리스트 */}
+      {/* 게시글 리스트 */}
       <div className="relative">
-        <FeedList feeds={feeds} isLoading={isPending || isInitialLoading} />
+        <PostList posts={posts} isLoading={isPending || isInitialLoading} />
 
         {isPending && (
           <div className="absolute top-0 left-0 right-0 h-1 bg-gray-100 overflow-hidden">
@@ -127,7 +128,7 @@ export default function FeedPage() {
 
       {/* 글쓰기 버튼 */}
       <div className="fixed bottom-10 right-0 left-0 mx-auto w-max">
-        <WriteButton onClick={() => router.push('/posts/create')} />
+        <WriteButton onClick={() => router.push(ROUTES.POSTS_CREATE)} />
       </div>
     </div>
   );

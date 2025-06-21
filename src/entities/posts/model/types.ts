@@ -4,7 +4,7 @@ export interface Author {
   avatarUrl?: string;
 }
 
-export interface Feed {
+export interface Post {
   id: string;
   author: Author;
   title: string;

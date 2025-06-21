@@ -3,11 +3,13 @@ import { CommentWithReplies, Comment } from '@/entities/comment';
 
 /**
  * 댓글 목록 조회
- * @param feedId 피드 ID
+ * @param postId 게시글 ID
  * @returns 댓글 목록
  */
-export const fetchComments = (feedId?: string): Promise<CommentWithReplies[]> => {
+export const fetchComments = (postId?: string): Promise<CommentWithReplies[]> => {
   return new Promise((resolve) => {
+    // postId는 향후 실제 API 연동 시 사용될 예정
+    console.log('Fetching comments for post:', postId);
     setTimeout(() => {
       resolve(MOCK_COMMENTS);
     }, 300);
@@ -19,7 +21,7 @@ export interface CreateCommentRequest {
   content: string;
   isPrivate: boolean;
   parentId?: string;
-  feedId?: string;
+  postId?: string;
 }
 
 /**
@@ -29,7 +31,9 @@ export interface CreateCommentRequest {
  */
 export const createComment = (data: CreateCommentRequest): Promise<Comment> => {
   return new Promise((resolve) => {
-    const { content, isPrivate, parentId } = data;
+    const { content, isPrivate, parentId, postId } = data;
+    // postId는 향후 실제 API 연동 시 사용될 예정
+    console.log('Creating comment for post:', postId);
 
     const newComment: Comment = {
       id: `new-${Date.now()}`,
@@ -100,6 +104,8 @@ export const updateComment = ({ commentId, content }: UpdateCommentRequest): Pro
  */
 export const deleteComment = (commentId: string): Promise<{ success: boolean }> => {
   return new Promise((resolve) => {
+    // commentId는 향후 실제 API 연동 시 사용될 예정
+    console.log('Deleting comment:', commentId);
     // 실제 구현에서는 서버에 삭제 요청을 보내고 응답을 받음
     setTimeout(() => {
       resolve({ success: true });

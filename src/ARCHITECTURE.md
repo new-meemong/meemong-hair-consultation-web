@@ -80,14 +80,14 @@ UI 컴포넌트는 그 성격과 사용 범위에 따라 다음과 같이 분류
 
 - 여러 feature 컴포넌트를 조합한 복합 UI 블록
 - 비즈니스 로직보다는 UI 구성과 레이아웃에 중점을 두며, 페이지 단위보다 작은 독립적인 UI 섹션을 구성합니다.
-- 예: `CommentList`, `FeedList` 등
+- 예: `CommentList`, `PostList` 등
 - CommentList(위젯)는 "댓글들을 어떻게 모아서 보여줄 것인가"를 정의
 
 ### 4. `entities/{entity-name}/ui`
 
 - 비즈니스 엔티티를 표현하는 컴포넌트
 - 도메인 모델의 데이터를 시각적으로 표현하는 가장 기본적인 UI 컴포넌트로, 비즈니스 로직이나 상태 관리 없이 단순히 데이터를 표시하는 데 집중합니다.
-- 예: `CommentCard`, `FeedItem` 등
+- 예: `CommentCard`, `PostItem` 등
 - CommentCard(엔티티)는 "하나의 댓글이 어떻게 생겼는가"를 정의
 
 ## 사례

@@ -7,23 +7,31 @@ import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { SiteHeader } from '@/widgets/header';
 import { Textarea, Input, Checkbox, Label, Separator, Button } from '@/shared/ui';
+import { createNavigation } from '@/shared/lib';
 import { CheckedState } from '@radix-ui/react-checkbox';
 import { XIcon } from 'lucide-react';
 import GalleryIcon from '@/assets/icons/gallery.svg';
+import {
+  useCreateHairConsultPosting,
+  useUploadHairConsultPostingImages,
+} from '@/entities/posts/api/queries';
 
 // TODO : 폼 별도 파일로 분리
 const formSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요').max(100, '제목은 100자 이하로 입력해주세요'),
   content: z.string().min(1, '내용을 입력해주세요').max(1000, '내용은 1000자 이하로 입력해주세요'),
   isPhotoVisibleToDesigner: z.boolean(),
-  images: z.array(z.string()).max(10, '이미지는 최대 10개까지 업로드할 수 있습니다'),
+  images: z.array(z.instanceof(File)).max(10, '이미지는 최대 10개까지 업로드할 수 있습니다'),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function CreatePostPage() {
   const router = useRouter();
+  const navigation = createNavigation(router.push);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { mutateAsync: uploadImagesMutateAsync } = useUploadHairConsultPostingImages();
+  const { mutate } = useCreateHairConsultPosting();
 
   const form = useForm({
     defaultValues: {
@@ -36,10 +44,15 @@ export default function CreatePostPage() {
       onChange: formSchema,
     },
     onSubmit: async ({ value }) => {
-      // TODO: 헤어 상담 게시글 제출 로직 추가
-      console.log('게시글 제출:', value);
-      // 성공 시 posts 목록으로 이동
-      // router.push('/posts');
+      if (value.images.length > 0) {
+        const uploadedImages = (await uploadImagesMutateAsync(value.images)).data;
+        mutate({
+          ...value,
+          hairConsultPostingImages: uploadedImages.dataList.map((img) => img.imageURL),
+        });
+      } else {
+        mutate({ ...value, hairConsultPostingImages: [] });
+      }
     },
   });
 
@@ -69,7 +82,7 @@ export default function CreatePostPage() {
       <SiteHeader
         title="게시글 작성"
         showBackButton
-        onBackClick={() => router.back()}
+        onBackClick={() => navigation.toPosts()}
         rightComponent={<SubmitButton />}
       />
 
@@ -132,15 +145,16 @@ export default function CreatePostPage() {
                   <Separator className="w-full bg-border-default h-0.25" />
                   <div className="pl-5 py-4">
                     <div className="flex gap-2 overflow-x-auto">
-                      {field.state.value.map((src, index) => (
+                      {field.state.value.map((file, index) => (
                         <div key={index} className="relative w-25 h-25 flex-shrink-0">
                           <Image
-                            src={src}
+                            src={URL.createObjectURL(file)}
                             alt={`업로드 이미지 ${index + 1}`}
                             fill
                             className="object-cover rounded-md"
                           />
                           <Button
+                            type="button"
                             variant="icon"
                             size="icon"
                             className="absolute top-1 right-1"
@@ -170,10 +184,8 @@ export default function CreatePostPage() {
                 ref={fileInputRef}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
-                    const newImageUrls = Array.from(e.target.files).map((file) =>
-                      URL.createObjectURL(file),
-                    );
-                    const updatedImages = [...field.state.value, ...newImageUrls];
+                    const newFiles = Array.from(e.target.files);
+                    const updatedImages = [...field.state.value, ...newFiles];
                     field.handleChange(updatedImages);
                   }
                 }}

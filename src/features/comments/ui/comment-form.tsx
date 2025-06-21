@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChatInput } from '@/shared/ui/chat-input';
+// import { ChatInput } from '@/shared/ui/chat-input';
 import { PrivateChatInput } from '@/shared/ui/private-chat-input';
 import { cn } from '@/shared/lib/utils';
 

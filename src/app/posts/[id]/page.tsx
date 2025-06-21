@@ -6,35 +6,35 @@ import { useParams } from 'next/navigation';
 import { SiteHeader } from '@/widgets/header';
 import { CommentList } from '@/widgets/comments';
 import { ImageViewer, Separator, Avatar, AvatarImage, AvatarFallback } from '@/shared/ui';
-import { Feed } from '@/entities/feed/model/types';
+import { type Post } from '@/entities/posts';
 import { CommentWithReplies, CURRENT_USER } from '@/entities/comment';
 import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
 import { CommentForm } from '@/features/comments';
 import { fetchComments, createComment, updateComment, deleteComment } from '@/features/comments';
-import { fetchFeedDetail } from '@/features/feed';
+import { fetchPostDetail } from '@/features/posts';
 import { LikeButton } from '@/features/likes';
 
-export default function FeedDetailPage() {
+export default function PostDetailPage() {
   const params = useParams();
-  const feedId = params.id as string;
-  const [feed, setFeed] = useState<Feed | null>(null);
+  const postId = params.id as string;
+  const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<CommentWithReplies[]>([]);
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 피드 및 댓글 데이터 불러오기
+  // 게시글 및 댓글 데이터 불러오기
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
       try {
-        // 피드 상세 정보 조회
-        const feedData = await fetchFeedDetail(feedId);
-        setFeed(feedData);
+        // 게시글 상세 정보 조회
+        const postData = await fetchPostDetail(postId);
+        setPost(postData);
 
         // 댓글 목록 조회
-        const commentData = await fetchComments(feedId);
+        const commentData = await fetchComments(postId);
         setComments(commentData);
       } catch (error) {
         console.error('데이터 로드 실패:', error);
@@ -44,7 +44,7 @@ export default function FeedDetailPage() {
     };
 
     loadData();
-  }, [feedId]);
+  }, [postId]);
 
   // 댓글 추가
   const handleAddComment = async (content: string, isPrivate: boolean, parentId?: string) => {
@@ -54,7 +54,7 @@ export default function FeedDetailPage() {
         content,
         isPrivate,
         parentId,
-        feedId,
+        postId: postId,
       });
 
       // 응답 받은 댓글을 상태에 추가
@@ -139,13 +139,13 @@ export default function FeedDetailPage() {
     setImageViewerOpen(true);
   };
 
-  if (isLoading || !feed) {
+  if (isLoading || !post) {
     return <div className="min-w-[375px] w-full mx-auto pb-20">로딩 중...</div>;
   }
 
   // 임시 이미지 URL 배열 (이미지가 없을 경우 기본 이미지)
-  const feedImages = [
-    feed.imageUrl || 'https://picsum.photos/400/400?random=1',
+  const postImages = [
+    post.imageUrl || 'https://picsum.photos/400/400?random=1',
     'https://picsum.photos/400/400?random=2',
     'https://picsum.photos/400/400?random=3',
   ];
@@ -159,7 +159,7 @@ export default function FeedDetailPage() {
       <div className="pl-5 py-6">
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={feed.author.avatarUrl} className="w-12 h-12 rounded-6" />
+            <AvatarImage src={post.author.avatarUrl} className="w-12 h-12 rounded-6" />
             <AvatarFallback>
               <Image
                 src="/profile.svg"
@@ -171,32 +171,32 @@ export default function FeedDetailPage() {
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <p className="typo-body-1-semibold text-label-default">{feed.author.name}</p>
-            <p className="typo-body-3-regular text-label-info">{feed.createdAt}</p>
+            <p className="typo-body-1-semibold text-label-default">{post.author.name}</p>
+            <p className="typo-body-3-regular text-label-info">{post.createdAt}</p>
           </div>
         </div>
 
-        <h1 className="typo-headline-bold text-label-strong mt-2 mb-3 pr-5">{feed.title}</h1>
-        <p className="typo-body-1-regular text-label-default mb-4 pr-5">{feed.content}</p>
+        <h1 className="typo-headline-bold text-label-strong mt-2 mb-3 pr-5">{post.title}</h1>
+        <p className="typo-body-1-regular text-label-default mb-4 pr-5">{post.content}</p>
 
         {/* 게시글 이미지 */}
         <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-          {feedImages.map((image, index) => (
+          {postImages.map((image, index) => (
             <div
               key={index}
               className={`relative min-w-35 h-35 rounded-6 overflow-hidden cursor-pointer ${
-                index === feedImages.length - 1 ? 'mr-5' : ''
+                index === postImages.length - 1 ? 'mr-5' : ''
               }`}
               onClick={() => handleImageClick(index)}
             >
-              <Image src={image} alt={`피드 이미지 ${index + 1}`} fill className="object-cover" />
+              <Image src={image} alt={`게시글 이미지 ${index + 1}`} fill className="object-cover" />
             </div>
           ))}
         </div>
 
         {/* 이미지 확대 모달 */}
         <ImageViewer
-          images={feedImages}
+          images={postImages}
           initialIndex={selectedImageIndex}
           open={imageViewerOpen}
           onOpenChange={setImageViewerOpen}
@@ -208,11 +208,11 @@ export default function FeedDetailPage() {
       <div className="flex items-center justify-between gap-5 py-4 px-5">
         <div className="flex flex-1 justify-center items-center gap-1">
           {/* 좋아요 버튼 상호작용 */}
-          <LikeButton initialLiked={false} initialCount={feed.likes} />
+          <LikeButton initialLiked={false} initialCount={post.likes} />
         </div>
         <div className="flex flex-1 justify-center items-center gap-1">
           <CommentIcon className="w-5 h-5 fill-label-placeholder" />
-          <span className="typo-body-1-medium text-label-info">{feed.comments}</span>
+          <span className="typo-body-1-medium text-label-info">{post.comments}</span>
         </div>
         <div className="flex flex-1 justify-center items-center gap-1">
           <ShareIcon className="w-5 h-5 fill-label-placeholder" />
