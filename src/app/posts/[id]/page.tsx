@@ -24,16 +24,15 @@ export default function PostDetailPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 게시글 및 댓글 데이터 불러오기
   useEffect(() => {
+    /**
+     * 현재 모킹 데이터로 처리
+     */
     const loadData = async () => {
       setIsLoading(true);
       try {
-        // 게시글 상세 정보 조회
         const postData = await fetchPostDetail(postId);
         setPost(postData);
-
-        // 댓글 목록 조회
         const commentData = await fetchComments(postId);
         setComments(commentData);
       } catch (error) {
@@ -46,10 +45,8 @@ export default function PostDetailPage() {
     loadData();
   }, [postId]);
 
-  // 댓글 추가
   const handleAddComment = async (content: string, isPrivate: boolean, parentId?: string) => {
     try {
-      // 댓글 생성 API 호출
       const newComment = await createComment({
         content,
         isPrivate,
@@ -57,9 +54,7 @@ export default function PostDetailPage() {
         postId: postId,
       });
 
-      // 응답 받은 댓글을 상태에 추가
       if (parentId) {
-        // 대댓글 추가
         setComments((prev) =>
           prev.map((comment) => {
             if (comment.id === parentId) {
@@ -72,7 +67,6 @@ export default function PostDetailPage() {
           }),
         );
       } else {
-        // 새 댓글 추가
         setComments((prev) => [...prev, { ...newComment, replies: [] } as CommentWithReplies]);
       }
     } catch (error) {
@@ -80,21 +74,16 @@ export default function PostDetailPage() {
     }
   };
 
-  // 댓글 수정
   const handleEditComment = async (commentId: string, newContent: string) => {
     try {
-      // 댓글 수정 API 호출
       const updatedComment = await updateComment({ commentId, content: newContent });
 
-      // 수정된 댓글 반영
       setComments((prev) => {
         return prev.map((comment) => {
-          // 메인 댓글 수정
           if (comment.id === commentId) {
             return { ...comment, content: updatedComment.content };
           }
 
-          // 대댓글 수정
           if (comment.replies.some((reply) => reply.id === commentId)) {
             return {
               ...comment,
@@ -112,14 +101,11 @@ export default function PostDetailPage() {
     }
   };
 
-  // 댓글 삭제
   const handleDeleteComment = async (commentId: string) => {
     try {
-      // 댓글 삭제 API 호출
       const result = await deleteComment(commentId);
 
       if (result.success) {
-        // 삭제 성공 시 댓글 상태 업데이트
         const filteredComments = comments.filter((comment) => comment.id !== commentId);
         const updatedComments = filteredComments.map((comment) => ({
           ...comment,
@@ -133,7 +119,6 @@ export default function PostDetailPage() {
     }
   };
 
-  // 이미지 클릭 핸들러
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
     setImageViewerOpen(true);
@@ -143,7 +128,6 @@ export default function PostDetailPage() {
     return <div className="min-w-[375px] w-full mx-auto pb-20">로딩 중...</div>;
   }
 
-  // 임시 이미지 URL 배열 (이미지가 없을 경우 기본 이미지)
   const postImages = [
     post.imageUrl || 'https://picsum.photos/400/400?random=1',
     'https://picsum.photos/400/400?random=2',
@@ -203,11 +187,10 @@ export default function PostDetailPage() {
         />
       </div>
 
-      {/* 게시글 상호작용 */}
       <Separator className="w-full bg-border-default h-0.25" />
       <div className="flex items-center justify-between gap-5 py-4 px-5">
         <div className="flex flex-1 justify-center items-center gap-1">
-          {/* 좋아요 버튼 상호작용 */}
+          {/* 좋아요 버튼 */}
           <LikeButton initialLiked={false} initialCount={post.likes} />
         </div>
         <div className="flex flex-1 justify-center items-center gap-1">

@@ -2,38 +2,28 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/api/client';
-import { handleMutationError, getUserErrorMessage, ROUTES } from '@/shared/lib';
+import { useNavigation } from '@/shared';
 import {
   CreateHairConsultPostingRequest,
   CreateHairConsultPostingResponse,
   HairConsultPostingFavoriteResponse,
   ImageUploadResponse,
-} from './types';
-import { useRouter } from 'next/navigation';
+} from '@/entities/posts';
 
-// 헤어상담 게시글 작성
-export function useCreateHairConsultPosting() {
+export function useCreatePostMutation() {
   const queryClient = useQueryClient();
-  const router = useRouter();
-
+  const navigation = useNavigation();
   return useMutation({
     mutationFn: (data: CreateHairConsultPostingRequest) =>
       apiClient.post<CreateHairConsultPostingResponse>('hair-consult-postings', data),
     onSuccess: () => {
-      // 목록으로 이동
-      router.push(ROUTES.POSTS);
+      navigation.toPosts();
       queryClient.invalidateQueries({ queryKey: ['hair-consult-postings'] });
-    },
-    onError: (error) => {
-      handleMutationError(error);
-      const friendlyMessage = getUserErrorMessage(error);
-      console.warn('사용자 메시지:', friendlyMessage);
     },
   });
 }
 
-// 헤어상담 게시글 삭제
-export function useDeleteHairConsultPosting() {
+export function useDeletePostMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -42,16 +32,10 @@ export function useDeleteHairConsultPosting() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['hair-consult-postings'] });
     },
-    onError: (error) => {
-      handleMutationError(error);
-      const friendlyMessage = getUserErrorMessage(error);
-      console.warn('사용자 메시지:', friendlyMessage);
-    },
   });
 }
 
-// 헤어상담 게시글 좋아요
-export function useToggleHairConsultPostingFavorite() {
+export function usePostFavoriteMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -63,10 +47,8 @@ export function useToggleHairConsultPostingFavorite() {
       isLiked: boolean;
     }) => {
       if (isLiked) {
-        // 좋아요 취소
         return apiClient.delete(`hair-consult-postings/${hairConsultPostingId}/favorites`);
       } else {
-        // 좋아요 추가
         return apiClient.post<HairConsultPostingFavoriteResponse>(
           `hair-consult-postings/${hairConsultPostingId}/favorites`,
         );
@@ -80,16 +62,10 @@ export function useToggleHairConsultPostingFavorite() {
         queryKey: ['hair-consult-postings'],
       });
     },
-    onError: (error) => {
-      handleMutationError(error);
-      const friendlyMessage = getUserErrorMessage(error);
-      console.warn('사용자 메시지:', friendlyMessage);
-    },
   });
 }
 
-// 헤어상담 게시글 이미지 업로드
-export function useUploadHairConsultPostingImages() {
+export function useUploadPostImageMutation() {
   return useMutation({
     mutationFn: (files: File[]) => {
       const formData = new FormData();
@@ -101,11 +77,6 @@ export function useUploadHairConsultPostingImages() {
         'uploads/hair-consult-postings/images',
         formData,
       );
-    },
-    onError: (error) => {
-      handleMutationError(error);
-      const friendlyMessage = getUserErrorMessage(error);
-      console.warn('사용자 메시지:', friendlyMessage);
     },
   });
 }

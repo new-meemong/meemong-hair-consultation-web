@@ -1,6 +1,5 @@
-// Posts API exports
-export * from './api/queries';
 export * from './api/types';
+export * from './model/api-types';
 export {
   RECENT_POSTS,
   POPULAR_POSTS,

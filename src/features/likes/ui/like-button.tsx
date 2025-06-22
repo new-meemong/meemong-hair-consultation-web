@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useToggleHairConsultPostingFavorite } from '@/entities/posts/api/queries';
+import { usePostFavoriteMutation } from '@/features/posts';
 import { Toggle } from '@/shared/ui/toggle';
 import { cn } from '@/shared/lib/utils';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
@@ -22,18 +22,14 @@ export function LikeButton({
   const [liked, setLiked] = useState(initialLiked);
   const [count, setCount] = useState(initialCount);
 
-  // 헤어상담 게시글 좋아요 API 연결
-  const toggleFavoriteMutation = useToggleHairConsultPostingFavorite();
+  const toggleFavoriteMutation = usePostFavoriteMutation();
 
   const handleToggle = async (pressed: boolean) => {
-    // 로컬 상태 즉시 업데이트 (낙관적 업데이트)
     setLiked(pressed);
     setCount((prev) => (pressed ? prev + 1 : prev - 1));
 
-    // 콜백 호출
     onToggle?.(pressed);
 
-    // API 호출 (postId가 있는 경우에만)
     if (postId) {
       try {
         await toggleFavoriteMutation.mutateAsync({

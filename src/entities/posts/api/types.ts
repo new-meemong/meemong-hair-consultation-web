@@ -55,91 +55,9 @@ export interface HairConsultPostingFavoriteResponse {
   };
 }
 
-export interface ValidationFieldError {
-  field: string;
-  value: string;
-  reason: string;
-}
-
-export interface BaseApiError<TCode = string> {
-  error: {
-    code: TCode;
-    message: string;
-    fieldErrors?: ValidationFieldError[];
-  };
-}
-
-export interface ApiErrorWithHttpCode<TCode = string> {
-  error: {
-    code: TCode;
-    message: string;
-    httpCode: number;
-    fieldErrors?: ValidationFieldError[];
-  };
-}
-
-export type ValidationErrorCode = 'VALIDATOR_ERROR';
-
 export type HairConsultPostingErrorCode =
-  | 'HAIR_CONSULT_POSTINGS_MODEL_ONLY'
-  | 'HAIR_CONSULT_POSTINGS_NOT_USER'
-  | 'HAIR_CONSULT_POSTINGS_NOT_FOUND'
-  | 'ALREADY_EXISTS_HAIR_CONSULT_POSTING_FAVORITE';
-
-export type ValidationError = BaseApiError<ValidationErrorCode>;
-
-export type HairConsultPostingError = ApiErrorWithHttpCode<HairConsultPostingErrorCode>;
-
-export type ApiError = ValidationError | HairConsultPostingError;
-
-export function isValidationError(error: unknown): error is ValidationError {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'error' in error &&
-    typeof (error as Record<string, unknown>).error === 'object' &&
-    (error as Record<string, unknown>).error !== null &&
-    'code' in ((error as Record<string, unknown>).error as Record<string, unknown>) &&
-    ((error as Record<string, unknown>).error as Record<string, unknown>).code === 'VALIDATOR_ERROR'
-  );
-}
-
-export function isHairConsultPostingError(error: unknown): error is HairConsultPostingError {
-  if (
-    typeof error !== 'object' ||
-    error === null ||
-    !('error' in error) ||
-    typeof (error as Record<string, unknown>).error !== 'object' ||
-    (error as Record<string, unknown>).error === null
-  ) {
-    return false;
-  }
-
-  const errorObj = (error as Record<string, unknown>).error as Record<string, unknown>;
-
-  return (
-    'httpCode' in errorObj &&
-    typeof errorObj.httpCode === 'number' &&
-    'code' in errorObj &&
-    typeof errorObj.code === 'string' &&
-    [
-      'HAIR_CONSULT_POSTINGS_MODEL_ONLY',
-      'HAIR_CONSULT_POSTINGS_NOT_USER',
-      'HAIR_CONSULT_POSTINGS_NOT_FOUND',
-      'ALREADY_EXISTS_HAIR_CONSULT_POSTING_FAVORITE',
-    ].includes(errorObj.code)
-  );
-}
-
-export function hasHttpCode(error: unknown): error is ApiErrorWithHttpCode {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'error' in error &&
-    typeof (error as Record<string, unknown>).error === 'object' &&
-    (error as Record<string, unknown>).error !== null &&
-    'httpCode' in ((error as Record<string, unknown>).error as Record<string, unknown>) &&
-    typeof ((error as Record<string, unknown>).error as Record<string, unknown>).httpCode ===
-      'number'
-  );
-}
+  | 'VALIDATOR_ERROR' // 400: 유효성 검사 오류
+  | 'HAIR_CONSULT_POSTINGS_MODEL_ONLY' // 403: 모델만 작성 가능
+  | 'HAIR_CONSULT_POSTINGS_NOT_USER' // 403: 작성자가 아님
+  | 'HAIR_CONSULT_POSTINGS_NOT_FOUND' // 404: 게시글 없음
+  | 'ALREADY_EXISTS_HAIR_CONSULT_POSTING_FAVORITE'; // 409: 이미 좋아요 함

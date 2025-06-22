@@ -1,5 +1,4 @@
-import { RECENT_POSTS, POPULAR_POSTS, MY_POSTS } from '@/entities/posts';
-import { type Post } from '@/entities/posts';
+import { RECENT_POSTS, POPULAR_POSTS, MY_POSTS, type Post } from '@/entities/posts';
 
 /**
  * 피드 탭 유형
@@ -13,16 +12,13 @@ export type TabType = 'recent' | 'popular' | 'my' | 'commented' | 'liked';
  */
 export const fetchPostDetail = (postId: string): Promise<Post | null> => {
   return new Promise((resolve) => {
-    // 개발용 지연 시간 (스켈레톤 확인용)
     const delay = process.env.NODE_ENV === 'development' ? 2000 : 300;
 
     setTimeout(() => {
-      // 모든 게시글 데이터를 합쳐서 중복을 제거
       const allPosts = [...RECENT_POSTS, ...POPULAR_POSTS, ...MY_POSTS].filter(
         (post, index, self) => self.findIndex((p) => p.id === post.id) === index,
       );
 
-      // ID로 게시글 찾기
       const foundPost = allPosts.find((item) => item.id === postId);
       resolve(foundPost || null);
     }, delay);
