@@ -1,22 +1,17 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { SiteHeader } from '@/widgets/header';
 import { Textarea, Input, Checkbox, Label, Separator, Button } from '@/shared/ui';
-import { createNavigation } from '@/shared/lib';
 import { CheckedState } from '@radix-ui/react-checkbox';
 import { XIcon } from 'lucide-react';
 import GalleryIcon from '@/assets/icons/gallery.svg';
-import {
-  useCreateHairConsultPosting,
-  useUploadHairConsultPostingImages,
-} from '@/entities/posts/api/queries';
+import { useCreatePost } from '@/features/posts';
+import { useNavigation } from '@/shared';
 
-// TODO : 폼 별도 파일로 분리
 const formSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요').max(100, '제목은 100자 이하로 입력해주세요'),
   content: z.string().min(1, '내용을 입력해주세요').max(1000, '내용은 1000자 이하로 입력해주세요'),
@@ -27,11 +22,9 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function CreatePostPage() {
-  const router = useRouter();
-  const navigation = createNavigation(router.push);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { mutateAsync: uploadImagesMutateAsync } = useUploadHairConsultPostingImages();
-  const { mutate } = useCreateHairConsultPosting();
+  const { handleCreatePost, isPending } = useCreatePost();
+  const navigation = useNavigation();
 
   const form = useForm({
     defaultValues: {
@@ -44,15 +37,7 @@ export default function CreatePostPage() {
       onChange: formSchema,
     },
     onSubmit: async ({ value }) => {
-      if (value.images.length > 0) {
-        const uploadedImages = (await uploadImagesMutateAsync(value.images)).data;
-        mutate({
-          ...value,
-          hairConsultPostingImages: uploadedImages.dataList.map((img) => img.imageURL),
-        });
-      } else {
-        mutate({ ...value, hairConsultPostingImages: [] });
-      }
+      await handleCreatePost(value);
     },
   });
 
@@ -61,7 +46,8 @@ export default function CreatePostPage() {
       <form.Subscribe selector={(state) => [state.isSubmitting, state.values]}>
         {([isSubmitting, values]) => {
           const formValues = values as FormData;
-          const isValid = formSchema.safeParse(formValues).success && !isSubmitting;
+          const isLoading = isSubmitting || isPending;
+          const isValid = formSchema.safeParse(formValues).success && !isLoading;
 
           return (
             <button
@@ -69,7 +55,7 @@ export default function CreatePostPage() {
               disabled={!isValid}
               className={`typo-body-2-semibold ${isValid ? 'text-positive' : 'text-label-placeholder'}`}
             >
-              {isSubmitting ? '등록 중...' : '등록'}
+              {isLoading ? '등록 중...' : '등록'}
             </button>
           );
         }}
