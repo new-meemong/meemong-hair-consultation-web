@@ -37,9 +37,9 @@ export default function ExamplePage() {
     });
   }, []);
 
-  const handleEdit = (commentId: string) => {
-    alert(`수정하기: ${commentId}`);
-  };
+  // const handleEdit = (commentId: string) => {
+  //   alert(`수정하기: ${commentId}`);
+  // };
 
   const handleDelete = (commentId: string) => {
     alert(`삭제하기: ${commentId}`);
@@ -68,7 +68,7 @@ export default function ExamplePage() {
           <CommentCard
             comment={comments.myComment}
             isCurrentUser={true}
-            onEdit={handleEdit}
+            // onEdit={handleEdit}
             onDelete={handleDelete}
             onReply={handleReply}
           />
