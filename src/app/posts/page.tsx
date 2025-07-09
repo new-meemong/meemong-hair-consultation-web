@@ -1,22 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useTransition } from 'react';
-import { WriteButton } from '@/features/posts';
-import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
-import { PostList } from '@/widgets/posts';
-import { SiteHeader, BellButton } from '@/widgets/header';
-import { BannerCarousel } from '@/widgets/banner';
-import RecentIcon from '@/assets/icons/mdi_recent.svg';
-import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
-import PopularIcon from '@/assets/icons/recent.svg';
-import HeartIcon from '@/assets/icons/mdi_heart.svg';
-import CommentIcon from '@/assets/icons/comment.svg';
-import { useRouter } from 'next/navigation';
-import { fetchPostsByTab } from '@/features/posts';
-import { type TabType } from '@/features/posts/types/tabs';
 import { BANNERS, type Post } from '@/entities/posts';
+import { fetchPostsByTab, WriteButton } from '@/features/posts';
+import { POST_TABS } from '@/features/posts/constants/tabs';
+import { type TabType } from '@/features/posts/types/tabs';
 import { ROUTES } from '@/shared';
-import { TAB_LABELS } from '@/features/posts/constants/tabs';
+import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
+import { BannerCarousel } from '@/widgets/banner';
+import { BellButton, SiteHeader } from '@/widgets/header';
+import { PostList } from '@/widgets/posts';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useTransition } from 'react';
 
 export default function PostsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('recent');
@@ -69,43 +63,16 @@ export default function PostsPage() {
       {/* 탭 */}
       <div className="px-5 py-2">
         <ToggleChipGroup className="flex overflow-x-auto scrollbar-hide">
-          <ToggleChip
-            icon={<RecentIcon className="size-5 fill-label-sub group-data-[state=on]:fill-white" />}
-            pressed={activeTab === 'recent'}
-            onPressedChange={() => handleTabChange('recent')}
-          >
-            {TAB_LABELS.recent}
-          </ToggleChip>
-          <ToggleChip
-            icon={
-              <PopularIcon className="size-5 fill-label-sub group-data-[state=on]:fill-white" />
-            }
-            pressed={activeTab === 'popular'}
-            onPressedChange={() => handleTabChange('popular')}
-          >
-            {TAB_LABELS.popular}
-          </ToggleChip>
-          <ToggleChip
-            icon={<UserIcon className="size-5 fill-label-sub group-data-[state=on]:fill-white" />}
-            pressed={activeTab === 'my'}
-            onPressedChange={() => handleTabChange('my')}
-          >
-            {TAB_LABELS.my}
-          </ToggleChip>
-          <ToggleChip
-            icon={<CommentIcon className="size-5 p-[2px] fill-positive" />}
-            pressed={activeTab === 'commented'}
-            onPressedChange={() => handleTabChange('commented')}
-          >
-            {TAB_LABELS.commented}
-          </ToggleChip>
-          <ToggleChip
-            icon={<HeartIcon className="size-5 p-[1px] fill-negative-light" />}
-            pressed={activeTab === 'liked'}
-            onPressedChange={() => handleTabChange('liked')}
-          >
-            {TAB_LABELS.liked}
-          </ToggleChip>
+          {POST_TABS.map(({ id, icon, label }) => (
+            <ToggleChip
+              key={id}
+              icon={icon}
+              pressed={activeTab === id}
+              onPressedChange={() => handleTabChange(id)}
+            >
+              {label}
+            </ToggleChip>
+          ))}
         </ToggleChipGroup>
       </div>
 
