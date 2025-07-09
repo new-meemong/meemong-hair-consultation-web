@@ -1,9 +1,5 @@
 import { RECENT_POSTS, POPULAR_POSTS, MY_POSTS, type Post } from '@/entities/posts';
-
-/**
- * 피드 탭 유형
- */
-export type TabType = 'recent' | 'popular' | 'my' | 'commented' | 'liked';
+import { type TabType } from '../types/tabs';
 
 /**
  * 게시글 상세 정보 조회

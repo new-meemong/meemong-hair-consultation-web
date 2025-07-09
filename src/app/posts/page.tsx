@@ -12,17 +12,11 @@ import PopularIcon from '@/assets/icons/recent.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
 import { useRouter } from 'next/navigation';
-import { fetchPostsByTab, type TabType } from '@/features/posts';
+import { fetchPostsByTab } from '@/features/posts';
+import { type TabType } from '@/features/posts/types/tabs';
 import { BANNERS, type Post } from '@/entities/posts';
 import { ROUTES } from '@/shared';
-
-const TAB_LABELS: Record<TabType, string> = {
-  recent: '최신글',
-  popular: '인기글',
-  my: '내 상담글',
-  commented: '댓글 단 글',
-  liked: '좋아한 글',
-};
+import { TAB_LABELS } from '@/features/posts/constants/tabs';
 
 export default function PostsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('recent');
