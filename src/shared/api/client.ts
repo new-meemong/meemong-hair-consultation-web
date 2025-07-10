@@ -1,7 +1,7 @@
 import ky from 'ky';
-import { getAuthToken } from '../lib/auth';
+import { getAuthTokenData } from '../lib/auth';
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export interface ApiResponse<T = unknown> {
   data: T;
@@ -16,17 +16,19 @@ export interface ApiError {
 }
 
 const createApiInstance = () => {
+  const authTokenData = getAuthTokenData();
+  const token = authTokenData?.token;
+
   return ky.create({
-    prefixUrl: API_BASE_URL,
+    prefixUrl: `${API_BASE_URL}/api/v1`,
     headers: {
       'Content-Type': 'application/json',
     },
     hooks: {
       beforeRequest: [
         (request) => {
-          const token = getAuthToken();
           if (token) {
-            request.headers.set('Authorization', `JWT ${token}`);
+            request.headers.set('Authorization', `${token}`);
           }
         },
       ],
@@ -81,4 +83,5 @@ export class ApiClient {
   }
 }
 
+// 기본 인스턴스는 토큰 없이 생성
 export const apiClient = new ApiClient();
