@@ -1,0 +1,19 @@
+import { User } from '@/entities/user/api/types';
+import { apiClient } from '@/shared/api/client';
+import { useMutation } from '@tanstack/react-query';
+
+const WEBVIEW_API_KEY = process.env.NEXT_PUBLIC_WEBVIEW_API_KEY;
+
+type LoginRequest = {
+  userId: string;
+};
+
+export function useWebviewLogin({
+  onSuccess,
+}: { onSuccess?: (response: { data: User }) => void } = {}) {
+  return useMutation({
+    mutationFn: ({ userId }: LoginRequest) =>
+      apiClient.post<User>('auth/webview-login', { userId, webviewAPIKey: WEBVIEW_API_KEY }),
+    onSuccess,
+  });
+}

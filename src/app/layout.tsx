@@ -1,9 +1,10 @@
+import { PageLoading } from '@/shared/ui/loading';
+import { QueryProvider } from '@/shared/ui/providers/query-provider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { Suspense } from 'react';
-import { PageLoading } from '@/shared/ui/loading';
-import { QueryProvider } from '@/shared/ui/providers/query-provider';
 import '../styles/globals.css';
+import { AuthProvider } from '@/shared/context/AuthContext';
 
 const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',
@@ -26,7 +27,9 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.variable} antialiased max-w-2xl mx-auto`}>
         <QueryProvider>
-          <Suspense fallback={<PageLoading />}>{children}</Suspense>
+          <AuthProvider>
+            <Suspense fallback={<PageLoading />}>{children}</Suspense>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

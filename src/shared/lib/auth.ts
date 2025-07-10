@@ -3,28 +3,12 @@ export interface JWTPayload {
   exp: number;
 }
 
-const TOKEN_STORAGE_KEY = 'jwt_token';
-const TOKEN_REFRESH_KEY = 'refresh_token';
+export interface AuthTokenData {
+  token: string;
+  userId: number;
+}
 
-export const setAuthToken = (token: string): void => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem(TOKEN_STORAGE_KEY, token);
-  }
-};
-
-export const getAuthToken = (): string | null => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem(TOKEN_STORAGE_KEY);
-  }
-  return null;
-};
-
-export const removeAuthToken = (): void => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
-    localStorage.removeItem(TOKEN_REFRESH_KEY);
-  }
-};
+const TOKEN_AUTH_DATA_KEY = 'auth_token_data';
 
 export const decodeJWTPayload = (token: string): JWTPayload | null => {
   try {
@@ -43,8 +27,40 @@ export const decodeJWTPayload = (token: string): JWTPayload | null => {
   }
 };
 
+export const setAuthTokenData = (token: string): void => {
+  if (typeof window === 'undefined') return;
+
+  const payload = decodeJWTPayload(token);
+  if (!payload) return;
+
+  const authData: AuthTokenData = {
+    token,
+    userId: payload.userId,
+  };
+  localStorage.setItem(TOKEN_AUTH_DATA_KEY, JSON.stringify(authData));
+};
+
+export const getAuthTokenData = (): AuthTokenData | null => {
+  if (typeof window === 'undefined') return null;
+
+  const authDataString = localStorage.getItem(TOKEN_AUTH_DATA_KEY);
+  if (!authDataString) return null;
+
+  try {
+    return JSON.parse(authDataString);
+  } catch (error) {
+    console.error('Auth data 파싱 실패:', error);
+    return null;
+  }
+};
+
+export const removeAuthTokenData = (): void => {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(TOKEN_AUTH_DATA_KEY);
+};
+
 export const logout = (): void => {
-  removeAuthToken();
+  removeAuthTokenData();
   // TODO : 서버 로그아웃 요청 필요한지 확인
   if (typeof window !== 'undefined') {
     window.location.href = '/login';
