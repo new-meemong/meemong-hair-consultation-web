@@ -1,1 +1,1 @@
-export type TabType = 'recent' | 'popular' | 'my' | 'commented' | 'liked';
+export type TabType = 'latest' | 'popular' | 'my' | 'comment' | 'favorite';

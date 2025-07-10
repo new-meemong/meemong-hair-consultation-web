@@ -13,8 +13,8 @@ type TabInfo = {
 };
 
 const POST_TAB: Record<TabType, TabInfo> = {
-  recent: {
-    id: 'recent',
+  latest: {
+    id: 'latest',
     label: '최신글',
     icon: <RecentIcon className="size-5 fill-label-sub group-data-[state=on]:fill-white" />,
   },
@@ -28,13 +28,13 @@ const POST_TAB: Record<TabType, TabInfo> = {
     label: '내 상담글',
     icon: <UserIcon className="size-5 fill-label-sub group-data-[state=on]:fill-white" />,
   },
-  commented: {
-    id: 'commented',
+  comment: {
+    id: 'comment',
     label: '댓글 단 글',
     icon: <CommentIcon className="size-5 p-[2px] fill-positive" />,
   },
-  liked: {
-    id: 'liked',
+  favorite: {
+    id: 'favorite',
     label: '좋아한 글',
     icon: <HeartIcon className="size-5 p-[1px] fill-negative-light" />,
   },

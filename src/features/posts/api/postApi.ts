@@ -33,7 +33,7 @@ export const fetchPostsByTab = (tab: TabType): Promise<Post[]> => {
 
     setTimeout(() => {
       switch (tab) {
-        case 'recent':
+        case 'latest':
           resolve(RECENT_POSTS);
           break;
         case 'popular':
@@ -42,10 +42,10 @@ export const fetchPostsByTab = (tab: TabType): Promise<Post[]> => {
         case 'my':
           resolve(MY_POSTS);
           break;
-        case 'commented':
+        case 'comment':
           resolve([...RECENT_POSTS].slice(0, 3)); // 임시 데이터
           break;
-        case 'liked':
+        case 'favorite':
           resolve([...POPULAR_POSTS].slice(0, 3)); // 임시 데이터
           break;
         default:

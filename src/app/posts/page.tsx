@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 
 export default function PostsPage() {
-  const [activeTab, setActiveTab] = useState<TabType>('recent');
+  const [activeTab, setActiveTab] = useState<TabType>('latest');
   const [posts, setPosts] = useState<Post[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -22,7 +22,7 @@ export default function PostsPage() {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const data = await fetchPostsByTab('recent');
+        const data = await fetchPostsByTab('latest');
         setPosts(data);
       } catch (error) {
         console.error('피드 데이터 로드 실패:', error);
