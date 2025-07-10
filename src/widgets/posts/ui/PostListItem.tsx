@@ -6,27 +6,32 @@ import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
 import { type Post } from '@/entities/posts';
+import { isValidUrl } from '@/shared/lib/isValidUrl';
 
-interface PostItemProps extends Post {
+interface PostItemProps {
+  post: Post;
   onClick?: () => void;
 }
 
-export const PostItem: FC<PostItemProps> = ({
-  author,
-  title,
-  content,
-  imageUrl,
-  createdAt,
-  views,
-  likes,
-  comments,
-  onClick,
-}) => {
+export const PostListItem: FC<PostItemProps> = ({ post, onClick }) => {
+  const {
+    hairConsultPostingCreateUserName,
+    createdAt,
+    title,
+    content,
+    repImageUrl,
+    viewCount,
+    likeCount,
+    commentCount,
+  } = post;
+
+  const isValidImageUrl = repImageUrl && isValidUrl(repImageUrl);
+
   return (
     <div className="border-b border-gray-200 p-5 w-full cursor-pointer" onClick={onClick}>
       <div className="flex items-center gap-2 mb-1">
         <div className="flex items-center gap-2">
-          <p className="typo-body-3-regular text-label-info">{author.name}</p>
+          <p className="typo-body-3-regular text-label-info">{hairConsultPostingCreateUserName}</p>
           <div className="w-1 h-1 bg-label-placeholder rounded-full" />
           <p className="typo-body-3-regular text-label-info">{createdAt}</p>
         </div>
@@ -42,21 +47,21 @@ export const PostItem: FC<PostItemProps> = ({
           <div className="flex items-center gap-3 mt-2">
             <div className="flex items-center gap-1">
               <EyeIcon className="size-4 fill-label-info" />
-              <span className="typo-body-2-medium text-label-info">{views}</span>
+              <span className="typo-body-2-medium text-label-info">{viewCount}</span>
             </div>
             <div className="flex items-center gap-1">
               <HeartIcon className="w-4 h-4 fill-negative-light" />
-              <span className="typo-body-2-medium text-negative-light">{likes}</span>
+              <span className="typo-body-2-medium text-negative-light">{likeCount}</span>
             </div>
             <div className="flex items-center gap-1">
               <CommentIcon className="w-4 h-4 fill-positive" />
-              <span className="typo-body-2-medium text-positive">{comments}</span>
+              <span className="typo-body-2-medium text-positive">{commentCount}</span>
             </div>
           </div>
         </div>
-        {imageUrl && (
+        {isValidImageUrl && (
           <div className="relative w-22 h-22 flex-shrink-0 aspect-video rounded-4 overflow-hidden">
-            <Image src={imageUrl} alt="피드 이미지" fill className="object-cover " />
+            <Image src={repImageUrl} alt="피드 이미지" fill className="object-cover " />
           </div>
         )}
       </div>

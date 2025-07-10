@@ -5,15 +5,17 @@ export interface Author {
 }
 
 export interface Post {
-  id: string;
-  author: Author;
+  id: number;
   title: string;
   content: string;
-  imageUrl?: string;
+  repImageUrl: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
   createdAt: string;
-  views: number;
-  likes: number;
-  comments: number;
+  isFavorited: boolean;
+  hairConsultPostingCreateUserName: string;
+  hairConsultPostingCreateUserRegion: string;
 }
 
 export interface Banner {
