@@ -3,7 +3,7 @@
 import { FC } from 'react';
 import { useRouter } from 'next/navigation';
 import { type Post } from '@/entities/posts';
-import { PostListItem } from './PostListItem';
+import { PostListItem } from './post-list-item';
 
 interface PostListProps {
   posts: Post[];

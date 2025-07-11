@@ -1,6 +1,6 @@
 'use client';
 
-import { useWebviewLogin } from '@/features/auth/api/useWebviewLogin';
+import { useWebviewLogin } from '@/features/auth/api/use-webview-login';
 import { getCurrentUser, setUserData } from '@/shared/lib/auth';
 import { User } from '@/entities/user/model/user';
 import { useSearchParams } from 'next/navigation';
@@ -56,9 +56,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isUserModel = isModel(user);
   const isUserDesigner = isDesigner(user);
-
-  console.log('isUserModel', isUserModel);
-  console.log('isUserDesigner', isUserDesigner);
 
   return (
     <AuthContext.Provider value={{ user, isUserModel, isUserDesigner }}>

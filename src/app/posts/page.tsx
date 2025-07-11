@@ -1,13 +1,13 @@
 'use client';
 
 import { WriteButton } from '@/features/posts';
-import { useGetPosts } from '@/features/posts/api/useGetPosts';
+import { useGetPosts } from '@/features/posts/api/use-get-posts';
 import { POST_TABS } from '@/features/posts/constants/tabs';
 import { type TabType } from '@/features/posts/types/tabs';
 import { ROUTES } from '@/shared';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { BellButton, SiteHeader } from '@/widgets/header';
-import { PostList } from '@/widgets/posts/ui/PostList';
+import { PostList } from '@/widgets/posts/ui/post-list';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 

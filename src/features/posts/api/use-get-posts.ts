@@ -1,6 +1,6 @@
 import { Post } from '@/entities/posts';
 import { apiClient } from '@/shared/api/client';
-import { filterUndefined } from '@/shared/lib/filterUndefined';
+import { filterUndefined } from '@/shared/lib/filter-undefined';
 import { useQuery } from '@tanstack/react-query';
 import { TabType } from '../types/tabs';
 

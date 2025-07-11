@@ -6,7 +6,7 @@ import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
 import { type Post } from '@/entities/posts';
-import { isValidUrl } from '@/shared/lib/isValidUrl';
+import { isValidUrl } from '@/shared/lib/is-valid-url';
 
 interface PostItemProps {
   post: Post;
