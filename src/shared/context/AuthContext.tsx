@@ -5,9 +5,12 @@ import { getCurrentUser, setUserData } from '@/shared/lib/auth';
 import { User } from '@/entities/user/model/user';
 import { useSearchParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { isDesigner, isModel } from '@/entities/user/lib/user-role';
 
 type AuthContextType = {
   user: User;
+  isUserModel: boolean;
+  isUserDesigner: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -51,7 +54,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return null;
   }
 
-  return <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>;
+  const isUserModel = isModel(user);
+  const isUserDesigner = isDesigner(user);
+
+  console.log('isUserModel', isUserModel);
+  console.log('isUserDesigner', isUserDesigner);
+
+  return (
+    <AuthContext.Provider value={{ user, isUserModel, isUserDesigner }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
