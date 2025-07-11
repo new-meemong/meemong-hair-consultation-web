@@ -1,22 +1,28 @@
 'use client';
 
-import { createContext, useContext, useEffect, ReactNode, useState } from 'react';
 import { useWebviewLogin } from '@/features/auth/api/useWebviewLogin';
-import { getAuthTokenData, setAuthTokenData } from '@/shared/lib/auth';
+import { getCurrentUser, setUserData } from '@/shared/lib/auth';
+import { User } from '@/entities/user/model/user';
 import { useSearchParams } from 'next/navigation';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-type AuthContextType = Record<string, unknown>;
+type AuthContextType = {
+  user: User;
+};
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const USER_ID_KEY = 'userId';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(() => getCurrentUser());
+
   const { mutate: login } = useWebviewLogin({
     onSuccess: (response) => {
-      const token = response.data.token;
-      if (token) {
-        setAuthTokenData(token);
+      const userData = response.data;
+      if (userData.token) {
+        setUserData(userData);
+        setUser(userData);
       }
     },
   });
@@ -26,20 +32,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const userId = searchParams.get(USER_ID_KEY);
 
   useEffect(() => {
-    const authTokenData = getAuthTokenData();
-    const isSameUser = authTokenData?.userId === Number(userId);
+    const isSameUser = user?.id === Number(userId);
     if (isSameUser) {
       setIsInitialized(true);
       return;
     }
 
-    if (!userId) return;
+    if (!userId) {
+      setIsInitialized(true);
+      return;
+    }
 
     login({ userId });
     setIsInitialized(true);
-  }, [login, isInitialized, userId]);
+  }, [login, isInitialized, userId, user?.id]);
 
-  return <AuthContext.Provider value={{}}>{isInitialized && children}</AuthContext.Provider>;
+  if (!isInitialized || !user) {
+    return null;
+  }
+
+  return <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

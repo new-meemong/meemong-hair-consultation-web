@@ -1,6 +1,6 @@
 import ky from 'ky';
 import type { SearchParamsOption } from 'ky';
-import { getAuthTokenData } from '../lib/auth';
+import { getToken } from '../lib/auth';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -17,8 +17,7 @@ export interface ApiError {
 }
 
 const createApiInstance = () => {
-  const authTokenData = getAuthTokenData();
-  const token = authTokenData?.token;
+  const token = getToken();
 
   return ky.create({
     prefixUrl: `${API_BASE_URL}/api/v1`,
