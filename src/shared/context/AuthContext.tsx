@@ -15,6 +15,11 @@ const AuthContext = createContext<AuthContextType | null>(null);
 const USER_ID_KEY = 'userId';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const searchParams = useSearchParams();
+  const userId = searchParams.get(USER_ID_KEY);
+
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const [user, setUser] = useState<User | null>(() => getCurrentUser());
 
   const { mutate: login } = useWebviewLogin({
@@ -26,10 +31,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     },
   });
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  const searchParams = useSearchParams();
-  const userId = searchParams.get(USER_ID_KEY);
 
   useEffect(() => {
     const isSameUser = user?.id === Number(userId);
@@ -39,7 +40,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (!userId) {
-      setIsInitialized(true);
       return;
     }
 
