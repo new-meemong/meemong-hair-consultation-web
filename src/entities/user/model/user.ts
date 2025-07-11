@@ -1,8 +1,11 @@
+import { USER_ROLE } from '../constants/user-role';
+import { ValueOf } from '@/shared/type/types';
+
 export interface User {
   id: number;
   createdAt: string;
   updatedAt: string;
-  role: number;
+  role: ValueOf<typeof USER_ROLE>;
   sex: string;
   recentLoginTime: string | null;
   recentRealLoginTime: string | null;
