@@ -59,7 +59,7 @@ export default function PostsPage() {
 
       {/* 게시글 리스트 */}
       <div className="relative">
-        {posts && <PostList posts={posts} isLoading={isLoading} />}
+        {posts && <PostList posts={posts} tab={activeTab} isLoading={isLoading} />}
         {isLoading && (
           <div className="absolute top-0 left-0 right-0 h-1 bg-gray-100 overflow-hidden">
             <div className="h-full bg-emerald-500 rounded-full progress-bar-animation relative" />
