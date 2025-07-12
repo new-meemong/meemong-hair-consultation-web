@@ -4,12 +4,12 @@ import { WriteButton } from '@/features/posts';
 import { useGetPosts } from '@/features/posts/api/use-get-posts';
 import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
 import { type TabType } from '@/features/posts/types/tabs';
-import { useAuthContext } from '@/shared/context/AuthContext';
 import { ROUTES } from '@/shared';
+import { useAuthContext } from '@/shared/context/AuthContext';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { BellButton, SiteHeader } from '@/widgets/header';
 import { PostList } from '@/widgets/posts/ui/post-list';
-import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 
 const POST_LIMIT = 20;
@@ -17,7 +17,7 @@ const POST_LIMIT = 20;
 export default function PostsPage() {
   const { user } = useAuthContext();
   const [activeTab, setActiveTab] = useState<TabType>('latest');
-  const router = useRouter();
+  const router = useRouterWithUser();
 
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
     __limit: POST_LIMIT,
@@ -47,6 +47,10 @@ export default function PostsPage() {
   };
 
   const tabs = getPostTabs(user.role);
+
+  const handleWriteButtonClick = () => {
+    router.push(ROUTES.POSTS_CREATE);
+  };
 
   return (
     <div className="min-w-[375px] w-full mx-auto pb-20">
@@ -84,7 +88,7 @@ export default function PostsPage() {
 
       {/* 글쓰기 버튼 */}
       <div className="fixed bottom-13.5 right-5">
-        <WriteButton onClick={() => router.push(ROUTES.POSTS_CREATE)} />
+        <WriteButton onClick={handleWriteButtonClick} />
       </div>
     </div>
   );
