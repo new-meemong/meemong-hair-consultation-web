@@ -1,9 +1,11 @@
-// 사용자 엔티티 타입
+import { USER_ROLE } from '../constants/user-role';
+import { ValueOf } from '@/shared/type/types';
+
 export interface User {
   id: number;
   createdAt: string;
   updatedAt: string;
-  role: number;
+  role: ValueOf<typeof USER_ROLE>;
   sex: string;
   recentLoginTime: string | null;
   recentRealLoginTime: string | null;
@@ -19,26 +21,4 @@ export interface User {
   LoginType: string;
   FcmToken: string | null;
   Korean: string;
-}
-
-// API 요청/응답 타입
-export interface CreateUserRequest {
-  email: string;
-  name: string;
-  password: string;
-}
-
-export interface UpdateUserRequest {
-  name?: string;
-  avatar?: string;
-}
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  user: User;
-  token: string;
 }

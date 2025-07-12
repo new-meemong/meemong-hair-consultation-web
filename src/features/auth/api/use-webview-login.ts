@@ -1,4 +1,4 @@
-import { User } from '@/entities/user/api/types';
+import { type User } from '@/entities/user/model/user';
 import { apiClient } from '@/shared/api/client';
 import { useMutation } from '@tanstack/react-query';
 

@@ -1,5 +1,6 @@
 import ky from 'ky';
-import { getAuthTokenData } from '../lib/auth';
+import type { SearchParamsOption } from 'ky';
+import { getToken } from '../lib/auth';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -16,8 +17,7 @@ export interface ApiError {
 }
 
 const createApiInstance = () => {
-  const authTokenData = getAuthTokenData();
-  const token = authTokenData?.token;
+  const token = getToken();
 
   return ky.create({
     prefixUrl: `${API_BASE_URL}/api/v1`,
@@ -54,8 +54,11 @@ const createApiInstance = () => {
 export class ApiClient {
   private api = createApiInstance();
 
-  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.api.get(endpoint).json<ApiResponse<T>>();
+  async get<T>(
+    endpoint: string,
+    { searchParams }: { searchParams?: SearchParamsOption } = {},
+  ): Promise<ApiResponse<T>> {
+    return this.api.get(endpoint, { searchParams }).json<ApiResponse<T>>();
   }
 
   async post<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {

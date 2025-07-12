@@ -1,49 +1,56 @@
 'use client';
 
-import { FC } from 'react';
-import { useRouter } from 'next/navigation';
 import { type Post } from '@/entities/posts';
-import { PostItem } from './post-item';
+import { POST_TAB } from '@/features/posts/constants/post-tabs';
+import { type TabType } from '@/features/posts/types/tabs';
+import { useAuthContext } from '@/shared/context/AuthContext';
+import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
+import { useRouter } from 'next/navigation';
+import { FC } from 'react';
+import { PostListItem } from './post-list-item';
+import ErrorIcon from '@/assets/icons/error.svg';
 
 interface PostListProps {
   posts: Post[];
+  tab: TabType;
   isLoading?: boolean;
+  fetchNextPage: () => void;
 }
 
-export const PostList: FC<PostListProps> = ({ posts, isLoading = false }) => {
+export const PostList: FC<PostListProps> = ({ posts, tab, isLoading = false, fetchNextPage }) => {
   const router = useRouter();
+  const { user } = useAuthContext();
 
-  const handlePostClick = (postId: string) => {
+  const handlePostClick = (postId: number) => {
     router.push(`/posts/${postId}`);
   };
 
+  const observerRef = useIntersectionObserver({
+    onIntersect: fetchNextPage,
+  });
+
   if (posts.length === 0) {
     return (
-      <div className="w-full flex justify-center py-12">
-        <p className="text-gray-500">게시물이 없습니다.</p>
+      <div className="flex flex-col gap-2 items-center justify-center pt-30">
+        <ErrorIcon className="size-7" />
+        <p className="typo-body-1-medium text-label-placeholder">
+          {POST_TAB[tab].getEmptyText(user.role)}
+        </p>
       </div>
     );
   }
 
   return (
-    <div
-      className={`[&>*:last-child]:border-b-0 ${isLoading ? 'opacity-70 transition-opacity duration-300' : ''}`}
-    >
-      {posts.map((post) => (
-        <PostItem
-          key={post.id}
-          id={post.id}
-          author={post.author}
-          title={post.title}
-          content={post.content}
-          imageUrl={post.imageUrl}
-          createdAt={post.createdAt}
-          views={post.views}
-          likes={post.likes}
-          comments={post.comments}
-          onClick={() => handlePostClick(post.id)}
-        />
-      ))}
-    </div>
+    <>
+      <div
+        className={`[&>*:last-child]:border-b-0 ${isLoading ? 'opacity-70 transition-opacity duration-300' : ''}`}
+      >
+        {posts.map((post) => (
+          <PostListItem key={post.id} post={post} onClick={() => handlePostClick(post.id)} />
+        ))}
+      </div>
+
+      <div ref={observerRef} />
+    </>
   );
 };

@@ -1,3 +1,5 @@
+import { User } from '@/entities/user/model/user';
+
 export interface JWTPayload {
   userId: number;
   exp: number;
@@ -5,10 +7,10 @@ export interface JWTPayload {
 
 export interface AuthTokenData {
   token: string;
-  userId: number;
+  user: User;
 }
 
-const TOKEN_AUTH_DATA_KEY = 'auth_token_data';
+const USER_DATA_KEY = 'user_data';
 
 export const decodeJWTPayload = (token: string): JWTPayload | null => {
   try {
@@ -27,40 +29,39 @@ export const decodeJWTPayload = (token: string): JWTPayload | null => {
   }
 };
 
-export const setAuthTokenData = (token: string): void => {
+export const setUserData = (user: User): void => {
   if (typeof window === 'undefined') return;
 
-  const payload = decodeJWTPayload(token);
-  if (!payload) return;
-
-  const authData: AuthTokenData = {
-    token,
-    userId: payload.userId,
-  };
-  localStorage.setItem(TOKEN_AUTH_DATA_KEY, JSON.stringify(authData));
+  localStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
 };
 
-export const getAuthTokenData = (): AuthTokenData | null => {
+export const getCurrentUser = (): User | null => {
   if (typeof window === 'undefined') return null;
 
-  const authDataString = localStorage.getItem(TOKEN_AUTH_DATA_KEY);
-  if (!authDataString) return null;
+  const userData = localStorage.getItem(USER_DATA_KEY);
+  if (!userData) return null;
 
   try {
-    return JSON.parse(authDataString);
+    const parsedData = JSON.parse(userData);
+    return parsedData;
   } catch (error) {
-    console.error('Auth data 파싱 실패:', error);
+    console.error('User data 파싱 실패:', error);
     return null;
   }
 };
 
-export const removeAuthTokenData = (): void => {
+export const getToken = (): string | null => {
+  const user = getCurrentUser();
+  return user?.token || null;
+};
+
+export const removeUserData = (): void => {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(TOKEN_AUTH_DATA_KEY);
+  localStorage.removeItem(USER_DATA_KEY);
 };
 
 export const logout = (): void => {
-  removeAuthTokenData();
+  removeUserData();
   // TODO : 서버 로그아웃 요청 필요한지 확인
   if (typeof window !== 'undefined') {
     window.location.href = '/login';
