@@ -4,24 +4,36 @@ import { WriteButton } from '@/features/posts';
 import { useGetPosts } from '@/features/posts/api/use-get-posts';
 import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
 import { type TabType } from '@/features/posts/types/tabs';
-import { ROUTES } from '@/shared';
 import { useAuthContext } from '@/shared/context/AuthContext';
+import { ROUTES } from '@/shared';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { BellButton, SiteHeader } from '@/widgets/header';
 import { PostList } from '@/widgets/posts/ui/post-list';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 const POST_LIMIT = 20;
 
 export default function PostsPage() {
   const { user } = useAuthContext();
-
   const [activeTab, setActiveTab] = useState<TabType>('latest');
   const router = useRouter();
 
-  const { data: response, isLoading } = useGetPosts({ __limit: POST_LIMIT, filter: activeTab });
-  const posts = response?.data.hairConsultPostingList;
+  const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
+    __limit: POST_LIMIT,
+    filter: activeTab,
+  });
+
+  const posts = useMemo(() => {
+    if (!data) return [];
+    return data.pages.flatMap((page) => page.data.hairConsultPostingList);
+  }, [data]);
+
+  const handleFetchNextPage = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleTabChange = (tab: TabType) => {
     if (activeTab === tab) return;
@@ -63,14 +75,12 @@ export default function PostsPage() {
       </div>
 
       {/* 게시글 리스트 */}
-      <div className="relative">
-        {posts && <PostList posts={posts} tab={activeTab} isLoading={isLoading} />}
-        {isLoading && (
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gray-100 overflow-hidden">
-            <div className="h-full bg-emerald-500 rounded-full progress-bar-animation relative" />
-          </div>
-        )}
-      </div>
+      <PostList
+        posts={posts}
+        tab={activeTab}
+        isLoading={isLoading}
+        fetchNextPage={handleFetchNextPage}
+      />
 
       {/* 글쓰기 버튼 */}
       <div className="fixed bottom-10 right-0 left-0 mx-auto w-max">

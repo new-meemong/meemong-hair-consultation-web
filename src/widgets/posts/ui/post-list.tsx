@@ -4,6 +4,7 @@ import { type Post } from '@/entities/posts';
 import { POST_TAB } from '@/features/posts/constants/post-tabs';
 import { type TabType } from '@/features/posts/types/tabs';
 import { useAuthContext } from '@/shared/context/AuthContext';
+import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { PostListItem } from './post-list-item';
@@ -13,15 +14,20 @@ interface PostListProps {
   posts: Post[];
   tab: TabType;
   isLoading?: boolean;
+  fetchNextPage: () => void;
 }
 
-export const PostList: FC<PostListProps> = ({ posts, tab, isLoading = false }) => {
+export const PostList: FC<PostListProps> = ({ posts, tab, isLoading = false, fetchNextPage }) => {
   const router = useRouter();
   const { user } = useAuthContext();
 
   const handlePostClick = (postId: number) => {
     router.push(`/posts/${postId}`);
   };
+
+  const observerRef = useIntersectionObserver({
+    onIntersect: fetchNextPage,
+  });
 
   if (posts.length === 0) {
     return (
@@ -35,12 +41,16 @@ export const PostList: FC<PostListProps> = ({ posts, tab, isLoading = false }) =
   }
 
   return (
-    <div
-      className={`[&>*:last-child]:border-b-0 ${isLoading ? 'opacity-70 transition-opacity duration-300' : ''}`}
-    >
-      {posts.map((post) => (
-        <PostListItem key={post.id} post={post} onClick={() => handlePostClick(post.id)} />
-      ))}
-    </div>
+    <>
+      <div
+        className={`[&>*:last-child]:border-b-0 ${isLoading ? 'opacity-70 transition-opacity duration-300' : ''}`}
+      >
+        {posts.map((post) => (
+          <PostListItem key={post.id} post={post} onClick={() => handlePostClick(post.id)} />
+        ))}
+      </div>
+
+      <div ref={observerRef} />
+    </>
   );
 };
