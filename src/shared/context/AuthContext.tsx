@@ -2,14 +2,13 @@
 
 import { useWebviewLogin } from '@/features/auth/api/use-webview-login';
 import { getCurrentUser, getDefaultUserData, setUserData, UserData } from '@/shared/lib/auth';
-import { User } from '@/entities/user/model/user';
 import { useSearchParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { isDesigner, isModel } from '@/entities/user/lib/user-role';
 import { USER_ID_KEY } from '@/shared/constants/search-params';
 
 type AuthContextType = {
-  user: User;
+  user: UserData;
   isUserModel: boolean;
   isUserDesigner: boolean;
 };

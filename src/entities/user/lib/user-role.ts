@@ -1,5 +1,5 @@
 import { USER_ROLE } from '../constants/user-role';
-import { User } from '../model/user';
+import type { User } from '../model/user';
 
 export function isModel(user: Pick<User, 'role'>): boolean {
   return user.role === USER_ROLE.MODEL;

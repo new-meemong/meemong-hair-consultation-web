@@ -1,5 +1,5 @@
 import { USER_ROLE } from '@/entities/user/constants/user-role';
-import { ValueOf } from '@/shared/type/types';
+import type { ValueOf } from '@/shared/type/types';
 import { POST_TABS } from '../constants/post-tabs';
 
 export function getPostTabs(role: ValueOf<typeof USER_ROLE>) {

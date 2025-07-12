@@ -1,4 +1,4 @@
-import { User } from '@/entities/user/model/user';
+import type { User } from '@/entities/user/model/user';
 
 export interface JWTPayload {
   userId: number;

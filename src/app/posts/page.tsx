@@ -3,7 +3,7 @@
 import { WriteButton } from '@/features/posts';
 import { useGetPosts } from '@/features/posts/api/use-get-posts';
 import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
-import { type TabType } from '@/features/posts/types/tabs';
+import type { TabType } from '@/features/posts/types/tabs';
 import { ROUTES } from '@/shared';
 import { useAuthContext } from '@/shared/context/AuthContext';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';

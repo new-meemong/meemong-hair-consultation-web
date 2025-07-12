@@ -1,12 +1,12 @@
-import { type TabType } from '../types/tabs';
+import type { TabType } from '../types/tabs';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
 import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
 import PopularIcon from '@/assets/icons/recent.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
-import { ValueOf } from '@/shared/type/types';
+import type { ValueOf } from '@/shared/type/types';
 
 type TabInfo = {
   id: TabType;
