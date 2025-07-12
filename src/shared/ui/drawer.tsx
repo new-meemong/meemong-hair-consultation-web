@@ -66,11 +66,7 @@ function DrawerContent({
 
 function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div
-      data-slot="drawer-header"
-      className={cn('flex flex-col gap-1.5 p-4', className)}
-      {...props}
-    />
+    <div data-slot="drawer-header" className={cn('flex flex-col gap-1', className)} {...props} />
   );
 }
 
@@ -78,7 +74,7 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="drawer-footer"
-      className={cn('mt-auto flex flex-col gap-2 p-4', className)}
+      className={cn('mt-auto flex flex-col gap-2', className)}
       {...props}
     />
   );
@@ -101,7 +97,7 @@ function DrawerDescription({
   return (
     <DrawerPrimitive.Description
       data-slot="drawer-description"
-      className={cn('typo-body-1-medium', className)}
+      className={cn('typo-body-2-long-medium text-label-info', className)}
       {...props}
     />
   );

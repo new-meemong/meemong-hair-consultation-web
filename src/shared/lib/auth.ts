@@ -1,13 +1,12 @@
 import type { User } from '@/entities/user/model/user';
+import type { UserGuideState } from '../hooks/use-guide-popup';
 
 export interface JWTPayload {
   userId: number;
   exp: number;
 }
 
-export interface UserData extends User {
-  hasSeenWritePostGuide: boolean;
-}
+export type UserData = User & UserGuideState;
 
 const USER_DATA_KEY = 'user_data';
 
@@ -56,6 +55,14 @@ export const getCurrentUser = (): UserData | null => {
     console.error('User data 파싱 실패:', error);
     return null;
   }
+};
+
+export const updateUserData = (userData: Partial<UserData>): void => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+
+  const updatedUser = { ...currentUser, ...userData };
+  localStorage.setItem(USER_DATA_KEY, JSON.stringify(updatedUser));
 };
 
 export const getToken = (): string | null => {

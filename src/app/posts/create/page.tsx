@@ -6,11 +6,12 @@ import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { SiteHeader } from '@/widgets/header';
 import { Textarea, Input, Checkbox, Label, Separator, Button } from '@/shared/ui';
-import { CheckedState } from '@radix-ui/react-checkbox';
+import type { CheckedState } from '@radix-ui/react-checkbox';
 import { XIcon } from 'lucide-react';
 import GalleryIcon from '@/assets/icons/gallery.svg';
 import { useCreatePost } from '@/features/posts';
 import { useNavigation } from '@/shared';
+import useGuidePopup, { USER_GUIDE_KEYS } from '@/shared/hooks/use-guide-popup';
 
 const formSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요').max(100, '제목은 100자 이하로 입력해주세요'),
@@ -22,6 +23,8 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function CreatePostPage() {
+  const { guideElement } = useGuidePopup(USER_GUIDE_KEYS.hasSeenWritePostGuide);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { handleCreatePost, isPending } = useCreatePost();
   const navigation = useNavigation();
@@ -212,6 +215,7 @@ export default function CreatePostPage() {
           </div>
         </div>
       </form>
+      {guideElement}
     </div>
   );
 }
