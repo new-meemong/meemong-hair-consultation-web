@@ -5,6 +5,10 @@ export interface JWTPayload {
   exp: number;
 }
 
+export interface UserData extends User {
+  hasSeenWritePostGuide: boolean;
+}
+
 const USER_DATA_KEY = 'user_data';
 
 export const decodeJWTPayload = (token: string): JWTPayload | null => {
@@ -24,13 +28,22 @@ export const decodeJWTPayload = (token: string): JWTPayload | null => {
   }
 };
 
+export const getDefaultUserData = (user: User): UserData => {
+  return {
+    ...user,
+    hasSeenWritePostGuide: false,
+  };
+};
+
 export const setUserData = (user: User): void => {
   if (typeof window === 'undefined') return;
 
-  localStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
+  const userData: UserData = getDefaultUserData(user);
+
+  localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
 };
 
-export const getCurrentUser = (): User | null => {
+export const getCurrentUser = (): UserData | null => {
   if (typeof window === 'undefined') return null;
 
   const userData = localStorage.getItem(USER_DATA_KEY);

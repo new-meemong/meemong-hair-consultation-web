@@ -1,7 +1,7 @@
 'use client';
 
 import { useWebviewLogin } from '@/features/auth/api/use-webview-login';
-import { getCurrentUser, setUserData } from '@/shared/lib/auth';
+import { getCurrentUser, getDefaultUserData, setUserData, UserData } from '@/shared/lib/auth';
 import { User } from '@/entities/user/model/user';
 import { useSearchParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
@@ -22,14 +22,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [isInitialized, setIsInitialized] = useState(false);
 
-  const [user, setUser] = useState<User | null>(() => getCurrentUser());
+  const [user, setUser] = useState<UserData | null>(() => getCurrentUser());
 
   const { mutate: login } = useWebviewLogin({
     onSuccess: (response) => {
-      const userData = response.data;
-      if (userData.token) {
-        setUserData(userData);
-        setUser(userData);
+      const userResponseData = response.data;
+      if (userResponseData.token) {
+        setUserData(userResponseData);
+        setUser(getDefaultUserData(userResponseData));
       }
     },
   });
