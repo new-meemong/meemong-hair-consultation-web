@@ -5,11 +5,6 @@ export interface JWTPayload {
   exp: number;
 }
 
-export interface AuthTokenData {
-  token: string;
-  user: User;
-}
-
 const USER_DATA_KEY = 'user_data';
 
 export const decodeJWTPayload = (token: string): JWTPayload | null => {
