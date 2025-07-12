@@ -83,7 +83,7 @@ export default function PostsPage() {
       />
 
       {/* 글쓰기 버튼 */}
-      <div className="fixed bottom-10 right-0 left-0 mx-auto w-max">
+      <div className="fixed bottom-13.5 right-5">
         <WriteButton onClick={() => router.push(ROUTES.POSTS_CREATE)} />
       </div>
     </div>
