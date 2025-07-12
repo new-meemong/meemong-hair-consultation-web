@@ -2,9 +2,10 @@
 
 import { WriteButton } from '@/features/posts';
 import { useGetPosts } from '@/features/posts/api/use-get-posts';
-import { POST_TABS } from '@/features/posts/constants/tabs';
+import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
 import { type TabType } from '@/features/posts/types/tabs';
 import { ROUTES } from '@/shared';
+import { useAuthContext } from '@/shared/context/AuthContext';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { BellButton, SiteHeader } from '@/widgets/header';
 import { PostList } from '@/widgets/posts/ui/post-list';
@@ -14,6 +15,8 @@ import { useState } from 'react';
 const POST_LIMIT = 20;
 
 export default function PostsPage() {
+  const { user } = useAuthContext();
+
   const [activeTab, setActiveTab] = useState<TabType>('latest');
   const router = useRouter();
 
@@ -31,6 +34,8 @@ export default function PostsPage() {
     console.log('알림 버튼 클릭');
   };
 
+  const tabs = getPostTabs(user.role);
+
   return (
     <div className="min-w-[375px] w-full mx-auto pb-20">
       {/* 헤더 */}
@@ -44,7 +49,7 @@ export default function PostsPage() {
       {/* 탭 */}
       <div className="px-5 py-2">
         <ToggleChipGroup className="flex overflow-x-auto scrollbar-hide">
-          {POST_TABS.map(({ id, icon, label }) => (
+          {tabs.map(({ id, icon, label }) => (
             <ToggleChip
               key={id}
               icon={icon}

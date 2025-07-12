@@ -1,7 +1,7 @@
 'use client';
 
 import { type Post } from '@/entities/posts';
-import { POST_TAB } from '@/features/posts/constants/tabs';
+import { POST_TAB } from '@/features/posts/constants/post-tabs';
 import { type TabType } from '@/features/posts/types/tabs';
 import { useAuthContext } from '@/shared/context/AuthContext';
 import { useRouter } from 'next/navigation';
