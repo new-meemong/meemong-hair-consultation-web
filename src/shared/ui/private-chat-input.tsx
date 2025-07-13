@@ -7,7 +7,7 @@ import ArrowUpIcon from '@/assets/icons/arrow-up.svg';
 import { Separator } from '@radix-ui/react-separator';
 import { Checkbox } from './checkbox';
 import { Label } from './label';
-import { CheckedState } from '@radix-ui/react-checkbox';
+import { type CheckedState } from '@radix-ui/react-checkbox';
 
 interface PrivateChatInputProps {
   onSend: (message: string) => void;

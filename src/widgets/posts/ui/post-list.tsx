@@ -6,7 +6,7 @@ import { type TabType } from '@/features/posts/types/tabs';
 import { useAuthContext } from '@/shared/context/AuthContext';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouter } from 'next/navigation';
-import { FC } from 'react';
+import { type FC } from 'react';
 import { PostListItem } from './post-list-item';
 import ErrorIcon from '@/assets/icons/error.svg';
 

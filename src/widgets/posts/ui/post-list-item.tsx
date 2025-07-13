@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import { type FC } from 'react';
 import Image from 'next/image';
 import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
