@@ -1,9 +1,15 @@
 'use client';
 
 import { useWebviewLogin } from '@/features/auth/api/use-webview-login';
-import { getCurrentUser, getDefaultUserData, setUserData, UserData } from '@/shared/lib/auth';
+import {
+  getCurrentUser,
+  getDefaultUserData,
+  setUserData,
+  updateUserData,
+  type UserData,
+} from '@/shared/lib/auth';
 import { useSearchParams } from 'next/navigation';
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import { isDesigner, isModel } from '@/entities/user/lib/user-role';
 import { USER_ID_KEY } from '@/shared/constants/search-params';
 
@@ -11,6 +17,7 @@ type AuthContextType = {
   user: UserData;
   isUserModel: boolean;
   isUserDesigner: boolean;
+  updateUser: (userData: Partial<UserData>) => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -32,6 +39,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     },
   });
+
+  const updateUser = (userData: Partial<UserData>) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updatedUser = { ...prev, ...userData };
+      updateUserData(updatedUser);
+      return updatedUser;
+    });
+  };
 
   useEffect(() => {
     const isSameUser = user?.id === Number(userId);
@@ -56,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isUserDesigner = isDesigner(user);
 
   return (
-    <AuthContext.Provider value={{ user, isUserModel, isUserDesigner }}>
+    <AuthContext.Provider value={{ user, isUserModel, isUserDesigner, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

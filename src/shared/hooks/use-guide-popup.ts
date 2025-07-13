@@ -1,9 +1,8 @@
-import { type ComponentType } from 'react';
+import { type ComponentType, useCallback } from 'react';
 import React from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import type { KeyOf } from '../type/types';
 import WritePostGuide from '@/features/posts/ui/write-post-guide';
-import { updateUserData } from '../lib/auth';
 
 export const USER_GUIDE_KEYS = {
   hasSeenWritePostGuide: 'hasSeenWritePostGuide',
@@ -22,11 +21,11 @@ const USER_GUIDE_COMPONENT: Record<KeyOf<UserGuideState>, ComponentType<GuideCom
 };
 
 function useGuidePopup(key: KeyOf<UserGuideState>) {
-  const { user } = useAuthContext();
+  const { user, updateUser } = useAuthContext();
 
-  const handleClose = () => {
-    updateUserData({ [key]: true });
-  };
+  const handleClose = useCallback(() => {
+    updateUser({ [key]: true });
+  }, [key, updateUser]);
 
   const GuideComponent = USER_GUIDE_COMPONENT[key];
   const guideElement = !user[key]
