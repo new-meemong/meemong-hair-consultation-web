@@ -21,9 +21,6 @@ const createApiInstance = () => {
 
   return ky.create({
     prefixUrl: `${API_BASE_URL}/api/v1`,
-    headers: {
-      'Content-Type': 'application/json',
-    },
     hooks: {
       beforeRequest: [
         (request) => {
@@ -74,15 +71,12 @@ export class ApiClient {
   }
 
   // 파일 업로드용 메서드
-  async postFormData<T>(endpoint: string, formData: FormData): Promise<ApiResponse<T>> {
+  async postFormData<T>(endpoint: string, formData: FormData): Promise<T> {
     return this.api
       .post(endpoint, {
         body: formData,
-        headers: {
-          // Content-Type을 제거하여 브라우저가 자동으로 multipart/form-data를 설정하도록 함
-        },
       })
-      .json<ApiResponse<T>>();
+      .json<T>();
   }
 }
 
