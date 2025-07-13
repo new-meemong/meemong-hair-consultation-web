@@ -1,4 +1,5 @@
-import { useCreatePostMutation, useUploadPostImageMutation } from '../api/mutations';
+import { useCreatePostMutation } from '../api/use-create-post-mutation';
+import { useUploadPostImageMutation } from '../api/use-upload-post-image';
 
 export interface CreatePostData {
   title: string;
@@ -8,24 +9,32 @@ export interface CreatePostData {
 }
 
 export function useCreatePost() {
-  const { mutateAsync: uploadImages } = useUploadPostImageMutation();
-  const { mutate: createPostMutate, isPending } = useCreatePostMutation();
+  const { mutateAsync: uploadImages, isPending: isUploadingImages } = useUploadPostImageMutation();
+  const { mutate: createPostMutate, isPending: isCreatingPost } = useCreatePostMutation();
 
-  const handleCreatePost = async (data: CreatePostData) => {
+  const handleCreatePost = async (
+    data: CreatePostData,
+    { onSuccess }: { onSuccess: () => void },
+  ) => {
     try {
       let imageUrls: string[] = [];
 
       if (data.images.length > 0) {
         const uploadResult = await uploadImages(data.images);
-        imageUrls = uploadResult.data.dataList.map((img) => img.imageURL);
+        imageUrls = uploadResult.dataList.map((img) => img.imageURL);
       }
 
-      createPostMutate({
-        title: data.title,
-        content: data.content,
-        isPhotoVisibleToDesigner: data.isPhotoVisibleToDesigner,
-        hairConsultPostingImages: imageUrls,
-      });
+      createPostMutate(
+        {
+          title: data.title,
+          content: data.content,
+          isPhotoVisibleToDesigner: data.isPhotoVisibleToDesigner,
+          hairConsultPostingImages: imageUrls,
+        },
+        {
+          onSuccess,
+        },
+      );
     } catch (error) {
       console.error('게시글 생성 중 오류:', error);
     }
@@ -33,6 +42,6 @@ export function useCreatePost() {
 
   return {
     handleCreatePost,
-    isPending,
+    isPending: isUploadingImages || isCreatingPost,
   };
 }

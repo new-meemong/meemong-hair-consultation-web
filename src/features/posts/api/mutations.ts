@@ -1,27 +1,8 @@
 'use client';
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { type HairConsultPostingFavoriteResponse } from '@/entities/posts';
 import { apiClient } from '@/shared/api/client';
-import { useNavigation } from '@/shared';
-import {
-  CreateHairConsultPostingRequest,
-  CreateHairConsultPostingResponse,
-  HairConsultPostingFavoriteResponse,
-  ImageUploadResponse,
-} from '@/entities/posts';
-
-export function useCreatePostMutation() {
-  const queryClient = useQueryClient();
-  const navigation = useNavigation();
-  return useMutation({
-    mutationFn: (data: CreateHairConsultPostingRequest) =>
-      apiClient.post<CreateHairConsultPostingResponse>('hair-consult-postings', data),
-    onSuccess: () => {
-      navigation.toPosts();
-      queryClient.invalidateQueries({ queryKey: ['hair-consult-postings'] });
-    },
-  });
-}
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function useDeletePostMutation() {
   const queryClient = useQueryClient();
@@ -61,22 +42,6 @@ export function usePostFavoriteMutation() {
       queryClient.invalidateQueries({
         queryKey: ['hair-consult-postings'],
       });
-    },
-  });
-}
-
-export function useUploadPostImageMutation() {
-  return useMutation({
-    mutationFn: (files: File[]) => {
-      const formData = new FormData();
-      files.forEach((file) => {
-        formData.append('images', file);
-      });
-
-      return apiClient.postFormData<ImageUploadResponse>(
-        'uploads/hair-consult-postings/images',
-        formData,
-      );
     },
   });
 }
