@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { XIcon } from 'lucide-react';
 import Image from 'next/image';
 import React, { useRef } from 'react';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
 const MAX_IMAGE_COUNT = 10;
@@ -68,6 +68,7 @@ export default function CreatePostPage() {
   const isLoading = method.formState.isSubmitting || isPending;
 
   const submit = (data: FormValues) => {
+    console.log('data', data);
     handleCreatePost(data, {
       onSuccess: () => {
         replace('/posts');
@@ -193,9 +194,12 @@ export default function CreatePostPage() {
           <Separator className="w-full h-0.25 bg-border-default" />
           <div className="flex items-center px-5 py-3">
             <div className="flex flex-1 items-center">
-              <Checkbox
-                {...method.register(FORM_FIELD_NAME.isPhotoVisibleToDesigner)}
-                id="photo-visible"
+              <Controller
+                control={method.control}
+                name={FORM_FIELD_NAME.isPhotoVisibleToDesigner}
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox id="photo-visible" checked={value} onCheckedChange={onChange} />
+                )}
               />
               <Label htmlFor="photo-visible" className="ml-2 typo-body-3-regular">
                 디자이너에게만 공개할게요
