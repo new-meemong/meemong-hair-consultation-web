@@ -5,7 +5,7 @@ import { useGetPosts } from '@/features/posts/api/use-get-posts';
 import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
 import type { TabType } from '@/features/posts/types/tabs';
 import { ROUTES } from '@/shared';
-import { useAuthContext } from '@/shared/context/AuthContext';
+import { useAuthContext } from '@/shared/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { BellButton, SiteHeader } from '@/widgets/header';

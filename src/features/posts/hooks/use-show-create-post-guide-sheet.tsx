@@ -1,4 +1,4 @@
-import { useOverlayContext } from '@/shared/context/OverlayContext';
+import { useOverlayContext } from '@/shared/context/overlay-context';
 import type { UseGuidePopupProps } from '@/shared/hooks/use-guide-popup';
 import Image from 'next/image';
 import { useCallback } from 'react';

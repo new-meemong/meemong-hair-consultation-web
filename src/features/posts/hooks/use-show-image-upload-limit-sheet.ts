@@ -1,4 +1,4 @@
-import { useOverlayContext } from '@/shared/context/OverlayContext';
+import { useOverlayContext } from '@/shared/context/overlay-context';
 
 function useShowImageUploadLimitSheet() {
   const { showBottomSheet } = useOverlayContext();
