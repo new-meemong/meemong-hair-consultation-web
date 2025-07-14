@@ -14,18 +14,20 @@ import {
 import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/lib/utils';
 
-interface BottomSheetProps {
+export interface BottomSheetProps {
+  id: string;
   trigger?: React.ReactNode;
   title?: string;
   description?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   footerContent?: React.ReactNode;
   showCloseButton?: boolean;
   closeButtonText?: string;
   closeButtonClassName?: string;
   onClose?: () => void;
-  defaultOpen?: boolean;
+  open?: boolean;
+  duration?: number | { open: number; close: number };
 }
 
 export function BottomSheet({
@@ -39,10 +41,24 @@ export function BottomSheet({
   closeButtonText = '완료',
   closeButtonClassName,
   onClose,
-  defaultOpen = true,
+  open = true,
+  duration,
 }: BottomSheetProps) {
+  const handleClose = () => {
+    onClose?.();
+  };
+
   return (
-    <Drawer direction="bottom" defaultOpen={defaultOpen} onClose={onClose}>
+    <Drawer
+      direction="bottom"
+      open={open}
+      duration={duration}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          handleClose();
+        }
+      }}
+    >
       {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
       <DrawerContent
         className={cn('w-full bg-white border-none rounded-t-12 px-6 pb-5', className)}
@@ -51,17 +67,19 @@ export function BottomSheet({
           {(title || description) && (
             <DrawerHeader>
               {title && <DrawerTitle>{title}</DrawerTitle>}
-              {description && <DrawerDescription>{description}</DrawerDescription>}
+              {description && (
+                <DrawerDescription className="whitespace-pre-wrap">{description}</DrawerDescription>
+              )}
             </DrawerHeader>
           )}
 
-          {children}
+          {children && children}
 
           {(showCloseButton || footerContent) && (
             <DrawerFooter>
               {footerContent}
               {showCloseButton && (
-                <DrawerClose asChild>
+                <DrawerClose asChild onClick={handleClose}>
                   <Button className={closeButtonClassName}>{closeButtonText}</Button>
                 </DrawerClose>
               )}
