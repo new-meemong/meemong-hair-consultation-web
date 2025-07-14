@@ -18,6 +18,20 @@ export interface Post {
   hairConsultPostingCreateUserRegion: string;
 }
 
+export interface PostDetail {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  images: string[];
+  isFavorited: boolean;
+  likeCount: number;
+  commentCount: number;
+  hairConsultPostingCreateUserName: string;
+  hairConsultPostingCreateUserProfileImageUrl: string | null;
+  hairConsultPostingCreateUserRegion: string;
+}
+
 export interface Banner {
   id: string;
   title: string;
