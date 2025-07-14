@@ -1,6 +1,8 @@
 'use client';
 
-import GalleryIcon from '@/assets/icons/gallery.svg';
+import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
+import { CREATE_POST_FORM_MAX_COUNT } from '@/features/posts/constants/create-post-form';
+import ImageUploader from '@/features/posts/ui/image-uploader';
 import { useCreatePost } from '@/features/posts/ui/use-create-post';
 import useGuidePopup, { USER_GUIDE_KEYS } from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -9,14 +11,8 @@ import { SiteHeader } from '@/widgets/header';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { XIcon } from 'lucide-react';
 import Image from 'next/image';
-import React, { useRef } from 'react';
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
-import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
-
-const MAX_IMAGE_COUNT = 10;
-const MAX_TITLE_LENGTH = 21;
-const MAX_CONTENT_LENGTH = 1200;
 
 const FORM_FIELD_NAME = {
   title: 'title',
@@ -29,15 +25,24 @@ const formSchema = z.object({
   [FORM_FIELD_NAME.title]: z
     .string()
     .min(1, '제목을 입력해주세요')
-    .max(MAX_TITLE_LENGTH, `제목은 ${MAX_TITLE_LENGTH}자 이하로 입력해주세요`),
+    .max(
+      CREATE_POST_FORM_MAX_COUNT.TITLE,
+      `제목은 ${CREATE_POST_FORM_MAX_COUNT.TITLE}자 이하로 입력해주세요`,
+    ),
   [FORM_FIELD_NAME.content]: z
     .string()
     .min(1, '내용을 입력해주세요')
-    .max(MAX_CONTENT_LENGTH, `내용은 ${MAX_CONTENT_LENGTH}자 이하로 입력해주세요`),
+    .max(
+      CREATE_POST_FORM_MAX_COUNT.CONTENT,
+      `내용은 ${CREATE_POST_FORM_MAX_COUNT.CONTENT}자 이하로 입력해주세요`,
+    ),
   [FORM_FIELD_NAME.isPhotoVisibleToDesigner]: z.boolean(),
   [FORM_FIELD_NAME.images]: z
     .array(z.instanceof(File))
-    .max(MAX_IMAGE_COUNT, `이미지는 최대 ${MAX_IMAGE_COUNT}개까지 업로드할 수 있습니다`),
+    .max(
+      CREATE_POST_FORM_MAX_COUNT.IMAGE,
+      `이미지는 최대 ${CREATE_POST_FORM_MAX_COUNT.IMAGE}개까지 업로드할 수 있습니다`,
+    ),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -46,7 +51,6 @@ export default function CreatePostPage() {
   const { guideElement } = useGuidePopup(USER_GUIDE_KEYS.hasSeenWritePostGuide);
   const { replace } = useRouterWithUser();
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { handleCreatePost, isPending } = useCreatePost();
 
   const method = useForm<FormValues>({
@@ -76,36 +80,12 @@ export default function CreatePostPage() {
     });
   };
 
-  const validateImageCount = (count: number) => {
-    if (count >= MAX_IMAGE_COUNT) {
-      method.setError(FORM_FIELD_NAME.images, {
-        message: `이미지는 최대 ${MAX_IMAGE_COUNT}개까지 업로드할 수 있습니다`,
-      });
-      return false;
-    }
-    return true;
-  };
-
-  const handleImageUploadClick = () => {
-    method.clearErrors(FORM_FIELD_NAME.images);
-
-    fileInputRef.current?.click();
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-
-    if (!validateImageCount(images.length + e.target.files.length - 1)) return;
-
-    const newFiles = Array.from(e.target.files);
-    const updatedImages = [...images, ...newFiles];
-    method.setValue(FORM_FIELD_NAME.images, updatedImages);
-  };
-
   const handleImageDelete = (index: number) => {
-    method.clearErrors(FORM_FIELD_NAME.images);
-
     const newImages = images.filter((_, i) => i !== index);
+    method.setValue(FORM_FIELD_NAME.images, newImages);
+  };
+
+  const setImages = (newImages: File[]) => {
     method.setValue(FORM_FIELD_NAME.images, newImages);
   };
 
@@ -168,11 +148,6 @@ export default function CreatePostPage() {
                     </div>
                   ))}
                 </div>
-                {method.formState.errors[FORM_FIELD_NAME.images] && (
-                  <p className="text-negative typo-body-3-regular pt-5 px-5">
-                    {String(method.formState.errors[FORM_FIELD_NAME.images]?.message)}
-                  </p>
-                )}
               </div>
             </>
           )}
@@ -191,17 +166,7 @@ export default function CreatePostPage() {
               </Label>
             </div>
             <div className="flex gap-2">
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                ref={fileInputRef}
-                onChange={handleImageChange}
-              />
-              <Button type="button" variant="icon" size="iconLg" onClick={handleImageUploadClick}>
-                <GalleryIcon />
-              </Button>
+              <ImageUploader images={images} setImages={setImages} />
               <Button variant="textWithIcon" size="textWithIcon" disabled={!isValid} type="submit">
                 저장
                 <ChevronRightIcon />
