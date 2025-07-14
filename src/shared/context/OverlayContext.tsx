@@ -18,7 +18,14 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
 
   const showBottomSheet = useCallback((props: BottomSheetProps) => {
     const id = props.id || crypto.randomUUID();
-    setBottomSheets((prev) => [...prev, { ...props, id, open: true }]);
+
+    setBottomSheets((prev) => {
+      if (prev.some((sheet) => sheet.id === id)) {
+        return prev;
+      }
+      return [...prev, { ...props, id, open: true }];
+    });
+
     return id;
   }, []);
 
@@ -33,6 +40,14 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
       setBottomSheets((prev) => prev.filter((s) => s.id !== id));
     }, BOTTOM_SHEET_ANIMATION_DURATION);
   }, []);
+
+  const handleBottomSheetClose = (id: string) => {
+    const sheet = bottomSheets.find((s) => s.id === id);
+    if (!sheet) return;
+
+    sheet.onClose?.();
+    hideBottomSheet(id);
+  };
 
   return (
     <OverlayContext.Provider
@@ -49,7 +64,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
           {...bottomSheet}
           open={bottomSheet.open}
           duration={BOTTOM_SHEET_ANIMATION_DURATION}
-          onClose={() => hideBottomSheet(bottomSheet.id)}
+          onClose={() => handleBottomSheetClose(bottomSheet.id)}
         />
       ))}
     </OverlayContext.Provider>

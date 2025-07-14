@@ -4,7 +4,8 @@ import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { CREATE_POST_FORM_MAX_COUNT } from '@/features/posts/constants/create-post-form';
 import ImageUploader from '@/features/posts/ui/image-uploader';
 import { useCreatePost } from '@/features/posts/ui/use-create-post';
-import useGuidePopup, { USER_GUIDE_KEYS } from '@/shared/hooks/use-guide-popup';
+import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { Button, Checkbox, Input, Label, Separator, Textarea } from '@/shared/ui';
 import { SiteHeader } from '@/widgets/header';
@@ -48,7 +49,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function CreatePostPage() {
-  const { guideElement } = useGuidePopup(USER_GUIDE_KEYS.hasSeenWritePostGuide);
+  useGuidePopup(USER_GUIDE_KEYS.hasSeenCreatePostGuide);
+
   const { replace } = useRouterWithUser();
 
   const { handleCreatePost, isPending } = useCreatePost();
@@ -71,6 +73,7 @@ export default function CreatePostPage() {
 
   const isValid = method.formState.isValid;
   const isLoading = method.formState.isSubmitting || isPending;
+  console.log('isLoading', isLoading);
 
   const submit = (data: FormValues) => {
     handleCreatePost(data, {
@@ -174,7 +177,6 @@ export default function CreatePostPage() {
             </div>
           </div>
         </form>
-        {guideElement}
       </FormProvider>
     </div>
   );

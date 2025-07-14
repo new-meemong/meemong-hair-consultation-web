@@ -1,22 +1,19 @@
+import CommentIcon from '@/assets/icons/comment.svg';
+import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
+import HeartIcon from '@/assets/icons/mdi_heart.svg';
+import RecentIcon from '@/assets/icons/mdi_recent.svg';
+import PopularIcon from '@/assets/icons/recent.svg';
+import { LikeButton } from '@/features/likes';
+import { WriteButton } from '@/features/posts';
 import {
-  Button,
-  DrawerClose,
-  BottomSheet,
   Avatar,
   AvatarFallback,
   AvatarImage,
+  Button,
+  Loader,
   ToggleChip,
   ToggleChipGroup,
-  Loader,
 } from '@/shared/ui';
-import Image from 'next/image';
-import { LikeButton } from '@/features/likes';
-import HeartIcon from '@/assets/icons/mdi_heart.svg';
-import RecentIcon from '@/assets/icons/mdi_recent.svg';
-import CommentIcon from '@/assets/icons/comment.svg';
-import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
-import PopularIcon from '@/assets/icons/recent.svg';
-import { WriteButton } from '@/features/posts';
 import { ChatExamples } from '@/widgets/chat';
 
 export default function DesignGuide() {
@@ -73,7 +70,7 @@ export default function DesignGuide() {
         <section className="w-full">
           <h2 className="typo-title-1-bold mb-6">바텀시트 (Bottom Sheet)</h2>
           <div className="flex flex-wrap gap-4">
-            <BottomSheet trigger={<Button>기본 바텀시트</Button>} title="바텀 시트 제목">
+            {/* <BottomSheet trigger={<Button>기본 바텀시트</Button>} title="바텀 시트 제목">
               <p className="text-label-info typo-body-2-medium">
                 버튼을 눌러 디자이너에게만 공개할 수 있어요
               </p>
@@ -104,7 +101,7 @@ export default function DesignGuide() {
               }
             >
               바텀시트 커스텀 예시
-            </BottomSheet>
+            </BottomSheet> */}
           </div>
         </section>
         {/* 글쓰기 버튼 */}
