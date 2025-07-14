@@ -1,7 +1,7 @@
 import type { Post } from '@/entities/posts';
 import { apiClient } from '@/shared/api/client';
 import { filterUndefined } from '@/shared/lib/filter-undefined';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, type Query } from '@tanstack/react-query';
 import type { TabType } from '../types/tabs';
 
 export const GET_POSTS_ENDPOINT = 'hair-consult-postings/main';
@@ -14,6 +14,11 @@ type GetPostsQueryParams = {
 type GetPostsResponse = {
   hairConsultPostingList: Post[];
   nextCursor: string;
+};
+
+type GetPostsInfiniteData = {
+  pages: GetPostsResponse[];
+  pageParams: (string | undefined)[];
 };
 
 export function useGetPosts(params: GetPostsQueryParams) {
@@ -36,5 +41,11 @@ export function useGetPosts(params: GetPostsQueryParams) {
       return lastPage.data.nextCursor || undefined;
     },
     initialPageParam: undefined as string | undefined,
+    meta: {
+      skipLoadingOverlay: (query: Query<GetPostsInfiniteData>) => {
+        const isFetchingNextPage = (query.state.data?.pages?.length ?? 0) > 0;
+        return isFetchingNextPage;
+      },
+    },
   });
 }
