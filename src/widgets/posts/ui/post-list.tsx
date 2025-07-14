@@ -1,14 +1,14 @@
 'use client';
 
+import ErrorIcon from '@/assets/icons/error.svg';
 import { type Post } from '@/entities/posts';
 import { POST_TAB } from '@/features/posts/constants/post-tabs';
 import { type TabType } from '@/features/posts/types/tabs';
 import { useAuthContext } from '@/shared/context/AuthContext';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
-import { useRouter } from 'next/navigation';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { type FC } from 'react';
 import { PostListItem } from './post-list-item';
-import ErrorIcon from '@/assets/icons/error.svg';
 
 interface PostListProps {
   posts: Post[];
@@ -18,7 +18,7 @@ interface PostListProps {
 }
 
 export const PostList: FC<PostListProps> = ({ posts, tab, isLoading = false, fetchNextPage }) => {
-  const router = useRouter();
+  const router = useRouterWithUser();
   const { user } = useAuthContext();
 
   const handlePostClick = (postId: number) => {
