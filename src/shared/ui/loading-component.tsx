@@ -28,7 +28,4 @@ function ShortLoader({ isLoading = true }: LoadingOverlayProps) {
   );
 }
 
-export const LoadingComponent = {
-  Page: PageLoader,
-  Short: ShortLoader,
-} as const;
+export const LoadingComponent = Object.assign(PageLoader, { Page: PageLoader, Short: ShortLoader });
