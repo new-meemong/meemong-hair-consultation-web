@@ -2,7 +2,6 @@
 
 import GalleryIcon from '@/assets/icons/gallery.svg';
 import { useCreatePost } from '@/features/posts/ui/use-create-post';
-import { useNavigation } from '@/shared';
 import useGuidePopup, { USER_GUIDE_KEYS } from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { Button, Checkbox, Input, Label, Separator, Textarea } from '@/shared/ui';
@@ -13,6 +12,7 @@ import Image from 'next/image';
 import React, { useRef } from 'react';
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
+import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 
 const MAX_IMAGE_COUNT = 10;
 
@@ -46,7 +46,6 @@ export default function CreatePostPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { handleCreatePost, isPending } = useCreatePost();
-  const navigation = useNavigation();
 
   const method = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -68,7 +67,6 @@ export default function CreatePostPage() {
   const isLoading = method.formState.isSubmitting || isPending;
 
   const submit = (data: FormValues) => {
-    console.log('data', data);
     handleCreatePost(data, {
       onSuccess: () => {
         replace('/posts');
@@ -113,20 +111,7 @@ export default function CreatePostPage() {
     <div className="min-h-screen bg-white flex flex-col">
       <FormProvider {...method}>
         <form onSubmit={method.handleSubmit(submit)} className="flex flex-col flex-1">
-          <SiteHeader
-            title="게시글 작성"
-            showBackButton
-            onBackClick={() => navigation.toPosts()}
-            rightComponent={
-              <button
-                type="submit"
-                disabled={!isValid}
-                className={`typo-body-2-semibold ${isValid ? 'text-positive' : 'text-label-placeholder'}`}
-              >
-                {isLoading ? '등록 중...' : '등록'}
-              </button>
-            }
-          />
+          <SiteHeader title="게시글 작성" showBackButton />
           <div className="flex flex-col flex-1 gap-5 py-6 px-5">
             <div>
               <Input
@@ -156,39 +141,37 @@ export default function CreatePostPage() {
           </div>
           {images.length > 0 && (
             <>
-              <>
-                <Separator className="w-full bg-border-default h-0.25" />
-                <div className="overflow-x-auto py-4">
-                  <div className="flex gap-2 px-5 overflow-x-auto">
-                    {images.map((file, index) => (
-                      <div key={index} className="relative w-25 h-25 flex-shrink-0">
-                        <Image
-                          src={URL.createObjectURL(file)}
-                          alt={`업로드 이미지 ${index + 1}`}
-                          fill
-                          className="object-cover rounded-md"
-                        />
-                        <Button
-                          type="button"
-                          variant="icon"
-                          size="icon"
-                          className="absolute top-1 right-1"
-                          onClick={() => {
-                            handleImageDelete(index);
-                          }}
-                        >
-                          <XIcon />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                  {method.formState.errors[FORM_FIELD_NAME.images] && (
-                    <p className="text-negative typo-body-3-regular pt-5 px-5">
-                      {String(method.formState.errors[FORM_FIELD_NAME.images]?.message)}
-                    </p>
-                  )}
+              <Separator className="w-full bg-border-default h-0.25" />
+              <div className="overflow-x-auto py-4">
+                <div className="flex gap-2 px-5 overflow-x-auto">
+                  {images.map((file, index) => (
+                    <div key={index} className="relative w-25 h-25 flex-shrink-0">
+                      <Image
+                        src={URL.createObjectURL(file)}
+                        alt={`업로드 이미지 ${index + 1}`}
+                        fill
+                        className="object-cover rounded-md"
+                      />
+                      <Button
+                        type="button"
+                        variant="icon"
+                        size="icon"
+                        className="absolute top-1 right-1"
+                        onClick={() => {
+                          handleImageDelete(index);
+                        }}
+                      >
+                        <XIcon />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
-              </>
+                {method.formState.errors[FORM_FIELD_NAME.images] && (
+                  <p className="text-negative typo-body-3-regular pt-5 px-5">
+                    {String(method.formState.errors[FORM_FIELD_NAME.images]?.message)}
+                  </p>
+                )}
+              </div>
             </>
           )}
           <Separator className="w-full h-0.25 bg-border-default" />
@@ -205,17 +188,23 @@ export default function CreatePostPage() {
                 디자이너에게만 공개할게요
               </Label>
             </div>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleImageChange}
-            />
-            <Button type="button" variant="icon" size="iconLg" onClick={handleImageUploadClick}>
-              <GalleryIcon />
-            </Button>
+            <div className="flex gap-2">
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+              />
+              <Button type="button" variant="icon" size="iconLg" onClick={handleImageUploadClick}>
+                <GalleryIcon />
+              </Button>
+              <Button variant="textWithIcon" size="textWithIcon" disabled={!isValid} type="submit">
+                저장
+                <ChevronRightIcon />
+              </Button>
+            </div>
           </div>
         </form>
         {guideElement}
