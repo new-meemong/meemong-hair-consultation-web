@@ -74,7 +74,6 @@ export default function CreatePostPage() {
 
   const isValid = method.formState.isValid;
   const isLoading = method.formState.isSubmitting || isPending;
-  console.log('isLoading', isLoading);
 
   const { showSnackBar } = useOverlayContext();
 
@@ -177,7 +176,12 @@ export default function CreatePostPage() {
             </div>
             <div className="flex gap-2">
               <ImageUploader images={images} setImages={setImages} />
-              <Button variant="textWithIcon" size="textWithIcon" disabled={!isValid} type="submit">
+              <Button
+                variant="textWithIcon"
+                size="textWithIcon"
+                disabled={!isValid || isLoading}
+                type="submit"
+              >
                 저장
                 <ChevronRightIcon />
               </Button>

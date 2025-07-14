@@ -13,11 +13,10 @@ import ErrorIcon from '@/assets/icons/error.svg';
 interface PostListProps {
   posts: Post[];
   tab: TabType;
-  isLoading?: boolean;
   fetchNextPage: () => void;
 }
 
-export const PostList: FC<PostListProps> = ({ posts, tab, isLoading = false, fetchNextPage }) => {
+export const PostList: FC<PostListProps> = ({ posts, tab, fetchNextPage }) => {
   const router = useRouter();
   const { user } = useAuthContext();
 
@@ -42,14 +41,11 @@ export const PostList: FC<PostListProps> = ({ posts, tab, isLoading = false, fet
 
   return (
     <>
-      <div
-        className={`[&>*:last-child]:border-b-0 ${isLoading ? 'opacity-70 transition-opacity duration-300' : ''}`}
-      >
+      <div className="[&>*:last-child]:border-b-0">
         {posts.map((post) => (
           <PostListItem key={post.id} post={post} onClick={() => handlePostClick(post.id)} />
         ))}
       </div>
-
       <div ref={observerRef} />
     </>
   );
