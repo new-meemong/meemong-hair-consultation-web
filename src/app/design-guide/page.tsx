@@ -216,20 +216,12 @@ export default function DesignGuide() {
               <h3 className="text-lg font-medium mb-2">Sizes</h3>
               <div className="flex items-center gap-4">
                 <div className="text-center">
-                  <Loader size="sm" />
+                  <Loader size="sm" theme="short" />
                   <p className="text-xs mt-1">Small</p>
                 </div>
                 <div className="text-center">
-                  <Loader size="md" />
+                  <Loader size="md" theme="short" />
                   <p className="text-xs mt-1">Medium</p>
-                </div>
-                <div className="text-center">
-                  <Loader size="lg" />
-                  <p className="text-xs mt-1">Large</p>
-                </div>
-                <div className="text-center">
-                  <Loader size="xl" />
-                  <p className="text-xs mt-1">Extra Large</p>
                 </div>
               </div>
             </div>
@@ -239,13 +231,13 @@ export default function DesignGuide() {
               <div className="flex items-center gap-8">
                 <div className="text-center">
                   <div className="bg-white p-4 rounded">
-                    <Loader theme="dark" size="lg" />
+                    <Loader theme="dark" size="md" />
                   </div>
                   <p className="text-xs mt-1">Dark Theme</p>
                 </div>
                 <div className="text-center">
                   <div className="bg-gray-900 p-4 rounded">
-                    <Loader theme="light" size="lg" />
+                    <Loader theme="light" size="md" />
                   </div>
                   <p className="text-xs mt-1">Light Theme</p>
                 </div>
@@ -256,11 +248,11 @@ export default function DesignGuide() {
               <h3 className="text-lg font-medium mb-2">Variants</h3>
               <div className="flex items-center gap-8">
                 <div className="text-center">
-                  <Loader variant="default" size="lg" />
+                  <Loader theme="dark" size="md" />
                   <p className="text-xs mt-1">Default</p>
                 </div>
                 <div className="text-center">
-                  <Loader variant="short" size="lg" />
+                  <Loader theme="light" size="md" />
                   <p className="text-xs mt-1">Short</p>
                 </div>
               </div>
@@ -270,11 +262,11 @@ export default function DesignGuide() {
               <h3 className="text-lg font-medium mb-2">Custom Speed</h3>
               <div className="flex items-center gap-8">
                 <div className="text-center">
-                  <Loader speed={0.5} size="lg" />
+                  <Loader speed={0.5} size="md" theme="short" />
                   <p className="text-xs mt-1">Slow (0.5x)</p>
                 </div>
                 <div className="text-center">
-                  <Loader speed={2} size="lg" />
+                  <Loader speed={2} size="md" theme="short" />
                   <p className="text-xs mt-1">Fast (2x)</p>
                 </div>
               </div>
