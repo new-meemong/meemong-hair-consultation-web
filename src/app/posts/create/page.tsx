@@ -15,6 +15,8 @@ import { z } from 'zod';
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 
 const MAX_IMAGE_COUNT = 10;
+const MAX_TITLE_LENGTH = 21;
+const MAX_CONTENT_LENGTH = 1200;
 
 const FORM_FIELD_NAME = {
   title: 'title',
@@ -27,15 +29,15 @@ const formSchema = z.object({
   [FORM_FIELD_NAME.title]: z
     .string()
     .min(1, '제목을 입력해주세요')
-    .max(100, '제목은 100자 이하로 입력해주세요'),
+    .max(MAX_TITLE_LENGTH, `제목은 ${MAX_TITLE_LENGTH}자 이하로 입력해주세요`),
   [FORM_FIELD_NAME.content]: z
     .string()
     .min(1, '내용을 입력해주세요')
-    .max(1000, '내용은 1000자 이하로 입력해주세요'),
+    .max(MAX_CONTENT_LENGTH, `내용은 ${MAX_CONTENT_LENGTH}자 이하로 입력해주세요`),
   [FORM_FIELD_NAME.isPhotoVisibleToDesigner]: z.boolean(),
   [FORM_FIELD_NAME.images]: z
     .array(z.instanceof(File))
-    .max(10, '이미지는 최대 10개까지 업로드할 수 있습니다'),
+    .max(MAX_IMAGE_COUNT, `이미지는 최대 ${MAX_IMAGE_COUNT}개까지 업로드할 수 있습니다`),
 });
 
 type FormValues = z.infer<typeof formSchema>;
