@@ -50,7 +50,7 @@ export default function PostsPage() {
   const posts = data?.pages.flatMap((page) => page.data.hairConsultPostingList);
 
   return (
-    <div className="min-w-[375px] w-full mx-auto pb-20">
+    <div className="min-w-[375px] w-full h-screen mx-auto pb-20 flex flex-col">
       {/* 헤더 */}
       <SiteHeader title="헤어상담" rightComponent={<BellButton onClick={handleBellClick} />} />
 
