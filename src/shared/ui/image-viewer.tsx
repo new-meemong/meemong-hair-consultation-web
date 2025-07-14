@@ -31,7 +31,10 @@ export function ImageViewer({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTitle hidden />
-      <DialogContent className={cn('p-0 bg-black max-w-full h-full sm:h-auto', className)}>
+      <DialogContent
+        className={cn('p-0 bg-black max-w-full h-full sm:h-auto', className)}
+        showCloseButton={false}
+      >
         <div className="relative flex flex-col items-center justify-center w-full h-full">
           {/* 헤더 */}
           <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4 z-10 ">
