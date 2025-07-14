@@ -4,9 +4,8 @@ import { OverlayProvider } from '@/shared/context/overlay-context';
 import { QueryProvider } from '@/shared/ui/providers/query-provider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import '../styles/globals.css';
 import { Suspense } from 'react';
-import { LoadingComponent } from '@/shared/ui/loading-component';
+import '../styles/globals.css';
 
 const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',
@@ -29,7 +28,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.variable} antialiased max-w-2xl mx-auto`}>
         <QueryProvider>
-          <Suspense fallback={<LoadingComponent.Page />}>
+          <Suspense fallback={<div>suspense</div>}>
             <AuthProvider>
               <OverlayProvider>
                 <LoadingProvider>{children}</LoadingProvider>
