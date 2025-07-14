@@ -4,7 +4,8 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { Suspense } from 'react';
 import '../styles/globals.css';
-import { AuthProvider } from '@/shared/context/AuthContext';
+import { AuthProvider } from '@/shared/context/auth-context';
+import { OverlayProvider } from '@/shared/context/overlay-context';
 
 const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',
@@ -28,7 +29,9 @@ export default function RootLayout({
       <body className={`${pretendard.variable} antialiased max-w-2xl mx-auto`}>
         <QueryProvider>
           <Suspense fallback={<PageLoading />}>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              <OverlayProvider>{children}</OverlayProvider>
+            </AuthProvider>
           </Suspense>
         </QueryProvider>
       </body>

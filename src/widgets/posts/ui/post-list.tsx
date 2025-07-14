@@ -3,7 +3,7 @@
 import { type Post } from '@/entities/posts';
 import { POST_TAB } from '@/features/posts/constants/post-tabs';
 import { type TabType } from '@/features/posts/types/tabs';
-import { useAuthContext } from '@/shared/context/AuthContext';
+import { useAuthContext } from '@/shared/context/auth-context';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
