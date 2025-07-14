@@ -1,10 +1,10 @@
-import { Post } from '@/entities/posts';
+import type { Post } from '@/entities/posts';
 import { apiClient } from '@/shared/api/client';
 import { filterUndefined } from '@/shared/lib/filter-undefined';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { TabType } from '../types/tabs';
+import type { TabType } from '../types/tabs';
 
-const GET_POSTS_ENDPOINT = 'hair-consult-postings/main';
+export const GET_POSTS_ENDPOINT = 'hair-consult-postings/main';
 
 type GetPostsQueryParams = {
   __limit?: number;

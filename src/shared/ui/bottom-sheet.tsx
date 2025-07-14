@@ -24,6 +24,8 @@ interface BottomSheetProps {
   showCloseButton?: boolean;
   closeButtonText?: string;
   closeButtonClassName?: string;
+  onClose?: () => void;
+  defaultOpen?: boolean;
 }
 
 export function BottomSheet({
@@ -36,12 +38,16 @@ export function BottomSheet({
   showCloseButton = true,
   closeButtonText = '완료',
   closeButtonClassName,
+  onClose,
+  defaultOpen = true,
 }: BottomSheetProps) {
   return (
-    <Drawer direction="bottom">
+    <Drawer direction="bottom" defaultOpen={defaultOpen} onClose={onClose}>
       {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
-      <DrawerContent className={cn('w-full bg-white border-none rounded-12', className)}>
-        <div className="mx-auto w-full max-w-screen-sm bg-white">
+      <DrawerContent
+        className={cn('w-full bg-white border-none rounded-t-12 px-6 pb-5', className)}
+      >
+        <div className="flex flex-col gap-6 pt-6 mx-auto w-full max-w-screen-sm bg-white">
           {(title || description) && (
             <DrawerHeader>
               {title && <DrawerTitle>{title}</DrawerTitle>}
@@ -49,7 +55,7 @@ export function BottomSheet({
             </DrawerHeader>
           )}
 
-          <div className="p-4 pb-0">{children}</div>
+          {children}
 
           {(showCloseButton || footerContent) && (
             <DrawerFooter>

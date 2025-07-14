@@ -1,4 +1,4 @@
-import { Suspense, ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Loader } from '@/shared';
 

@@ -1,14 +1,12 @@
-import { User } from '@/entities/user/model/user';
+import type { User } from '@/entities/user/model/user';
+import type { UserGuideState } from '../hooks/use-guide-popup';
 
 export interface JWTPayload {
   userId: number;
   exp: number;
 }
 
-export interface AuthTokenData {
-  token: string;
-  user: User;
-}
+export type UserData = User & UserGuideState;
 
 const USER_DATA_KEY = 'user_data';
 
@@ -29,13 +27,22 @@ export const decodeJWTPayload = (token: string): JWTPayload | null => {
   }
 };
 
+export const getDefaultUserData = (user: User): UserData => {
+  return {
+    ...user,
+    hasSeenWritePostGuide: false,
+  };
+};
+
 export const setUserData = (user: User): void => {
   if (typeof window === 'undefined') return;
 
-  localStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
+  const userData: UserData = getDefaultUserData(user);
+
+  localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
 };
 
-export const getCurrentUser = (): User | null => {
+export const getCurrentUser = (): UserData | null => {
   if (typeof window === 'undefined') return null;
 
   const userData = localStorage.getItem(USER_DATA_KEY);
@@ -48,6 +55,14 @@ export const getCurrentUser = (): User | null => {
     console.error('User data 파싱 실패:', error);
     return null;
   }
+};
+
+export const updateUserData = (userData: Partial<UserData>): void => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+
+  const updatedUser = { ...currentUser, ...userData };
+  localStorage.setItem(USER_DATA_KEY, JSON.stringify(updatedUser));
 };
 
 export const getToken = (): string | null => {

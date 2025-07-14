@@ -1,7 +1,7 @@
 'use client';
 
 import { forwardRef, useRef, useEffect } from 'react';
-import Lottie, { LottieRefCurrentProps } from 'lottie-react';
+import Lottie, { type LottieRefCurrentProps } from 'lottie-react';
 import { cn } from '@/shared/lib/utils';
 
 import loaderDark from '@/assets/lottie/Loader_final_dark.json';

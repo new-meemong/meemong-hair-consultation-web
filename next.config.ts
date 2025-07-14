@@ -3,8 +3,9 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['picsum.photos'],
+    domains: ['picsum.photos', 'meemong-job-storage.s3.ap-northeast-2.amazonaws.com'],
   },
+  devIndicators: false,
   webpack(config) {
     // SVG 파일을 React 컴포넌트로 사용하기 위한 설정
     config.module.rules.push({

@@ -1,5 +1,5 @@
 import { MOCK_COMMENTS, CURRENT_USER } from '@/entities/comment';
-import { CommentWithReplies, Comment } from '@/entities/comment';
+import { type CommentWithReplies, type Comment } from '@/entities/comment';
 
 /**
  * 댓글 목록 조회

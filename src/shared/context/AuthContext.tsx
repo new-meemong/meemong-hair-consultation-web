@@ -1,21 +1,26 @@
 'use client';
 
 import { useWebviewLogin } from '@/features/auth/api/use-webview-login';
-import { getCurrentUser, setUserData } from '@/shared/lib/auth';
-import { User } from '@/entities/user/model/user';
+import {
+  getCurrentUser,
+  getDefaultUserData,
+  setUserData,
+  updateUserData,
+  type UserData,
+} from '@/shared/lib/auth';
 import { useSearchParams } from 'next/navigation';
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import { isDesigner, isModel } from '@/entities/user/lib/user-role';
+import { USER_ID_KEY } from '@/shared/constants/search-params';
 
 type AuthContextType = {
-  user: User;
+  user: UserData;
   isUserModel: boolean;
   isUserDesigner: boolean;
+  updateUser: (userData: Partial<UserData>) => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
-
-const USER_ID_KEY = 'userId';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
@@ -23,17 +28,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [isInitialized, setIsInitialized] = useState(false);
 
-  const [user, setUser] = useState<User | null>(() => getCurrentUser());
+  const [user, setUser] = useState<UserData | null>(() => getCurrentUser());
 
   const { mutate: login } = useWebviewLogin({
     onSuccess: (response) => {
-      const userData = response.data;
-      if (userData.token) {
-        setUserData(userData);
-        setUser(userData);
+      const userResponseData = response.data;
+      if (userResponseData.token) {
+        setUserData(userResponseData);
+        setUser(getDefaultUserData(userResponseData));
       }
     },
   });
+
+  const updateUser = (userData: Partial<UserData>) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updatedUser = { ...prev, ...userData };
+      updateUserData(updatedUser);
+      return updatedUser;
+    });
+  };
 
   useEffect(() => {
     const isSameUser = user?.id === Number(userId);
@@ -58,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isUserDesigner = isDesigner(user);
 
   return (
-    <AuthContext.Provider value={{ user, isUserModel, isUserDesigner }}>
+    <AuthContext.Provider value={{ user, isUserModel, isUserDesigner, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

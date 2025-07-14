@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import { type FC } from 'react';
 import Image from 'next/image';
 import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
@@ -34,9 +34,9 @@ export const PostListItem: FC<PostItemProps> = ({ post, onClick }) => {
   return (
     <div className="border-b border-gray-200 p-5 w-full h-40 cursor-pointer" onClick={onClick}>
       <div className="flex flex-col gap-2 h-full">
-        <div className="flex justify-between items-center gap-7 flex-1">
-          <div className="flex flex-col min-w-0 flex-1">
-            <div className="flex items-center gap-2 mb-1">
+        <div className="flex justify-between items-stretch gap-7 flex-1">
+          <div className="flex flex-col min-w-0 flex-1 gap-1">
+            <div className="flex items-center gap-2">
               <p className="typo-body-3-regular text-label-info">
                 {hairConsultPostingCreateUserName}
               </p>
@@ -47,7 +47,7 @@ export const PostListItem: FC<PostItemProps> = ({ post, onClick }) => {
               <h2 className="typo-headline-bold text-label-strong overflow-hidden text-ellipsis line-clamp-1">
                 {title}
               </h2>
-              <p className="typo-body-2-regular text-label-default overflow-hidden text-ellipsis line-clamp-2 break-words flex-1">
+              <p className="typo-body-2-regular text-label-default overflow-hidden text-ellipsis line-clamp-2 break-words">
                 {content}
               </p>
             </div>
