@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import CheckIcon from '@/assets/icons/check.svg';
 
-export const SNACK_BAR_ANIMATION_DURATION = 500;
+export const SNACK_BAR_ANIMATION_DURATION = 2000;
 
 export interface SnackBarProps {
   id: string;
