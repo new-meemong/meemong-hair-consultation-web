@@ -15,7 +15,7 @@ import { useCallback, useMemo, useState } from 'react';
 const POST_LIMIT = 20;
 
 export default function PostsPage() {
-  const { user } = useAuthContext();
+  const { user, isUserModel } = useAuthContext();
   const [activeTab, setActiveTab] = useState<TabType>('latest');
   const router = useRouterWithUser();
 
@@ -87,9 +87,11 @@ export default function PostsPage() {
       />
 
       {/* 글쓰기 버튼 */}
-      <div className="fixed bottom-13.5 right-5">
-        <WriteButton onClick={handleWriteButtonClick} />
-      </div>
+      {isUserModel && (
+        <div className="fixed bottom-13.5 right-5">
+          <WriteButton onClick={handleWriteButtonClick} />
+        </div>
+      )}
     </div>
   );
 }
