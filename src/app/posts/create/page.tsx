@@ -5,6 +5,7 @@ import { CREATE_POST_FORM_MAX_COUNT } from '@/features/posts/constants/create-po
 import ImageUploader from '@/features/posts/ui/image-uploader';
 import { useCreatePost } from '@/features/posts/ui/use-create-post';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import { useOverlayContext } from '@/shared/context/overlay-context';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { Button, Checkbox, Input, Label, Separator, Textarea } from '@/shared/ui';
@@ -75,9 +76,15 @@ export default function CreatePostPage() {
   const isLoading = method.formState.isSubmitting || isPending;
   console.log('isLoading', isLoading);
 
+  const { showSnackBar } = useOverlayContext();
+
   const submit = (data: FormValues) => {
     handleCreatePost(data, {
       onSuccess: () => {
+        showSnackBar({
+          type: 'success',
+          message: '업로드가 완료되었습니다!',
+        });
         replace('/posts');
       },
     });
