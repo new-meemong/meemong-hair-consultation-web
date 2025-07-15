@@ -10,11 +10,9 @@ import loaderShort from '@/assets/lottie/Loader_final_short.json';
 
 interface LoaderProps {
   /** 로더 크기 */
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  /** 테마 (dark/light) */
-  theme?: 'dark' | 'light';
-  /** 짧은 애니메이션 사용 여부 */
-  variant?: 'default' | 'short';
+  size: 'sm' | 'md';
+  /** 테마 (dark/light/short) */
+  theme: 'dark' | 'light' | 'short';
   /** 추가 CSS 클래스 */
   className?: string;
   /** 애니메이션 속도 (1이 기본값) */
@@ -22,21 +20,23 @@ interface LoaderProps {
 }
 
 const sizeClasses = {
-  sm: 'w-6 h-6',
-  md: 'w-10 h-10',
-  lg: 'w-16 h-16',
-  xl: 'w-24 h-24',
+  sm: 'w-7 h-7',
+  md: 'w-9 h-9',
 };
 
 const Loader = forwardRef<HTMLDivElement, LoaderProps>(
-  ({ size = 'md', theme = 'dark', variant = 'default', className, speed = 1 }, ref) => {
+  ({ size, theme, className, speed = 1 }, ref) => {
     const lottieRef = useRef<LottieRefCurrentProps>(null);
 
     const getAnimationData = () => {
-      if (variant === 'short') {
-        return loaderShort;
+      switch (theme) {
+        case 'short':
+          return loaderShort;
+        case 'light':
+          return loaderWhite;
+        case 'dark':
+          return loaderDark;
       }
-      return theme === 'light' ? loaderWhite : loaderDark;
     };
 
     useEffect(() => {

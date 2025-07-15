@@ -1,9 +1,13 @@
 import type { User } from '@/entities/user/model/user';
-import type { UserGuideState } from '../hooks/use-guide-popup';
+import type { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 
 export interface JWTPayload {
   userId: number;
   exp: number;
+}
+
+export interface UserGuideState {
+  [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: boolean;
 }
 
 export type UserData = User & UserGuideState;
@@ -30,7 +34,7 @@ export const decodeJWTPayload = (token: string): JWTPayload | null => {
 export const getDefaultUserData = (user: User): UserData => {
   return {
     ...user,
-    hasSeenWritePostGuide: false,
+    hasSeenCreatePostGuide: false,
   };
 };
 

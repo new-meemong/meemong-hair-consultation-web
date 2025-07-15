@@ -1,22 +1,19 @@
+import CommentIcon from '@/assets/icons/comment.svg';
+import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
+import HeartIcon from '@/assets/icons/mdi_heart.svg';
+import RecentIcon from '@/assets/icons/mdi_recent.svg';
+import PopularIcon from '@/assets/icons/recent.svg';
+import { LikeButton } from '@/features/likes';
+import { WriteButton } from '@/features/posts';
 import {
-  Button,
-  DrawerClose,
-  BottomSheet,
   Avatar,
   AvatarFallback,
   AvatarImage,
+  Button,
+  Loader,
   ToggleChip,
   ToggleChipGroup,
-  Loader,
 } from '@/shared/ui';
-import Image from 'next/image';
-import { LikeButton } from '@/features/likes';
-import HeartIcon from '@/assets/icons/mdi_heart.svg';
-import RecentIcon from '@/assets/icons/mdi_recent.svg';
-import CommentIcon from '@/assets/icons/comment.svg';
-import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
-import PopularIcon from '@/assets/icons/recent.svg';
-import { WriteButton } from '@/features/posts';
 import { ChatExamples } from '@/widgets/chat';
 
 export default function DesignGuide() {
@@ -73,7 +70,7 @@ export default function DesignGuide() {
         <section className="w-full">
           <h2 className="typo-title-1-bold mb-6">바텀시트 (Bottom Sheet)</h2>
           <div className="flex flex-wrap gap-4">
-            <BottomSheet trigger={<Button>기본 바텀시트</Button>} title="바텀 시트 제목">
+            {/* <BottomSheet trigger={<Button>기본 바텀시트</Button>} title="바텀 시트 제목">
               <p className="text-label-info typo-body-2-medium">
                 버튼을 눌러 디자이너에게만 공개할 수 있어요
               </p>
@@ -104,7 +101,7 @@ export default function DesignGuide() {
               }
             >
               바텀시트 커스텀 예시
-            </BottomSheet>
+            </BottomSheet> */}
           </div>
         </section>
         {/* 글쓰기 버튼 */}
@@ -219,20 +216,12 @@ export default function DesignGuide() {
               <h3 className="text-lg font-medium mb-2">Sizes</h3>
               <div className="flex items-center gap-4">
                 <div className="text-center">
-                  <Loader size="sm" />
+                  <Loader size="sm" theme="short" />
                   <p className="text-xs mt-1">Small</p>
                 </div>
                 <div className="text-center">
-                  <Loader size="md" />
+                  <Loader size="md" theme="short" />
                   <p className="text-xs mt-1">Medium</p>
-                </div>
-                <div className="text-center">
-                  <Loader size="lg" />
-                  <p className="text-xs mt-1">Large</p>
-                </div>
-                <div className="text-center">
-                  <Loader size="xl" />
-                  <p className="text-xs mt-1">Extra Large</p>
                 </div>
               </div>
             </div>
@@ -242,13 +231,13 @@ export default function DesignGuide() {
               <div className="flex items-center gap-8">
                 <div className="text-center">
                   <div className="bg-white p-4 rounded">
-                    <Loader theme="dark" size="lg" />
+                    <Loader theme="dark" size="md" />
                   </div>
                   <p className="text-xs mt-1">Dark Theme</p>
                 </div>
                 <div className="text-center">
                   <div className="bg-gray-900 p-4 rounded">
-                    <Loader theme="light" size="lg" />
+                    <Loader theme="light" size="md" />
                   </div>
                   <p className="text-xs mt-1">Light Theme</p>
                 </div>
@@ -259,11 +248,11 @@ export default function DesignGuide() {
               <h3 className="text-lg font-medium mb-2">Variants</h3>
               <div className="flex items-center gap-8">
                 <div className="text-center">
-                  <Loader variant="default" size="lg" />
+                  <Loader theme="dark" size="md" />
                   <p className="text-xs mt-1">Default</p>
                 </div>
                 <div className="text-center">
-                  <Loader variant="short" size="lg" />
+                  <Loader theme="light" size="md" />
                   <p className="text-xs mt-1">Short</p>
                 </div>
               </div>
@@ -273,11 +262,11 @@ export default function DesignGuide() {
               <h3 className="text-lg font-medium mb-2">Custom Speed</h3>
               <div className="flex items-center gap-8">
                 <div className="text-center">
-                  <Loader speed={0.5} size="lg" />
+                  <Loader speed={0.5} size="md" theme="short" />
                   <p className="text-xs mt-1">Slow (0.5x)</p>
                 </div>
                 <div className="text-center">
-                  <Loader speed={2} size="lg" />
+                  <Loader speed={2} size="md" theme="short" />
                   <p className="text-xs mt-1">Fast (2x)</p>
                 </div>
               </div>

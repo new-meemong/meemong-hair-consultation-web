@@ -1,40 +1,35 @@
-import { type ComponentType, useCallback } from 'react';
-import React from 'react';
-import { useAuthContext } from '../context/AuthContext';
+import useShowCreatePostGuideSheet from '@/features/posts/hooks/use-show-create-post-guide-sheet';
+import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import { useCallback, useEffect } from 'react';
+import { useAuthContext } from '../context/auth-context';
+import type { UserGuideState } from '../lib';
 import type { KeyOf } from '../type/types';
-import WritePostGuide from '@/features/posts/ui/write-post-guide';
 
-export const USER_GUIDE_KEYS = {
-  hasSeenWritePostGuide: 'hasSeenWritePostGuide',
-} as const;
-
-export interface UserGuideState {
-  [USER_GUIDE_KEYS.hasSeenWritePostGuide]: boolean;
-}
-
-export interface GuideComponentProps {
+export interface UseGuidePopupProps {
   onClose: () => void;
 }
-
-const USER_GUIDE_COMPONENT: Record<KeyOf<UserGuideState>, ComponentType<GuideComponentProps>> = {
-  [USER_GUIDE_KEYS.hasSeenWritePostGuide]: WritePostGuide,
-};
 
 function useGuidePopup(key: KeyOf<UserGuideState>) {
   const { user, updateUser } = useAuthContext();
 
+  const showCreatePostGuideSheet = useShowCreatePostGuideSheet();
+
+  const showGuideMapper = {
+    [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: showCreatePostGuideSheet,
+  };
+
+  const showGuide = showGuideMapper[key];
+
   const handleClose = useCallback(() => {
+    console.log('key', key);
     updateUser({ [key]: true });
   }, [key, updateUser]);
 
-  const GuideComponent = USER_GUIDE_COMPONENT[key];
-  const guideElement = !user[key]
-    ? React.createElement(GuideComponent, { onClose: handleClose })
-    : null;
-
-  return {
-    guideElement,
-  };
+  useEffect(() => {
+    if (!user[key]) {
+      showGuide({ onClose: handleClose });
+    }
+  }, [user, key, showGuide, handleClose]);
 }
 
 export default useGuidePopup;

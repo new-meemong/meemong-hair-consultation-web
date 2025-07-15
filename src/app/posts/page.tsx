@@ -5,12 +5,12 @@ import { useGetPosts } from '@/features/posts/api/use-get-posts';
 import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
 import type { TabType } from '@/features/posts/types/tabs';
 import { ROUTES } from '@/shared';
-import { useAuthContext } from '@/shared/context/AuthContext';
+import { useAuthContext } from '@/shared/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { BellButton, SiteHeader } from '@/widgets/header';
 import { PostList } from '@/widgets/posts/ui/post-list';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 const POST_LIMIT = 20;
 
@@ -19,15 +19,10 @@ export default function PostsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('latest');
   const router = useRouterWithUser();
 
-  const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
     __limit: POST_LIMIT,
     filter: activeTab,
   });
-
-  const posts = useMemo(() => {
-    if (!data) return [];
-    return data.pages.flatMap((page) => page.data.hairConsultPostingList);
-  }, [data]);
 
   const handleFetchNextPage = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -52,8 +47,10 @@ export default function PostsPage() {
     router.push(ROUTES.POSTS_CREATE);
   };
 
+  const posts = data?.pages.flatMap((page) => page.data.hairConsultPostingList);
+
   return (
-    <div className="min-w-[375px] w-full mx-auto pb-20">
+    <div className="min-w-[375px] w-full h-screen mx-auto pb-20 flex flex-col">
       {/* 헤더 */}
       <SiteHeader title="헤어상담" rightComponent={<BellButton onClick={handleBellClick} />} />
 
@@ -79,12 +76,7 @@ export default function PostsPage() {
       </div>
 
       {/* 게시글 리스트 */}
-      <PostList
-        posts={posts}
-        tab={activeTab}
-        isLoading={isLoading}
-        fetchNextPage={handleFetchNextPage}
-      />
+      {posts && <PostList posts={posts} tab={activeTab} fetchNextPage={handleFetchNextPage} />}
 
       {/* 글쓰기 버튼 */}
       {isUserModel && (

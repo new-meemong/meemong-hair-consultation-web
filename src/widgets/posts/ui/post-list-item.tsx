@@ -7,7 +7,7 @@ import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
 import { type Post } from '@/entities/posts';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
-import { useAuthContext } from '@/shared/context/AuthContext';
+import { useAuthContext } from '@/shared/context/auth-context';
 
 interface PostItemProps {
   post: Post;
