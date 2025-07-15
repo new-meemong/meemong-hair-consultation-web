@@ -9,9 +9,11 @@ import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import MoreIcon from '@/assets/icons/more-horizontal.svg';
+import { MoreOptionsMenu } from '@/shared';
 
 export default function PostDetailPage() {
-  const { isUserDesigner } = useAuthContext();
+  const { isUserDesigner, user } = useAuthContext();
 
   useGuidePopup(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
 
@@ -19,6 +21,8 @@ export default function PostDetailPage() {
 
   const { data: response } = useGetPostDetail(id?.toString() ?? '');
   const postDetail = response?.data;
+
+  const isWriter = true;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [comments, setComments] = useState<CommentWithReplies[]>([]);
@@ -120,10 +124,41 @@ export default function PostDetailPage() {
   //   }
   // };
 
+  const handleEdit = () => {
+    console.log('edit');
+  };
+  const handleDelete = () => {
+    console.log('delete');
+  };
+
+  const getMoreOptions = () => [
+    {
+      label: '수정하기',
+      onClick: handleEdit,
+    },
+    {
+      label: '삭제하기',
+      onClick: handleDelete,
+      className: 'text-negative',
+    },
+  ];
+
   return (
     <div className="min-w-[375px] w-full mx-auto">
       {/* 헤더 */}
-      <SiteHeader title="헤어상담" showBackButton />
+      <SiteHeader
+        title="헤어상담"
+        showBackButton
+        rightComponent={
+          isWriter && (
+            <MoreOptionsMenu
+              trigger={<MoreIcon className="size-7" />}
+              options={getMoreOptions()}
+              contentClassName="-right-[14px] "
+            />
+          )
+        }
+      />
       {postDetail && <PostDetailItem postDetail={postDetail} />}
 
       {/* 댓글 섹션 */}
