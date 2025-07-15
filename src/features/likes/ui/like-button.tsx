@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePostFavoriteMutation } from '@/features/posts';
+import { usePostFavoriteMutation } from '@/features/posts/api/mutations';
 import { Toggle } from '@/shared/ui/toggle';
 import { cn } from '@/shared/lib/utils';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';

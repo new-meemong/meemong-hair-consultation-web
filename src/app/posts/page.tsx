@@ -1,6 +1,5 @@
 'use client';
 
-import { WriteButton } from '@/features/posts';
 import { useGetPosts } from '@/features/posts/api/use-get-posts';
 import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
 import type { TabType } from '@/features/posts/types/tabs';
@@ -9,8 +8,9 @@ import { useAuthContext } from '@/shared/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { BellButton, SiteHeader } from '@/widgets/header';
-import PostList from '@/widgets/posts/ui/post-list';
+import PostList from '@/features/posts/ui/post-list';
 import { useCallback, useState } from 'react';
+import { WritePostButton } from '@/features/posts/ui/write-post-button';
 
 const POST_LIMIT = 20;
 
@@ -81,7 +81,7 @@ export default function PostsPage() {
       {/* 글쓰기 버튼 */}
       {isUserModel && (
         <div className="fixed bottom-13.5 right-5">
-          <WriteButton onClick={handleWriteButtonClick} />
+          <WritePostButton onClick={handleWriteButtonClick} />
         </div>
       )}
     </div>

@@ -4,7 +4,7 @@ import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
 import PopularIcon from '@/assets/icons/recent.svg';
 import { LikeButton } from '@/features/likes';
-import { WriteButton } from '@/features/posts';
+import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import {
   Avatar,
   AvatarFallback,
@@ -108,7 +108,7 @@ export default function DesignGuide() {
         <section className="w-full">
           <h2 className="typo-title-1-bold mb-6">글쓰기 버튼</h2>
           <div className="grid gap-4 p-6 rounded-10 bg-white border border-border">
-            <WriteButton />
+            <WritePostButton />
           </div>
         </section>
         {/* 토글 칩스 섹션 */}
