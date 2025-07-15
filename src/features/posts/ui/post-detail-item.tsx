@@ -65,10 +65,16 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
           {images.map((image, index) => (
             <div
               key={index}
-              className="relative min-w-35 h-35 rounded-6 cursor-pointer"
+              className="relative min-w-35 h-35 rounded-6 cursor-pointer overflow-hidden"
               onClick={() => handleImageClick(index)}
             >
-              <Image src={image} alt={`게시글 이미지 ${index + 1}`} fill className="object-cover" />
+              <Image
+                src={image}
+                alt={`게시글 이미지 ${index + 1}`}
+                fill
+                className="object-cover"
+                sizes="140px"
+              />
             </div>
           ))}
         </div>
@@ -77,7 +83,6 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
       <Separator className="w-full bg-border-default h-0.25" />
       <div className="flex items-center justify-between gap-5 py-4 px-5">
         <div className="flex flex-1 justify-center items-center gap-1">
-          {/* 좋아요 버튼 */}
           <LikeButton initialLiked={isFavorited} initialCount={likeCount} />
         </div>
         <div className="flex flex-1 justify-center items-center gap-1">
