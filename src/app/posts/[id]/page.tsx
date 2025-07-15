@@ -3,11 +3,18 @@
 import { type CommentWithReplies } from '@/entities/comment';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import PostDetailItem from '@/features/posts/ui/post-detail-item';
+import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import { useAuthContext } from '@/shared/context/auth-context';
+import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
 export default function PostDetailPage() {
+  const { isUserDesigner } = useAuthContext();
+
+  useGuidePopup(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
+
   const { id } = useParams();
 
   const { data: response } = useGetPostDetail(id?.toString() ?? '');
