@@ -3,7 +3,7 @@
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { CREATE_POST_FORM_MAX_COUNT } from '@/features/posts/constants/create-post-form';
 import ImageUploader from '@/features/posts/ui/image-uploader';
-import { useCreatePost } from '@/features/posts/ui/use-create-post';
+import { useCreatePost } from '@/features/posts/hooks/use-create-post';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
