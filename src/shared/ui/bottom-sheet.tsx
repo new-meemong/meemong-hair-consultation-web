@@ -26,7 +26,7 @@ export interface BottomSheetProps {
   closeButtonText?: string;
   closeButtonClassName?: string;
   onClose?: () => void;
-  open?: boolean;
+  open: boolean;
   duration?: number | { open: number; close: number };
 }
 
@@ -41,7 +41,7 @@ export function BottomSheet({
   closeButtonText = '완료',
   closeButtonClassName,
   onClose,
-  open = true,
+  open,
   duration,
 }: BottomSheetProps) {
   const handleClose = () => {
