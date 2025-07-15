@@ -1,48 +1,24 @@
 'use client';
 
-import { useState } from 'react';
-import { usePostFavoriteMutation } from '@/features/posts/api/mutations';
-import { Toggle } from '@/shared/ui/toggle';
-import { cn } from '@/shared/lib/utils';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
+import { usePostFavoriteMutation } from '@/features/posts/api/use-post-favorite-mutation';
+import { cn } from '@/shared/lib/utils';
+import { Toggle } from '@/shared/ui/toggle';
 
 interface LikeButtonProps {
-  postId?: number; // 헤어상담 게시글 ID
-  initialLiked?: boolean;
-  initialCount?: number;
-  onToggle?: (pressed: boolean) => void;
+  postId: number;
+  liked: boolean;
+  likeCount: number;
 }
 
-export function LikeButton({
-  postId,
-  initialLiked = false,
-  initialCount = 0,
-  onToggle,
-}: LikeButtonProps) {
-  const [liked, setLiked] = useState(initialLiked);
-  const [count, setCount] = useState(initialCount);
-
+export function LikeButton({ postId, liked, likeCount }: LikeButtonProps) {
   const toggleFavoriteMutation = usePostFavoriteMutation();
 
-  const handleToggle = async (pressed: boolean) => {
-    setLiked(pressed);
-    setCount((prev) => (pressed ? prev + 1 : prev - 1));
-
-    onToggle?.(pressed);
-
-    if (postId) {
-      try {
-        await toggleFavoriteMutation.mutateAsync({
-          hairConsultPostingId: postId,
-          isLiked: !pressed, // 현재 상태의 반대를 전달
-        });
-      } catch (error) {
-        // API 실패 시 상태 롤백
-        console.error('좋아요 API 호출 실패:', error);
-        setLiked(!pressed);
-        setCount((prev) => (pressed ? prev - 1 : prev + 1));
-      }
-    }
+  const handleToggle = (pressed: boolean) => {
+    toggleFavoriteMutation.mutate({
+      hairConsultPostingId: postId,
+      liked: !pressed,
+    });
   };
 
   return (
@@ -55,7 +31,7 @@ export function LikeButton({
       disabled={toggleFavoriteMutation.isPending}
       className={cn(
         'flex items-center justify-center gap-1 bg-transparent min-w-0 min-h-0 p-0 border-none',
-        toggleFavoriteMutation.isPending && 'opacity-50 cursor-not-allowed',
+        toggleFavoriteMutation.isPending && 'cursor-not-allowed',
       )}
     >
       <HeartIcon
@@ -73,7 +49,7 @@ export function LikeButton({
           'pt-0.5',
         )}
       >
-        {toggleFavoriteMutation.isPending ? '...' : count}
+        {likeCount}
       </p>
     </Toggle>
   );

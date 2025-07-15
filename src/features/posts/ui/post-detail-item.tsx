@@ -2,7 +2,7 @@ import type { PostDetail } from '@/entities/posts/model/types';
 import { Avatar, AvatarFallback, AvatarImage, Separator } from '@/shared/ui';
 import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
 import Image from 'next/image';
-import { LikeButton } from '@/features/likes';
+import { LikeButton } from '@/features/likes/ui/like-button';
 import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
 
@@ -12,6 +12,7 @@ type PostDetailItemProps = {
 
 function PostDetailItem({ postDetail }: PostDetailItemProps) {
   const {
+    id,
     title,
     content,
     createdAt,
@@ -83,7 +84,7 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
       <Separator className="w-full bg-border-default h-0.25" />
       <div className="flex items-center justify-between gap-5 py-4 px-5">
         <div className="flex flex-1 justify-center items-center gap-1">
-          <LikeButton initialLiked={isFavorited} initialCount={likeCount} />
+          <LikeButton postId={id} liked={isFavorited} likeCount={likeCount} />
         </div>
         <div className="flex flex-1 justify-center items-center gap-1">
           <CommentIcon className="w-5 h-5 fill-label-placeholder" />

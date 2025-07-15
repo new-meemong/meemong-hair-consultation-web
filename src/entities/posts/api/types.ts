@@ -49,12 +49,6 @@ export interface CreateHairConsultPostingResponse {
   };
 }
 
-export interface HairConsultPostingFavoriteResponse {
-  data: {
-    id: number; // 좋아요 ID
-  };
-}
-
 export type HairConsultPostingErrorCode =
   | 'VALIDATOR_ERROR' // 400: 유효성 검사 오류
   | 'HAIR_CONSULT_POSTINGS_MODEL_ONLY' // 403: 모델만 작성 가능
