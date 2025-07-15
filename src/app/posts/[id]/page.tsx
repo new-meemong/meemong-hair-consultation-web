@@ -2,13 +2,11 @@
 
 import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
-import { type CommentWithReplies, CURRENT_USER } from '@/entities/comment';
-import { type Post } from '@/entities/posts';
-import { CommentForm, createComment, deleteComment, updateComment } from '@/features/comments';
+import { type CommentWithReplies } from '@/entities/comment';
 import { LikeButton } from '@/features/likes';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
-import { Avatar, AvatarFallback, AvatarImage, ImageViewer, Separator } from '@/shared/ui';
-import { CommentList } from '@/widgets/comments';
+import { Avatar, AvatarFallback, AvatarImage, Separator } from '@/shared/ui';
+import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
 import { SiteHeader } from '@/widgets/header';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
@@ -20,10 +18,7 @@ export default function PostDetailPage() {
   const { data: response } = useGetPostDetail(id?.toString() ?? '');
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<CommentWithReplies[]>([]);
-  const [imageViewerOpen, setImageViewerOpen] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
 
@@ -77,54 +72,55 @@ export default function PostDetailPage() {
   //   }
   // };
 
-  const handleEditComment = async (commentId: string, newContent: string) => {
-    try {
-      const updatedComment = await updateComment({ commentId, content: newContent });
+  // const handleEditComment = async (commentId: string, newContent: string) => {
+  //   try {
+  //     const updatedComment = await updateComment({ commentId, content: newContent });
 
-      setComments((prev) => {
-        return prev.map((comment) => {
-          if (comment.id === commentId) {
-            return { ...comment, content: updatedComment.content };
-          }
+  //     setComments((prev) => {
+  //       return prev.map((comment) => {
+  //         if (comment.id === commentId) {
+  //           return { ...comment, content: updatedComment.content };
+  //         }
 
-          if (comment.replies.some((reply) => reply.id === commentId)) {
-            return {
-              ...comment,
-              replies: comment.replies.map((reply) =>
-                reply.id === commentId ? { ...reply, content: updatedComment.content } : reply,
-              ),
-            };
-          }
+  //         if (comment.replies.some((reply) => reply.id === commentId)) {
+  //           return {
+  //             ...comment,
+  //             replies: comment.replies.map((reply) =>
+  //               reply.id === commentId ? { ...reply, content: updatedComment.content } : reply,
+  //             ),
+  //           };
+  //         }
 
-          return comment;
-        });
-      });
-    } catch (error) {
-      console.error('댓글 수정 실패:', error);
-    }
-  };
+  //         return comment;
+  //       });
+  //     });
+  //   } catch (error) {
+  //     console.error('댓글 수정 실패:', error);
+  //   }
+  // };
 
-  const handleDeleteComment = async (commentId: string) => {
-    try {
-      const result = await deleteComment(commentId);
+  // const handleDeleteComment = async (commentId: string) => {
+  //   try {
+  //     const result = await deleteComment(commentId);
 
-      if (result.success) {
-        const filteredComments = comments.filter((comment) => comment.id !== commentId);
-        const updatedComments = filteredComments.map((comment) => ({
-          ...comment,
-          replies: comment.replies.filter((reply) => reply.id !== commentId),
-        }));
+  //     if (result.success) {
+  //       const filteredComments = comments.filter((comment) => comment.id !== commentId);
+  //       const updatedComments = filteredComments.map((comment) => ({
+  //         ...comment,
+  //         replies: comment.replies.filter((reply) => reply.id !== commentId),
+  //       }));
 
-        setComments(updatedComments);
-      }
-    } catch (error) {
-      console.error('댓글 삭제 실패:', error);
-    }
-  };
+  //       setComments(updatedComments);
+  //     }
+  //   } catch (error) {
+  //     console.error('댓글 삭제 실패:', error);
+  //   }
+  // };
+
+  const showImageViewerModal = useShowImageViewerModal();
 
   const handleImageClick = (index: number) => {
-    setSelectedImageIndex(index);
-    setImageViewerOpen(true);
+    showImageViewerModal(images, index);
   };
 
   if (!response?.data) return null;
@@ -188,14 +184,6 @@ export default function PostDetailPage() {
             </div>
           ))}
         </div>
-
-        {/* 이미지 확대 모달 */}
-        <ImageViewer
-          images={images}
-          initialIndex={selectedImageIndex}
-          open={imageViewerOpen}
-          onOpenChange={setImageViewerOpen}
-        />
       </div>
 
       <Separator className="w-full bg-border-default h-0.25" />
