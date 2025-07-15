@@ -8,6 +8,7 @@ export interface JWTPayload {
 
 export interface UserGuideState {
   [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: boolean;
+  [USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide]: boolean;
 }
 
 export type UserData = User & UserGuideState;
@@ -35,6 +36,7 @@ export const getDefaultUserData = (user: User): UserData => {
   return {
     ...user,
     hasSeenCreatePostGuide: false,
+    hasSeenDesignerOnboardingGuide: false,
   };
 };
 
