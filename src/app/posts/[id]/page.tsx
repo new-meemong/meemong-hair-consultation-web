@@ -1,14 +1,9 @@
 'use client';
 
-import CommentIcon from '@/assets/icons/comment.svg';
-import ShareIcon from '@/assets/icons/share.svg';
 import { type CommentWithReplies } from '@/entities/comment';
-import { LikeButton } from '@/features/likes';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
-import { Avatar, AvatarFallback, AvatarImage, Separator } from '@/shared/ui';
-import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
+import PostDetailItem from '@/features/posts/ui/post-detail-item';
 import { SiteHeader } from '@/widgets/header';
-import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -16,6 +11,7 @@ export default function PostDetailPage() {
   const { id } = useParams();
 
   const { data: response } = useGetPostDetail(id?.toString() ?? '');
+  const postDetail = response?.data;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [comments, setComments] = useState<CommentWithReplies[]>([]);
@@ -117,91 +113,11 @@ export default function PostDetailPage() {
   //   }
   // };
 
-  const showImageViewerModal = useShowImageViewerModal();
-
-  const handleImageClick = (index: number) => {
-    showImageViewerModal(images, index);
-  };
-
-  if (!response?.data) return null;
-
-  const {
-    title,
-    content,
-    createdAt,
-    images,
-    likeCount,
-    commentCount,
-    isFavorited,
-    hairConsultPostingCreateUserName: authorName,
-    hairConsultPostingCreateUserProfileImageUrl: authorImageUrl,
-  } = response.data;
-
   return (
     <div className="min-w-[375px] w-full mx-auto">
       {/* 헤더 */}
       <SiteHeader title="헤어상담" showBackButton />
-
-      {/* 게시글 정보 */}
-      <div className="flex flex-col gap-5 py-6">
-        <div className="flex flex-col gap-5 px-5">
-          <div className="flex items-center gap-2">
-            <Avatar>
-              {authorImageUrl ? (
-                <AvatarImage src={authorImageUrl} className="w-12 h-12 rounded-6" />
-              ) : (
-                <AvatarFallback>
-                  <Image
-                    src="/profile.svg"
-                    alt="프로필"
-                    width={48}
-                    height={48}
-                    className="object-cover"
-                  />
-                </AvatarFallback>
-              )}
-            </Avatar>
-            <div className="flex flex-col">
-              <p className="typo-body-1-semibold text-label-default">{authorName}</p>
-              <p className="typo-body-3-regular text-label-info">{createdAt}</p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <h1 className="typo-headline-bold text-label-strong">{title}</h1>
-            <p className="typo-body-1-regular text-label-default">{content}</p>
-          </div>
-        </div>
-
-        {/* 게시글 이미지 */}
-        <div className="flex gap-2 px-5 overflow-x-auto scrollbar-hide">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className="relative min-w-35 h-35 rounded-6 cursor-pointer"
-              onClick={() => handleImageClick(index)}
-            >
-              <Image src={image} alt={`게시글 이미지 ${index + 1}`} fill className="object-cover" />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <Separator className="w-full bg-border-default h-0.25" />
-      <div className="flex items-center justify-between gap-5 py-4 px-5">
-        <div className="flex flex-1 justify-center items-center gap-1">
-          {/* 좋아요 버튼 */}
-          <LikeButton initialLiked={isFavorited} initialCount={likeCount} />
-        </div>
-        <div className="flex flex-1 justify-center items-center gap-1">
-          <CommentIcon className="w-5 h-5 fill-label-placeholder" />
-          <span className="typo-body-1-medium text-label-info">{commentCount}</span>
-        </div>
-        <div className="flex flex-1 justify-center items-center gap-1">
-          <ShareIcon className="w-5 h-5 fill-label-placeholder" />
-          <span className="typo-body-1-medium text-label-info">공유</span>
-        </div>
-      </div>
-      <Separator className="w-full bg-border-default h-0.25" />
+      {postDetail && <PostDetailItem postDetail={postDetail} />}
 
       {/* 댓글 섹션 */}
       {/* <div className="px-5">
