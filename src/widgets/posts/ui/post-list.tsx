@@ -1,23 +1,22 @@
 'use client';
 
+import ErrorIcon from '@/assets/icons/error.svg';
 import { type Post } from '@/entities/posts';
 import { POST_TAB } from '@/features/posts/constants/post-tabs';
 import { type TabType } from '@/features/posts/types/tabs';
 import { useAuthContext } from '@/shared/context/auth-context';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
-import { useRouter } from 'next/navigation';
-import { type FC } from 'react';
-import { PostListItem } from './post-list-item';
-import ErrorIcon from '@/assets/icons/error.svg';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import PostListItem from './post-list-item';
 
-interface PostListProps {
+type PostListProps = {
   posts: Post[];
   tab: TabType;
   fetchNextPage: () => void;
-}
+};
 
-export const PostList: FC<PostListProps> = ({ posts, tab, fetchNextPage }) => {
-  const router = useRouter();
+export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
+  const router = useRouterWithUser();
   const { user } = useAuthContext();
 
   const handlePostClick = (postId: number) => {
@@ -49,4 +48,4 @@ export const PostList: FC<PostListProps> = ({ posts, tab, fetchNextPage }) => {
       <div ref={observerRef} />
     </>
   );
-};
+}

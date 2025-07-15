@@ -1,20 +1,19 @@
 'use client';
 
-import { type FC } from 'react';
-import Image from 'next/image';
+import CommentIcon from '@/assets/icons/comment.svg';
 import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
-import CommentIcon from '@/assets/icons/comment.svg';
 import { type Post } from '@/entities/posts';
-import { isValidUrl } from '@/shared/lib/is-valid-url';
 import { useAuthContext } from '@/shared/context/auth-context';
+import { isValidUrl } from '@/shared/lib/is-valid-url';
+import Image from 'next/image';
 
-interface PostItemProps {
+type PostItemProps = {
   post: Post;
   onClick?: () => void;
-}
+};
 
-export const PostListItem: FC<PostItemProps> = ({ post, onClick }) => {
+export default function PostListItem({ post, onClick }: PostItemProps) {
   const {
     hairConsultPostingCreateUserName,
     createdAt,
@@ -47,7 +46,7 @@ export const PostListItem: FC<PostItemProps> = ({ post, onClick }) => {
               <h2 className="typo-headline-bold text-label-strong overflow-hidden text-ellipsis line-clamp-1">
                 {title}
               </h2>
-              <p className="typo-body-2-regular text-label-default overflow-hidden text-ellipsis line-clamp-2 break-words">
+              <p className="typo-body-2-regular text-label-default overflow-hidden text-ellipsis line-clamp-2 break-words whitespace-pre-wrap">
                 {content}
               </p>
             </div>
@@ -83,4 +82,4 @@ export const PostListItem: FC<PostItemProps> = ({ post, onClick }) => {
       </div>
     </div>
   );
-};
+}

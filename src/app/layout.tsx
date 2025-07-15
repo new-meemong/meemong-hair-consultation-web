@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.variable} antialiased max-w-2xl mx-auto`}>
         <QueryProvider>
-          <Suspense fallback={<div>suspense</div>}>
+          <Suspense fallback={<div />}>
             <AuthProvider>
               <OverlayProvider>
                 <LoadingProvider>{children}</LoadingProvider>

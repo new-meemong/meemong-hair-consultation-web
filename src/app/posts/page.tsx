@@ -9,7 +9,7 @@ import { useAuthContext } from '@/shared/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { BellButton, SiteHeader } from '@/widgets/header';
-import { PostList } from '@/widgets/posts/ui/post-list';
+import PostList from '@/widgets/posts/ui/post-list';
 import { useCallback, useState } from 'react';
 
 const POST_LIMIT = 20;
