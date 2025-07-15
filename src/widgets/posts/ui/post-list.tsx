@@ -7,16 +7,15 @@ import { type TabType } from '@/features/posts/types/tabs';
 import { useAuthContext } from '@/shared/context/auth-context';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import { type FC } from 'react';
-import { PostListItem } from './post-list-item';
+import PostListItem from './post-list-item';
 
-interface PostListProps {
+type PostListProps = {
   posts: Post[];
   tab: TabType;
   fetchNextPage: () => void;
-}
+};
 
-export const PostList: FC<PostListProps> = ({ posts, tab, fetchNextPage }) => {
+export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
   const router = useRouterWithUser();
   const { user } = useAuthContext();
 
@@ -49,4 +48,4 @@ export const PostList: FC<PostListProps> = ({ posts, tab, fetchNextPage }) => {
       <div ref={observerRef} />
     </>
   );
-};
+}
