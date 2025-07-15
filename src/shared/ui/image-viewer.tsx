@@ -35,11 +35,11 @@ export function ImageViewer({
         className={cn('p-0 bg-black max-w-full h-full sm:h-auto', className)}
         showCloseButton={false}
       >
-        <div className="relative flex flex-col items-center justify-center w-full h-full">
+        <div className="flex flex-col items-center justify-center w-full h-screen">
           {/* 헤더 */}
-          <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4 z-10 ">
+          <div className="flex items-center justify-between w-full px-5 py-5">
             <div className="w-7 h-7" />
-            <span className="flex-1 text-center text-white typo-title-3-semibold">
+            <span className="text-center text-white typo-title-3-semibold">
               {initialIndex + 1}/{totalImages}
             </span>
             <button onClick={() => onOpenChange(false)}>
@@ -48,7 +48,7 @@ export function ImageViewer({
           </div>
 
           {/* 이미지 */}
-          <div className="relative w-full h-full flex items-center justify-center">
+          <div className="flex-1 w-full flex items-center justify-center">
             <div className="relative w-full h-full">
               <Image
                 src={currentImage}
