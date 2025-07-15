@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 import { cn } from '@/shared/lib/utils';
@@ -35,13 +36,12 @@ export const MoreOptionsMenu = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent className={contentClassName}>
         {options.map((option, index) => (
-          <DropdownMenuItem
-            key={index}
-            onClick={option.onClick}
-            className={cn('cursor-pointer', option.className)}
-          >
-            {option.label}
-          </DropdownMenuItem>
+          <div key={option.label}>
+            <DropdownMenuItem key={index} onClick={option.onClick} className={cn(option.className)}>
+              {option.label}
+            </DropdownMenuItem>
+            {index < options.length - 1 && <DropdownMenuSeparator />}
+          </div>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
