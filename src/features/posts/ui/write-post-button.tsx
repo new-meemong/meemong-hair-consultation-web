@@ -8,7 +8,7 @@ interface WriteButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
   className?: string;
 }
 
-export function WriteButton({ className, ...props }: WriteButtonProps) {
+export function WritePostButton({ className, ...props }: WriteButtonProps) {
   return (
     <button
       className={cn(
