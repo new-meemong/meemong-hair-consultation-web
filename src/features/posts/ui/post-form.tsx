@@ -6,7 +6,7 @@ import { Button, Checkbox, Input, Label, Separator, Textarea } from '@/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import z from 'zod';
-import ImageList from './image-list';
+import PostFormImageList from './post-form-image-list';
 import ImageUploader from './image-uploader';
 import useShowImageUploadLimitSheet from '../hooks/use-show-image-upload-limit-sheet';
 
@@ -72,20 +72,17 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
   });
 
   const isValid = method.formState.isValid;
+  const isDirty = method.formState.isDirty;
   const isLoading = method.formState.isSubmitting || isPending;
 
   const hasImages = imageFiles.length > 0 || imageUrls.length > 0;
-  const currentImageType = imageFiles.length > 0 ? 'file' : 'url';
-  const images = currentImageType === 'file' ? imageFiles : imageUrls;
 
-  const handleImageDelete = (index: number) => {
-    if (currentImageType === 'file') {
-      const newImages = imageFiles.filter((_, i) => i !== index);
-      method.setValue(POST_FORM_FIELD_NAME.imageFiles, newImages);
-    } else if (currentImageType === 'url') {
-      const newImages = imageUrls.filter((_, i) => i !== index);
-      method.setValue(POST_FORM_FIELD_NAME.imageUrls, newImages);
-    }
+  const setImageFiles = (newImageFiles: File[]) => {
+    method.setValue(POST_FORM_FIELD_NAME.imageFiles, newImageFiles);
+  };
+
+  const setImageUrls = (newImageUrls: string[]) => {
+    method.setValue(POST_FORM_FIELD_NAME.imageUrls, newImageUrls);
   };
 
   const showImageUploadLimitSheet = useShowImageUploadLimitSheet();
@@ -103,7 +100,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
     return true;
   };
 
-  const setImageFiles = (newImageFiles: File[]) => {
+  const addImageFiles = (newImageFiles: File[]) => {
     const updatedImageFiles = [...imageFiles, ...newImageFiles];
 
     method.setValue(POST_FORM_FIELD_NAME.imageFiles, updatedImageFiles);
@@ -143,7 +140,12 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
           <>
             <Separator className="w-full bg-border-default h-0.25" />
             <div className="overflow-x-auto py-4">
-              <ImageList images={images} onImageDelete={handleImageDelete} />
+              <PostFormImageList
+                imageFiles={imageFiles}
+                imageUrls={imageUrls}
+                setImageFiles={setImageFiles}
+                setImageUrls={setImageUrls}
+              />
             </div>
           </>
         )}
@@ -162,11 +164,11 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             </Label>
           </div>
           <div className="flex gap-2">
-            <ImageUploader setImages={setImageFiles} validate={validateImageCount} />
+            <ImageUploader setImages={addImageFiles} validate={validateImageCount} />
             <Button
               variant="textWithIcon"
               size="textWithIcon"
-              disabled={!isValid || isLoading}
+              disabled={!isValid || isLoading || !isDirty}
               type="submit"
             >
               저장
