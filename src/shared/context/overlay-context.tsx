@@ -4,14 +4,14 @@ import { createContext, useContext, useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
 import { BottomSheet, type BottomSheetProps } from '@/shared/ui/bottom-sheet';
 import { SNACK_BAR_ANIMATION_DURATION, SnackBar, type SnackBarProps } from '../ui/snack-bar';
-import { Modal, type ModalProps } from '../ui/modal';
+import { ModalWrapper, type ModalWrapperProps } from '../ui/modal-wrapper';
 
 type SnackBarWithId = Omit<SnackBarProps, 'onClose'> & {
   id: string;
   open: boolean;
 };
 
-type ShowModalProps = Omit<ModalProps, 'open'>;
+type ShowModalProps = Omit<ModalWrapperProps, 'open'>;
 type ShowBottomSheetProps = Omit<BottomSheetProps, 'open'>;
 
 type OverlayContextType = {
@@ -24,11 +24,8 @@ type OverlayContextType = {
 
 const OverlayContext = createContext<OverlayContextType | null>(null);
 
-const BOTTOM_SHEET_ANIMATION_DURATION = 500;
-const MODAL_ANIMATION_DURATION = 200;
-
 export function OverlayProvider({ children }: { children: ReactNode }) {
-  const [modals, setModals] = useState<ModalProps[]>([]);
+  const [modals, setModals] = useState<ModalWrapperProps[]>([]);
   const [bottomSheets, setBottomSheets] = useState<BottomSheetProps[]>([]);
   const [snackBars, setSnackBars] = useState<SnackBarWithId[]>([]);
 
@@ -52,18 +49,18 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
 
       return prev.map((modal) => (modal.id === id ? { ...modal, open: false } : modal));
     });
-    setTimeout(() => {
-      setModals((prev) => prev.filter((modal) => modal.id !== id));
-    }, MODAL_ANIMATION_DURATION);
   }, []);
 
-  const closeModal = (id: string) => {
-    const modal = modals.find((modal) => modal.id === id);
-    if (!modal) return;
+  const closeModal = useCallback(
+    (id: string) => {
+      const modal = modals.find((modal) => modal.id === id);
 
-    modal.onClose?.();
-    hideModal(id);
-  };
+      if (!modal) return;
+
+      hideModal(id);
+    },
+    [modals, hideModal],
+  );
 
   const showBottomSheet = useCallback((props: ShowBottomSheetProps) => {
     const id = props.id ?? crypto.randomUUID();
@@ -85,9 +82,6 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
 
       return prev.map((s) => (s.id === id ? { ...s, open: false } : s));
     });
-    setTimeout(() => {
-      setBottomSheets((prev) => prev.filter((s) => s.id !== id));
-    }, BOTTOM_SHEET_ANIMATION_DURATION);
   }, []);
 
   const closeBottomSheet = (id: string) => {
@@ -138,7 +132,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
       {children}
 
       {modals.map((modal) => (
-        <Modal key={modal.id} {...modal} open={modal.open} onClose={() => closeModal(modal.id)} />
+        <ModalWrapper key={modal.id} {...modal} open={modal.open} />
       ))}
 
       {bottomSheets.map((bottomSheet) => (
@@ -146,7 +140,6 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
           key={bottomSheet.id}
           {...bottomSheet}
           open={bottomSheet.open}
-          duration={BOTTOM_SHEET_ANIMATION_DURATION}
           onClose={() => closeBottomSheet(bottomSheet.id)}
         />
       ))}
