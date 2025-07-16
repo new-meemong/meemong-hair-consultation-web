@@ -38,16 +38,6 @@ export interface PostListResponse {
 }
 
 /**
- * 게시글 생성 요청 파라미터
- */
-export interface CreatePostRequest {
-  title: string;
-  content: string;
-  isPrivate?: boolean;
-  images?: File[];
-}
-
-/**
  * 게시글 생성 응답
  */
 export interface CreatePostResponse {

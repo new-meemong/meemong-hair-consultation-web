@@ -4,17 +4,17 @@ import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { CREATE_POST_FORM_MAX_COUNT } from '@/features/posts/constants/create-post-form';
 import { Button, Checkbox, Input, Label, Separator, Textarea } from '@/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { XIcon } from 'lucide-react';
-import Image from 'next/image';
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import z from 'zod';
+import ImageList from './image-list';
 import ImageUploader from './image-uploader';
+import useShowImageUploadLimitSheet from '../hooks/use-show-image-upload-limit-sheet';
 
 export const POST_FORM_FIELD_NAME = {
   title: 'title',
   content: 'content',
   isPhotoVisibleToDesigner: 'isPhotoVisibleToDesigner',
-  images: 'images',
+  imageFiles: 'imageFiles',
   imageUrls: 'imageUrls',
 } as const;
 
@@ -34,7 +34,7 @@ const formSchema = z.object({
       `내용은 ${CREATE_POST_FORM_MAX_COUNT.CONTENT}자 이하로 입력해주세요`,
     ),
   [POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner]: z.boolean(),
-  [POST_FORM_FIELD_NAME.images]: z
+  [POST_FORM_FIELD_NAME.imageFiles]: z
     .array(z.instanceof(File))
     .max(
       CREATE_POST_FORM_MAX_COUNT.IMAGE,
@@ -49,7 +49,7 @@ const DEFAULT_VALUES = {
   [POST_FORM_FIELD_NAME.title]: '',
   [POST_FORM_FIELD_NAME.content]: '',
   [POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner]: false,
-  [POST_FORM_FIELD_NAME.images]: [] as File[],
+  [POST_FORM_FIELD_NAME.imageFiles]: [] as File[],
   [POST_FORM_FIELD_NAME.imageUrls]: [] as string[],
 } as const;
 
@@ -66,21 +66,47 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
     defaultValues: initialData ?? DEFAULT_VALUES,
   });
 
-  const images = useWatch({
+  const [imageFiles, imageUrls] = useWatch({
     control: method.control,
-    name: POST_FORM_FIELD_NAME.images,
+    name: [POST_FORM_FIELD_NAME.imageFiles, POST_FORM_FIELD_NAME.imageUrls],
   });
 
   const isValid = method.formState.isValid;
   const isLoading = method.formState.isSubmitting || isPending;
 
+  const hasImages = imageFiles.length > 0 || imageUrls.length > 0;
+  const currentImageType = imageFiles.length > 0 ? 'file' : 'url';
+  const images = currentImageType === 'file' ? imageFiles : imageUrls;
+
   const handleImageDelete = (index: number) => {
-    const newImages = images.filter((_, i) => i !== index);
-    method.setValue(POST_FORM_FIELD_NAME.images, newImages);
+    if (currentImageType === 'file') {
+      const newImages = imageFiles.filter((_, i) => i !== index);
+      method.setValue(POST_FORM_FIELD_NAME.imageFiles, newImages);
+    } else if (currentImageType === 'url') {
+      const newImages = imageUrls.filter((_, i) => i !== index);
+      method.setValue(POST_FORM_FIELD_NAME.imageUrls, newImages);
+    }
   };
 
-  const setImages = (newImages: File[]) => {
-    method.setValue(POST_FORM_FIELD_NAME.images, newImages);
+  const showImageUploadLimitSheet = useShowImageUploadLimitSheet();
+
+  const validateImageCount = (newImageLength?: number) => {
+    const currentImageCount = imageFiles.length + imageUrls.length;
+    const newImageCount = newImageLength ? newImageLength - 1 : 0;
+
+    const count = currentImageCount + newImageCount;
+
+    if (count >= CREATE_POST_FORM_MAX_COUNT.IMAGE) {
+      showImageUploadLimitSheet();
+      return false;
+    }
+    return true;
+  };
+
+  const setImageFiles = (newImageFiles: File[]) => {
+    const updatedImageFiles = [...imageFiles, ...newImageFiles];
+
+    method.setValue(POST_FORM_FIELD_NAME.imageFiles, updatedImageFiles);
   };
 
   return (
@@ -113,33 +139,11 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             )}
           </div>
         </div>
-        {images.length > 0 && (
+        {hasImages && (
           <>
             <Separator className="w-full bg-border-default h-0.25" />
             <div className="overflow-x-auto py-4">
-              <div className="flex gap-2 px-5 overflow-x-auto">
-                {images.map((file, index) => (
-                  <div key={index} className="relative w-25 h-25 flex-shrink-0">
-                    <Image
-                      src={URL.createObjectURL(file)}
-                      alt={`업로드 이미지 ${index + 1}`}
-                      fill
-                      className="object-cover rounded-md"
-                    />
-                    <Button
-                      type="button"
-                      variant="icon"
-                      size="icon"
-                      className="absolute top-1 right-1"
-                      onClick={() => {
-                        handleImageDelete(index);
-                      }}
-                    >
-                      <XIcon />
-                    </Button>
-                  </div>
-                ))}
-              </div>
+              <ImageList images={images} onImageDelete={handleImageDelete} />
             </div>
           </>
         )}
@@ -158,7 +162,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             </Label>
           </div>
           <div className="flex gap-2">
-            <ImageUploader images={images} setImages={setImages} />
+            <ImageUploader setImages={setImageFiles} validate={validateImageCount} />
             <Button
               variant="textWithIcon"
               size="textWithIcon"
