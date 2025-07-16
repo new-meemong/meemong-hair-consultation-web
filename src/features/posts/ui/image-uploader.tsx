@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/shared';
 import GalleryIcon from '@/assets/icons/gallery.svg';
 import { useRef } from 'react';
