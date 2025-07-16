@@ -11,7 +11,7 @@ import {
 import { useSearchParams } from 'next/navigation';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import { isDesigner, isModel } from '@/entities/user/lib/user-role';
-import { USER_ID_KEY } from '@/shared/constants/search-params';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 
 type AuthContextType = {
   user: UserData;
@@ -24,7 +24,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
-  const userId = searchParams.get(USER_ID_KEY);
+  const userId = searchParams.get(SEARCH_PARAMS.USER_ID);
 
   const [isInitialized, setIsInitialized] = useState(false);
 

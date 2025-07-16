@@ -1,1 +1,4 @@
-export const USER_ID_KEY = 'userId';
+export const SEARCH_PARAMS = {
+  USER_ID: 'userId',
+  POST_ID: 'postId',
+} as const;

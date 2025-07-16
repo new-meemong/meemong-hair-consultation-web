@@ -2,20 +2,20 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
-import { USER_ID_KEY } from '@/shared/constants/search-params';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 
 const createUrlWithUserId = (path: string, userId: string | null) => {
   if (!userId) return path;
 
   const url = new URL(path, window.location.origin);
-  url.searchParams.set(USER_ID_KEY, userId);
+  url.searchParams.set(SEARCH_PARAMS.USER_ID, userId);
   return url.toString();
 };
 
 export function useRouterWithUser() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const userId = searchParams.get(USER_ID_KEY);
+  const userId = searchParams.get(SEARCH_PARAMS.USER_ID);
 
   const push = useCallback(
     (path: string) => {
