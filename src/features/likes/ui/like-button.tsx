@@ -1,7 +1,7 @@
 'use client';
 
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
-import { usePostFavoriteMutation } from '@/features/posts/api/use-post-favorite-mutation';
+import usePostFavoriteMutation from '@/features/posts/api/use-post-favorite-mutation';
 import { cn } from '@/shared/lib/utils';
 import { Toggle } from '@/shared/ui/toggle';
 

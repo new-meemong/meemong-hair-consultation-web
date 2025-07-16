@@ -4,7 +4,7 @@ import { GET_POSTS_ENDPOINT } from './use-get-posts';
 import type { CreatePostRequest } from '@/entities/posts/api/create-post-request';
 import type { CreatePostResponse } from '@/entities/posts/api/create-post-response';
 
-export function useCreatePostMutation() {
+export default function useCreatePostMutation() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (data: CreatePostRequest) =>

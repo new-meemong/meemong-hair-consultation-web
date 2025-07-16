@@ -2,7 +2,7 @@ import { apiClient } from '@/shared/api/client';
 import { useMutation } from '@tanstack/react-query';
 import { type ImageUploadResponse } from '@/entities/posts';
 
-export function useUploadPostImageMutation() {
+export default function useUploadPostImageMutation() {
   return useMutation({
     mutationFn: (files: File[]) => {
       const formData = new FormData();

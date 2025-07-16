@@ -10,7 +10,7 @@ type MutationParams = {
   liked: boolean;
 };
 
-export function usePostFavoriteMutation() {
+export default function usePostFavoriteMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({

@@ -1,5 +1,5 @@
-import { useCreatePostMutation } from '../api/use-create-post-mutation';
-import { useUploadPostImageMutation } from '../api/use-upload-post-image';
+import useCreatePostMutation from '../api/use-create-post-mutation';
+import useUploadPostImageMutation from '../api/use-upload-post-image';
 
 export interface CreatePostData {
   title: string;

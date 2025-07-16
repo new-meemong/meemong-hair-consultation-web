@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetPosts } from '@/features/posts/api/use-get-posts';
+import useGetPosts from '@/features/posts/api/use-get-posts';
 import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
 import type { TabType } from '@/features/posts/types/tabs';
 import { ROUTES } from '@/shared';

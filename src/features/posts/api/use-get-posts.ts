@@ -23,7 +23,7 @@ type GetPostsInfiniteData = {
   pageParams: (string | undefined)[];
 };
 
-export function useGetPosts(params: GetPostsQueryParams) {
+export default function useGetPosts(params: GetPostsQueryParams) {
   const { __limit = 10, filter } = params;
 
   return useInfiniteQuery({
