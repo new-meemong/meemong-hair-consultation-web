@@ -1,7 +1,7 @@
 import { apiClient } from '@/shared/api/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HAIR_CONSULT_POSTING_QUERY_KEY_PREFIX } from '../constants/query-keys';
-import type { PostDetail } from '@/entities/posts/model/types';
+import type { PostDetail } from '@/entities/posts/model/post-detail';
 import { getPostDetailQueryKey } from './use-get-post-detail';
 import { GET_POSTS_ENDPOINT } from './use-get-posts';
 

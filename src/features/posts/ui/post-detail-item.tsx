@@ -1,4 +1,4 @@
-import type { PostDetail } from '@/entities/posts/model/types';
+import type { PostDetail } from '@/entities/posts/model/post-detail';
 import { Avatar, AvatarFallback, AvatarImage, Separator } from '@/shared/ui';
 import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
 import Image from 'next/image';
