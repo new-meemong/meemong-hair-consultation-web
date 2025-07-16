@@ -10,16 +10,17 @@ import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
-import { MoreOptionsMenu } from '@/shared';
+import { MoreOptionsMenu, ROUTES } from '@/shared';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 export default function PostDetailPage() {
-  const { isUserDesigner, user } = useAuthContext();
+  const { isUserDesigner } = useAuthContext();
 
   useGuidePopup(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
 
-  const { id } = useParams();
+  const { id: postId } = useParams();
 
-  const { data: response } = useGetPostDetail(id?.toString() ?? '');
+  const { data: response } = useGetPostDetail(postId?.toString() ?? '');
   const postDetail = response?.data;
 
   const isWriter = true;
@@ -124,8 +125,12 @@ export default function PostDetailPage() {
   //   }
   // };
 
+  const { push } = useRouterWithUser();
+
   const handleEdit = () => {
-    console.log('edit');
+    if (!postId) return;
+
+    push(ROUTES.POSTS_EDIT(postId.toString()));
   };
   const handleDelete = () => {
     console.log('delete');
