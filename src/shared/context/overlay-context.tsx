@@ -24,6 +24,8 @@ type OverlayContextType = {
 
 const OverlayContext = createContext<OverlayContextType | null>(null);
 
+const BOTTOM_SHEET_ANIMATION_DURATION = 500;
+
 export function OverlayProvider({ children }: { children: ReactNode }) {
   const [modals, setModals] = useState<ModalWrapperProps[]>([]);
   const [bottomSheets, setBottomSheets] = useState<BottomSheetProps[]>([]);
@@ -42,25 +44,9 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
     return id;
   }, []);
 
-  const hideModal = useCallback((id: string) => {
-    setModals((prev) => {
-      const modal = prev.find((modal) => modal.id === id);
-      if (!modal) return prev;
-
-      return prev.map((modal) => (modal.id === id ? { ...modal, open: false } : modal));
-    });
+  const closeModal = useCallback((id: string) => {
+    setModals((prev) => prev.filter((modal) => modal.id !== id));
   }, []);
-
-  const closeModal = useCallback(
-    (id: string) => {
-      const modal = modals.find((modal) => modal.id === id);
-
-      if (!modal) return;
-
-      hideModal(id);
-    },
-    [modals, hideModal],
-  );
 
   const showBottomSheet = useCallback((props: ShowBottomSheetProps) => {
     const id = props.id ?? crypto.randomUUID();
@@ -82,6 +68,9 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
 
       return prev.map((s) => (s.id === id ? { ...s, open: false } : s));
     });
+    setTimeout(() => {
+      setBottomSheets((prev) => prev.filter((s) => s.id !== id));
+    }, BOTTOM_SHEET_ANIMATION_DURATION);
   }, []);
 
   const closeBottomSheet = (id: string) => {
