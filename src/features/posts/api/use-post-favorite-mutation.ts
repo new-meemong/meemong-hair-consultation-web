@@ -1,16 +1,16 @@
+import type { PostDetail } from '@/entities/posts/model/post-detail';
 import { apiClient } from '@/shared/api/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HAIR_CONSULT_POSTING_QUERY_KEY_PREFIX } from '../constants/query-keys';
-import type { PostDetail } from '@/entities/posts/model/types';
 import { getPostDetailQueryKey } from './use-get-post-detail';
-import { GET_POSTS_ENDPOINT } from './use-get-posts';
+import { getGetPostsQueryKey } from './use-get-posts';
 
 type MutationParams = {
   hairConsultPostingId: number;
   liked: boolean;
 };
 
-export function usePostFavoriteMutation() {
+export default function usePostFavoriteMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -52,7 +52,7 @@ export function usePostFavoriteMutation() {
       const postDetailQueryKey = getPostDetailQueryKey(hairConsultPostingId.toString());
 
       await queryClient.invalidateQueries({
-        queryKey: [GET_POSTS_ENDPOINT],
+        queryKey: getGetPostsQueryKey(),
       });
 
       const response = await apiClient.get<PostDetail>(

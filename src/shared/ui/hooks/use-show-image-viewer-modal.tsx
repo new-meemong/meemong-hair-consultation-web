@@ -1,5 +1,6 @@
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useCallback } from 'react';
+import { DialogContent } from '../dialog';
 import ImageViewerModalContent from '../image-viewer-modal-content';
 
 const MODAL_ID = 'image-viewer-modal';
@@ -11,9 +12,13 @@ function useShowImageViewerModal() {
     (images: string[], initialIndex: number) => {
       showModal({
         id: MODAL_ID,
-        backgroundColor: 'bg-black',
         children: (
-          <ImageViewerModalContent id={MODAL_ID} images={images} initialIndex={initialIndex} />
+          <DialogContent
+            className="p-0 max-w-full h-full sm:h-auto bg-black"
+            showCloseButton={false}
+          >
+            <ImageViewerModalContent id={MODAL_ID} images={images} initialIndex={initialIndex} />
+          </DialogContent>
         ),
       });
     },

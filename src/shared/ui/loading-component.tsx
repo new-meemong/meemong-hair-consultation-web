@@ -10,7 +10,7 @@ function PageLoader({ isLoading = true }: LoadingOverlayProps) {
   if (!isLoading) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dimmer">
       <div className="flex flex-col items-center p-2 bg-label-default rounded-10">
         <Loader theme="light" size="md" />
       </div>

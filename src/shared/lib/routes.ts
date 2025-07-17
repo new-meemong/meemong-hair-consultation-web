@@ -6,6 +6,7 @@ export const ROUTES = {
   POSTS: '/posts',
   POSTS_CREATE: '/posts/create',
   POSTS_DETAIL: (id: string | number) => `/posts/${id}`,
+  POSTS_EDIT: (id: string) => `/posts/edit/${id}`,
 
   // DEV
   EXAMPLE: '/example',

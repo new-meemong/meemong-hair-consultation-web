@@ -13,22 +13,13 @@ export interface BottomSheetProps {
   className?: string;
   onClose?: () => void;
   open: boolean;
-  duration?: number | { open: number; close: number };
 }
 
-export function BottomSheet({
-  trigger,
-  children,
-  className,
-  onClose,
-  open,
-  duration,
-}: BottomSheetProps) {
+export function BottomSheet({ trigger, children, className, onClose, open }: BottomSheetProps) {
   return (
     <Drawer
       direction="bottom"
       open={open}
-      duration={duration}
       onOpenChange={(isOpen) => {
         if (!isOpen) {
           onClose?.();

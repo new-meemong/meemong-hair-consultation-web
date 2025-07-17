@@ -1,26 +1,20 @@
-import { useCreatePostMutation } from '../api/use-create-post-mutation';
-import { useUploadPostImageMutation } from '../api/use-upload-post-image';
-
-export interface CreatePostData {
-  title: string;
-  content: string;
-  isPhotoVisibleToDesigner: boolean;
-  images: File[];
-}
+import useCreatePostMutation from '../api/use-create-post-mutation';
+import useUploadPostImageMutation from '../api/use-upload-post-image';
+import type { PostFormValues } from '../ui/post-form';
 
 export function useCreatePost() {
   const { mutateAsync: uploadImages, isPending: isUploadingImages } = useUploadPostImageMutation();
   const { mutate: createPostMutate, isPending: isCreatingPost } = useCreatePostMutation();
 
   const handleCreatePost = async (
-    data: CreatePostData,
+    data: PostFormValues,
     { onSuccess }: { onSuccess: () => void },
   ) => {
     try {
       let imageUrls: string[] = [];
 
-      if (data.images.length > 0) {
-        const uploadResult = await uploadImages(data.images);
+      if (data.imageFiles.length > 0) {
+        const uploadResult = await uploadImages(data.imageFiles);
         imageUrls = uploadResult.dataList.map((img) => img.imageURL);
       }
 

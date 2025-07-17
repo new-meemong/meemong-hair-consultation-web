@@ -5,11 +5,7 @@ import { Drawer as DrawerPrimitive } from 'vaul';
 
 import { cn } from '@/shared/lib/utils';
 
-type DrawerProps = React.ComponentProps<typeof DrawerPrimitive.Root> & {
-  duration?: number | { open: number; close: number };
-};
-
-function Drawer({ ...props }: DrawerProps) {
+function Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
   return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
 }
 
