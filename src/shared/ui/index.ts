@@ -7,7 +7,6 @@ export { Input } from './input';
 export { Label } from './label';
 export { Loader } from './loader';
 export { MoreOptionsMenu } from './more-options-menu';
-export { PrivateChatInput } from './private-chat-input';
 export { Separator } from './separator';
 export { BottomSheet } from './bottom-sheet';
 export { Button } from './button';

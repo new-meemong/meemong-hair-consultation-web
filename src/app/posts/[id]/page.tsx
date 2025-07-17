@@ -2,6 +2,8 @@
 
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
 import { type CommentWithReplies } from '@/entities/comment';
+import { CommentForm } from '@/features/comments';
+import useCreateCommentMutation from '@/features/comments/api/use-create-comment-mutation';
 import useDeletePostMutation from '@/features/posts/api/use-delete-post-mutation';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import useShowDeletePostConfirmModal from '@/features/posts/hooks/use-show-delete-post-confirm-modal';
@@ -54,34 +56,7 @@ export default function PostDetailPage() {
   //   loadData();
   // }, [postId]);
 
-  // const handleAddComment = async (content: string, isPrivate: boolean, parentId?: string) => {
-  //   try {
-  //     const newComment = await createComment({
-  //       content,
-  //       isPrivate,
-  //       parentId,
-  //       postId: postId,
-  //     });
-
-  //     if (parentId) {
-  //       setComments((prev) =>
-  //         prev.map((comment) => {
-  //           if (comment.id === parentId) {
-  //             return {
-  //               ...comment,
-  //               replies: [...comment.replies, newComment],
-  //             };
-  //           }
-  //           return comment;
-  //         }),
-  //       );
-  //     } else {
-  //       setComments((prev) => [...prev, { ...newComment, replies: [] } as CommentWithReplies]);
-  //     }
-  //   } catch (error) {
-  //     console.error('댓글 추가 실패:', error);
-  //   }
-  // };
+  const { mutate: createCommentMutate } = useCreateCommentMutation(postId?.toString() ?? '');
 
   // const handleEditComment = async (commentId: string, newContent: string) => {
   //   try {
@@ -202,11 +177,11 @@ export default function PostDetailPage() {
 
       <div className="h-30" />
       {/* 댓글 입력 필드 */}
-      {/* <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-strong">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-strong">
         <div className="max-w-[600px] mx-auto">
-          <CommentForm onSubmit={(content, isPrivate) => handleAddComment(content, isPrivate)} />
+          <CommentForm onSubmit={createCommentMutate} />
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }

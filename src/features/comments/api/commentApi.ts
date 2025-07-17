@@ -1,5 +1,4 @@
-import { MOCK_COMMENTS, CURRENT_USER } from '@/entities/comment';
-import { type CommentWithReplies, type Comment } from '@/entities/comment';
+import { MOCK_COMMENTS, type Comment, type CommentWithReplies } from '@/entities/comment';
 
 /**
  * 댓글 목록 조회
@@ -12,44 +11,6 @@ export const fetchComments = (postId?: string): Promise<CommentWithReplies[]> =>
     console.log('Fetching comments for post:', postId);
     setTimeout(() => {
       resolve(MOCK_COMMENTS);
-    }, 300);
-  });
-};
-
-// 댓글 생성 API 요청 타입
-export interface CreateCommentRequest {
-  content: string;
-  isPrivate: boolean;
-  parentId?: string;
-  postId?: string;
-}
-
-/**
- * 댓글 생성
- * @param data 댓글 생성 데이터
- * @returns 생성된 댓글
- */
-export const createComment = (data: CreateCommentRequest): Promise<Comment> => {
-  return new Promise((resolve) => {
-    const { content, isPrivate, parentId, postId } = data;
-    // postId는 향후 실제 API 연동 시 사용될 예정
-    console.log('Creating comment for post:', postId);
-
-    const newComment: Comment = {
-      id: `new-${Date.now()}`,
-      content,
-      author: {
-        id: CURRENT_USER.id,
-        name: CURRENT_USER.name,
-        avatarUrl: CURRENT_USER.avatarUrl || '',
-      },
-      createdAt: new Date().toISOString(),
-      isPrivate,
-      parentId,
-    };
-
-    setTimeout(() => {
-      resolve(newComment);
     }, 300);
   });
 };
