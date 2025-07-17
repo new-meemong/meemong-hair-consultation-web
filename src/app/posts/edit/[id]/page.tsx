@@ -13,15 +13,15 @@ import { useParams } from 'next/navigation';
 export default function EditPostPage() {
   const { replace } = useRouterWithUser();
 
-  const { editPost, isPending } = useEditPost();
-
-  const showEditPostConfirmModal = useShowEditPostConfirmModal();
-  const showConfirmModal = useShowConfirmModal();
-
   const { id: postId } = useParams();
 
   const { data: response } = useGetPostDetail(postId?.toString() ?? '');
   const postDetail = response?.data;
+
+  const { editPost, isPending } = useEditPost(postId?.toString() ?? '');
+
+  const showEditPostConfirmModal = useShowEditPostConfirmModal();
+  const showConfirmModal = useShowConfirmModal();
 
   if (!postDetail) return null;
 
@@ -36,7 +36,7 @@ export default function EditPostPage() {
 
   const handleSubmit = (data: PostFormValues) => {
     const handleEdit = () => {
-      editPost(postDetail.id, data, {
+      editPost(data, {
         onSuccess: () => {
           showConfirmModal({
             text: '수정이 완료되었습니다',

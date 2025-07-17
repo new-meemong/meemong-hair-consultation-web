@@ -2,15 +2,11 @@ import usePutPostMutation from '../api/use-put-post-mutation';
 import useUploadPostImageMutation from '../api/use-upload-post-image';
 import type { PostFormValues } from '../ui/post-form';
 
-export default function useEditPost() {
+export default function useEditPost(postId: string) {
   const { mutateAsync: uploadImages, isPending: isUploadingImages } = useUploadPostImageMutation();
-  const { mutate: editPostMutate, isPending: isEditingPost } = usePutPostMutation();
+  const { mutate: editPostMutate, isPending: isEditingPost } = usePutPostMutation(postId);
 
-  const editPost = async (
-    postId: number,
-    data: PostFormValues,
-    { onSuccess }: { onSuccess: () => void },
-  ) => {
+  const editPost = async (data: PostFormValues, { onSuccess }: { onSuccess: () => void }) => {
     try {
       const newImageUrls =
         data.imageFiles.length > 0
@@ -19,7 +15,6 @@ export default function useEditPost() {
 
       editPostMutate(
         {
-          hairConsultPostingId: postId,
           title: data.title,
           content: data.content,
           isPhotoVisibleToDesigner: data.isPhotoVisibleToDesigner,
