@@ -1,25 +1,20 @@
-import type { PutPostRequest } from '@/entities/posts/api/put-post-request';
 import { apiClient } from '@/shared/api/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HAIR_CONSULT_POSTING_QUERY_KEY_PREFIX } from '../constants/query-keys';
-import { getPostDetailQueryKey } from './use-get-post-detail';
 import { getGetPostsQueryKey } from './use-get-posts';
 
-export default function usePutPostMutation() {
+export default function useDeletePostMutation() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (data: PutPostRequest) =>
-      apiClient.put(`${HAIR_CONSULT_POSTING_QUERY_KEY_PREFIX}/${data.hairConsultPostingId}`, data),
+    mutationFn: (hairConsultPostingId: number) =>
+      apiClient.delete(`${HAIR_CONSULT_POSTING_QUERY_KEY_PREFIX}/${hairConsultPostingId}`),
   });
 
-  const mutate = (data: PutPostRequest, { onSuccess }: { onSuccess: () => void }) => {
-    mutation.mutate(data, {
+  const mutate = (hairConsultPostingId: number, { onSuccess }: { onSuccess: () => void }) => {
+    mutation.mutate(hairConsultPostingId, {
       onSuccess: () => {
         onSuccess();
-        queryClient.invalidateQueries({
-          queryKey: getPostDetailQueryKey(data.hairConsultPostingId.toString()),
-        });
         queryClient.invalidateQueries({
           queryKey: getGetPostsQueryKey(),
         });

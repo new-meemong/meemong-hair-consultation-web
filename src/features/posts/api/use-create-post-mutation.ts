@@ -1,8 +1,8 @@
 import { apiClient } from '@/shared/api/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { GET_POSTS_ENDPOINT } from './use-get-posts';
 import type { CreatePostRequest } from '@/entities/posts/api/create-post-request';
 import type { CreatePostResponse } from '@/entities/posts/api/create-post-response';
+import { getGetPostsQueryKey } from './use-get-posts';
 
 export default function useCreatePostMutation() {
   const queryClient = useQueryClient();
@@ -10,7 +10,7 @@ export default function useCreatePostMutation() {
     mutationFn: (data: CreatePostRequest) =>
       apiClient.post<CreatePostResponse>('hair-consult-postings', data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [GET_POSTS_ENDPOINT] });
+      queryClient.invalidateQueries({ queryKey: getGetPostsQueryKey() });
     },
   });
 
