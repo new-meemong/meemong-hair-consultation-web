@@ -3,7 +3,7 @@ import { apiClient } from '@/shared/api/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
 import { getPostDetailQueryKey } from './use-get-post-detail';
-import { getGetPostsQueryKey } from './use-get-posts';
+import { getPostsQueryKey } from './use-get-posts';
 
 type MutationParams = {
   hairConsultPostingId: number;
@@ -52,7 +52,7 @@ export default function usePostFavoriteMutation() {
       const postDetailQueryKey = getPostDetailQueryKey(hairConsultPostingId.toString());
 
       await queryClient.invalidateQueries({
-        queryKey: getGetPostsQueryKey(),
+        queryKey: getPostsQueryKey(),
       });
 
       const response = await apiClient.get<PostDetail>(
