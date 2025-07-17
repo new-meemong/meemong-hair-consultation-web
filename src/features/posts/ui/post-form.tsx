@@ -122,7 +122,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
                 {String(method.formState.errors[POST_FORM_FIELD_NAME.title]?.message)}
               </p>
             )}
-            <Separator className="w-full bg-border-default h-0.25" />
+            <Separator />
           </div>
           <div className="flex-1 flex flex-col">
             <Textarea
@@ -139,7 +139,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
         </div>
         {hasImages && (
           <>
-            <Separator className="w-full bg-border-default h-0.25" />
+            <Separator />
             <div className="overflow-x-auto py-4">
               <PostFormImageList
                 imageFiles={imageFiles}
@@ -150,7 +150,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             </div>
           </>
         )}
-        <Separator className="w-full h-0.25 bg-border-default" />
+        <Separator />
         <div className="flex items-center px-5 py-3">
           <div className="flex flex-1 items-center">
             <ControlledCheckbox name={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner} />

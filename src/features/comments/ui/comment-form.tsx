@@ -88,7 +88,7 @@ export function CommentForm({ onSubmit, isReply = false, parentAuthorName }: Com
           </div>
           {isUserDesigner && (
             <>
-              <Separator className="w-full bg-border-default h-0.25" />
+              <Separator />
               <div className="flex items-center px-5 py-3 gap-2">
                 <ControlledCheckbox name={COMMENT_FORM_FIELD_NAME.isVisibleToModel} />
                 <Label
