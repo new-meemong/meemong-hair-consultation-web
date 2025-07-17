@@ -14,7 +14,6 @@ import {
   ToggleChip,
   ToggleChipGroup,
 } from '@/shared/ui';
-import { ChatExamples } from '@/widgets/chat';
 
 export default function DesignGuide() {
   return (
@@ -147,8 +146,6 @@ export default function DesignGuide() {
             </ToggleChipGroup>
           </div>
         </section>
-        {/* chat input 컴포넌트 */}
-        <ChatExamples />
         {/* 반경(Radius) 섹션 */}
         <section className="w-full">
           <h2 className="typo-title-1-bold mb-6">반경 (Radius)</h2>

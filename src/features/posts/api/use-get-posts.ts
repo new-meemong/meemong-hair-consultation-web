@@ -3,10 +3,10 @@ import { apiClient } from '@/shared/api/client';
 import { filterUndefined } from '@/shared/lib/filter-undefined';
 import { useInfiniteQuery, type Query } from '@tanstack/react-query';
 import type { TabType } from '../types/tabs';
-import { HAIR_CONSULT_POSTING_QUERY_KEY_PREFIX } from '../constants/query-keys';
+import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
 
-const GET_POSTS_QUERY_KEY_PREFIX = `${HAIR_CONSULT_POSTING_QUERY_KEY_PREFIX}/main`;
-export const getGetPostsQueryKey = () => [GET_POSTS_QUERY_KEY_PREFIX];
+const GET_POSTS_QUERY_KEY_PREFIX = `${HAIR_CONSULT_POSTING_API_PREFIX}/main`;
+export const getPostsQueryKey = () => [GET_POSTS_QUERY_KEY_PREFIX];
 
 type GetPostsQueryParams = {
   __limit?: number;

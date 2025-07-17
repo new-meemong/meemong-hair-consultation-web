@@ -81,7 +81,7 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
         </div>
       </div>
 
-      <Separator className="w-full bg-border-default h-0.25" />
+      <Separator />
       <div className="flex items-center justify-between gap-5 py-4 px-5">
         <div className="flex flex-1 justify-center items-center gap-1">
           <LikeButton postId={id} liked={isFavorited} likeCount={likeCount} />
@@ -95,7 +95,7 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
           <span className="typo-body-1-medium text-label-info">공유</span>
         </div>
       </div>
-      <Separator className="w-full bg-border-default h-0.25" />
+      <Separator />
     </>
   );
 }

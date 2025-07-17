@@ -2,13 +2,14 @@
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { CREATE_POST_FORM_MAX_COUNT } from '@/features/posts/constants/create-post-form';
-import { Button, Checkbox, Input, Label, Separator, Textarea } from '@/shared';
+import { Button, Input, Label, Separator, Textarea } from '@/shared';
+import ControlledCheckbox from '@/shared/ui/controlled-checkbox';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import z from 'zod';
-import PostFormImageList from './post-form-image-list';
-import ImageUploader from './image-uploader';
 import useShowImageUploadLimitSheet from '../hooks/use-show-image-upload-limit-sheet';
+import ImageUploader from './image-uploader';
+import PostFormImageList from './post-form-image-list';
 
 export const POST_FORM_FIELD_NAME = {
   title: 'title',
@@ -121,7 +122,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
                 {String(method.formState.errors[POST_FORM_FIELD_NAME.title]?.message)}
               </p>
             )}
-            <Separator className="w-full bg-border-default h-0.25" />
+            <Separator />
           </div>
           <div className="flex-1 flex flex-col">
             <Textarea
@@ -138,7 +139,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
         </div>
         {hasImages && (
           <>
-            <Separator className="w-full bg-border-default h-0.25" />
+            <Separator />
             <div className="overflow-x-auto py-4">
               <PostFormImageList
                 imageFiles={imageFiles}
@@ -149,17 +150,14 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             </div>
           </>
         )}
-        <Separator className="w-full h-0.25 bg-border-default" />
+        <Separator />
         <div className="flex items-center px-5 py-3">
           <div className="flex flex-1 items-center">
-            <Controller
-              control={method.control}
-              name={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner}
-              render={({ field: { onChange, value } }) => (
-                <Checkbox id="photo-visible" checked={value} onCheckedChange={onChange} />
-              )}
-            />
-            <Label htmlFor="photo-visible" className="ml-2 typo-body-3-regular">
+            <ControlledCheckbox name={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner} />
+            <Label
+              htmlFor={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner}
+              className="ml-2 typo-body-3-regular"
+            >
               디자이너에게만 공개할게요
             </Label>
           </div>

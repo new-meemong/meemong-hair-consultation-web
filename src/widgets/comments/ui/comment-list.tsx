@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
 import { type CommentWithReplies } from '@/entities/comment';
-import { CommentForm, EditableCommentCard } from '@/features/comments';
+import { EditableCommentCard } from '@/features/comments';
 import { cn } from '@/shared/lib/utils';
+import { useState } from 'react';
 
 interface CommentListProps {
   comments: CommentWithReplies[];
@@ -18,7 +18,7 @@ interface CommentListProps {
 export function CommentList({
   comments,
   currentUserId,
-  onAddComment,
+  // onAddComment,
   onEditComment,
   onDeleteComment,
   onReportComment,
@@ -30,10 +30,10 @@ export function CommentList({
     setReplyingTo(replyingTo === commentId ? null : commentId);
   };
 
-  const handleSubmitReply = (content: string, isPrivate: boolean, parentId?: string) => {
-    onAddComment(content, isPrivate, parentId);
-    setReplyingTo(null);
-  };
+  // const handleSubmitReply = (content: string, isPrivate: boolean, parentId?: string) => {
+  //   onAddComment(content, isPrivate, parentId);
+  //   setReplyingTo(null);
+  // };
 
   return (
     <div className={cn(className)}>
@@ -49,13 +49,13 @@ export function CommentList({
               onReport={onReportComment}
             />
           </div>
-          {replyingTo === comment.id && (
+          {/* {replyingTo === comment.id && (
             <CommentForm
               onSubmit={(content, isPrivate) => handleSubmitReply(content, isPrivate, comment.id)}
               isReply
               parentAuthorName={comment.author.name}
             />
-          )}
+          )} */}
 
           {comment.replies &&
             comment.replies.length > 0 &&
