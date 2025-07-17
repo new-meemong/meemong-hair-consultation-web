@@ -1,6 +1,6 @@
 import { apiClient } from '@/shared/api/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { HAIR_CONSULT_POSTING_QUERY_KEY_PREFIX } from '../constants/query-keys';
+import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
 import { getGetPostsQueryKey } from './use-get-posts';
 
 export default function useDeletePostMutation() {
@@ -8,7 +8,7 @@ export default function useDeletePostMutation() {
 
   const mutation = useMutation({
     mutationFn: (hairConsultPostingId: number) =>
-      apiClient.delete(`${HAIR_CONSULT_POSTING_QUERY_KEY_PREFIX}/${hairConsultPostingId}`),
+      apiClient.delete(`${HAIR_CONSULT_POSTING_API_PREFIX}/${hairConsultPostingId}`),
   });
 
   const mutate = (hairConsultPostingId: number, { onSuccess }: { onSuccess: () => void }) => {
