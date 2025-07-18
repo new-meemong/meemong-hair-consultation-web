@@ -76,14 +76,18 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
   const isDirty = method.formState.isDirty;
   const isLoading = method.formState.isSubmitting || isPending;
 
+  console.log('imageFiles', imageFiles);
+  console.log('imageUrls', imageUrls);
+  console.log('isDirty', isDirty);
+
   const hasImages = imageFiles.length > 0 || imageUrls.length > 0;
 
   const setImageFiles = (newImageFiles: File[]) => {
-    method.setValue(POST_FORM_FIELD_NAME.imageFiles, newImageFiles);
+    method.setValue(POST_FORM_FIELD_NAME.imageFiles, newImageFiles, { shouldDirty: true });
   };
 
   const setImageUrls = (newImageUrls: string[]) => {
-    method.setValue(POST_FORM_FIELD_NAME.imageUrls, newImageUrls);
+    method.setValue(POST_FORM_FIELD_NAME.imageUrls, newImageUrls, { shouldDirty: true });
   };
 
   const showImageUploadLimitSheet = useShowImageUploadLimitSheet();
@@ -104,7 +108,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
   const addImageFiles = (newImageFiles: File[]) => {
     const updatedImageFiles = [...imageFiles, ...newImageFiles];
 
-    method.setValue(POST_FORM_FIELD_NAME.imageFiles, updatedImageFiles);
+    method.setValue(POST_FORM_FIELD_NAME.imageFiles, updatedImageFiles, { shouldDirty: true });
   };
 
   return (
