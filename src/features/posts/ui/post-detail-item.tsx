@@ -5,12 +5,15 @@ import Image from 'next/image';
 import { LikeButton } from '@/features/likes/ui/like-button';
 import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
+import { useAuthContext } from '@/shared/context/auth-context';
 
 type PostDetailItemProps = {
   postDetail: PostDetail;
 };
 
 function PostDetailItem({ postDetail }: PostDetailItemProps) {
+  const { isUserDesigner } = useAuthContext();
+
   const {
     id,
     title,
@@ -22,6 +25,7 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
     isFavorited,
     hairConsultPostingCreateUserName: authorName,
     hairConsultPostingCreateUserProfileImageUrl: authorImageUrl,
+    hairConsultPostingCreateUserRegion: authorRegion,
   } = postDetail;
 
   const showImageViewerModal = useShowImageViewerModal();
@@ -29,6 +33,8 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
   const handleImageClick = (index: number) => {
     showImageViewerModal(images, index);
   };
+
+  const shouldShowRegion = isUserDesigner && authorRegion;
 
   return (
     <>
@@ -52,7 +58,10 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
             </Avatar>
             <div className="flex flex-col">
               <p className="typo-body-1-semibold text-label-default">{authorName}</p>
-              <p className="typo-body-3-regular text-label-info">{createdAt}</p>
+              <p className="typo-body-3-regular text-label-info">
+                {shouldShowRegion ? `${authorRegion} | ` : ''}
+                {createdAt}
+              </p>
             </div>
           </div>
           <div className="flex flex-col gap-3">
