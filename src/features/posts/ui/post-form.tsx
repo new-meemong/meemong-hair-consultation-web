@@ -76,10 +76,6 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
   const isDirty = method.formState.isDirty;
   const isLoading = method.formState.isSubmitting || isPending;
 
-  console.log('imageFiles', imageFiles);
-  console.log('imageUrls', imageUrls);
-  console.log('isDirty', isDirty);
-
   const hasImages = imageFiles.length > 0 || imageUrls.length > 0;
 
   const setImageFiles = (newImageFiles: File[]) => {

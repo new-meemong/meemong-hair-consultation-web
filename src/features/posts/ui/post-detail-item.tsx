@@ -6,13 +6,14 @@ import { LikeButton } from '@/features/likes/ui/like-button';
 import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
 import { useAuthContext } from '@/shared/context/auth-context';
+import PostDetailImage from './post-detail-image';
 
 type PostDetailItemProps = {
   postDetail: PostDetail;
 };
 
 function PostDetailItem({ postDetail }: PostDetailItemProps) {
-  const { isUserDesigner } = useAuthContext();
+  const { isUserDesigner, user } = useAuthContext();
 
   const {
     id,
@@ -23,10 +24,14 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
     likeCount,
     commentCount,
     isFavorited,
+    isPhotoVisibleToDesigner: shouldShowImage,
+    hairConsultPostingCreateUserId: authorId,
     hairConsultPostingCreateUserName: authorName,
     hairConsultPostingCreateUserProfileImageUrl: authorImageUrl,
     hairConsultPostingCreateUserRegion: authorRegion,
   } = postDetail;
+
+  const isWriter = authorId === user.id;
 
   const showImageViewerModal = useShowImageViewerModal();
 
@@ -73,20 +78,12 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
         {/* 게시글 이미지 */}
         <div className="flex gap-2 px-5 overflow-x-auto scrollbar-hide">
           {images.map((image, index) => (
-            <div
-              key={index}
-              className="relative min-w-35 h-35 rounded-6 cursor-pointer overflow-hidden"
+            <PostDetailImage
+              key={`${index}-${image}`}
+              image={image}
               onClick={() => handleImageClick(index)}
-            >
-              <Image
-                src={image}
-                alt={`게시글 이미지 ${index + 1}`}
-                fill
-                className="object-cover"
-                sizes="140px"
-                priority
-              />
-            </div>
+              onlyShowToDesigner={shouldShowImage && !isWriter}
+            />
           ))}
         </div>
       </div>
