@@ -19,7 +19,7 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
 export default function PostDetailPage() {
-  const { isUserDesigner } = useAuthContext();
+  const { isUserDesigner, user } = useAuthContext();
 
   useGuidePopup(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
 
@@ -28,7 +28,7 @@ export default function PostDetailPage() {
   const { data: response } = useGetPostDetail(postId?.toString() ?? '');
   const postDetail = response?.data;
 
-  const isWriter = true;
+  const isWriter = postDetail?.hairConsultPostingCreateUserId === user.id;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [comments, setComments] = useState<CommentWithReplies[]>([]);

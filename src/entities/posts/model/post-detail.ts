@@ -7,7 +7,9 @@ export type PostDetail = {
   isFavorited: boolean;
   likeCount: number;
   commentCount: number;
+  isPhotoVisibleToDesigner: boolean;
   hairConsultPostingCreateUserName: string;
   hairConsultPostingCreateUserProfileImageUrl: string | null;
-  hairConsultPostingCreateUserRegion: string;
+  hairConsultPostingCreateUserRegion: string | null;
+  hairConsultPostingCreateUserId: number;
 };
