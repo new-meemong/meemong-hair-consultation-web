@@ -84,6 +84,7 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
                 fill
                 className="object-cover"
                 sizes="140px"
+                priority
               />
             </div>
           ))}
