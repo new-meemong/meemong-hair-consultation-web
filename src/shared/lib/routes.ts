@@ -8,9 +8,8 @@ export const ROUTES = {
   POSTS_DETAIL: (id: string | number) => `/posts/${id}`,
   POSTS_EDIT: (id: string) => `/posts/edit/${id}`,
 
-  // DEV
-  EXAMPLE: '/example',
-  DESIGN_GUIDE: '/design-guide',
+  // 헤어상담
+  TODAY_CONSULTANT: '/today-consultant',
 } as const;
 
 /**
@@ -23,6 +22,5 @@ export const createNavigation = (push: (href: string) => void) => ({
   toPosts: () => push(ROUTES.POSTS),
   toPostsCreate: () => push(ROUTES.POSTS_CREATE),
   toPostsDetail: (id: string | number) => push(ROUTES.POSTS_DETAIL(id)),
-  toExample: () => push(ROUTES.EXAMPLE),
-  toDesignGuide: () => push(ROUTES.DESIGN_GUIDE),
+  toTodayConsultant: () => push(ROUTES.TODAY_CONSULTANT),
 });
