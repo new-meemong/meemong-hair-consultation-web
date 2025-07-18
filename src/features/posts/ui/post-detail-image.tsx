@@ -1,6 +1,7 @@
 import { useAuthContext } from '@/shared/context/auth-context';
 import Image from 'next/image';
 import BigLockIcon from '@/assets/icons/big-lock.svg';
+import { isValidUrl } from '@/shared/lib/is-valid-url';
 
 function HiddenImage() {
   return (
@@ -30,12 +31,14 @@ export default function PostDetailImage({
 
   const shouldShowImage = isUserDesigner || !onlyShowToDesigner;
 
+  const isValidImageUrl = isValidUrl(image);
+
   return (
     <div
       className="relative min-w-35 h-35 rounded-6 cursor-pointer overflow-hidden"
       onClick={shouldShowImage ? onClick : undefined}
     >
-      {shouldShowImage ? (
+      {shouldShowImage && isValidImageUrl ? (
         <Image
           src={image}
           alt={`게시글 이미지`}
