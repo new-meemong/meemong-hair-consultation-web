@@ -7,6 +7,7 @@ import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
 import { useAuthContext } from '@/shared/context/auth-context';
 import PostDetailImage from './post-detail-image';
+import ActionItem from '@/shared/ui/action-item';
 
 type PostDetailItemProps = {
   postDetail: PostDetail;
@@ -89,18 +90,15 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
       </div>
 
       <Separator />
-      <div className="flex items-center justify-between gap-5 py-4 px-5">
+      <div className="flex items-center justify-between gap-5 px-5">
         <div className="flex flex-1 justify-center items-center gap-1">
           <LikeButton postId={id} liked={isFavorited} likeCount={likeCount} />
         </div>
-        <div className="flex flex-1 justify-center items-center gap-1">
-          <CommentIcon className="w-5 h-5 fill-label-placeholder" />
-          <span className="typo-body-1-medium text-label-info">{commentCount}</span>
-        </div>
-        <div className="flex flex-1 justify-center items-center gap-1">
-          <ShareIcon className="w-5 h-5 fill-label-placeholder" />
-          <span className="typo-body-1-medium text-label-info">공유</span>
-        </div>
+        <ActionItem
+          icon={<CommentIcon className="w-5 h-5 fill-label-placeholder" />}
+          label={commentCount.toString()}
+        />
+        <ActionItem icon={<ShareIcon className="w-5 h-5 fill-label-placeholder" />} label="공유" />
       </div>
       <Separator />
     </>
