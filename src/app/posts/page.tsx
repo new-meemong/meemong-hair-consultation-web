@@ -3,7 +3,7 @@
 import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
 import useGetPosts from '@/features/posts/api/use-get-posts';
 import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
-import type { TabType } from '@/features/posts/types/tabs';
+import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import PostList from '@/features/posts/ui/post-list';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { ROUTES } from '@/shared';
@@ -41,7 +41,7 @@ const POST_LIMIT = 20;
 
 export default function PostsPage() {
   const { user, isUserModel } = useAuthContext();
-  const [activeTab, setActiveTab] = useState<TabType>('latest');
+  const [activeTab, setActiveTab] = useState<PostListTab>('latest');
   const router = useRouterWithUser();
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
@@ -55,7 +55,7 @@ export default function PostsPage() {
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const handleTabChange = (tab: TabType) => {
+  const handleTabChange = (tab: PostListTab) => {
     if (activeTab === tab) return;
 
     setActiveTab(tab);

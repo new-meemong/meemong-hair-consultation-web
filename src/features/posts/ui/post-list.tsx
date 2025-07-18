@@ -2,8 +2,8 @@
 
 import ErrorIcon from '@/assets/icons/error.svg';
 import { type Post } from '@/entities/posts';
-import { POST_TAB } from '@/features/posts/constants/post-tabs';
-import { type TabType } from '@/features/posts/types/tabs';
+import { POST_LIST_TAB } from '@/features/posts/constants/post-list-tabs';
+import { type PostListTab } from '@/features/posts/types/post-list-tab';
 import { useAuthContext } from '@/shared/context/auth-context';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -11,7 +11,7 @@ import PostListItem from './post-list-item';
 
 type PostListProps = {
   posts: Post[];
-  tab: TabType;
+  tab: PostListTab;
   fetchNextPage: () => void;
 };
 
@@ -32,7 +32,7 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
       <div className="flex flex-col gap-2 items-center justify-center pt-30">
         <ErrorIcon className="size-7" />
         <p className="typo-body-1-medium text-label-placeholder">
-          {POST_TAB[tab].getEmptyText(user.role)}
+          {POST_LIST_TAB[tab].getEmptyText(user.role)}
         </p>
       </div>
     );

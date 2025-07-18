@@ -1,4 +1,4 @@
-import type { TabType } from '../types/tabs';
+import type { PostListTab } from '../types/post-list-tab';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
 import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
 import PopularIcon from '@/assets/icons/recent.svg';
@@ -9,13 +9,13 @@ import { USER_ROLE } from '@/entities/user/constants/user-role';
 import type { ValueOf } from '@/shared/type/types';
 
 type TabInfo = {
-  id: TabType;
+  id: PostListTab;
   label: string;
   icon: ReactNode;
   getEmptyText: (role: ValueOf<typeof USER_ROLE>) => string;
 };
 
-export const POST_TAB: Record<TabType, TabInfo> = {
+export const POST_LIST_TAB: Record<PostListTab, TabInfo> = {
   latest: {
     id: 'latest',
     label: '최신글',
@@ -66,4 +66,4 @@ export const POST_TAB: Record<TabType, TabInfo> = {
   },
 } as const;
 
-export const POST_TABS = Object.values(POST_TAB);
+export const POST_LIST_TABS = Object.values(POST_LIST_TAB);
