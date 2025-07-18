@@ -5,12 +5,16 @@ import Image from 'next/image';
 import { LikeButton } from '@/features/likes/ui/like-button';
 import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
+import { useAuthContext } from '@/shared/context/auth-context';
+import PostDetailImage from './post-detail-image';
 
 type PostDetailItemProps = {
   postDetail: PostDetail;
 };
 
 function PostDetailItem({ postDetail }: PostDetailItemProps) {
+  const { isUserDesigner, user } = useAuthContext();
+
   const {
     id,
     title,
@@ -20,15 +24,22 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
     likeCount,
     commentCount,
     isFavorited,
+    isPhotoVisibleToDesigner: shouldShowImage,
+    hairConsultPostingCreateUserId: authorId,
     hairConsultPostingCreateUserName: authorName,
     hairConsultPostingCreateUserProfileImageUrl: authorImageUrl,
+    hairConsultPostingCreateUserRegion: authorRegion,
   } = postDetail;
+
+  const isWriter = authorId === user.id;
 
   const showImageViewerModal = useShowImageViewerModal();
 
   const handleImageClick = (index: number) => {
     showImageViewerModal(images, index);
   };
+
+  const shouldShowRegion = isUserDesigner && authorRegion;
 
   return (
     <>
@@ -52,7 +63,10 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
             </Avatar>
             <div className="flex flex-col">
               <p className="typo-body-1-semibold text-label-default">{authorName}</p>
-              <p className="typo-body-3-regular text-label-info">{createdAt}</p>
+              <p className="typo-body-3-regular text-label-info">
+                {shouldShowRegion ? `${authorRegion} | ` : ''}
+                {createdAt}
+              </p>
             </div>
           </div>
           <div className="flex flex-col gap-3">
@@ -64,19 +78,12 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
         {/* 게시글 이미지 */}
         <div className="flex gap-2 px-5 overflow-x-auto scrollbar-hide">
           {images.map((image, index) => (
-            <div
-              key={index}
-              className="relative min-w-35 h-35 rounded-6 cursor-pointer overflow-hidden"
+            <PostDetailImage
+              key={`${index}-${image}`}
+              image={image}
               onClick={() => handleImageClick(index)}
-            >
-              <Image
-                src={image}
-                alt={`게시글 이미지 ${index + 1}`}
-                fill
-                className="object-cover"
-                sizes="140px"
-              />
-            </div>
+              onlyShowToDesigner={shouldShowImage && !isWriter}
+            />
           ))}
         </div>
       </div>
