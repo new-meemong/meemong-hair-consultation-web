@@ -10,6 +10,7 @@
 @layer base {
   body {
     background-color: var(--color-bg-white);
+    overflow: hidden;
   }
 }
 

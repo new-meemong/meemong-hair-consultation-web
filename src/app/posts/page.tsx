@@ -1,16 +1,41 @@
 'use client';
 
+import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
 import useGetPosts from '@/features/posts/api/use-get-posts';
 import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
 import type { TabType } from '@/features/posts/types/tabs';
+import PostList from '@/features/posts/ui/post-list';
+import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { ROUTES } from '@/shared';
 import { useAuthContext } from '@/shared/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { BellButton, SiteHeader } from '@/widgets/header';
-import PostList from '@/features/posts/ui/post-list';
 import { useCallback, useState } from 'react';
-import { WritePostButton } from '@/features/posts/ui/write-post-button';
+
+const TODAY_CONSULTANT_BANNERS = [
+  {
+    id: 1,
+    rank: 1,
+    name: '김혜정',
+    avatarUrl: 'https://picsum.photos/200/300',
+    shop: '아이디헤어문정점',
+  },
+  {
+    id: 2,
+    rank: 2,
+    name: '김혜정2',
+    avatarUrl: 'https://picsum.photos/200/300',
+    shop: '아이디헤어문정점2',
+  },
+  {
+    id: 3,
+    rank: 3,
+    name: '김혜정2',
+    avatarUrl: 'https://picsum.photos/200/300',
+    shop: '아이디헤어문정점3',
+  },
+];
 
 const POST_LIMIT = 20;
 
@@ -54,29 +79,26 @@ export default function PostsPage() {
       {/* 헤더 */}
       <SiteHeader title="헤어상담" rightComponent={<BellButton onClick={handleBellClick} />} />
 
-      {/* 배너 캐러셀 */}
-      {/* <div className="my-4">
-        <BannerCarousel banners={BANNERS} />
-      </div> */}
-
-      {/* 탭 */}
-      <div className="px-5 py-2">
-        <ToggleChipGroup className="flex overflow-x-auto scrollbar-hide">
-          {tabs.map(({ id, icon, label }) => (
-            <ToggleChip
-              key={id}
-              icon={icon}
-              pressed={activeTab === id}
-              onPressedChange={() => handleTabChange(id)}
-            >
-              {label}
-            </ToggleChip>
-          ))}
-        </ToggleChipGroup>
+      <div className="flex flex-col gap-5 flex-1 min-h-0">
+        <TodayConsultantBanner banners={TODAY_CONSULTANT_BANNERS} />
+        <div className="flex-1 flex flex-col min-h-0 gap-2">
+          <div className="flex-shrink-0">
+            <ToggleChipGroup className="flex overflow-x-auto scrollbar-hide px-5">
+              {tabs.map(({ id, icon, label }) => (
+                <ToggleChip
+                  key={id}
+                  icon={icon}
+                  pressed={activeTab === id}
+                  onPressedChange={() => handleTabChange(id)}
+                >
+                  {label}
+                </ToggleChip>
+              ))}
+            </ToggleChipGroup>
+          </div>
+          {posts && <PostList posts={posts} tab={activeTab} fetchNextPage={handleFetchNextPage} />}
+        </div>
       </div>
-
-      {/* 게시글 리스트 */}
-      {posts && <PostList posts={posts} tab={activeTab} fetchNextPage={handleFetchNextPage} />}
 
       {/* 글쓰기 버튼 */}
       {isUserModel && (
