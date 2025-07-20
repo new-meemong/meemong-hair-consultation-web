@@ -2,7 +2,7 @@ import type { Post } from '@/entities/posts';
 import { apiClient } from '@/shared/api/client';
 import { filterUndefined } from '@/shared/lib/filter-undefined';
 import { useInfiniteQuery, type Query } from '@tanstack/react-query';
-import type { TabType } from '../types/tabs';
+import type { PostListTab } from '../types/post-list-tab';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
 
 const GET_POSTS_QUERY_KEY_PREFIX = `${HAIR_CONSULT_POSTING_API_PREFIX}/main`;
@@ -10,7 +10,7 @@ export const getPostsQueryKey = () => [GET_POSTS_QUERY_KEY_PREFIX];
 
 type GetPostsQueryParams = {
   __limit?: number;
-  filter?: TabType;
+  filter?: PostListTab;
 };
 
 type GetPostsResponse = {

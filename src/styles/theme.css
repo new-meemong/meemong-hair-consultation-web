@@ -27,4 +27,10 @@
   --color-cautionary: #ff9142;
   --color-negative: #ff3300;
   --color-negative-light: #ff613a;
+
+  /* Rank */
+  --color-rank-first: #ffb742;
+  --color-rank-second: #898886;
+  --color-rank-third: #a7866e;
+  --color-rank-etc: #cececc;
 }

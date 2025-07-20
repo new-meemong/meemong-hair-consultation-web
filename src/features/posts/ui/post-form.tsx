@@ -4,55 +4,13 @@ import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { CREATE_POST_FORM_MAX_COUNT } from '@/features/posts/constants/create-post-form';
 import { Button, Input, Label, Separator, Textarea } from '@/shared';
 import ControlledCheckbox from '@/shared/ui/controlled-checkbox';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import z from 'zod';
+import { FormProvider, useWatch } from 'react-hook-form';
+import { POST_FORM_FIELD_NAME } from '../constants/post-form-field-name';
+import usePostForm from '../hooks/use-post-form';
 import useShowImageUploadLimitSheet from '../hooks/use-show-image-upload-limit-sheet';
+import type { PostFormValues } from '../types/post-form-values';
 import ImageUploader from './image-uploader';
 import PostFormImageList from './post-form-image-list';
-
-export const POST_FORM_FIELD_NAME = {
-  title: 'title',
-  content: 'content',
-  isPhotoVisibleToDesigner: 'isPhotoVisibleToDesigner',
-  imageFiles: 'imageFiles',
-  imageUrls: 'imageUrls',
-} as const;
-
-const formSchema = z.object({
-  [POST_FORM_FIELD_NAME.title]: z
-    .string()
-    .min(1, '제목을 입력해주세요')
-    .max(
-      CREATE_POST_FORM_MAX_COUNT.TITLE,
-      `제목은 ${CREATE_POST_FORM_MAX_COUNT.TITLE}자 이하로 입력해주세요`,
-    ),
-  [POST_FORM_FIELD_NAME.content]: z
-    .string()
-    .min(1, '내용을 입력해주세요')
-    .max(
-      CREATE_POST_FORM_MAX_COUNT.CONTENT,
-      `내용은 ${CREATE_POST_FORM_MAX_COUNT.CONTENT}자 이하로 입력해주세요`,
-    ),
-  [POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner]: z.boolean(),
-  [POST_FORM_FIELD_NAME.imageFiles]: z
-    .array(z.instanceof(File))
-    .max(
-      CREATE_POST_FORM_MAX_COUNT.IMAGE,
-      `이미지는 최대 ${CREATE_POST_FORM_MAX_COUNT.IMAGE}개까지 업로드할 수 있습니다`,
-    ),
-  [POST_FORM_FIELD_NAME.imageUrls]: z.array(z.string()),
-});
-
-export type PostFormValues = z.infer<typeof formSchema>;
-
-const DEFAULT_VALUES = {
-  [POST_FORM_FIELD_NAME.title]: '',
-  [POST_FORM_FIELD_NAME.content]: '',
-  [POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner]: false,
-  [POST_FORM_FIELD_NAME.imageFiles]: [] as File[],
-  [POST_FORM_FIELD_NAME.imageUrls]: [] as string[],
-} as const;
 
 type PostFormProps = {
   initialData?: PostFormValues;
@@ -61,20 +19,15 @@ type PostFormProps = {
 };
 
 export default function PostForm({ initialData, onSubmit, isPending }: PostFormProps) {
-  const method = useForm<PostFormValues>({
-    resolver: zodResolver(formSchema),
-    mode: 'onChange',
-    defaultValues: initialData ?? DEFAULT_VALUES,
-  });
+  const method = usePostForm(initialData);
 
   const [imageFiles, imageUrls] = useWatch({
     control: method.control,
     name: [POST_FORM_FIELD_NAME.imageFiles, POST_FORM_FIELD_NAME.imageUrls],
   });
 
-  const isValid = method.formState.isValid;
-  const isDirty = method.formState.isDirty;
-  const isLoading = method.formState.isSubmitting || isPending;
+  const { isValid, isDirty, isSubmitting } = method.formState;
+  const isLoading = isSubmitting || isPending;
 
   const hasImages = imageFiles.length > 0 || imageUrls.length > 0;
 

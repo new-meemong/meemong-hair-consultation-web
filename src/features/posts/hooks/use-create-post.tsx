@@ -1,6 +1,6 @@
 import useCreatePostMutation from '../api/use-create-post-mutation';
 import useUploadPostImageMutation from '../api/use-upload-post-image';
-import type { PostFormValues } from '../ui/post-form';
+import type { PostFormValues } from '../types/post-form-values';
 
 export function useCreatePost() {
   const { mutateAsync: uploadImages, isPending: isUploadingImages } = useUploadPostImageMutation();

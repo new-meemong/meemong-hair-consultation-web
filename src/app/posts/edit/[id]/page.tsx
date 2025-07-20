@@ -1,9 +1,11 @@
 'use client';
 
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
+import { POST_FORM_FIELD_NAME } from '@/features/posts/constants/post-form-field-name';
 import useEditPost from '@/features/posts/hooks/use-edit-post';
 import useShowEditPostConfirmModal from '@/features/posts/hooks/use-show-edit-post-confirm-modal';
-import PostForm, { POST_FORM_FIELD_NAME, type PostFormValues } from '@/features/posts/ui/post-form';
+import type { PostFormValues } from '@/features/posts/types/post-form-values';
+import PostForm from '@/features/posts/ui/post-form';
 import { ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowConfirmModal from '@/shared/ui/hooks/use-show-confirm-modal';
@@ -28,7 +30,6 @@ export default function EditPostPage() {
   const initialData = {
     [POST_FORM_FIELD_NAME.title]: postDetail.title,
     [POST_FORM_FIELD_NAME.content]: postDetail.content,
-    // [POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner]: postDetail.isPhotoVisibleToDesigner,
     [POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner]: true,
     [POST_FORM_FIELD_NAME.imageUrls]: postDetail.images,
     [POST_FORM_FIELD_NAME.imageFiles]: [],
