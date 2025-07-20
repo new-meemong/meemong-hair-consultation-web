@@ -27,6 +27,8 @@ export default function PostDetailAuthorProfile({
     ],
   );
 
+  console.log(handleClick);
+
   return (
     <div className="flex items-center gap-2">
       <Avatar>

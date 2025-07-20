@@ -2,7 +2,8 @@
 
 import { POST_TAB_VALUES, POST_TABS } from '@/features/posts/constants/post-tabs';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
-import PostForm, { type PostFormValues } from '@/features/posts/ui/post-form';
+import PostForm from '@/features/posts/ui/post-form';
+import type { PostFormValues } from '@/features/posts/types/post-form-values';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';

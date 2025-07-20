@@ -3,18 +3,6 @@ import { CarouselContent, CarouselItem } from '@/shared/ui/carousel';
 import Image from 'next/image';
 import CrownIcon from '@/assets/icons/crown.svg';
 
-type Banner = {
-  id: number;
-  rank: number;
-  name: string;
-  avatarUrl: string | null;
-  shop: string;
-};
-
-type TodayConsultantBannerProps = {
-  banners: Banner[];
-};
-
 function Avatar({ avatarUrl, name }: { avatarUrl: string | null; name: string }) {
   return (
     <Image

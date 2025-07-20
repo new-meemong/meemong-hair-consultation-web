@@ -1,6 +1,6 @@
 import usePutPostMutation from '../api/use-put-post-mutation';
 import useUploadPostImageMutation from '../api/use-upload-post-image';
-import type { PostFormValues } from '../ui/post-form';
+import type { PostFormValues } from '../types/post-form-values';
 
 export default function useEditPost(postId: string) {
   const { mutateAsync: uploadImages, isPending: isUploadingImages } = useUploadPostImageMutation();
