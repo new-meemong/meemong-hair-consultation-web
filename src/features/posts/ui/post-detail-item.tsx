@@ -8,6 +8,7 @@ import ShareIcon from '@/assets/icons/share.svg';
 import { useAuthContext } from '@/shared/context/auth-context';
 import PostDetailImage from './post-detail-image';
 import ActionItem from '@/shared/ui/action-item';
+import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
 
 type PostDetailItemProps = {
   postDetail: PostDetail;
@@ -101,6 +102,9 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
         <ActionItem icon={<ShareIcon className="w-5 h-5 fill-label-placeholder" />} label="공유" />
       </div>
       <Separator />
+      <div className="py-3">
+        <TodayConsultantBanner />
+      </div>
     </>
   );
 }

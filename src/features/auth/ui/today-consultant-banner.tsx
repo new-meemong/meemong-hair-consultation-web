@@ -43,7 +43,33 @@ function RankBadge({ rank }: { rank: number }) {
   );
 }
 
-export default function TodayConsultantBanner({ banners }: TodayConsultantBannerProps) {
+const TODAY_CONSULTANT_BANNERS = [
+  {
+    id: 1,
+    rank: 1,
+    name: '김혜정',
+    avatarUrl: 'https://picsum.photos/200/300',
+    shop: '아이디헤어문정점',
+  },
+  {
+    id: 2,
+    rank: 2,
+    name: '김혜정2',
+    avatarUrl: 'https://picsum.photos/200/300',
+    shop: '아이디헤어문정점2',
+  },
+  {
+    id: 3,
+    rank: 3,
+    name: '김혜정2',
+    avatarUrl: 'https://picsum.photos/200/300',
+    shop: '아이디헤어문정점3',
+  },
+];
+
+export default function TodayConsultantBanner() {
+  const banners = TODAY_CONSULTANT_BANNERS;
+
   return (
     <Carousel
       opts={{
