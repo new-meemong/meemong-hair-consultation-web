@@ -3,7 +3,7 @@
 import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
 import useGetPosts from '@/features/posts/api/use-get-posts';
 import { POST_TABS, type POST_TAB_VALUES } from '@/features/posts/constants/post-tabs';
-import { getPostTabs } from '@/features/posts/lib/get-post-tabs';
+import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import PostList from '@/features/posts/ui/post-list';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
@@ -45,7 +45,7 @@ export default function PostsPage() {
     console.log('알림 버튼 클릭');
   };
 
-  const tabs = getPostTabs(user.role);
+  const listTabs = getPostListTabs(user.role);
 
   const handleWriteButtonClick = () => {
     router.push(ROUTES.POSTS_CREATE);
@@ -68,7 +68,7 @@ export default function PostsPage() {
         <div className="flex-1 flex flex-col min-h-0 gap-2">
           <div className="flex-shrink-0">
             <ToggleChipGroup className="flex overflow-x-auto scrollbar-hide px-5">
-              {tabs.map(({ id, icon, label }) => (
+              {listTabs.map(({ id, icon, label }) => (
                 <ToggleChip
                   key={id}
                   icon={icon}
