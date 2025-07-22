@@ -27,7 +27,7 @@ export default function CreatePostPage() {
 
   const showReloadConsultingPostModal = useShowReloadConsultingPostModal();
   //TODO: 작성하던 데이터 저장 여부 로직 추가
-  const [hasSavedConsultingPost, setHasSavedConsultingPost] = useState(true);
+  const [hasSavedConsultingPost, setHasSavedConsultingPost] = useState(false);
 
   useEffect(() => {
     if (hasSavedConsultingPost) {
