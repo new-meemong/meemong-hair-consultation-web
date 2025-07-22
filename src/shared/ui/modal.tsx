@@ -11,8 +11,7 @@ export type ModalButtonProps = {
 type ModalProps = {
   id: string;
   text: string;
-  positiveButton: ModalButtonProps;
-  negativeButton?: ModalButtonProps;
+  buttons: ModalButtonProps[];
 };
 
 function Separator() {
@@ -40,7 +39,7 @@ function ModalButton({
   );
 }
 
-export default function Modal({ id, text, positiveButton, negativeButton }: ModalProps) {
+export default function Modal({ id, text, buttons }: ModalProps) {
   const { closeModal } = useOverlayContext();
 
   const handleClose = () => {
@@ -53,14 +52,12 @@ export default function Modal({ id, text, positiveButton, negativeButton }: Moda
         <div className="pt-8 pb-7 px-7 typo-body-1-long-regular text-center whitespace-pre-line">
           {text}
         </div>
-        <Separator />
-        <ModalButton {...positiveButton} onClose={handleClose} />
-        {negativeButton && (
-          <>
+        {buttons.map((button, index) => (
+          <div key={index}>
             <Separator />
-            <ModalButton {...negativeButton} onClose={handleClose} />
-          </>
-        )}
+            <ModalButton {...button} onClose={handleClose} />
+          </div>
+        ))}
       </div>
     </DialogContent>
   );

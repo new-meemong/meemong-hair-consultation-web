@@ -123,12 +123,14 @@ export default function PostDetailPage() {
           showModal({
             id: 'delete-post-confirm-modal',
             text: '삭제가 완료되었습니다.',
-            positiveButton: {
-              label: '확인',
-              onClick: () => {
-                push(ROUTES.POSTS);
+            buttons: [
+              {
+                label: '확인',
+                onClick: () => {
+                  push(ROUTES.POSTS);
+                },
               },
-            },
+            ],
           });
         },
       });
@@ -137,13 +139,15 @@ export default function PostDetailPage() {
     showModal({
       id: 'delete-post-confirm-modal',
       text: '해당 게시글을 삭제하시겠습니까?',
-      positiveButton: {
-        label: '삭제',
-        onClick: handleDeletePost,
-      },
-      negativeButton: {
-        label: '취소',
-      },
+      buttons: [
+        {
+          label: '삭제',
+          onClick: handleDeletePost,
+        },
+        {
+          label: '취소',
+        },
+      ],
     });
   };
 

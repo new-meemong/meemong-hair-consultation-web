@@ -5,25 +5,17 @@ import Modal, { type ModalButtonProps } from '../modal';
 type UseShowModalProps = {
   id: string;
   text: string;
-  positiveButton: ModalButtonProps;
-  negativeButton?: ModalButtonProps;
+  buttons: ModalButtonProps[];
 };
 
 export default function useShowModal() {
   const { showModal: showOverlayModal } = useOverlayContext();
 
   const showModal = useCallback(
-    ({ id, text, positiveButton, negativeButton }: UseShowModalProps) => {
+    ({ id, text, buttons }: UseShowModalProps) => {
       showOverlayModal({
         id,
-        children: (
-          <Modal
-            id={id}
-            text={text}
-            positiveButton={positiveButton}
-            negativeButton={negativeButton}
-          />
-        ),
+        children: <Modal id={id} text={text} buttons={buttons} />,
       });
     },
     [showOverlayModal],

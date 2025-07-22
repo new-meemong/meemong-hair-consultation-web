@@ -31,16 +31,18 @@ export default function CreatePostPage() {
       showModal({
         id: 'go-back-confirm-modal',
         text: '컨설팅 글 작성을 그만두시겠습니까?\n작성 중인 내용은 자동 저장되며\n이어서 작성할 수 있습니다.',
-        positiveButton: {
-          label: '나가기',
-          textColor: 'text-negative',
-          onClick: () => {
-            back();
+        buttons: [
+          {
+            label: '나가기',
+            textColor: 'text-negative',
+            onClick: () => {
+              back();
+            },
           },
-        },
-        negativeButton: {
-          label: '취소',
-        },
+          {
+            label: '취소',
+          },
+        ],
       });
 
       return;
@@ -54,17 +56,19 @@ export default function CreatePostPage() {
       showModal({
         id: 'change-to-general-confirm-modal',
         text: '일반 상담글로 전환하시겠습니까?\n작성 중인 내용은 자동 저장됩니다.',
-        positiveButton: {
-          label: '나가기',
-          textColor: 'text-negative',
-          onClick: () => {
-            //TODO: 작성 중인 내용 저장
-            setSelectedTab(tab);
+        buttons: [
+          {
+            label: '나가기',
+            textColor: 'text-negative',
+            onClick: () => {
+              //TODO: 작성 중인 내용 저장
+              setSelectedTab(tab);
+            },
           },
-        },
-        negativeButton: {
-          label: '취소',
-        },
+          {
+            label: '취소',
+          },
+        ],
       });
 
       return;

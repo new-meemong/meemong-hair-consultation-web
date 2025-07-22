@@ -40,12 +40,14 @@ export default function EditPostPage() {
           showModal({
             id: 'edit-post-confirm-modal',
             text: '수정이 완료되었습니다',
-            positiveButton: {
-              label: '확인',
-              onClick: () => {
-                replace(ROUTES.POSTS_DETAIL(postDetail.id));
+            buttons: [
+              {
+                label: '확인',
+                onClick: () => {
+                  replace(ROUTES.POSTS_DETAIL(postDetail.id));
+                },
               },
-            },
+            ],
           });
         },
       });
@@ -54,13 +56,15 @@ export default function EditPostPage() {
     showModal({
       id: 'edit-post-confirm-modal',
       text: '해당 게시글을 수정하시겠습니까?',
-      positiveButton: {
-        label: '수정하기',
-        onClick: handleEdit,
-      },
-      negativeButton: {
-        label: '취소',
-      },
+      buttons: [
+        {
+          label: '수정하기',
+          onClick: handleEdit,
+        },
+        {
+          label: '취소',
+        },
+      ],
     });
   };
 
