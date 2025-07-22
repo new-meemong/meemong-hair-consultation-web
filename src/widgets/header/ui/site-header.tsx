@@ -34,7 +34,7 @@ export const SiteHeader = ({
         <>
           <div className="flex-1">
             <button onClick={handleBackClick} aria-label="뒤로 가기">
-              <ChevronLeftIcon className="h-6 w-6" />
+              <ChevronLeftIcon className="h-6 w-6 fill-rank-second" />
             </button>
           </div>
           <h1 className="typo-title-3-semibold flex-1 text-center">{title}</h1>
