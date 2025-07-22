@@ -38,8 +38,6 @@ export default function CreatePostPage() {
     });
   };
 
-  console.log('tabs', tabs);
-
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <SiteHeader title="게시글 작성" showBackButton />
