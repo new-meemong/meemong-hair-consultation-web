@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
-import { useAuthContext } from '@/shared/context/auth-context';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import Image from 'next/image';
 import { useCallback } from 'react';
 

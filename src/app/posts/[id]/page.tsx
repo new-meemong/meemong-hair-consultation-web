@@ -10,7 +10,7 @@ import useShowDeletePostConfirmModal from '@/features/posts/hooks/use-show-delet
 import PostDetailItem from '@/features/posts/ui/post-detail-item';
 import { MoreOptionsMenu, ROUTES } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
-import { useAuthContext } from '@/shared/context/auth-context';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowConfirmModal from '@/shared/ui/hooks/use-show-confirm-modal';

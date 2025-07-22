@@ -1,4 +1,4 @@
-import { useAuthContext } from '@/shared/context/auth-context';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import Image from 'next/image';
 import BigLockIcon from '@/assets/icons/big-lock.svg';
 import { isValidUrl } from '@/shared/lib/is-valid-url';

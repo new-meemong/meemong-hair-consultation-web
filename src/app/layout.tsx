@@ -1,4 +1,4 @@
-import { AuthProvider } from '@/shared/context/auth-context';
+import { AuthProvider } from '@/features/auth/context/auth-context';
 import { LoadingProvider } from '@/shared/context/loading-context';
 import { OverlayProvider } from '@/shared/context/overlay-context';
 import { QueryProvider } from '@/shared/ui/providers/query-provider';
