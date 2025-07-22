@@ -50,7 +50,9 @@ export default function Modal({ id, text, positiveButton, negativeButton }: Moda
   return (
     <DialogContent showCloseButton={false}>
       <div className="bg-white rounded-12">
-        <div className="pt-8 pb-7 px-7 typo-body-1-long-regular text-center">{text}</div>
+        <div className="pt-8 pb-7 px-7 typo-body-1-long-regular text-center whitespace-pre-line">
+          {text}
+        </div>
         <Separator />
         <ModalButton {...positiveButton} onClose={handleClose} />
         {negativeButton && (
