@@ -2,7 +2,7 @@ import { useOverlayContext } from '../context/overlay-context';
 import { cn } from '../lib/utils';
 import { DialogContent } from './dialog';
 
-type ButtonProps = {
+export type ModalButtonProps = {
   label: string;
   textColor?: 'text-label-default' | 'text-negative';
   onClick?: () => void;
@@ -11,22 +11,20 @@ type ButtonProps = {
 type ModalProps = {
   id: string;
   text: string;
-  positiveButton: ButtonProps;
-  negativeButton?: ButtonProps;
+  positiveButton: ModalButtonProps;
+  negativeButton?: ModalButtonProps;
 };
 
 function Separator() {
   return <div className="h-px bg-border-default" />;
 }
 
-type ModalButtonProps = ButtonProps & { onClose: () => void };
-
 function ModalButton({
   label,
   textColor = 'text-label-default',
   onClick,
   onClose,
-}: ModalButtonProps) {
+}: ModalButtonProps & { onClose: () => void }) {
   const handleClick = () => {
     onClick?.();
     onClose();

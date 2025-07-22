@@ -2,18 +2,17 @@
 
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
 import { type CommentWithReplies } from '@/entities/comment';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { CommentForm } from '@/features/comments';
 import useCreateCommentMutation from '@/features/comments/api/use-create-comment-mutation';
 import useDeletePostMutation from '@/features/posts/api/use-delete-post-mutation';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
-import useShowDeletePostConfirmModal from '@/features/posts/hooks/use-show-delete-post-confirm-modal';
 import PostDetailItem from '@/features/posts/ui/post-detail-item';
 import { MoreOptionsMenu, ROUTES } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
-import { useAuthContext } from '@/features/auth/context/auth-context';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import useShowConfirmModal from '@/shared/ui/hooks/use-show-confirm-modal';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -111,24 +110,39 @@ export default function PostDetailPage() {
     push(ROUTES.POSTS_EDIT(postId.toString()));
   };
 
-  const showDeletePostConfirmModal = useShowDeletePostConfirmModal();
+  const showModal = useShowModal();
+
   const { mutate: deletePost } = useDeletePostMutation();
 
-  const showConfirmModal = useShowConfirmModal();
-
   const handleDelete = () => {
-    showDeletePostConfirmModal({
-      onDelete: () => {
-        deletePost(Number(postId), {
-          onSuccess: () => {
-            showConfirmModal({
-              text: '삭제가 완료되었습니다',
-              onConfirm: () => {
+    const handleDeletePost = () => {
+      if (!postId) return;
+
+      deletePost(Number(postId), {
+        onSuccess: () => {
+          showModal({
+            id: 'delete-post-confirm-modal',
+            text: '삭제가 완료되었습니다.',
+            positiveButton: {
+              label: '확인',
+              onClick: () => {
                 push(ROUTES.POSTS);
               },
-            });
-          },
-        });
+            },
+          });
+        },
+      });
+    };
+
+    showModal({
+      id: 'delete-post-confirm-modal',
+      text: '해당 게시글을 삭제하시겠습니까?',
+      positiveButton: {
+        label: '삭제',
+        onClick: handleDeletePost,
+      },
+      negativeButton: {
+        label: '취소',
       },
     });
   };
