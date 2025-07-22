@@ -3,12 +3,11 @@
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { POST_FORM_FIELD_NAME } from '@/features/posts/constants/post-form-field-name';
 import useEditPost from '@/features/posts/hooks/use-edit-post';
-import useShowEditPostConfirmModal from '@/features/posts/hooks/use-show-edit-post-confirm-modal';
 import type { PostFormValues } from '@/features/posts/types/post-form-values';
 import PostForm from '@/features/posts/ui/post-form';
 import { ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import useShowConfirmModal from '@/shared/ui/hooks/use-show-confirm-modal';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
 
@@ -22,8 +21,7 @@ export default function EditPostPage() {
 
   const { editPost, isPending } = useEditPost(postId?.toString() ?? '');
 
-  const showEditPostConfirmModal = useShowEditPostConfirmModal();
-  const showConfirmModal = useShowConfirmModal();
+  const showModal = useShowModal();
 
   if (!postDetail) return null;
 
@@ -39,18 +37,34 @@ export default function EditPostPage() {
     const handleEdit = () => {
       editPost(data, {
         onSuccess: () => {
-          showConfirmModal({
+          showModal({
+            id: 'edit-post-confirm-modal',
             text: '수정이 완료되었습니다',
-            onConfirm: () => {
-              replace(ROUTES.POSTS_DETAIL(postDetail.id));
-            },
+            buttons: [
+              {
+                label: '확인',
+                onClick: () => {
+                  replace(ROUTES.POSTS_DETAIL(postDetail.id));
+                },
+              },
+            ],
           });
         },
       });
     };
 
-    showEditPostConfirmModal({
-      onEdit: handleEdit,
+    showModal({
+      id: 'edit-post-confirm-modal',
+      text: '해당 게시글을 수정하시겠습니까?',
+      buttons: [
+        {
+          label: '수정하기',
+          onClick: handleEdit,
+        },
+        {
+          label: '취소',
+        },
+      ],
     });
   };
 

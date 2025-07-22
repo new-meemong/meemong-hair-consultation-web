@@ -8,7 +8,7 @@ import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import PostList from '@/features/posts/ui/post-list';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { ROUTES } from '@/shared';
-import { useAuthContext } from '@/shared/context/auth-context';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { ValueOf } from '@/shared/type/types';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';

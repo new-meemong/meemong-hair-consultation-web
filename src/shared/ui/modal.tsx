@@ -2,31 +2,28 @@ import { useOverlayContext } from '../context/overlay-context';
 import { cn } from '../lib/utils';
 import { DialogContent } from './dialog';
 
-type ButtonProps = {
+export type ModalButtonProps = {
   label: string;
-  textColor?: 'text-label-default' | 'text-negative';
+  textColor?: 'text-label-default' | 'text-negative' | 'text-positive';
   onClick?: () => void;
 };
 
 type ModalProps = {
   id: string;
   text: string;
-  positiveButton: ButtonProps;
-  negativeButton?: ButtonProps;
+  buttons: ModalButtonProps[];
 };
 
 function Separator() {
   return <div className="h-px bg-border-default" />;
 }
 
-type ModalButtonProps = ButtonProps & { onClose: () => void };
-
 function ModalButton({
   label,
   textColor = 'text-label-default',
   onClick,
   onClose,
-}: ModalButtonProps) {
+}: ModalButtonProps & { onClose: () => void }) {
   const handleClick = () => {
     onClick?.();
     onClose();
@@ -42,7 +39,7 @@ function ModalButton({
   );
 }
 
-export default function Modal({ id, text, positiveButton, negativeButton }: ModalProps) {
+export default function Modal({ id, text, buttons }: ModalProps) {
   const { closeModal } = useOverlayContext();
 
   const handleClose = () => {
@@ -52,15 +49,15 @@ export default function Modal({ id, text, positiveButton, negativeButton }: Moda
   return (
     <DialogContent showCloseButton={false}>
       <div className="bg-white rounded-12">
-        <div className="pt-8 pb-7 px-7 typo-body-1-long-regular text-center">{text}</div>
-        <Separator />
-        <ModalButton {...positiveButton} onClose={handleClose} />
-        {negativeButton && (
-          <>
+        <div className="pt-8 pb-7 px-7 typo-body-1-long-regular text-center whitespace-pre-line">
+          {text}
+        </div>
+        {buttons.map((button, index) => (
+          <div key={index}>
             <Separator />
-            <ModalButton {...negativeButton} onClose={handleClose} />
-          </>
-        )}
+            <ModalButton {...button} onClose={handleClose} />
+          </div>
+        ))}
       </div>
     </DialogContent>
   );

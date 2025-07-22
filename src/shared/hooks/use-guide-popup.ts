@@ -1,7 +1,7 @@
 import useShowCreatePostGuideSheet from '@/features/posts/hooks/use-show-create-post-guide-sheet';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import { useCallback, useEffect } from 'react';
-import { useAuthContext } from '../context/auth-context';
+import { useAuthContext } from '../../features/auth/context/auth-context';
 import type { UserGuideState } from '../lib';
 import type { KeyOf } from '../type/types';
 import useShowDesignerOnboardingSheet from '@/features/posts/hooks/use-show-designer-onboarding-sheet';

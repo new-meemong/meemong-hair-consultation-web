@@ -1,8 +1,8 @@
 'use client';
 
-import React, { type ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
 import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { type ReactNode } from 'react';
 
 interface SiteHeaderProps {
   title?: string;
@@ -17,7 +17,7 @@ export const SiteHeader = ({
   onBackClick,
   rightComponent,
 }: SiteHeaderProps) => {
-  const router = useRouter();
+  const router = useRouterWithUser();
 
   const handleBackClick = () => {
     if (onBackClick) {
@@ -34,7 +34,7 @@ export const SiteHeader = ({
         <>
           <div className="flex-1">
             <button onClick={handleBackClick} aria-label="뒤로 가기">
-              <ChevronLeftIcon className="h-6 w-6" />
+              <ChevronLeftIcon className="h-6 w-6 fill-rank-second" />
             </button>
           </div>
           <h1 className="typo-title-3-semibold flex-1 text-center">{title}</h1>

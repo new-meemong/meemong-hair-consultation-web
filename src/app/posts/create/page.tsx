@@ -11,20 +11,85 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { ValueOf } from '@/shared/type/types';
 import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import ConsultingPostForm from '@/features/posts/ui/consulting-post-form';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
+import useShowReloadConsultingPostModal from '@/features/posts/hooks/use-show-reload-consulting-post-modal';
 
 const tabs = POST_TABS.reverse();
 
 export default function CreatePostPage() {
   useGuidePopup(USER_GUIDE_KEYS.hasSeenCreatePostGuide);
 
+  const showModal = useShowModal();
+  const { replace, back } = useRouterWithUser();
+  const { showSnackBar } = useOverlayContext();
+
+  const showReloadConsultingPostModal = useShowReloadConsultingPostModal();
+  //TODO: 작성하던 데이터 저장 여부 로직 추가
+  const [hasSavedConsultingPost, setHasSavedConsultingPost] = useState(false);
+
+  useEffect(() => {
+    if (hasSavedConsultingPost) {
+      showReloadConsultingPostModal();
+      setHasSavedConsultingPost(false);
+    }
+  }, [hasSavedConsultingPost, showReloadConsultingPostModal]);
+
   const [selectedTab, setSelectedTab] = useState<ValueOf<typeof POST_TAB_VALUES>>(tabs[0].value);
 
-  const { replace } = useRouterWithUser();
+  const handleBackClick = () => {
+    if (selectedTab === POST_TAB_VALUES.CONSULTING) {
+      showModal({
+        id: 'go-back-confirm-modal',
+        text: '컨설팅 글 작성을 그만두시겠습니까?\n작성 중인 내용은 자동 저장되며\n이어서 작성할 수 있습니다.',
+        buttons: [
+          {
+            label: '나가기',
+            textColor: 'text-negative',
+            onClick: () => {
+              back();
+            },
+          },
+          {
+            label: '취소',
+          },
+        ],
+      });
+
+      return;
+    }
+
+    back();
+  };
+
+  const handleTabChange = (tab: ValueOf<typeof POST_TAB_VALUES>) => {
+    if (tab === POST_TAB_VALUES.GENERAL) {
+      showModal({
+        id: 'change-to-general-confirm-modal',
+        text: '일반 상담글로 전환하시겠습니까?\n작성 중인 내용은 자동 저장됩니다.',
+        buttons: [
+          {
+            label: '나가기',
+            textColor: 'text-negative',
+            onClick: () => {
+              //TODO: 작성 중인 내용 저장
+              setSelectedTab(tab);
+            },
+          },
+          {
+            label: '취소',
+          },
+        ],
+      });
+
+      return;
+    }
+
+    setSelectedTab(tab);
+  };
 
   const { handleCreatePost, isPending } = useCreatePost();
-
-  const { showSnackBar } = useOverlayContext();
 
   const handleSubmit = (data: PostFormValues) => {
     handleCreatePost(data, {
@@ -38,13 +103,22 @@ export default function CreatePostPage() {
     });
   };
 
-  console.log('tabs', tabs);
+  const renderForm = (type: ValueOf<typeof POST_TAB_VALUES>) => {
+    switch (type) {
+      case POST_TAB_VALUES.CONSULTING:
+        return <ConsultingPostForm />;
+      case POST_TAB_VALUES.GENERAL:
+        return <PostForm onSubmit={handleSubmit} isPending={isPending} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <SiteHeader title="게시글 작성" showBackButton />
-      <Tab options={tabs} value={selectedTab} onChange={setSelectedTab} />
-      <PostForm onSubmit={handleSubmit} isPending={isPending} />
+      <SiteHeader title="게시글 작성" showBackButton onBackClick={handleBackClick} />
+      <Tab options={tabs} value={selectedTab} onChange={handleTabChange} />
+      {renderForm(selectedTab)}
     </div>
   );
 }

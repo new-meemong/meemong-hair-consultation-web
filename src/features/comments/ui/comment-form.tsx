@@ -3,7 +3,7 @@
 import ArrowUpIcon from '@/assets/icons/arrow-up.svg';
 import LockIcon from '@/assets/icons/lock.svg';
 import { Label, Separator } from '@/shared';
-import { useAuthContext } from '@/shared/context/auth-context';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
 import ControlledCheckbox from '@/shared/ui/controlled-checkbox';

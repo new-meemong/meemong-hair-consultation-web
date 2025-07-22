@@ -3,7 +3,7 @@ import ShareIcon from '@/assets/icons/share.svg';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
 import { LikeButton } from '@/features/likes/ui/like-button';
-import { useAuthContext } from '@/shared/context/auth-context';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { Separator } from '@/shared/ui';
 import ActionItem from '@/shared/ui/action-item';
 import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';

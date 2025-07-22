@@ -1,20 +1,23 @@
 import type { TabOption } from '@/shared/type/tab-option';
-import type { KeyOf } from '@/shared/type/types';
+import type { ValueOf } from '@/shared/type/types';
 
 export const POST_TAB_VALUES = {
-  consulting: 'consulting',
-  general: 'general',
+  CONSULTING: 'consulting',
+  GENERAL: 'general',
 } as const;
 
-const POST_TAB: Record<KeyOf<typeof POST_TAB_VALUES>, TabOption<KeyOf<typeof POST_TAB_VALUES>>> = {
-  consulting: {
+const POST_TAB: Record<
+  ValueOf<typeof POST_TAB_VALUES>,
+  TabOption<ValueOf<typeof POST_TAB_VALUES>>
+> = {
+  [POST_TAB_VALUES.CONSULTING]: {
     name: '헤어 컨설팅',
-    value: POST_TAB_VALUES.consulting,
+    value: POST_TAB_VALUES.CONSULTING,
   },
-  general: {
+  [POST_TAB_VALUES.GENERAL]: {
     name: '일반 상담',
-    value: POST_TAB_VALUES.general,
+    value: POST_TAB_VALUES.GENERAL,
   },
 };
 
-export const POST_TABS = Object.values(POST_TAB);
+export const POST_TABS = [POST_TAB[POST_TAB_VALUES.GENERAL], POST_TAB[POST_TAB_VALUES.CONSULTING]];

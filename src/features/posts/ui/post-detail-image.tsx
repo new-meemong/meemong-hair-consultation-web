@@ -1,12 +1,12 @@
-import { useAuthContext } from '@/shared/context/auth-context';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import Image from 'next/image';
-import BigLockIcon from '@/assets/icons/big-lock.svg';
+import LockIcon from '@/assets/icons/lock.svg';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
 
 function HiddenImage() {
   return (
     <div className="w-full h-full bg-label-info flex flex-col gap-1 items-center justify-center">
-      <BigLockIcon className="m-1 fill-white" />
+      <LockIcon className="m-1 size-7 fill-white" />
       <span className="typo-caption-1-regular text-label-placeholder text-center">
         디자이너에게만
         <br />
