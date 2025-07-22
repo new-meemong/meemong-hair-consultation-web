@@ -20,4 +20,4 @@ const POST_TAB: Record<
   },
 };
 
-export const POST_TABS = Object.values(POST_TAB);
+export const POST_TABS = [POST_TAB[POST_TAB_VALUES.GENERAL], POST_TAB[POST_TAB_VALUES.CONSULTING]];
