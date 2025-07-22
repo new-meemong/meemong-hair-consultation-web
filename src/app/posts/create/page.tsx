@@ -20,14 +20,39 @@ const tabs = POST_TABS.reverse();
 export default function CreatePostPage() {
   useGuidePopup(USER_GUIDE_KEYS.hasSeenCreatePostGuide);
 
+  const showModal = useShowModal();
+  const { replace, back } = useRouterWithUser();
+  const { showSnackBar } = useOverlayContext();
+
   const [selectedTab, setSelectedTab] = useState<ValueOf<typeof POST_TAB_VALUES>>(tabs[0].value);
 
-  const showModal = useShowModal();
+  const handleBackClick = () => {
+    if (selectedTab === POST_TAB_VALUES.CONSULTING) {
+      showModal({
+        id: 'go-back-confirm-modal',
+        text: '컨설팅 글 작성을 그만두시겠습니까?\n작성 중인 내용은 자동 저장되며\n이어서 작성할 수 있습니다.',
+        positiveButton: {
+          label: '나가기',
+          textColor: 'text-negative',
+          onClick: () => {
+            back();
+          },
+        },
+        negativeButton: {
+          label: '취소',
+        },
+      });
+
+      return;
+    }
+
+    back();
+  };
 
   const handleTabChange = (tab: ValueOf<typeof POST_TAB_VALUES>) => {
     if (tab === POST_TAB_VALUES.GENERAL) {
       showModal({
-        id: 'create-post-confirm-modal',
+        id: 'change-to-general-confirm-modal',
         text: '일반 상담글로 전환하시겠습니까?\n작성 중인 내용은 자동 저장됩니다.',
         positiveButton: {
           label: '나가기',
@@ -48,11 +73,7 @@ export default function CreatePostPage() {
     setSelectedTab(tab);
   };
 
-  const { replace } = useRouterWithUser();
-
   const { handleCreatePost, isPending } = useCreatePost();
-
-  const { showSnackBar } = useOverlayContext();
 
   const handleSubmit = (data: PostFormValues) => {
     handleCreatePost(data, {
@@ -79,7 +100,7 @@ export default function CreatePostPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <SiteHeader title="게시글 작성" showBackButton />
+      <SiteHeader title="게시글 작성" showBackButton onBackClick={handleBackClick} />
       <Tab options={tabs} value={selectedTab} onChange={handleTabChange} />
       {renderForm(selectedTab)}
     </div>
