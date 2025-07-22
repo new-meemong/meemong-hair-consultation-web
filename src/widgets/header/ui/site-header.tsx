@@ -1,8 +1,8 @@
 'use client';
 
-import React, { type ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
 import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { type ReactNode } from 'react';
 
 interface SiteHeaderProps {
   title?: string;
@@ -17,7 +17,7 @@ export const SiteHeader = ({
   onBackClick,
   rightComponent,
 }: SiteHeaderProps) => {
-  const router = useRouter();
+  const router = useRouterWithUser();
 
   const handleBackClick = () => {
     if (onBackClick) {
