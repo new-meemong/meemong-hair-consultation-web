@@ -11,9 +11,10 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { ValueOf } from '@/shared/type/types';
 import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ConsultingPostForm from '@/features/posts/ui/consulting-post-form';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
+import useShowReloadConsultingPostModal from '@/features/posts/hooks/use-show-reload-consulting-post-modal';
 
 const tabs = POST_TABS.reverse();
 
@@ -23,6 +24,17 @@ export default function CreatePostPage() {
   const showModal = useShowModal();
   const { replace, back } = useRouterWithUser();
   const { showSnackBar } = useOverlayContext();
+
+  const showReloadConsultingPostModal = useShowReloadConsultingPostModal();
+  //TODO: 작성하던 데이터 저장 여부 로직 추가
+  const [hasSavedConsultingPost, setHasSavedConsultingPost] = useState(true);
+
+  useEffect(() => {
+    if (hasSavedConsultingPost) {
+      showReloadConsultingPostModal();
+      setHasSavedConsultingPost(false);
+    }
+  }, [hasSavedConsultingPost, showReloadConsultingPostModal]);
 
   const [selectedTab, setSelectedTab] = useState<ValueOf<typeof POST_TAB_VALUES>>(tabs[0].value);
 

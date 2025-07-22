@@ -4,7 +4,7 @@ import { DialogContent } from './dialog';
 
 export type ModalButtonProps = {
   label: string;
-  textColor?: 'text-label-default' | 'text-negative';
+  textColor?: 'text-label-default' | 'text-negative' | 'text-positive';
   onClick?: () => void;
 };
 
