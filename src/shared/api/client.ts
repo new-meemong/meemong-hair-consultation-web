@@ -17,16 +17,16 @@ export interface ApiError {
 }
 
 const createApiInstance = () => {
-  const token = getToken();
-
   return ky.create({
     prefixUrl: `${API_BASE_URL}/api/v1`,
     hooks: {
       beforeRequest: [
         (request) => {
-          if (token) {
-            request.headers.set('Authorization', `${token}`);
-          }
+          const token = getToken();
+
+          if (!token) return;
+
+          request.headers.set('Authorization', `${token}`);
         },
       ],
       beforeError: [

@@ -28,7 +28,7 @@ export default function EditPostPage() {
   const initialData = {
     [POST_FORM_FIELD_NAME.title]: postDetail.title,
     [POST_FORM_FIELD_NAME.content]: postDetail.content,
-    [POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner]: true,
+    [POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner]: postDetail.isPhotoVisibleToDesigner,
     [POST_FORM_FIELD_NAME.imageUrls]: postDetail.images,
     [POST_FORM_FIELD_NAME.imageFiles]: [],
   };
