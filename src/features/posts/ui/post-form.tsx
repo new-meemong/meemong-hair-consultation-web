@@ -81,7 +81,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             <Textarea
               {...method.register(POST_FORM_FIELD_NAME.content)}
               placeholder="내 헤어 고민을 자유롭게 작성해보세요"
-              className="w-full flex-1 typo-body-1-long-regular resize-none placeholder:text-label-placeholder overflow-y-auto"
+              className="w-full flex-1 typo-body-1-long-regular resize-none"
             />
             {method.formState.errors[POST_FORM_FIELD_NAME.content] && (
               <p className="text-negative typo-body-3-regular mt-1">
