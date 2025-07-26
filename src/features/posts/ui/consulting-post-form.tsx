@@ -39,7 +39,7 @@ function getOption1(method: UseFormReturn<z.infer<typeof formSchema>>): Consulti
     },
     {
       label: '기타',
-      value: '',
+      value: '기타',
       additional: (
         <FormItemWithLabel label="기타 고민 상세 입력" required>
           <Textarea
