@@ -12,7 +12,6 @@ export type CheckboxProps = React.ComponentPropsWithoutRef<typeof CheckboxPrimit
 
 const Checkbox = React.forwardRef<React.ElementRef<typeof CheckboxPrimitive.Root>, CheckboxProps>(
   ({ className, shape, ...props }, ref) => {
-    console.log('shape', shape);
     return (
       <div className="size-6 flex items-center justify-center">
         <CheckboxPrimitive.Root

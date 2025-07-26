@@ -25,17 +25,14 @@ const formSchema = z.object({
 
 const options1: ConsultingPostFormOption[] = [
   {
-    name: '원하는 스타일이 어울릴지/가능할지 궁금해요',
     label: '원하는 스타일이 어울릴지/가능할지 궁금해요',
     value: '원하는 스타일이 어울릴지/가능할지 궁금해요',
   },
   {
-    name: '어울리는 스타일을 추천 받고 싶어요',
     label: '어울리는 스타일을 추천 받고 싶어요',
     value: '어울리는 스타일을 추천 받고 싶어요',
   },
   {
-    name: '기타',
     label: '기타',
     value: '',
     additional: (
