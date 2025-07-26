@@ -6,6 +6,7 @@ import ConsultingPostFormOptionList from './consulting-post-form-option-list';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Textarea } from '@/shared';
+import FormItemWithLabel from '@/shared/ui/form-item-with-label';
 
 type FormStep = {
   question: string;
@@ -38,16 +39,12 @@ const options1: ConsultingPostFormOption[] = [
     label: '기타',
     value: '',
     additional: (
-      <div className="flex flex-col gap-2">
-        <div className="flex gap-1 items-center">
-          <p className="typo-body-3-medium text-label-default">기타 고민 상세 입력</p>
-          <span className="w-1 h-1 bg-negative-light rounded-full" />
-        </div>
+      <FormItemWithLabel label="기타 고민 상세 입력" required>
         <Textarea
           placeholder="어떤 고민이 있는지 상세히 설명해주세요"
           className="min-h-38 p-3 rounded-6 border-1 border-border-default"
         />
-      </div>
+      </FormItemWithLabel>
     ),
   },
 ] as const;
