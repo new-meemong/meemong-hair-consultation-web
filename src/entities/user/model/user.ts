@@ -1,6 +1,7 @@
 import { USER_ROLE } from '../constants/user-role';
 import type { ValueOf } from '@/shared/type/types';
 
+// TODO: job-web의 UserType과 차이 있음, 추후 확인 필요
 export interface User {
   id: number;
   createdAt: string;
