@@ -106,7 +106,10 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
         <Separator />
         <div className="flex items-center px-5 py-3">
           <div className="flex flex-1 items-center">
-            <ControlledCheckbox name={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner} />
+            <ControlledCheckbox
+              name={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner}
+              shape="square"
+            />
             <Label
               htmlFor={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner}
               className="ml-2 typo-body-3-regular"
