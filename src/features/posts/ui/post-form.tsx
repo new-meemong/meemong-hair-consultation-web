@@ -68,7 +68,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             <Input
               {...method.register(POST_FORM_FIELD_NAME.title)}
               placeholder="제목을 입력하세요"
-              className="w-full px-0 py-3 typo-title-3-semibold text-label-default placeholder:text-label-placeholder"
+              className="w-full px-0 py-3 typo-title-3-semibold "
             />
             {method.formState.errors[POST_FORM_FIELD_NAME.title] && (
               <p className="text-negative typo-body-3-regular mt-1">
