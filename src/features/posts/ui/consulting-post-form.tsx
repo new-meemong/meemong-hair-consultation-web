@@ -16,14 +16,19 @@ type FormStep = {
   children: React.ReactNode;
 };
 
-const CONSULTING_POST_FORM_FIELD_NAME = {
+export const CONSULTING_POST_FORM_FIELD_NAME = {
   option1: 'option1',
+  option2: 'option2',
 } as const;
 
 const formSchema = z.object({
   [CONSULTING_POST_FORM_FIELD_NAME.option1]: z.object({
     value: z.string(),
     additional: z.string().optional(),
+  }),
+  [CONSULTING_POST_FORM_FIELD_NAME.option2]: z.object({
+    name: z.string(),
+    date: z.date(),
   }),
 });
 
