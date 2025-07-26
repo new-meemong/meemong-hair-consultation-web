@@ -7,6 +7,7 @@ import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Textarea } from '@/shared';
 import FormItemWithLabel from '@/shared/ui/form-item-with-label';
+import ConsultingPostFormOperationForm from './consulting-post-form-operation-form';
 
 type FormStep = {
   question: string;
@@ -17,12 +18,13 @@ type FormStep = {
 
 const CONSULTING_POST_FORM_FIELD_NAME = {
   option1: 'option1',
-  option1Additional: 'option1Additional',
 } as const;
 
 const formSchema = z.object({
-  [CONSULTING_POST_FORM_FIELD_NAME.option1]: z.string(),
-  [CONSULTING_POST_FORM_FIELD_NAME.option1Additional]: z.string().optional(),
+  [CONSULTING_POST_FORM_FIELD_NAME.option1]: z.object({
+    value: z.string(),
+    additional: z.string().optional(),
+  }),
 });
 
 function getOption1(method: UseFormReturn<z.infer<typeof formSchema>>): ConsultingPostFormOption[] {
@@ -41,7 +43,7 @@ function getOption1(method: UseFormReturn<z.infer<typeof formSchema>>): Consulti
       additional: (
         <FormItemWithLabel label="기타 고민 상세 입력" required>
           <Textarea
-            {...method.register(CONSULTING_POST_FORM_FIELD_NAME.option1Additional)}
+            {...method.register(`${CONSULTING_POST_FORM_FIELD_NAME.option1}.additional`)}
             placeholder="어떤 고민이 있는지 상세히 설명해주세요"
             className="min-h-38 p-3 rounded-6 border-1 border-border-default"
           />
@@ -51,13 +53,6 @@ function getOption1(method: UseFormReturn<z.infer<typeof formSchema>>): Consulti
   ] as const;
 }
 
-const options2: ConsultingPostFormOption[] = [
-  {
-    label: '',
-    value: '원하는 스타일이 어울릴지/가능할지 궁금해요',
-  },
-];
-
 function getFormSteps(method: UseFormReturn<z.infer<typeof formSchema>>): FormStep[] {
   return [
     {
@@ -66,14 +61,18 @@ function getFormSteps(method: UseFormReturn<z.infer<typeof formSchema>>): FormSt
       children: (
         <ConsultingPostFormOptionList
           options={getOption1(method)}
-          name={CONSULTING_POST_FORM_FIELD_NAME.option1}
+          name={`${CONSULTING_POST_FORM_FIELD_NAME.option1}.value`}
         />
       ),
     },
     {
       question: '최근 2년 내 받은 시술을 입력하세요',
       required: true,
-      children: <div>step 2</div>,
+      children: (
+        <div>
+          <ConsultingPostFormOperationForm />
+        </div>
+      ),
     },
     {
       question: '내 모습을 보여주세요',
