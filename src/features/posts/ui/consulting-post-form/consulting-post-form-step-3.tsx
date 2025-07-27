@@ -5,29 +5,25 @@ import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
-import { CONSULTING_POST_FORM_IMAGE_POSITION } from '../../types/consulting-post-form-values';
-import Image from 'next/image';
+import {
+  CONSULTING_POST_FORM_IMAGE_POSITION,
+  type ConsultingPostFormValues,
+} from '../../types/consulting-post-form-values';
 import ImageUploader, { type ImageUploaderRef } from '@/shared/ui/image-uploader';
+import ImageItem, { type Image } from '@/shared/ui/image-item';
+import { IMAGE_TYPE } from '@/shared/constants/image-type';
+import type { ValueOf } from '@/shared/type/types';
 
 type ImageUploaderProps = {
   onUpload: (file: File) => void;
   label: string;
-  position: string;
+  currentImage: Image | null;
+  onDelete: (image: Image) => void;
 };
 
-function ImageUploaderItem({ onUpload, label, position }: ImageUploaderProps) {
-  const { control } = useFormContext();
+function ImageUploaderItem({ onUpload, label, currentImage, onDelete }: ImageUploaderProps) {
   const showModal = useShowModal();
   const imageUploaderRef = useRef<ImageUploaderRef>(null);
-
-  const currentImages = useWatch({
-    control,
-    name: CONSULTING_POST_FORM_FIELD_NAME.option3,
-  });
-
-  const currentImage = currentImages?.find(
-    (img: { position: string; image: File }) => img.position === position,
-  );
 
   const handleClick = () => {
     showModal({
@@ -60,25 +56,23 @@ function ImageUploaderItem({ onUpload, label, position }: ImageUploaderProps) {
     onUpload(file);
   };
 
+  const handleImageDelete = (image: Image) => {
+    onDelete(image);
+  };
+
   return (
     <div className="flex flex-col gap-2">
-      <button
-        className="w-25 h-25 rounded-6 bg-alternative flex items-center justify-center overflow-hidden"
-        onClick={handleClick}
-        type="button"
-      >
-        {currentImage ? (
-          <Image
-            src={URL.createObjectURL(currentImage.image)}
-            alt={label}
-            width={100}
-            height={100}
-            className="w-full h-full object-cover"
-          />
-        ) : (
+      {currentImage ? (
+        <ImageItem image={currentImage} index={0} handleImageDelete={handleImageDelete} />
+      ) : (
+        <button
+          className="w-25 h-25 rounded-6 bg-alternative flex items-center justify-center overflow-hidden"
+          onClick={handleClick}
+          type="button"
+        >
           <PlusIcon className="w-7.5 h-7.5 fill-label-placeholder" />
-        )}
-      </button>
+        </button>
+      )}
       <p className="typo-body-2-regular text-label-info text-center">{label}</p>
       <ImageUploader ref={imageUploaderRef} setImages={handleImageUpload} multiple={false} />
     </div>
@@ -86,18 +80,55 @@ function ImageUploaderItem({ onUpload, label, position }: ImageUploaderProps) {
 }
 
 export default function ConsultingPostFormStep3() {
-  const { setValue, getValues } = useFormContext();
+  const { setValue, getValues, control } = useFormContext<ConsultingPostFormValues>();
 
   const showConsultingPostImageGuideSheet = useShowConsultingPostImageGuideSheet();
   const handleGuideClick = () => {
     showConsultingPostImageGuideSheet();
   };
 
-  const handleImageUpload = ({ file, position }: { file: File; position: string }) => {
+  const currentImages = useWatch({
+    control,
+    name: CONSULTING_POST_FORM_FIELD_NAME.option3,
+  });
+
+  const getCurrentImage = (position: string) => {
+    const currentImage = currentImages?.find(
+      (img: { position: string; image: File }) => img.position === position,
+    );
+
+    return currentImage
+      ? {
+          type: IMAGE_TYPE.FILE,
+          name: currentImage.image.name,
+          src: URL.createObjectURL(currentImage.image),
+        }
+      : null;
+  };
+
+  const handleImageUpload = ({
+    file,
+    position,
+  }: {
+    file: File;
+    position: ValueOf<typeof CONSULTING_POST_FORM_IMAGE_POSITION>;
+  }) => {
     const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.option3) || [];
     const newImage = { position, image: file };
 
     setValue(CONSULTING_POST_FORM_FIELD_NAME.option3, [...currentImages, newImage]);
+  };
+
+  const handleImageDelete = ({
+    position,
+  }: {
+    position: ValueOf<typeof CONSULTING_POST_FORM_IMAGE_POSITION>;
+  }) => {
+    const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.option3) || [];
+    const newImages = currentImages.filter(
+      (img: { position: string; image: File }) => img.position !== position,
+    );
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.option3, newImages);
   };
 
   return (
@@ -105,25 +136,32 @@ export default function ConsultingPostFormStep3() {
       <div className="flex flex-col gap-5 items-center justify-center">
         <div className="grid grid-cols-2 gap-6">
           <ImageUploaderItem
+            currentImage={getCurrentImage(CONSULTING_POST_FORM_IMAGE_POSITION.FRONT)}
             onUpload={(file) =>
               handleImageUpload({ file, position: CONSULTING_POST_FORM_IMAGE_POSITION.FRONT })
             }
+            onDelete={() =>
+              handleImageDelete({ position: CONSULTING_POST_FORM_IMAGE_POSITION.FRONT })
+            }
             label="푼머리 정면"
-            position={CONSULTING_POST_FORM_IMAGE_POSITION.FRONT}
           />
           <ImageUploaderItem
+            currentImage={getCurrentImage(CONSULTING_POST_FORM_IMAGE_POSITION.PONYTAIL_FRONT)}
             onUpload={(file) =>
               handleImageUpload({
                 file,
                 position: CONSULTING_POST_FORM_IMAGE_POSITION.PONYTAIL_FRONT,
               })
             }
+            onDelete={() =>
+              handleImageDelete({ position: CONSULTING_POST_FORM_IMAGE_POSITION.PONYTAIL_FRONT })
+            }
             label="묶은 머리 정면"
-            position={CONSULTING_POST_FORM_IMAGE_POSITION.PONYTAIL_FRONT}
           />
         </div>
         <div className="grid grid-cols-2 gap-6">
           <ImageUploaderItem
+            currentImage={getCurrentImage(CONSULTING_POST_FORM_IMAGE_POSITION.PONYTAIL_SIDE)}
             onUpload={(file) =>
               handleImageUpload({
                 file,
@@ -131,14 +169,19 @@ export default function ConsultingPostFormStep3() {
               })
             }
             label="묶은 머리 측면"
-            position={CONSULTING_POST_FORM_IMAGE_POSITION.PONYTAIL_SIDE}
+            onDelete={() =>
+              handleImageDelete({ position: CONSULTING_POST_FORM_IMAGE_POSITION.PONYTAIL_SIDE })
+            }
           />
           <ImageUploaderItem
+            currentImage={getCurrentImage(CONSULTING_POST_FORM_IMAGE_POSITION.WHOLE) || null}
             onUpload={(file) =>
               handleImageUpload({ file, position: CONSULTING_POST_FORM_IMAGE_POSITION.WHOLE })
             }
+            onDelete={() =>
+              handleImageDelete({ position: CONSULTING_POST_FORM_IMAGE_POSITION.WHOLE })
+            }
             label="상반신 전체"
-            position={CONSULTING_POST_FORM_IMAGE_POSITION.WHOLE}
           />
         </div>
       </div>
