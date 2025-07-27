@@ -6,6 +6,8 @@ type ProgressPaginationProps = {
   total: number;
   current: number;
   onPageChange: (page: number) => void;
+  disabledToNext?: boolean;
+  disabledToPrevious?: boolean;
 };
 
 type PageButtonProps = {
@@ -33,6 +35,8 @@ export default function ProgressPagination({
   total,
   current,
   onPageChange,
+  disabledToNext,
+  disabledToPrevious,
 }: ProgressPaginationProps) {
   const progressPercentage = (current / total) * 100;
 
@@ -51,12 +55,12 @@ export default function ProgressPagination({
         <div className="flex gap-3">
           <PageButton
             direction="left"
-            isActive={current > 1}
+            isActive={current > 1 && !disabledToPrevious}
             onClick={() => onPageChange(current - 1)}
           />
           <PageButton
             direction="right"
-            isActive={current < total}
+            isActive={current < total && !disabledToNext}
             onClick={() => onPageChange(current + 1)}
           />
         </div>

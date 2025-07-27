@@ -4,6 +4,7 @@ import ProgressPagination from '@/shared/ui/progress-pagination';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
+import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
 import type { ConsultingPostFormOption } from '../types/consulting-post-form-option';
 import {
   consultingPostFormSchema,
@@ -11,9 +12,9 @@ import {
 } from '../types/consulting-post-form-values';
 import ConsultingPostFormOptionList from './consulting-post-form-option-list';
 import ConsultingPostFormStep2 from './consulting-post-form-step-2';
-import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
 
 type FormStep = {
+  name: keyof ConsultingPostFormValues;
   question: string;
   description?: string;
   required: boolean;
@@ -49,6 +50,7 @@ function getOption1(method: UseFormReturn<ConsultingPostFormValues>): Consulting
 function getFormSteps(method: UseFormReturn<ConsultingPostFormValues>): FormStep[] {
   return [
     {
+      name: CONSULTING_POST_FORM_FIELD_NAME.option1,
       question: '어떤 헤어 고민이 있나요?',
       required: true,
       children: (
@@ -59,31 +61,37 @@ function getFormSteps(method: UseFormReturn<ConsultingPostFormValues>): FormStep
       ),
     },
     {
+      name: CONSULTING_POST_FORM_FIELD_NAME.option2,
       question: '최근 2년 내 받은 시술을 입력하세요',
       required: true,
       children: <ConsultingPostFormStep2 />,
     },
     {
+      name: CONSULTING_POST_FORM_FIELD_NAME.option3,
       question: '내 모습을 보여주세요',
       required: true,
       children: <div>step 3</div>,
     },
     {
+      name: CONSULTING_POST_FORM_FIELD_NAME.option4,
       question: '평소 추구미를 알려주세요',
       required: false,
       children: <div>step 4</div>,
     },
     {
+      name: CONSULTING_POST_FORM_FIELD_NAME.option5,
       question: '피부톤을 알려주세요',
       required: false,
       children: <div>step 5</div>,
     },
     {
+      name: CONSULTING_POST_FORM_FIELD_NAME.option6,
       question: '전달하고 싶은 내용을 적어주세요',
       required: false,
       children: <div>step 6</div>,
     },
     {
+      name: CONSULTING_POST_FORM_FIELD_NAME.option7,
       question: '글 제목을 입력하세요',
       description: '작성하지 않으면 고민 유형에 따라 자동으로 제목이 부여됩니다',
       required: false,
@@ -100,7 +108,22 @@ export default function ConsultingPostForm() {
 
   console.log('method.watch()', method.watch());
 
-  const { question, required, description, children } = getFormSteps(method)[step - 1];
+  const { question, required, description, children, name } = getFormSteps(method)[step - 1];
+
+  const availableToNext = () => {
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.option1) {
+      const formValue = method.getValues(name);
+      return (
+        (formValue?.value && formValue.value !== '기타') ||
+        (formValue?.value === '기타' && formValue?.additional !== '')
+      );
+    }
+
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.option2) {
+      const formValue = method.getValues(name);
+      return formValue === null || formValue?.length > 0;
+    }
+  };
 
   return (
     <FormProvider {...method}>
@@ -123,6 +146,7 @@ export default function ConsultingPostForm() {
           total={getFormSteps(method).length}
           current={step}
           onPageChange={setStep}
+          disabledToNext={!availableToNext()}
         />
       </div>
     </FormProvider>
