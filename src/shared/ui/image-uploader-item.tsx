@@ -8,7 +8,7 @@ import ImageUploader from './image-uploader';
 
 type ImageUploaderProps = {
   onUpload: (file: File) => void;
-  label: string;
+  label?: string;
   currentImage: Image | null;
   onDelete: (image: Image) => void;
 };
@@ -70,7 +70,7 @@ export default function ImageUploaderItem({
           <PlusIcon className="w-7.5 h-7.5 fill-label-placeholder" />
         </button>
       )}
-      <p className="typo-body-2-regular text-label-info text-center">{label}</p>
+      {label && <p className="typo-body-2-regular text-label-info text-center">{label}</p>}
       <ImageUploader ref={imageUploaderRef} setImages={handleImageUpload} multiple={false} />
     </div>
   );

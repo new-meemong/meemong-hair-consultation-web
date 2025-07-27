@@ -34,6 +34,12 @@ export const consultingPostFormSchema = z.object({
       image: z.instanceof(File),
     }),
   ),
+  [CONSULTING_POST_FORM_FIELD_NAME.option4]: z
+    .object({
+      images: z.array(z.instanceof(File)),
+      description: z.string().optional(),
+    })
+    .optional(),
 });
 
 export type ConsultingPostFormValues = z.infer<typeof consultingPostFormSchema>;

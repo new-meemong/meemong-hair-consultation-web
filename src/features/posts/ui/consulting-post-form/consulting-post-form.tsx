@@ -10,6 +10,7 @@ import {
 import ConsultingPostFormStep1 from './consulting-post-form-step-1';
 import ConsultingPostFormStep2 from './consulting-post-form-step-2';
 import ConsultingPostFormStep3 from './consulting-post-form-step-3';
+import ConsultingPostFormStep4 from './consulting-post-form-step-4';
 
 type FormStep = {
   name: keyof ConsultingPostFormValues;
@@ -43,7 +44,7 @@ const formSteps: FormStep[] = [
     name: CONSULTING_POST_FORM_FIELD_NAME.option4,
     question: '평소 추구미를 알려주세요',
     required: false,
-    children: <div>step 4</div>,
+    children: <ConsultingPostFormStep4 />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.option5,
