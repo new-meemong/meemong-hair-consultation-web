@@ -14,6 +14,8 @@ export default function ConsultingPostFormStep2() {
   });
 
   const handleDelete = (index: number) => {
+    if (!operations) return;
+
     setValue(
       CONSULTING_POST_FORM_FIELD_NAME.option2,
       operations.filter((_, i) => i !== index),

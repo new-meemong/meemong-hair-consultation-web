@@ -1,4 +1,4 @@
-import { Button, Input } from '@/shared';
+import { Button, Checkbox, Input, Label } from '@/shared';
 import FormItemWithLabel from '@/shared/ui/form-item-with-label';
 import useYearMonthPicker from '@/shared/ui/hooks/use-year-month-picker';
 import { format } from 'date-fns';
@@ -6,12 +6,14 @@ import { useFormContext } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
+import useShowDeleteAllOperations from '../hooks/use-show-delete-all-operations';
 
 export default function ConsultingPostFormOperationForm() {
   const { setValue, getValues } = useFormContext();
 
   const [name, setName] = useState<string>('');
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [noOperation, setNoOperation] = useState(false);
 
   const { showYearMonthPicker } = useYearMonthPicker();
 
@@ -45,6 +47,38 @@ export default function ConsultingPostFormOperationForm() {
     setDate(undefined);
   };
 
+  const setNoOperations = () => {
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.option2, null, {
+      shouldDirty: true,
+    });
+    setName('');
+    setDate(undefined);
+  };
+
+  const resetOperations = () => {
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.option2, [], {
+      shouldDirty: true,
+    });
+    setName('');
+    setDate(undefined);
+  };
+
+  const showDeleteAllOperations = useShowDeleteAllOperations();
+
+  const handleNoOperationChange = () => {
+    setNoOperation((prev) => !prev);
+    if (noOperation) {
+      resetOperations();
+      return;
+    }
+
+    showDeleteAllOperations({
+      onConfirm: () => {
+        setNoOperations();
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col gap-5">
       <FormItemWithLabel hasUnderline label="시술명">
@@ -71,8 +105,19 @@ export default function ConsultingPostFormOperationForm() {
         </div>
       </FormItemWithLabel>
       <Button theme="white" onClick={handleSubmit}>
-        시술 입력
+        시술 저장
       </Button>
+      <div className="flex gap-2 items-center justify-end">
+        <Label htmlFor="no-operation" className="typo-body-3-regular text-label-sub">
+          받은 시술 없음
+        </Label>
+        <Checkbox
+          id="no-operation"
+          shape="round"
+          checked={noOperation}
+          onCheckedChange={handleNoOperationChange}
+        />
+      </div>
     </div>
   );
 }
