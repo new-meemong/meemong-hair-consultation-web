@@ -1,30 +1,47 @@
 import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { cn } from '../lib';
+import { Button } from './button';
 
 type ProgressPaginationProps = {
   total: number;
   current: number;
   onPageChange: (page: number) => void;
+  disabledToNext?: boolean;
+  disabledToPrevious?: boolean;
+  nextButtonLabel?: string;
+  previousButtonLabel?: string;
+  onNextButtonClick?: () => void;
+  onPreviousButtonClick?: () => void;
 };
 
 type PageButtonProps = {
+  label?: string;
   direction: 'left' | 'right';
   isActive: boolean;
   onClick: () => void;
 };
 
-function PageButton({ direction, isActive, onClick }: PageButtonProps) {
-  return (
+function PageButton({ direction, isActive, onClick, label }: PageButtonProps) {
+  const renderIcon = () => {
+    if (direction === 'left') {
+      return <ChevronLeftIcon className="w-5 h-5 fill-white" />;
+    }
+
+    return <ChevronRightIcon width={20} height={20} />;
+  };
+
+  return label ? (
+    <Button variant="textWithIcon" size="textWithIcon" disabled={!isActive} onClick={onClick}>
+      {label}
+      {renderIcon()}
+    </Button>
+  ) : (
     <button
       onClick={onClick}
       className={cn('p-2.5 rounded-4', 'bg-label-disable', isActive && 'bg-label-default')}
     >
-      {direction === 'left' ? (
-        <ChevronLeftIcon className="w-5 h-5 fill-white" />
-      ) : (
-        <ChevronRightIcon width={20} height={20} />
-      )}
+      {renderIcon()}
     </button>
   );
 }
@@ -33,8 +50,30 @@ export default function ProgressPagination({
   total,
   current,
   onPageChange,
+  disabledToNext,
+  disabledToPrevious,
+  nextButtonLabel,
+  previousButtonLabel,
+  onNextButtonClick,
+  onPreviousButtonClick,
 }: ProgressPaginationProps) {
   const progressPercentage = (current / total) * 100;
+
+  const handleNextButtonClick = () => {
+    onNextButtonClick?.();
+
+    if (current < total) {
+      onPageChange(current + 1);
+    }
+  };
+
+  const handlePreviousButtonClick = () => {
+    onPreviousButtonClick?.();
+
+    if (current > 1) {
+      onPageChange(current - 1);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -51,13 +90,15 @@ export default function ProgressPagination({
         <div className="flex gap-3">
           <PageButton
             direction="left"
-            isActive={current > 1}
-            onClick={() => onPageChange(current - 1)}
+            isActive={current > 1 && !disabledToPrevious}
+            onClick={handlePreviousButtonClick}
+            label={previousButtonLabel}
           />
           <PageButton
             direction="right"
-            isActive={current < total}
-            onClick={() => onPageChange(current + 1)}
+            isActive={current <= total && !disabledToNext}
+            onClick={handleNextButtonClick}
+            label={nextButtonLabel}
           />
         </div>
       </div>

@@ -14,8 +14,6 @@ function useShowImageUploadLimitSheet() {
   const showImageUploadLimitSheet = () => {
     showBottomSheet({
       id: 'image-upload-limit-sheet',
-      title: '이미지는 최대 10장 업로드 가능합니다',
-      description: '이미지는 최대 10개 업로드 가능합니다.\n기존 이미지를 삭제해주세요',
       children: (
         <>
           <DrawerHeader>
@@ -26,11 +24,13 @@ function useShowImageUploadLimitSheet() {
               기존 이미지를 삭제해주세요
             </DrawerDescription>
           </DrawerHeader>
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button>완료</Button>
-            </DrawerClose>
-          </DrawerFooter>
+          <DrawerFooter
+            buttons={[
+              <DrawerClose asChild key="close">
+                <Button>완료</Button>
+              </DrawerClose>,
+            ]}
+          ></DrawerFooter>
         </>
       ),
     });

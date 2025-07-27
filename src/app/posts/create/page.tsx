@@ -12,7 +12,7 @@ import type { ValueOf } from '@/shared/type/types';
 import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
 import { useEffect, useState } from 'react';
-import ConsultingPostForm from '@/features/posts/ui/consulting-post-form';
+import ConsultingPostForm from '@/features/posts/ui/consulting-post-form/consulting-post-form';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import useShowReloadConsultingPostModal from '@/features/posts/hooks/use-show-reload-consulting-post-modal';
 

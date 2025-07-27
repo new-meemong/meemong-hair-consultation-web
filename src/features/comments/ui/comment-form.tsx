@@ -90,7 +90,10 @@ export function CommentForm({ onSubmit, isReply = false, parentAuthorName }: Com
             <>
               <Separator />
               <div className="flex items-center px-5 py-3 gap-2">
-                <ControlledCheckbox name={COMMENT_FORM_FIELD_NAME.isVisibleToModel} />
+                <ControlledCheckbox
+                  name={COMMENT_FORM_FIELD_NAME.isVisibleToModel}
+                  shape="square"
+                />
                 <Label
                   htmlFor={COMMENT_FORM_FIELD_NAME.isVisibleToModel}
                   className="typo-body-3-regular"

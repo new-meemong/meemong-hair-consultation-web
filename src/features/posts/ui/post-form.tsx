@@ -9,8 +9,9 @@ import { POST_FORM_FIELD_NAME } from '../constants/post-form-field-name';
 import usePostForm from '../hooks/use-post-form';
 import useShowImageUploadLimitSheet from '../hooks/use-show-image-upload-limit-sheet';
 import type { PostFormValues } from '../types/post-form-values';
-import ImageUploader from './image-uploader';
 import PostFormImageList from './post-form-image-list';
+import GalleryIcon from '@/assets/icons/gallery.svg';
+import ImageUploader from '@/shared/ui/image-uploader';
 
 type PostFormProps = {
   initialData?: PostFormValues;
@@ -68,7 +69,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             <Input
               {...method.register(POST_FORM_FIELD_NAME.title)}
               placeholder="제목을 입력하세요"
-              className="w-full px-0 py-3 typo-title-3-semibold text-label-default placeholder:text-label-placeholder"
+              className="w-full px-0 py-3 typo-title-3-semibold "
             />
             {method.formState.errors[POST_FORM_FIELD_NAME.title] && (
               <p className="text-negative typo-body-3-regular mt-1">
@@ -81,7 +82,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             <Textarea
               {...method.register(POST_FORM_FIELD_NAME.content)}
               placeholder="내 헤어 고민을 자유롭게 작성해보세요"
-              className="w-full flex-1 typo-body-1-long-regular resize-none placeholder:text-label-placeholder overflow-y-auto"
+              className="w-full flex-1 typo-body-1-long-regular resize-none"
             />
             {method.formState.errors[POST_FORM_FIELD_NAME.content] && (
               <p className="text-negative typo-body-3-regular mt-1">
@@ -106,7 +107,10 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
         <Separator />
         <div className="flex items-center px-5 py-3">
           <div className="flex flex-1 items-center">
-            <ControlledCheckbox name={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner} />
+            <ControlledCheckbox
+              name={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner}
+              shape="square"
+            />
             <Label
               htmlFor={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner}
               className="ml-2 typo-body-3-regular"
@@ -115,7 +119,11 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             </Label>
           </div>
           <div className="flex gap-2">
-            <ImageUploader setImages={addImageFiles} validate={validateImageCount} />
+            <ImageUploader setImages={addImageFiles} validate={validateImageCount}>
+              <Button type="button" variant="icon" size="iconLg">
+                <GalleryIcon />
+              </Button>
+            </ImageUploader>
             <Button
               variant="textWithIcon"
               size="textWithIcon"

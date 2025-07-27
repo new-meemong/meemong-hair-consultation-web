@@ -4,10 +4,11 @@ import { cn } from '@/shared/lib/utils';
 
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   maxRows?: number;
+  hasBorder?: boolean;
 }
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, maxRows = 2, value, ...props }, ref) => {
+  ({ className, maxRows = 2, value, hasBorder = false, ...props }, ref) => {
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
     const adjustHeight = useCallback(() => {
@@ -41,7 +42,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           }
         }}
         className={cn(
-          'flex w-full h-auto text-label-default placeholder:text-label-disable outline-none resize-none overflow-hidden',
+          'flex w-full h-auto text-label-default placeholder:text-label-placeholder overflow-y-auto outline-none resize-none overflow-hidden',
+          hasBorder && 'p-3 rounded-6 border-1 border-border-default',
           className,
         )}
         onInput={adjustHeight}
