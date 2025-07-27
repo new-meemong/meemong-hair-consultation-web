@@ -9,8 +9,9 @@ import { POST_FORM_FIELD_NAME } from '../constants/post-form-field-name';
 import usePostForm from '../hooks/use-post-form';
 import useShowImageUploadLimitSheet from '../hooks/use-show-image-upload-limit-sheet';
 import type { PostFormValues } from '../types/post-form-values';
-import ImageUploader from './image-uploader';
 import PostFormImageList from './post-form-image-list';
+import GalleryIcon from '@/assets/icons/gallery.svg';
+import ImageUploader from '@/shared/ui/image-uploader';
 
 type PostFormProps = {
   initialData?: PostFormValues;
@@ -118,7 +119,11 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             </Label>
           </div>
           <div className="flex gap-2">
-            <ImageUploader setImages={addImageFiles} validate={validateImageCount} />
+            <ImageUploader setImages={addImageFiles} validate={validateImageCount}>
+              <Button type="button" variant="icon" size="iconLg">
+                <GalleryIcon />
+              </Button>
+            </ImageUploader>
             <Button
               variant="textWithIcon"
               size="textWithIcon"
