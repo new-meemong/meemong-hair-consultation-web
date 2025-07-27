@@ -54,7 +54,7 @@ export default function useShowConsultingPostImageGuideSheet() {
           <DrawerFooter
             buttons={[
               <DrawerClose asChild key="close">
-                <Button>확인</Button>
+                <Button size="lg">확인</Button>
               </DrawerClose>,
             ]}
           />

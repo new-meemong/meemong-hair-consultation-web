@@ -35,7 +35,7 @@ function useShowCreatePostGuideSheet() {
             <DrawerFooter
               buttons={[
                 <DrawerClose asChild key="close">
-                  <Button>완료</Button>
+                  <Button size="lg">완료</Button>
                 </DrawerClose>,
               ]}
             />

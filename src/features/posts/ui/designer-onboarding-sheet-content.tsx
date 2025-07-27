@@ -68,7 +68,7 @@ function DesignerOnboardingSheetContent() {
               ]
             : [
                 <DrawerClose asChild key="close">
-                  <Button>{buttonLabel}</Button>
+                  <Button size="lg">{buttonLabel}</Button>
                 </DrawerClose>,
               ]
         }
