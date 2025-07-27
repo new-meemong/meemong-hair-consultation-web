@@ -2,13 +2,11 @@
 
 import { cn } from '@/shared/lib/utils';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/shared/ui/drawer';
-import React from 'react';
+import { type ReactNode } from 'react';
 
 export interface BottomSheetProps {
   id: string;
-  trigger?: React.ReactNode;
-  title?: string;
-  description?: string;
+  trigger?: ReactNode;
   children?: React.ReactNode;
   className?: string;
   onClose?: () => void;
