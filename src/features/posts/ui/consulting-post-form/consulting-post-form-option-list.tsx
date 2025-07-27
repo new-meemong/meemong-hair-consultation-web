@@ -5,16 +5,25 @@ import ConsultingPostFormOptionListItem from './consulting-post-form-option-list
 type ConsultingPostFormOptionListProps = {
   options: ConsultingPostFormOption[];
   name: string;
+  canReset?: boolean;
 };
 
 export default function ConsultingPostFormOptionList({
   options,
   name,
+  canReset = false,
 }: ConsultingPostFormOptionListProps) {
-  const { control, setValue } = useFormContext();
+  const { control, setValue, getValues } = useFormContext();
   const selectedOption = useWatch({ control, name });
 
   const handleCheckedChange = (value: string) => {
+    if (canReset) {
+      const currentValue = getValues(name);
+      if (currentValue === value) {
+        setValue(name, undefined, { shouldDirty: true });
+        return;
+      }
+    }
     setValue(name, value, { shouldDirty: true });
   };
 
