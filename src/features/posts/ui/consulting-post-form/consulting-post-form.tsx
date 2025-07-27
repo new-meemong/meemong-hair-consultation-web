@@ -78,6 +78,8 @@ export default function ConsultingPostForm() {
   const { question, required, description, children, name } = formSteps[step - 1];
 
   const availableToNext = () => {
+    if (!required) return true;
+
     if (name === CONSULTING_POST_FORM_FIELD_NAME.option1) {
       const formValue = method.getValues(name);
       return (
