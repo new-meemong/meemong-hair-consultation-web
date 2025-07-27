@@ -24,11 +24,13 @@ function useShowImageUploadLimitSheet() {
               기존 이미지를 삭제해주세요
             </DrawerDescription>
           </DrawerHeader>
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button>완료</Button>
-            </DrawerClose>
-          </DrawerFooter>
+          <DrawerFooter
+            buttons={[
+              <DrawerClose asChild key="close">
+                <Button>완료</Button>
+              </DrawerClose>,
+            ]}
+          ></DrawerFooter>
         </>
       ),
     });

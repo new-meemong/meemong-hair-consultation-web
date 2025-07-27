@@ -71,13 +71,23 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function DrawerFooter({ className, ...props }: React.ComponentProps<'div'>) {
+function DrawerFooter({
+  className,
+  buttons,
+  ...props
+}: React.ComponentProps<'div'> & { buttons: React.ReactNode[] }) {
   return (
     <div
       data-slot="drawer-footer"
-      className={cn('mt-auto flex flex-col gap-2', className)}
+      className={cn('mt-auto flex gap-3 items-center w-full flex-1', className)}
       {...props}
-    />
+    >
+      {buttons.map((button, index) => (
+        <div className="flex flex-col flex-1" key={index}>
+          {button}
+        </div>
+      ))}
+    </div>
   );
 }
 

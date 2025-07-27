@@ -79,11 +79,13 @@ export function YearMonthPicker({
           />
         </div>
       </div>
-      <DrawerFooter>
-        <DrawerClose asChild>
-          <Button onClick={handleConfirm}>확인</Button>
-        </DrawerClose>
-      </DrawerFooter>
+      <DrawerFooter
+        buttons={[
+          <DrawerClose asChild key="confirm">
+            <Button onClick={handleConfirm}>확인</Button>
+          </DrawerClose>,
+        ]}
+      />
     </>
   );
 }
