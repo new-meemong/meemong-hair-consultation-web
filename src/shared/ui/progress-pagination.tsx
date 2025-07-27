@@ -60,6 +60,8 @@ export default function ProgressPagination({
   const progressPercentage = (current / total) * 100;
 
   const handleNextButtonClick = () => {
+    if (disabledToNext) return;
+
     onNextButtonClick?.();
 
     if (current < total) {
@@ -68,6 +70,8 @@ export default function ProgressPagination({
   };
 
   const handlePreviousButtonClick = () => {
+    if (disabledToPrevious) return;
+
     onPreviousButtonClick?.();
 
     if (current > 1) {
