@@ -10,6 +10,9 @@
 
   --shadow-heavy-1: 0px 4px 12px rgba(0, 0, 0, 0.16);
   --shadow-heavy-2: 4px 8px 28px rgba(0, 0, 0, 0.08);
+
+  --shadow-upper-1: 4px 0px 28px rgba(0, 0, 0, 0.08);
+  --shadow-upper-2: 0px 0px 12px rgba(0, 0, 0, 0.16);
 }
 
 @utility shadow-normal {
@@ -26,4 +29,8 @@
 
 @utility shadow-heavy {
   box-shadow: var(--shadow-heavy-1), var(--shadow-heavy-2);
+}
+
+@utility shadow-upper {
+  box-shadow: var(--shadow-upper-1), var(--shadow-upper-2);
 }

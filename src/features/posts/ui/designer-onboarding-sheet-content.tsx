@@ -62,7 +62,7 @@ function DesignerOnboardingSheetContent() {
         buttons={
           step < 2
             ? [
-                <Button key="next" onClick={handleNextClick}>
+                <Button size="lg" key="next" onClick={handleNextClick}>
                   {buttonLabel}
                 </Button>,
               ]
