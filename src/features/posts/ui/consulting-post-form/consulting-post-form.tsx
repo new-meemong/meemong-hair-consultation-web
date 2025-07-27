@@ -13,6 +13,7 @@ import ConsultingPostFormStep3 from './consulting-post-form-step-3';
 import ConsultingPostFormStep4 from './consulting-post-form-step-4';
 import ConsultingPostFormStep5 from './consulting-post-form-step-5';
 import ConsultingPostFormStep6 from './consulting-post-form-step-6';
+import ConsultingPostFormStep7 from './consulting-post-form-step-7';
 
 type FormStep = {
   name: keyof ConsultingPostFormValues;
@@ -65,7 +66,7 @@ const formSteps: FormStep[] = [
     question: '글 제목을 입력하세요',
     description: '작성하지 않으면 고민 유형에 따라 자동으로 제목이 부여됩니다',
     required: false,
-    children: <div>step 7</div>,
+    children: <ConsultingPostFormStep7 />,
   },
 ];
 
@@ -79,6 +80,8 @@ export default function ConsultingPostForm() {
 
   const { question, required, description, children, name } = formSteps[step - 1];
 
+  const isLastStep = step === formSteps.length;
+
   const availableToNext = () => {
     if (!required) return true;
 
@@ -89,14 +92,29 @@ export default function ConsultingPostForm() {
         (formValue?.value === '기타' && formValue?.additional !== '')
       );
     }
+
     if (name === CONSULTING_POST_FORM_FIELD_NAME.option2) {
       const formValue = method.getValues(name);
       return formValue === null || formValue?.length > 0;
     }
+
     if (name === CONSULTING_POST_FORM_FIELD_NAME.option3) {
       const formValue = method.getValues(name);
       return formValue && formValue.length === 4;
     }
+
+    return false;
+  };
+
+  const submit = (values: ConsultingPostFormValues) => {
+    console.log('submit', values);
+  };
+
+  const handleNextButtonClick = () => {
+    console.log('isLastStep', isLastStep);
+    if (!isLastStep) return;
+
+    submit(method.getValues());
   };
 
   return (
@@ -121,6 +139,8 @@ export default function ConsultingPostForm() {
           current={step}
           onPageChange={setStep}
           disabledToNext={!availableToNext()}
+          nextButtonLabel={isLastStep ? '저장' : undefined}
+          onNextButtonClick={handleNextButtonClick}
         />
       </div>
     </FormProvider>
