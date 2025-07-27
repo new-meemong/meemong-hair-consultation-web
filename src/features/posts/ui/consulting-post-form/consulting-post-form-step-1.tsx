@@ -25,7 +25,8 @@ export default function ConsultingPostFormStep1() {
           <Textarea
             {...method.register(`${CONSULTING_POST_FORM_FIELD_NAME.option1}.additional`)}
             placeholder="어떤 고민이 있는지 상세히 설명해주세요"
-            className="min-h-38 p-3 rounded-6 border-1 border-border-default"
+            className="min-h-38"
+            hasBorder
           />
         </FormItemWithLabel>
       ),
