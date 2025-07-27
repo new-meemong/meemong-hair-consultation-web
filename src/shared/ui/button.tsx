@@ -9,13 +9,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'rounded-2 ',
+        default: 'rounded-2',
         icon: 'rounded-6',
         textWithIcon: 'typo-body-1-medium flex gap-2 rounded-4',
       },
       size: {
         default: 'h-10 px-4 py-2',
         sm: 'h-6.5 px-2 py-1',
+        lg: 'h-13 typo-body-1-medium',
         icon: 'size-7',
         iconLg: 'size-10',
         textWithIcon: 'h-10 px-3 py-2.5',
@@ -51,7 +52,7 @@ function Button({
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className, theme }))}
+      className={cn(buttonVariants({ variant, theme, size, className }))}
       type={type}
       {...props}
     />
