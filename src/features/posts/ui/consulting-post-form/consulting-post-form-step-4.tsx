@@ -5,11 +5,12 @@ import type { ConsultingPostFormValues } from '../../types/consulting-post-form-
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
 import type { Image } from '@/shared/ui/image-item';
 import { IMAGE_TYPE } from '@/shared/constants/image-type';
+import { Textarea } from '@/shared';
 
 const MAX_IMAGE_COUNT = 3;
 
 export default function ConsultingPostFormStep4() {
-  const { setValue, getValues } = useFormContext<ConsultingPostFormValues>();
+  const { setValue, getValues, register } = useFormContext<ConsultingPostFormValues>();
 
   const currentOptionValue = getValues(CONSULTING_POST_FORM_FIELD_NAME.option4);
   const currentImages = currentOptionValue?.images ?? [];
@@ -61,6 +62,13 @@ export default function ConsultingPostFormStep4() {
             />
           ))}
         </div>
+      </FormItemWithLabel>
+      <FormItemWithLabel label="추구미 설명">
+        <Textarea
+          {...register(`${CONSULTING_POST_FORM_FIELD_NAME.option4}.description`)}
+          placeholder="어떤 고민이 있는지 상세히 설명해주세요"
+          className="min-h-38 p-3 rounded-6 border-1 border-border-default"
+        />
       </FormItemWithLabel>
     </div>
   );
