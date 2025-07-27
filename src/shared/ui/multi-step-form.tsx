@@ -31,8 +31,8 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
 
   return (
     <>
-      <form className="flex flex-col px-5 py-7 gap-7 flex-1">
-        <div className="flex flex-col gap-3">
+      <form className="flex flex-col flex-1 min-h-0 px-5 py-7 gap-7">
+        <div className="flex flex-col gap-3 flex-shrink-0">
           <div className="flex items-center justify-between">
             <p className="typo-headline-medium text-label-default">{question}</p>
             {
@@ -43,7 +43,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
           </div>
           {description && <p className="typo-body-3-regular text-label-info">{description}</p>}
         </div>
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 overflow-y-auto">{children}</div>
       </form>
       <div className="px-5 py-3">
         <ProgressPagination

@@ -8,7 +8,7 @@ import useCreateCommentMutation from '@/features/comments/api/use-create-comment
 import useDeletePostMutation from '@/features/posts/api/use-delete-post-mutation';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import PostDetailItem from '@/features/posts/ui/post-detail-item';
-import { MoreOptionsMenu, ROUTES } from '@/shared';
+import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -19,6 +19,7 @@ import { useState } from 'react';
 
 export default function PostDetailPage() {
   const { isUserDesigner, user } = useAuthContext();
+  const { push } = useRouterWithUser();
 
   useGuidePopup(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
 
@@ -28,6 +29,16 @@ export default function PostDetailPage() {
   const postDetail = response?.data;
 
   const isWriter = postDetail?.hairConsultPostingCreateUserId === user.id;
+
+  // TODO: 추후 컨설팅 게시글 여부 확인 로직 추가
+  const isConsultingPost = true;
+  const canWriteConsultingResponse = isConsultingPost && isUserDesigner;
+
+  const handleWriteConsultingResponseClick = () => {
+    if (!postId) return;
+
+    push(ROUTES.POSTS_CREATE_CONSULTING_POST(postId.toString()));
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [comments, setComments] = useState<CommentWithReplies[]>([]);
@@ -101,8 +112,6 @@ export default function PostDetailPage() {
   //     console.error('댓글 삭제 실패:', error);
   //   }
   // };
-
-  const { push } = useRouterWithUser();
 
   const handleEdit = () => {
     if (!postId) return;
@@ -194,12 +203,20 @@ export default function PostDetailPage() {
       </div> */}
 
       <div className="h-30" />
-      {/* 댓글 입력 필드 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-strong">
-        <div className="max-w-[600px] mx-auto">
-          <CommentForm onSubmit={createCommentMutate} />
+
+      {canWriteConsultingResponse ? (
+        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-upper px-5 py-3">
+          <Button size="lg" className="w-full" onClick={handleWriteConsultingResponseClick}>
+            컨설팅 답글 보내기
+          </Button>
         </div>
-      </div>
+      ) : (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-strong">
+          <div className="max-w-[600px] mx-auto">
+            <CommentForm onSubmit={createCommentMutate} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
