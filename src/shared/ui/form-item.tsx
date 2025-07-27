@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import type { ReactNode } from 'react';
 
-type FormItemWithLabelProps = {
+type FormItem = {
   label?: string;
   description?: string;
   children: ReactNode;
@@ -10,14 +10,14 @@ type FormItemWithLabelProps = {
   className?: string;
 };
 
-export default function FormItemWithLabel({
+export default function FormItem({
   label,
   description,
   children,
   required = false,
   hasUnderline = false,
   className,
-}: FormItemWithLabelProps) {
+}: FormItem) {
   return (
     <div
       className={cn(

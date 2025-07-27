@@ -1,5 +1,5 @@
 import { Textarea } from '@/shared';
-import FormItemWithLabel from '@/shared/ui/form-item-with-label';
+import FormItem from '@/shared/ui/form-item';
 import { useFormContext } from 'react-hook-form';
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
 import type { ConsultingPostFormValues } from '../../types/consulting-post-form-values';
@@ -21,14 +21,14 @@ export default function ConsultingPostFormStep1() {
       label: '기타',
       value: '기타',
       additional: (
-        <FormItemWithLabel label="기타 고민 상세 입력" required>
+        <FormItem label="기타 고민 상세 입력" required>
           <Textarea
             {...method.register(`${CONSULTING_POST_FORM_FIELD_NAME.option1}.additional`)}
             placeholder="어떤 고민이 있는지 상세히 설명해주세요"
             className="min-h-38"
             hasBorder
           />
-        </FormItemWithLabel>
+        </FormItem>
       ),
     },
   ];

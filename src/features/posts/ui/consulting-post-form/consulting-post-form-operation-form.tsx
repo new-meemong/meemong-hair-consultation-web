@@ -1,5 +1,5 @@
 import { Button, Checkbox, Input, Label } from '@/shared';
-import FormItemWithLabel from '@/shared/ui/form-item-with-label';
+import FormItem from '@/shared/ui/form-item';
 import useYearMonthPicker from '@/shared/ui/hooks/use-year-month-picker';
 import { format } from 'date-fns';
 import { useFormContext } from 'react-hook-form';
@@ -81,15 +81,15 @@ export default function ConsultingPostFormOperationForm() {
 
   return (
     <div className="flex flex-col gap-5">
-      <FormItemWithLabel hasUnderline label="시술명">
+      <FormItem hasUnderline label="시술명">
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="예)전체탈색, 블랙염색 등"
           className="typo-body-2-regular h-9"
         />
-      </FormItemWithLabel>
-      <FormItemWithLabel hasUnderline label="시술시점">
+      </FormItem>
+      <FormItem hasUnderline label="시술시점">
         <div
           onClick={handleDateClick}
           className="flex items-center justify-between cursor-pointer h-9"
@@ -103,7 +103,7 @@ export default function ConsultingPostFormOperationForm() {
             {date ? format(date, 'yyyy/MM') : '해당 시술을 한 시점을 대략적으로 선택해주세요'}
           </span>
         </div>
-      </FormItemWithLabel>
+      </FormItem>
       <Button theme="white" onClick={handleSubmit}>
         시술 저장
       </Button>

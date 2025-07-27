@@ -1,4 +1,4 @@
-import FormItemWithLabel from '@/shared/ui/form-item-with-label';
+import FormItem from '@/shared/ui/form-item';
 import ImageUploaderItem from '@/shared/ui/image-uploader-item';
 import { useFormContext } from 'react-hook-form';
 import type { ConsultingPostFormValues } from '../../types/consulting-post-form-values';
@@ -48,10 +48,7 @@ export default function ConsultingPostFormStep4() {
 
   return (
     <div className="flex flex-col gap-7">
-      <FormItemWithLabel
-        label="이미지 첨부"
-        description={`${MAX_IMAGE_COUNT}개까지 업로드 할 수 있어요`}
-      >
+      <FormItem label="이미지 첨부" description={`${MAX_IMAGE_COUNT}개까지 업로드 할 수 있어요`}>
         <div className="flex gap-2 overflow-x-auto">
           {Array.from({ length: MAX_IMAGE_COUNT }).map((_, index) => (
             <ImageUploaderItem
@@ -62,15 +59,15 @@ export default function ConsultingPostFormStep4() {
             />
           ))}
         </div>
-      </FormItemWithLabel>
-      <FormItemWithLabel label="추구미 설명">
+      </FormItem>
+      <FormItem label="추구미 설명">
         <Textarea
           {...register(`${CONSULTING_POST_FORM_FIELD_NAME.option4}.description`)}
           placeholder="어떤 고민이 있는지 상세히 설명해주세요"
           className="min-h-38"
           hasBorder
         />
-      </FormItemWithLabel>
+      </FormItem>
     </div>
   );
 }
