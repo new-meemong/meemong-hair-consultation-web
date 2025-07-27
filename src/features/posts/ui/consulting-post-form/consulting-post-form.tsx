@@ -9,6 +9,7 @@ import {
 } from '../../types/consulting-post-form-values';
 import ConsultingPostFormStep1 from './consulting-post-form-step-1';
 import ConsultingPostFormStep2 from './consulting-post-form-step-2';
+import ConsultingPostFormStep3 from './consulting-post-form-step-3';
 
 type FormStep = {
   name: keyof ConsultingPostFormValues;
@@ -34,8 +35,9 @@ const formSteps: FormStep[] = [
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.option3,
     question: '내 모습을 보여주세요',
+    description: '올리신 사진은 디자이너들에게만 공개되며, 모델은 볼 수 없습니다.',
     required: true,
-    children: <div>step 3</div>,
+    children: <ConsultingPostFormStep3 />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.option4,

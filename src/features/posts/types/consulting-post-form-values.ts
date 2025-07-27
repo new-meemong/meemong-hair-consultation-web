@@ -14,6 +14,10 @@ export const consultingPostFormSchema = z.object({
       }),
     )
     .nullable(),
+  [CONSULTING_POST_FORM_FIELD_NAME.option3]: z.object({
+    position: z.enum(['front', 'ponytailFront', 'ponytailSide', 'whole']).array().length(4),
+    image: z.instanceof(File),
+  }),
 });
 
 export type ConsultingPostFormValues = z.infer<typeof consultingPostFormSchema>;

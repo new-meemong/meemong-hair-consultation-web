@@ -31,7 +31,7 @@ export default function ConsultingPostFormStep2() {
       <Button theme="white">
         <div className="flex items-center gap-2">
           시술 추가
-          <PlusIcon />
+          <PlusIcon className="w-5 h-5 fill-label-info" />
         </div>
       </Button>
       {operations && (
