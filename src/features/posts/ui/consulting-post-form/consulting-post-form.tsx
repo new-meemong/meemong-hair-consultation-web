@@ -84,10 +84,13 @@ export default function ConsultingPostForm() {
         (formValue?.value === '기타' && formValue?.additional !== '')
       );
     }
-
     if (name === CONSULTING_POST_FORM_FIELD_NAME.option2) {
       const formValue = method.getValues(name);
       return formValue === null || formValue?.length > 0;
+    }
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.option3) {
+      const formValue = method.getValues(name);
+      return formValue && formValue.length === 4;
     }
   };
 

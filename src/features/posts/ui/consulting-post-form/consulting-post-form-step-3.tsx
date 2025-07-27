@@ -37,7 +37,6 @@ function ImageUploaderItem({ onUpload, label, position }: ImageUploaderProps) {
         {
           label: '갤러리에서 선택하기',
           onClick: () => {
-            console.log('갤러리에서 선택하기');
             imageUploaderRef.current?.triggerFileSelect();
           },
         },
