@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
 import { cn } from '@/shared/lib/utils';
+import CloseIcon from '@/assets/icons/close.svg';
 
 function Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
   return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
@@ -80,13 +81,24 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function DrawerTitle({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Title>) {
+function DrawerTitle({
+  className,
+  showCloseButton = false,
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Title> & { showCloseButton?: boolean }) {
   return (
-    <DrawerPrimitive.Title
-      data-slot="drawer-title"
-      className={cn('typo-title-3-semibold', className)}
-      {...props}
-    />
+    <div className="flex items-center justify-between">
+      <DrawerPrimitive.Title
+        data-slot="drawer-title"
+        className={cn('typo-title-3-semibold', className)}
+        {...props}
+      />
+      {showCloseButton && (
+        <DrawerClose asChild>
+          <CloseIcon />
+        </DrawerClose>
+      )}
+    </div>
   );
 }
 
