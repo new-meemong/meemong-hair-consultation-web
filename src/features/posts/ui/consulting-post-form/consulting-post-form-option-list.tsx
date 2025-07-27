@@ -1,5 +1,5 @@
 import { useFormContext, useWatch } from 'react-hook-form';
-import type { ConsultingPostFormOption } from '../types/consulting-post-form-option';
+import type { ConsultingPostFormOption } from '../../types/consulting-post-form-option';
 import ConsultingPostFormOptionListItem from './consulting-post-form-option-list-item';
 
 type ConsultingPostFormOptionListProps = {

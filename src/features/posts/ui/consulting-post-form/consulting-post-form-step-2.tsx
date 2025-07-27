@@ -2,9 +2,9 @@ import { Button } from '@/shared';
 import ConsultingPostFormOperationForm from './consulting-post-form-operation-form';
 import PlusIcon from '@/assets/icons/plus.svg';
 import { useFormContext, useWatch } from 'react-hook-form';
-import type { ConsultingPostFormValues } from '../types/consulting-post-form-values';
+import type { ConsultingPostFormValues } from '../../types/consulting-post-form-values';
 import ConsultingPostFormOperationListItem from './consulting-post-form-operation-list-item';
-import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
+import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
 
 export default function ConsultingPostFormStep2() {
   const { control, setValue } = useFormContext<ConsultingPostFormValues>();

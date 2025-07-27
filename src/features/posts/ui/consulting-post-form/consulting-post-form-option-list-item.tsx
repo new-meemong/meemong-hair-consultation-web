@@ -1,5 +1,5 @@
 import { Checkbox, Label } from '@/shared';
-import type { ConsultingPostFormOption } from '../types/consulting-post-form-option';
+import type { ConsultingPostFormOption } from '../../types/consulting-post-form-option';
 
 type ConsultingPostFormOptionListItemProps = {
   option: ConsultingPostFormOption;

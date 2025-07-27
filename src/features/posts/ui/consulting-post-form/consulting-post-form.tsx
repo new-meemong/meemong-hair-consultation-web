@@ -4,12 +4,12 @@ import ProgressPagination from '@/shared/ui/progress-pagination';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
-import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
-import type { ConsultingPostFormOption } from '../types/consulting-post-form-option';
+import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
+import type { ConsultingPostFormOption } from '../../types/consulting-post-form-option';
 import {
   consultingPostFormSchema,
   type ConsultingPostFormValues,
-} from '../types/consulting-post-form-values';
+} from '../../types/consulting-post-form-values';
 import ConsultingPostFormOptionList from './consulting-post-form-option-list';
 import ConsultingPostFormStep2 from './consulting-post-form-step-2';
 
