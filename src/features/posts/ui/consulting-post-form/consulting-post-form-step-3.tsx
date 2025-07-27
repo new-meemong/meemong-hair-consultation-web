@@ -1,83 +1,14 @@
-import PlusIcon from '@/assets/icons/plus.svg';
 import { Button } from '@/shared';
-import useShowConsultingPostImageGuideSheet from '../../hooks/use-show-consulting-post-image-guide-sheet';
-import useShowModal from '@/shared/ui/hooks/use-show-modal';
-import { useRef } from 'react';
+import { IMAGE_TYPE } from '@/shared/constants/image-type';
+import type { ValueOf } from '@/shared/type/types';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
+import useShowConsultingPostImageGuideSheet from '../../hooks/use-show-consulting-post-image-guide-sheet';
 import {
   CONSULTING_POST_FORM_IMAGE_POSITION,
   type ConsultingPostFormValues,
 } from '../../types/consulting-post-form-values';
-import ImageUploader, { type ImageUploaderRef } from '@/shared/ui/image-uploader';
-import ImageItem, { type Image } from '@/shared/ui/image-item';
-import { IMAGE_TYPE } from '@/shared/constants/image-type';
-import type { ValueOf } from '@/shared/type/types';
-
-type ImageUploaderProps = {
-  onUpload: (file: File) => void;
-  label: string;
-  currentImage: Image | null;
-  onDelete: (image: Image) => void;
-};
-
-function ImageUploaderItem({ onUpload, label, currentImage, onDelete }: ImageUploaderProps) {
-  const showModal = useShowModal();
-  const imageUploaderRef = useRef<ImageUploaderRef>(null);
-
-  const handleClick = () => {
-    showModal({
-      id: 'consulting-post-image-upload-modal',
-      text: '사진 업로드 수단을\n선택해주세요',
-      buttons: [
-        {
-          label: '갤러리에서 선택하기',
-          onClick: () => {
-            imageUploaderRef.current?.triggerFileSelect();
-          },
-        },
-        {
-          label: '새로 촬영하기',
-          onClick: () => {
-            console.log('카메라로 촬영하기');
-          },
-        },
-        {
-          label: '닫기',
-          onClick: () => {
-            console.log('취소');
-          },
-        },
-      ],
-    });
-  };
-
-  const handleImageUpload = (file: File) => {
-    onUpload(file);
-  };
-
-  const handleImageDelete = (image: Image) => {
-    onDelete(image);
-  };
-
-  return (
-    <div className="flex flex-col gap-2">
-      {currentImage ? (
-        <ImageItem image={currentImage} index={0} handleImageDelete={handleImageDelete} />
-      ) : (
-        <button
-          className="w-25 h-25 rounded-6 bg-alternative flex items-center justify-center overflow-hidden"
-          onClick={handleClick}
-          type="button"
-        >
-          <PlusIcon className="w-7.5 h-7.5 fill-label-placeholder" />
-        </button>
-      )}
-      <p className="typo-body-2-regular text-label-info text-center">{label}</p>
-      <ImageUploader ref={imageUploaderRef} setImages={handleImageUpload} multiple={false} />
-    </div>
-  );
-}
+import ImageUploaderItem from '@/shared/ui/image-uploader-item';
 
 export default function ConsultingPostFormStep3() {
   const { setValue, getValues, control } = useFormContext<ConsultingPostFormValues>();
