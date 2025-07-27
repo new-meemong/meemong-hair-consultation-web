@@ -11,6 +11,7 @@ import ConsultingPostFormStep1 from './consulting-post-form-step-1';
 import ConsultingPostFormStep2 from './consulting-post-form-step-2';
 import ConsultingPostFormStep3 from './consulting-post-form-step-3';
 import ConsultingPostFormStep4 from './consulting-post-form-step-4';
+import ConsultingPostFormStep5 from './consulting-post-form-step-5';
 
 type FormStep = {
   name: keyof ConsultingPostFormValues;
@@ -50,7 +51,7 @@ const formSteps: FormStep[] = [
     name: CONSULTING_POST_FORM_FIELD_NAME.option5,
     question: '피부톤을 알려주세요',
     required: false,
-    children: <div>step 5</div>,
+    children: <ConsultingPostFormStep5 />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.option6,

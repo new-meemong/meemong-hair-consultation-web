@@ -40,6 +40,7 @@ export const consultingPostFormSchema = z.object({
       description: z.string().optional(),
     })
     .optional(),
+  [CONSULTING_POST_FORM_FIELD_NAME.option5]: z.string().optional(),
 });
 
 export type ConsultingPostFormValues = z.infer<typeof consultingPostFormSchema>;
