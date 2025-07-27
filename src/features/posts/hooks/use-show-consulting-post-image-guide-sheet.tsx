@@ -38,7 +38,7 @@ export default function useShowConsultingPostImageGuideSheet() {
                   key={index}
                   className="flex items-center gap-2 typo-body-2-regular text-label-info"
                 >
-                  <Dot size="size-[5px]" />
+                  <Dot size="md" />
                   {content}
                 </div>
               ))}

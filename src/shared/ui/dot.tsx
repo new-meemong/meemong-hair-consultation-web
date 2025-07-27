@@ -1,9 +1,15 @@
 import { cn } from '@/lib/utils';
 
 type DotProps = {
-  size: 'size-[3px]' | 'size-[5px]';
+  size: 'sm' | 'md';
+  className?: string;
 };
 
-export default function Dot({ size }: DotProps) {
-  return <div className={cn('rounded-full bg-label-placeholder', size)} />;
+const sizeMap = {
+  sm: 'size-0.75',
+  md: 'size-1.25',
+};
+
+export default function Dot({ size, className }: DotProps) {
+  return <div className={cn('rounded-full bg-label-placeholder', sizeMap[size], className)} />;
 }
