@@ -1,13 +1,17 @@
+import { Textarea } from '@/shared';
+import FormItemWithLabel from '@/shared/ui/form-item-with-label';
 import ProgressPagination from '@/shared/ui/progress-pagination';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
 import type { ConsultingPostFormOption } from '../types/consulting-post-form-option';
+import {
+  consultingPostFormSchema,
+  type ConsultingPostFormValues,
+} from '../types/consulting-post-form-values';
 import ConsultingPostFormOptionList from './consulting-post-form-option-list';
-import z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Textarea } from '@/shared';
-import FormItemWithLabel from '@/shared/ui/form-item-with-label';
-import ConsultingPostFormOperationForm from './consulting-post-form-operation-form';
+import ConsultingPostFormStep2 from './consulting-post-form-step-2';
+import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
 
 type FormStep = {
   question: string;
@@ -16,25 +20,7 @@ type FormStep = {
   children: React.ReactNode;
 };
 
-export const CONSULTING_POST_FORM_FIELD_NAME = {
-  option1: 'option1',
-  option2: 'option2',
-} as const;
-
-const formSchema = z.object({
-  [CONSULTING_POST_FORM_FIELD_NAME.option1]: z.object({
-    value: z.string(),
-    additional: z.string().optional(),
-  }),
-  [CONSULTING_POST_FORM_FIELD_NAME.option2]: z.array(
-    z.object({
-      name: z.string(),
-      date: z.date(),
-    }),
-  ),
-});
-
-function getOption1(method: UseFormReturn<z.infer<typeof formSchema>>): ConsultingPostFormOption[] {
+function getOption1(method: UseFormReturn<ConsultingPostFormValues>): ConsultingPostFormOption[] {
   return [
     {
       label: '원하는 스타일이 어울릴지/가능할지 궁금해요',
@@ -60,7 +46,7 @@ function getOption1(method: UseFormReturn<z.infer<typeof formSchema>>): Consulti
   ] as const;
 }
 
-function getFormSteps(method: UseFormReturn<z.infer<typeof formSchema>>): FormStep[] {
+function getFormSteps(method: UseFormReturn<ConsultingPostFormValues>): FormStep[] {
   return [
     {
       question: '어떤 헤어 고민이 있나요?',
@@ -75,11 +61,7 @@ function getFormSteps(method: UseFormReturn<z.infer<typeof formSchema>>): FormSt
     {
       question: '최근 2년 내 받은 시술을 입력하세요',
       required: true,
-      children: (
-        <div>
-          <ConsultingPostFormOperationForm />
-        </div>
-      ),
+      children: <ConsultingPostFormStep2 />,
     },
     {
       question: '내 모습을 보여주세요',
@@ -111,8 +93,8 @@ function getFormSteps(method: UseFormReturn<z.infer<typeof formSchema>>): FormSt
 }
 
 export default function ConsultingPostForm() {
-  const method = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const method = useForm<ConsultingPostFormValues>({
+    resolver: zodResolver(consultingPostFormSchema),
   });
   const [step, setStep] = useState(1);
 
