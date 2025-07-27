@@ -1,18 +1,17 @@
-import { Input } from '@/shared';
+import { Button, Input } from '@/shared';
 import FormItemWithLabel from '@/shared/ui/form-item-with-label';
 import useYearMonthPicker from '@/shared/ui/hooks/use-year-month-picker';
 import { format } from 'date-fns';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { CONSULTING_POST_FORM_FIELD_NAME } from './consulting-post-form';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
 export default function ConsultingPostFormOperationForm() {
-  const { register, control, setValue } = useFormContext();
+  const { setValue, getValues } = useFormContext();
 
-  const selectedDate = useWatch({
-    control,
-    name: `${CONSULTING_POST_FORM_FIELD_NAME.option2}.date`,
-  });
+  const [name, setName] = useState<string>('');
+  const [date, setDate] = useState<Date | undefined>(undefined);
 
   const { showYearMonthPicker } = useYearMonthPicker();
 
@@ -25,18 +24,33 @@ export default function ConsultingPostFormOperationForm() {
       title: '시술 연월',
       minDate,
       maxDate,
-      selectedDate: selectedDate ?? new Date(),
+      selectedDate: date ?? new Date(),
       onSelect: (date) => {
-        setValue(`${CONSULTING_POST_FORM_FIELD_NAME.option2}.date`, date);
+        setDate(date);
       },
     });
+  };
+
+  const handleSubmit = () => {
+    const currentOperations = getValues(CONSULTING_POST_FORM_FIELD_NAME.option2) || [];
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.option2, [
+      ...currentOperations,
+      {
+        name,
+        date,
+      },
+    ]);
+
+    setName('');
+    setDate(undefined);
   };
 
   return (
     <div className="flex flex-col gap-5">
       <FormItemWithLabel hasUnderline label="시술명">
         <Input
-          {...register(`${CONSULTING_POST_FORM_FIELD_NAME.option2}.name`)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           placeholder="예)전체탈색, 블랙염색 등"
           className="typo-body-2-regular h-9"
         />
@@ -49,15 +63,16 @@ export default function ConsultingPostFormOperationForm() {
           <span
             className={cn(
               'typo-body-2-regular',
-              selectedDate ? 'text-label-default' : 'text-label-placeholder',
+              date ? 'text-label-default' : 'text-label-placeholder',
             )}
           >
-            {selectedDate
-              ? format(selectedDate, 'yyyy/MM')
-              : '해당 시술을 한 시점을 대략적으로 선택해주세요'}
+            {date ? format(date, 'yyyy/MM') : '해당 시술을 한 시점을 대략적으로 선택해주세요'}
           </span>
         </div>
       </FormItemWithLabel>
+      <Button theme="white" onClick={handleSubmit}>
+        시술 입력
+      </Button>
     </div>
   );
 }

@@ -26,10 +26,12 @@ const formSchema = z.object({
     value: z.string(),
     additional: z.string().optional(),
   }),
-  [CONSULTING_POST_FORM_FIELD_NAME.option2]: z.object({
-    name: z.string(),
-    date: z.date(),
-  }),
+  [CONSULTING_POST_FORM_FIELD_NAME.option2]: z.array(
+    z.object({
+      name: z.string(),
+      date: z.date(),
+    }),
+  ),
 });
 
 function getOption1(method: UseFormReturn<z.infer<typeof formSchema>>): ConsultingPostFormOption[] {
