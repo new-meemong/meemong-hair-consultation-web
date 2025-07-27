@@ -1,6 +1,7 @@
-import ProgressPagination from '@/shared/ui/progress-pagination';
+import type { FormStep } from '@/shared/type/form-step';
+import type { KeyOf } from '@/shared/type/types';
+import MultiStepForm from '@/shared/ui/multi-step-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
 import {
@@ -15,15 +16,7 @@ import ConsultingPostFormStep5 from './consulting-post-form-step-5';
 import ConsultingPostFormStep6 from './consulting-post-form-step-6';
 import ConsultingPostFormStep7 from './consulting-post-form-step-7';
 
-type FormStep = {
-  name: keyof ConsultingPostFormValues;
-  question: string;
-  description?: string;
-  required: boolean;
-  children: React.ReactNode;
-};
-
-const formSteps: FormStep[] = [
+const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.option1,
     question: '어떤 헤어 고민이 있나요?',
@@ -74,17 +67,8 @@ export default function ConsultingPostForm() {
   const method = useForm<ConsultingPostFormValues>({
     resolver: zodResolver(consultingPostFormSchema),
   });
-  const [step, setStep] = useState(1);
 
-  console.log('method.watch()', method.watch());
-
-  const { question, required, description, children, name } = formSteps[step - 1];
-
-  const isLastStep = step === formSteps.length;
-
-  const availableToNext = () => {
-    if (!required) return true;
-
+  const canMoveNext = (name: KeyOf<ConsultingPostFormValues>) => {
     if (name === CONSULTING_POST_FORM_FIELD_NAME.option1) {
       const formValue = method.getValues(name);
       return (
@@ -103,46 +87,20 @@ export default function ConsultingPostForm() {
       return formValue && formValue.length === 4;
     }
 
-    return false;
+    return true;
   };
 
   const submit = (values: ConsultingPostFormValues) => {
     console.log('submit', values);
   };
 
-  const handleNextButtonClick = () => {
-    console.log('isLastStep', isLastStep);
-    if (!isLastStep) return;
-
-    submit(method.getValues());
-  };
-
   return (
     <FormProvider {...method}>
-      <form className="flex flex-col px-5 py-7 gap-7 flex-1">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <p className="typo-headline-medium text-label-default">{question}</p>
-            {
-              <span className="typo-body-3-semibold text-cautionary">
-                {required ? '필수' : '선택'}
-              </span>
-            }
-          </div>
-          {description && <p className="typo-body-3-regular text-label-info">{description}</p>}
-        </div>
-        <div className="flex-1">{children}</div>
-      </form>
-      <div className="px-5 py-3">
-        <ProgressPagination
-          total={formSteps.length}
-          current={step}
-          onPageChange={setStep}
-          disabledToNext={!availableToNext()}
-          nextButtonLabel={isLastStep ? '저장' : undefined}
-          onNextButtonClick={handleNextButtonClick}
-        />
-      </div>
+      <MultiStepForm
+        steps={CONSULTING_POST_FORM_STEPS}
+        canMoveNext={canMoveNext}
+        onSubmit={submit}
+      />
     </FormProvider>
   );
 }
