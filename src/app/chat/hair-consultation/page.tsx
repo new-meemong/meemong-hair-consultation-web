@@ -15,6 +15,8 @@ export default function HairConsultationChatPage() {
       loading: state.loading,
     }));
 
+  console.log('loading', loading);
+
   console.log(chatChannelUserMetas);
 
   useEffect(() => {

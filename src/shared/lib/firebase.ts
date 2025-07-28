@@ -1,7 +1,7 @@
-import { Analytics, getAnalytics, isSupported } from 'firebase/analytics';
+import { type Analytics, getAnalytics, isSupported } from 'firebase/analytics';
 // Import the functions you need from the SDKs you need
-import { enableIndexedDbPersistence, getFirestore } from 'firebase/firestore';
 import { getApps, initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -28,4 +28,4 @@ if (typeof window !== 'undefined') {
   isSupported().then((yes) => yes && (analytics = getAnalytics(app)));
 }
 
-export { app, db, analytics };
+export { analytics, app, db };
