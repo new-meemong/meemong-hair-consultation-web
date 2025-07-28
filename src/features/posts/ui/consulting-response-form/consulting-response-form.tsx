@@ -6,6 +6,7 @@ import MultiStepForm from '@/shared/ui/multi-step-form';
 import type { KeyOf } from '@/shared/type/types';
 import ConsultingResponseFormStep1 from './consulting-response-form-step-1';
 import ConsultingResponseFormStep2 from './consulting-response-form-step-2';
+import ConsultingResponseFormStep3 from './consulting-response-form-step-3';
 
 const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
   {
@@ -21,10 +22,18 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     required: true,
     children: <ConsultingResponseFormStep2 />,
   },
+  {
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option3,
+    question: '고객님의 모발 타입을 골라주세요',
+    required: false,
+    children: <ConsultingResponseFormStep3 />,
+  },
 ];
 
 export default function ConsultingResponseForm() {
   const method = useForm<ConsultingResponseFormValues>();
+
+  console.log('method.getValues()', method.getValues());
 
   const canMoveNext = (name: KeyOf<ConsultingResponseFormValues>) => {
     return true;
