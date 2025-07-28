@@ -4,18 +4,18 @@ import { filterUndefined } from '@/shared/lib/filter-undefined';
 import { useInfiniteQuery, type Query } from '@tanstack/react-query';
 import type { PostListTab } from '../types/post-list-tab';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
+import type { PagingQueryParams } from '@/shared/api/types/paging-query-params';
+import type { PagingResponse } from '@/shared/api/types/paging-response';
 
 const GET_POSTS_QUERY_ENDPOINT = `${HAIR_CONSULT_POSTING_API_PREFIX}/main`;
 export const getPostsQueryKey = () => [GET_POSTS_QUERY_ENDPOINT];
 
-type GetPostsQueryParams = {
-  __limit?: number;
+type GetPostsQueryParams = PagingQueryParams & {
   filter?: PostListTab;
 };
 
-type GetPostsResponse = {
+type GetPostsResponse = PagingResponse & {
   hairConsultPostingList: Post[];
-  nextCursor: string;
 };
 
 type GetPostsInfiniteData = {
