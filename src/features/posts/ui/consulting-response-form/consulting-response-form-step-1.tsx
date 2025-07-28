@@ -10,7 +10,7 @@ export default function ConsultingResponseFormStep1() {
   return (
     <FormItem hasUnderline>
       <Input
-        {...register(`${CONSULTING_RESPONSE_FORM_FIELD_NAME.option1}`)}
+        {...register(CONSULTING_RESPONSE_FORM_FIELD_NAME.option1)}
         placeholder="제목을 입력하세요"
         className="typo-title-3-semibold h-13.5"
       />
