@@ -1,3 +1,6 @@
+import type { USER_ROLE } from '@/entities/user/constants/user-role';
+import type { ValueOf } from '@/shared/type/types';
+
 export type PostDetail = {
   id: number;
   title: string;
@@ -11,5 +14,6 @@ export type PostDetail = {
   hairConsultPostingCreateUserName: string;
   hairConsultPostingCreateUserProfileImageUrl: string | null;
   hairConsultPostingCreateUserRegion: string | null;
+  hairConsultPostingCreateUserRole: ValueOf<typeof USER_ROLE>;
   hairConsultPostingCreateUserId: number;
 };
