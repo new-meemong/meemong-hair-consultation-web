@@ -5,8 +5,8 @@ import { useInfiniteQuery, type Query } from '@tanstack/react-query';
 import type { PostListTab } from '../types/post-list-tab';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
 
-const GET_POSTS_QUERY_KEY_PREFIX = `${HAIR_CONSULT_POSTING_API_PREFIX}/main`;
-export const getPostsQueryKey = () => [GET_POSTS_QUERY_KEY_PREFIX];
+const GET_POSTS_QUERY_ENDPOINT = `${HAIR_CONSULT_POSTING_API_PREFIX}/main`;
+export const getPostsQueryKey = () => [GET_POSTS_QUERY_ENDPOINT];
 
 type GetPostsQueryParams = {
   __limit?: number;
@@ -27,7 +27,7 @@ export default function useGetPosts(params: GetPostsQueryParams) {
   const { __limit = 10, filter } = params;
 
   return useInfiniteQuery({
-    queryKey: [GET_POSTS_QUERY_KEY_PREFIX, params],
+    queryKey: [GET_POSTS_QUERY_ENDPOINT, params],
     queryFn: ({ pageParam }) => {
       const searchParams = filterUndefined({
         __limit,
@@ -35,7 +35,7 @@ export default function useGetPosts(params: GetPostsQueryParams) {
         filter,
       });
 
-      return apiClient.get<GetPostsResponse>(GET_POSTS_QUERY_KEY_PREFIX, {
+      return apiClient.get<GetPostsResponse>(GET_POSTS_QUERY_ENDPOINT, {
         searchParams,
       });
     },
