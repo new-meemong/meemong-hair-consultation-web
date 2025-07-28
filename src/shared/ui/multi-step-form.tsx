@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import type { FormStep } from '../type/form-step';
-import ProgressPagination from './progress-pagination';
 import type { KeyOf } from '../type/types';
-import { useFormContext } from 'react-hook-form';
+import type { Path } from 'react-hook-form';
+import ProgressPagination from './progress-pagination';
 
 type MultiStepFormProps<T extends Record<string, unknown>> = {
   steps: FormStep<T>[];
@@ -22,6 +23,11 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
   const { question, required, description, children, name } = steps[step - 1];
 
   const isLastStep = step === steps.length;
+
+  useWatch({
+    name: name as Path<T>,
+    control: method.control,
+  });
 
   const handleNextButtonClick = () => {
     if (!isLastStep) return;
