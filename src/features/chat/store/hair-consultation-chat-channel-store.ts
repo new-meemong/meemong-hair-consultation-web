@@ -11,7 +11,7 @@ import {
 } from 'firebase/firestore';
 
 import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
-import type { ChatChannelUserMetaType } from '../type/chat-channel-user-meta-type';
+import type { HairConsultationChatChannelUserMetaType } from '../type/hair-consultation-chat-channel-user-meta-type';
 import { create } from 'zustand';
 import { db } from '@/shared/lib/firebase';
 import { getUser } from '@/features/auth/api/use-webview-login';
@@ -20,8 +20,8 @@ import type { HairConsultationChatMessageType } from '../type/hair-consultation-
 import { getCurrentUser } from '@/shared';
 
 interface ChatChannelState {
-  chatChannelUserMetas: ChatChannelUserMetaType[];
-  otherUserMeta: ChatChannelUserMetaType | null;
+  chatChannelUserMetas: HairConsultationChatChannelUserMetaType[];
+  otherUserMeta: HairConsultationChatChannelUserMetaType | null;
   loading: boolean;
   error: string | null;
 
@@ -107,7 +107,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           const otherUserId = participantIds.filter((id) => id !== userId)[0];
           const otherUserData = userId === senderId ? receiverData.data : senderData.data;
 
-          const userMeta: ChatChannelUserMetaType = {
+          const userMeta: HairConsultationChatChannelUserMetaType = {
             channelId: channelRef.id,
             otherUserId,
             userId,
@@ -148,7 +148,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           const userMetas = snapshot.docs.map((doc) => ({
             channelId: doc.id,
             ...doc.data(),
-          })) as ChatChannelUserMetaType[];
+          })) as HairConsultationChatChannelUserMetaType[];
 
           const sortedChannels = sortChannels(userMetas);
 
@@ -311,7 +311,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
               channelId: snapshot.id,
               ...data,
               otherUser: res.success ? res.data : null,
-            } as ChatChannelUserMetaType,
+            } as HairConsultationChatChannelUserMetaType,
           });
         }
       },
@@ -346,7 +346,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 }));
 
 // 채널 데이터를 정렬하는 함수
-const sortChannels = (channels: ChatChannelUserMetaType[]) => {
+const sortChannels = (channels: HairConsultationChatChannelUserMetaType[]) => {
   return channels.sort((a, b) => {
     // 둘 다 고정된 경우 pinnedAt으로 비교
     if (a.isPinned && b.isPinned) {
