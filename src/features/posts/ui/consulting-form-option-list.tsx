@@ -1,18 +1,18 @@
 import { useFormContext, useWatch } from 'react-hook-form';
-import type { ConsultingPostFormOption } from '../../types/consulting-post-form-option';
-import ConsultingPostFormOptionListItem from './consulting-post-form-option-list-item';
+import type { ConsultingFormOption } from '../types/consulting-form-option';
+import ConsultingFormOptionListItem from './consulting-form-option-list-item';
 
-type ConsultingPostFormOptionListProps = {
-  options: ConsultingPostFormOption[];
+type ConsultingFormOptionListProps = {
+  options: ConsultingFormOption[];
   name: string;
   canReset?: boolean;
 };
 
-export default function ConsultingPostFormOptionList({
+export default function ConsultingFormOptionList({
   options,
   name,
   canReset = false,
-}: ConsultingPostFormOptionListProps) {
+}: ConsultingFormOptionListProps) {
   const { control, setValue, getValues } = useFormContext();
   const selectedOption = useWatch({ control, name });
 
@@ -30,7 +30,7 @@ export default function ConsultingPostFormOptionList({
   return (
     <div className="flex flex-col gap-2">
       {options.map((option) => (
-        <ConsultingPostFormOptionListItem
+        <ConsultingFormOptionListItem
           key={option.value}
           option={option}
           checked={selectedOption === option.value}

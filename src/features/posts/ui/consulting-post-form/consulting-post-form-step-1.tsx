@@ -3,7 +3,7 @@ import FormItem from '@/shared/ui/form-item';
 import { useFormContext } from 'react-hook-form';
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
 import type { ConsultingPostFormValues } from '../../types/consulting-post-form-values';
-import ConsultingPostFormOptionList from './consulting-post-form-option-list';
+import ConsultingFormOptionList from '../consulting-form-option-list';
 
 export default function ConsultingPostFormStep1() {
   const method = useFormContext<ConsultingPostFormValues>();
@@ -34,7 +34,7 @@ export default function ConsultingPostFormStep1() {
   ];
 
   return (
-    <ConsultingPostFormOptionList
+    <ConsultingFormOptionList
       options={options}
       name={`${CONSULTING_POST_FORM_FIELD_NAME.option1}.value`}
     />

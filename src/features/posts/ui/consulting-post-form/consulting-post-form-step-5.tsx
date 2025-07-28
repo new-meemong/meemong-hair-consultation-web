@@ -1,5 +1,5 @@
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
-import ConsultingPostFormOptionList from './consulting-post-form-option-list';
+import ConsultingFormOptionList from '../consulting-form-option-list';
 
 const SKIN_COLOR = {
   VERY_BRIGHT: 'veryBright',
@@ -46,7 +46,7 @@ const SKIN_COLOR_OPTIONS = [
 
 export default function ConsultingPostFormStep5() {
   return (
-    <ConsultingPostFormOptionList
+    <ConsultingFormOptionList
       options={SKIN_COLOR_OPTIONS}
       name={`${CONSULTING_POST_FORM_FIELD_NAME.option5}`}
       canReset

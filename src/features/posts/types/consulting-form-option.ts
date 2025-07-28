@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export type ConsultingPostFormOption = {
+export type ConsultingFormOption = {
   label: string | ReactNode;
   value: string;
   additional?: ReactNode;
