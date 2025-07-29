@@ -5,23 +5,64 @@ import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import CommentAuthorProfile from './comment-author-profile';
+import { useAuthContext } from '@/features/auth/context/auth-context';
+import { MoreOptionsMenu } from '@/shared';
+
+const MORE_ACTION = {
+  EDIT: 'edit',
+  DELETE: 'delete',
+  REPORT: 'report',
+} as const;
 
 type CommentListItemProps = {
   comment: CommentWithReplyStatus;
   onReplyClick: (commentId: number) => void;
   isFocused: boolean;
+  onDelete: () => void;
+  onEdit: () => void;
+  onReport: () => void;
 };
 
 export default function CommentListItem({
   comment,
   onReplyClick,
   isFocused,
+  onDelete,
+  onEdit,
+  onReport,
 }: CommentListItemProps) {
-  const { isReply, content, isVisibleToModel, createdAt } = comment;
+  const { user } = useAuthContext();
+
+  const { isReply, content, isVisibleToModel, createdAt, user: author } = comment;
+
+  const isWriter = author.userId === user?.id;
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     onReplyClick(comment.id);
+  };
+
+  const moreOption = {
+    [MORE_ACTION.EDIT]: {
+      label: '수정하기',
+      onClick: onEdit,
+    },
+    [MORE_ACTION.DELETE]: {
+      label: '삭제하기',
+      onClick: onDelete,
+      className: 'text-negative',
+    },
+    [MORE_ACTION.REPORT]: {
+      label: '신고하기',
+      onClick: onReport,
+    },
+  };
+
+  const getMoreOptions = () => {
+    if (isWriter) {
+      return [moreOption[MORE_ACTION.EDIT], moreOption[MORE_ACTION.DELETE]];
+    }
+    return [moreOption[MORE_ACTION.REPORT]];
   };
 
   return (
@@ -38,7 +79,11 @@ export default function CommentListItem({
                 <CommentIcon className="size-5 fill-label-info" />
               </button>
             )}
-            <MoreIcon className="size-6" />
+            <MoreOptionsMenu
+              trigger={<MoreIcon className="size-6" />}
+              options={getMoreOptions()}
+              contentClassName="-right-[14px] "
+            />
           </div>
         </div>
         <div className="flex flex-col gap-2">

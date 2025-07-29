@@ -194,9 +194,9 @@ export default function PostDetailPage() {
               fetchNextPage={handleFetchNextPage}
               onReplyClick={handleReplyClick}
               focusedCommentId={focusedCommentId}
-              onAddComment={() => {}}
-              onEditComment={() => {}}
-              onDeleteComment={() => {}}
+              onDelete={() => {}}
+              onEdit={() => {}}
+              onReport={() => {}}
             />
           </div>
         )}
