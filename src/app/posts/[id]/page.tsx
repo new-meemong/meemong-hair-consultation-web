@@ -18,7 +18,7 @@ import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { CommentList } from '@/widgets/comments';
 import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 type CommentFormState = {
   state: 'create' | 'edit' | 'reply';
@@ -142,6 +142,8 @@ export default function PostDetailPage() {
     setCommentFormState(INITIAL_COMMENT_FORM_STATE);
   };
 
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
   const handleReplyClick = (commentId: number) => {
     if (commentFormState.commentId === commentId) {
       resetCommentState();
@@ -151,7 +153,7 @@ export default function PostDetailPage() {
         commentId,
         content: null,
       });
-      // TODO: 대댓글 포커싱 추가
+      textareaRef.current?.focus();
     }
   };
 
@@ -248,6 +250,7 @@ export default function PostDetailPage() {
             commentId={commentFormState.commentId}
             content={commentFormState.content}
             isPending={isCommentCreating || isCommentUpdating}
+            textareaRef={textareaRef}
           />
         </div>
       </div>

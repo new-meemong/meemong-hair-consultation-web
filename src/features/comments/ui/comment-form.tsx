@@ -33,6 +33,7 @@ export type CommentFormProps = {
   commentId: number | null;
   content: string | null;
   isPending: boolean;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
 };
 
 export function CommentForm({
@@ -41,6 +42,7 @@ export function CommentForm({
   commentId,
   content,
   isPending,
+  textareaRef,
 }: CommentFormProps) {
   const { isUserDesigner } = useAuthContext();
 
@@ -96,6 +98,7 @@ export function CommentForm({
               <div className="flex-1">
                 <Textarea
                   {...method.register(COMMENT_FORM_FIELD_NAME.content)}
+                  ref={textareaRef}
                   placeholder={placeholder}
                   className="w-full flex-1 typo-body-2-long-regular placeholder:text-label-placeholder text-label-strong"
                 />
