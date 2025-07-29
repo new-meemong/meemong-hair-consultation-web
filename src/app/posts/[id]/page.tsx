@@ -4,7 +4,7 @@ import MoreIcon from '@/assets/icons/more-horizontal.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useCreateCommentMutation from '@/features/comments/api/use-create-comment-mutation';
 import useGetPostComments from '@/features/comments/api/use-get-post-comments';
-import { CommentForm } from '@/features/comments/ui/comment-form';
+import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
 import useDeletePostMutation from '@/features/posts/api/use-delete-post-mutation';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import PostDetailItem from '@/features/posts/ui/post-detail-item';
@@ -17,6 +17,18 @@ import { CommentList } from '@/widgets/comments';
 import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
 import { useCallback, useState } from 'react';
+
+type CommentFormState = {
+  state: 'create' | 'edit' | 'reply';
+  commentId: number | null;
+  content: string | null;
+};
+
+const INITIAL_COMMENT_FORM_STATE: CommentFormState = {
+  state: 'create',
+  commentId: null,
+  content: null,
+} as const;
 
 export default function PostDetailPage() {
   const { isUserDesigner, user } = useAuthContext();
@@ -48,51 +60,6 @@ export default function PostDetailPage() {
   const isWriter = postDetail?.hairConsultPostingCreateUserId === user.id;
 
   const { mutate: createCommentMutate } = useCreateCommentMutation(postId?.toString() ?? '');
-
-  // const handleEditComment = async (commentId: string, newContent: string) => {
-  //   try {
-  //     const updatedComment = await updateComment({ commentId, content: newContent });
-
-  //     setComments((prev) => {
-  //       return prev.map((comment) => {
-  //         if (comment.id === commentId) {
-  //           return { ...comment, content: updatedComment.content };
-  //         }
-
-  //         if (comment.replies.some((reply) => reply.id === commentId)) {
-  //           return {
-  //             ...comment,
-  //             replies: comment.replies.map((reply) =>
-  //               reply.id === commentId ? { ...reply, content: updatedComment.content } : reply,
-  //             ),
-  //           };
-  //         }
-
-  //         return comment;
-  //       });
-  //     });
-  //   } catch (error) {
-  //     console.error('댓글 수정 실패:', error);
-  //   }
-  // };
-
-  // const handleDeleteComment = async (commentId: string) => {
-  //   try {
-  //     const result = await deleteComment(commentId);
-
-  //     if (result.success) {
-  //       const filteredComments = comments.filter((comment) => comment.id !== commentId);
-  //       const updatedComments = filteredComments.map((comment) => ({
-  //         ...comment,
-  //         replies: comment.replies.filter((reply) => reply.id !== commentId),
-  //       }));
-
-  //       setComments(updatedComments);
-  //     }
-  //   } catch (error) {
-  //     console.error('댓글 삭제 실패:', error);
-  //   }
-  // };
 
   const { push } = useRouterWithUser();
 
@@ -157,22 +124,54 @@ export default function PostDetailPage() {
 
   const isDataLoaded = postDetail && comments;
 
-  const [focusedCommentId, setFocusedCommentId] = useState<number | null>(null);
-  const handleReplyClick = (commentId: number | null) => {
-    if (focusedCommentId === commentId) {
-      setFocusedCommentId(null);
+  const [commentFormState, setCommentFormState] = useState<CommentFormState>(
+    INITIAL_COMMENT_FORM_STATE,
+  );
+
+  const resetCommentState = () => {
+    setCommentFormState(INITIAL_COMMENT_FORM_STATE);
+  };
+
+  const handleReplyClick = (commentId: number) => {
+    if (commentFormState.commentId === commentId) {
+      resetCommentState();
     } else {
-      setFocusedCommentId(commentId);
+      setCommentFormState({
+        state: 'reply',
+        commentId,
+        content: null,
+      });
+      // TODO: 대댓글 포커싱 추가
     }
   };
 
-  const resetFocusedCommentId = () => {
-    setFocusedCommentId(null);
+  const handleEditComment = (commentId: number) => {
+    const comment = comments?.find((comment) => comment.id === commentId);
+    if (!comment) return;
+
+    setCommentFormState({
+      state: 'edit',
+      commentId,
+      content: comment.content,
+    });
+  };
+
+  const handleCommentFormSubmit = (data: CommentFormValues, options: { onSuccess: () => void }) => {
+    if (commentFormState.state === 'create' || commentFormState.state === 'reply') {
+      createCommentMutate(data, {
+        onSuccess: () => {
+          options.onSuccess();
+          resetCommentState();
+        },
+      });
+    } else if (commentFormState.state === 'edit') {
+      // updateCommentMutate(data);
+    }
   };
 
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
-      <div className="flex-1 overflow-hidden flex flex-col" onClick={resetFocusedCommentId}>
+      <div className="flex-1 overflow-hidden flex flex-col" onClick={resetCommentState}>
         <SiteHeader
           title="헤어상담"
           showBackButton
@@ -193,11 +192,11 @@ export default function PostDetailPage() {
               comments={comments}
               fetchNextPage={handleFetchNextPage}
               onReplyClick={handleReplyClick}
-              focusedCommentId={focusedCommentId}
+              focusedCommentId={commentFormState.commentId}
               onDelete={() => {}}
-              onEdit={() => {}}
+              onEdit={handleEditComment}
               onReport={() => {}}
-              onTriggerClick={resetFocusedCommentId}
+              onTriggerClick={resetCommentState}
             />
           </div>
         )}
@@ -207,9 +206,10 @@ export default function PostDetailPage() {
       <div className="bg-white shadow-strong">
         <div className="max-w-[600px] mx-auto">
           <CommentForm
-            onSubmit={createCommentMutate}
-            isReply={!!focusedCommentId}
-            parentCommentId={focusedCommentId}
+            onSubmit={handleCommentFormSubmit}
+            isReply={commentFormState.state === 'reply'}
+            commentId={commentFormState.commentId}
+            content={commentFormState.content}
           />
         </div>
       </div>
