@@ -8,7 +8,7 @@ import type { PagingQueryParams } from '@/shared/api/types/paging-query-params';
 import type { PagingResponse } from '@/shared/api/types/paging-response';
 
 const GET_POSTS_QUERY_ENDPOINT = `${HAIR_CONSULT_POSTING_API_PREFIX}/main`;
-export const getPostsQueryKey = () => [GET_POSTS_QUERY_ENDPOINT];
+export const getPostsQueryKeyPrefix = () => GET_POSTS_QUERY_ENDPOINT;
 
 type GetPostsQueryParams = PagingQueryParams & {
   filter?: PostListTab;
@@ -24,10 +24,10 @@ type GetPostsInfiniteData = {
 };
 
 export default function useGetPosts(params: GetPostsQueryParams) {
-  const { __limit = 10, filter } = params;
+  const { __limit = 20, filter } = params;
 
   return useInfiniteQuery({
-    queryKey: [GET_POSTS_QUERY_ENDPOINT, params],
+    queryKey: [getPostsQueryKeyPrefix(), params],
     queryFn: ({ pageParam }) => {
       const searchParams = filterUndefined({
         __limit,

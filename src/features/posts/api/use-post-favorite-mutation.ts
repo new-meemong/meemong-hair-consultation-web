@@ -2,8 +2,8 @@ import type { PostDetail } from '@/entities/posts/model/post-detail';
 import { apiClient } from '@/shared/api/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
-import { getPostDetailQueryKey } from './use-get-post-detail';
-import { getPostsQueryKey } from './use-get-posts';
+import { getPostDetailQueryKeyPrefix } from './use-get-post-detail';
+import { getPostsQueryKeyPrefix } from './use-get-posts';
 
 type MutationParams = {
   hairConsultPostingId: number;
@@ -24,7 +24,7 @@ export default function usePostFavoriteMutation() {
       }
     },
     onMutate: async ({ hairConsultPostingId, liked }: MutationParams) => {
-      const postDetailQueryKey = getPostDetailQueryKey(hairConsultPostingId.toString());
+      const postDetailQueryKey = [getPostDetailQueryKeyPrefix(hairConsultPostingId.toString())];
       const previousPost = queryClient.getQueryData<{ data: PostDetail }>(postDetailQueryKey);
 
       queryClient.setQueryData<{ data: PostDetail }>(postDetailQueryKey, (old) => {
@@ -44,15 +44,15 @@ export default function usePostFavoriteMutation() {
     },
     onError: (_error, { hairConsultPostingId }, context) => {
       if (context?.previousPost) {
-        const postDetailQueryKey = getPostDetailQueryKey(hairConsultPostingId.toString());
+        const postDetailQueryKey = [getPostDetailQueryKeyPrefix(hairConsultPostingId.toString())];
         queryClient.setQueryData(postDetailQueryKey, context.previousPost);
       }
     },
     onSettled: async (_, __, { hairConsultPostingId }) => {
-      const postDetailQueryKey = getPostDetailQueryKey(hairConsultPostingId.toString());
+      const postDetailQueryKey = [getPostDetailQueryKeyPrefix(hairConsultPostingId.toString())];
 
       await queryClient.invalidateQueries({
-        queryKey: getPostsQueryKey(),
+        queryKey: [getPostsQueryKeyPrefix()],
       });
 
       const response = await apiClient.get<PostDetail>(
