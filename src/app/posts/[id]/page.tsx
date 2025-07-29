@@ -205,7 +205,11 @@ export default function PostDetailPage() {
       {/* 댓글 입력 필드 */}
       <div className="bg-white shadow-strong">
         <div className="max-w-[600px] mx-auto">
-          <CommentForm onSubmit={createCommentMutate} isReply={!!focusedCommentId} />
+          <CommentForm
+            onSubmit={createCommentMutate}
+            isReply={!!focusedCommentId}
+            parentCommentId={focusedCommentId}
+          />
         </div>
       </div>
     </div>
