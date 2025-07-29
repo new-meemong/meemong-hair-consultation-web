@@ -3,6 +3,7 @@
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useCreateCommentMutation from '@/features/comments/api/use-create-comment-mutation';
+import useDeletePostCommentMutation from '@/features/comments/api/use-delete-post-comment-mutation';
 import useGetPostComments from '@/features/comments/api/use-get-post-comments';
 import usePatchPostCommentMutation from '@/features/comments/api/use-patch-post-comment-mutation';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
@@ -185,6 +186,26 @@ export default function PostDetailPage() {
     }
   };
 
+  const { mutate: deleteCommentMutate } = useDeletePostCommentMutation(postId?.toString() ?? '');
+
+  const handleDeleteComment = (commentId: number) => {
+    showModal({
+      id: 'delete-comment-confirm-modal',
+      text: '해당 댓글을 삭제하시겠습니까?',
+      buttons: [
+        {
+          label: '삭제',
+          onClick: () => {
+            deleteCommentMutate(commentId);
+          },
+        },
+        {
+          label: '취소',
+        },
+      ],
+    });
+  };
+
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
       <div className="flex-1 overflow-hidden flex flex-col" onClick={resetCommentState}>
@@ -209,7 +230,7 @@ export default function PostDetailPage() {
               fetchNextPage={handleFetchNextPage}
               onReplyClick={handleReplyClick}
               focusedCommentId={commentFormState.commentId}
-              onDelete={() => {}}
+              onDelete={handleDeleteComment}
               onEdit={handleEditComment}
               onReport={() => {}}
               onTriggerClick={resetCommentState}
