@@ -7,7 +7,8 @@ import useCursorInfiniteQuery from '@/shared/api/hooks/use-cursor-infinite-query
 
 const getGetPostCommentsEndpoint = (postId: string) =>
   `${HAIR_CONSULT_POSTING_API_PREFIX}/${postId}/comments`;
-const getGetPostCommentsQueryKeyPrefix = (postId: string) => getGetPostCommentsEndpoint(postId);
+export const getGetPostCommentsQueryKeyPrefix = (postId: string) =>
+  getGetPostCommentsEndpoint(postId);
 
 type GetPostCommentsResponse = PagingResponse & {
   comments: CommentWithReplies[];

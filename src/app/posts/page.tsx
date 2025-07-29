@@ -16,15 +16,12 @@ import Tab from '@/shared/ui/tab';
 import { BellButton, SiteHeader } from '@/widgets/header';
 import { useCallback, useState } from 'react';
 
-const POST_LIMIT = 20;
-
 export default function PostsPage() {
   const { user, isUserModel } = useAuthContext();
   const [activeTab, setActiveTab] = useState<PostListTab>('latest');
   const router = useRouterWithUser();
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
-    __limit: POST_LIMIT,
     filter: activeTab,
   });
 
