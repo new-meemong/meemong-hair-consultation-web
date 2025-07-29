@@ -4,6 +4,7 @@ import MoreIcon from '@/assets/icons/more-horizontal.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useCreateCommentMutation from '@/features/comments/api/use-create-comment-mutation';
 import useGetPostComments from '@/features/comments/api/use-get-post-comments';
+import usePatchPostCommentMutation from '@/features/comments/api/use-patch-post-comment-mutation';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
 import useDeletePostMutation from '@/features/posts/api/use-delete-post-mutation';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
@@ -59,7 +60,15 @@ export default function PostDetailPage() {
 
   const isWriter = postDetail?.hairConsultPostingCreateUserId === user.id;
 
+  const [commentFormState, setCommentFormState] = useState<CommentFormState>(
+    INITIAL_COMMENT_FORM_STATE,
+  );
+
   const { mutate: createCommentMutate } = useCreateCommentMutation(postId?.toString() ?? '');
+  const { mutate: updateCommentMutate } = usePatchPostCommentMutation({
+    postId: postId?.toString() ?? '',
+    commentId: commentFormState.commentId?.toString() ?? '',
+  });
 
   const { push } = useRouterWithUser();
 
@@ -124,10 +133,6 @@ export default function PostDetailPage() {
 
   const isDataLoaded = postDetail && comments;
 
-  const [commentFormState, setCommentFormState] = useState<CommentFormState>(
-    INITIAL_COMMENT_FORM_STATE,
-  );
-
   const resetCommentState = () => {
     setCommentFormState(INITIAL_COMMENT_FORM_STATE);
   };
@@ -157,15 +162,22 @@ export default function PostDetailPage() {
   };
 
   const handleCommentFormSubmit = (data: CommentFormValues, options: { onSuccess: () => void }) => {
+    const onSuccess = () => {
+      options.onSuccess();
+      resetCommentState();
+    };
+
     if (commentFormState.state === 'create' || commentFormState.state === 'reply') {
       createCommentMutate(data, {
-        onSuccess: () => {
-          options.onSuccess();
-          resetCommentState();
-        },
+        onSuccess,
       });
     } else if (commentFormState.state === 'edit') {
-      // updateCommentMutate(data);
+      updateCommentMutate(
+        { content: data.content },
+        {
+          onSuccess,
+        },
+      );
     }
   };
 
