@@ -1,6 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
+import ProfileIcon from '@/assets/icons/profile.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
 import { useCallback } from 'react';
 
 type PostDetailAuthorProfileProps = {
@@ -36,13 +36,7 @@ export default function PostDetailAuthorProfile({
           <AvatarImage src={imageUrl} className="w-12 h-12 rounded-6" />
         ) : (
           <AvatarFallback>
-            <Image
-              src="/profile.svg"
-              alt="프로필"
-              width={48}
-              height={48}
-              className="object-cover"
-            />
+            <ProfileIcon className="size-12 bg-label-default" />
           </AvatarFallback>
         )}
       </Avatar>

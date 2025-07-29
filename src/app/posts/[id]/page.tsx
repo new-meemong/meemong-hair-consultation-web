@@ -1,10 +1,10 @@
 'use client';
 
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
-import { type CommentWithReplies } from '@/entities/comment';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import { CommentForm } from '@/features/comments';
 import useCreateCommentMutation from '@/features/comments/api/use-create-comment-mutation';
+import useGetPostComments from '@/features/comments/api/use-get-post-comments';
+import { CommentForm } from '@/features/comments/ui/comment-form';
 import useDeletePostMutation from '@/features/posts/api/use-delete-post-mutation';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import PostDetailItem from '@/features/posts/ui/post-detail-item';
@@ -13,9 +13,10 @@ import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
+import { CommentList } from '@/widgets/comments';
 import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useCallback } from 'react';
 
 export default function PostDetailPage() {
   const { isUserDesigner, user } = useAuthContext();
@@ -27,33 +28,27 @@ export default function PostDetailPage() {
   const { data: response } = useGetPostDetail(postId?.toString() ?? '');
   const postDetail = response?.data;
 
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPostComments(
+    postId?.toString() ?? '',
+  );
+  const comments = data?.pages.flatMap((page) =>
+    page.data.comments.flatMap((comment) => [
+      { ...comment, isReply: false },
+      ...(comment.replies ?? []).map((reply) => ({ ...reply, isReply: true })),
+    ]),
+  );
+
+  const handleFetchNextPage = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  console.log(handleFetchNextPage);
+
+  console.log('comments', comments);
+
   const isWriter = postDetail?.hairConsultPostingCreateUserId === user.id;
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [comments, setComments] = useState<CommentWithReplies[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isLoading, setIsLoading] = useState(true);
-
-  // useEffect(() => {
-  //   /**
-  //    * 현재 모킹 데이터로 처리
-  //    */
-  //   const loadData = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       const postData = await fetchPostDetail(postId);
-  //       setPost(postData);
-  //       const commentData = await fetchComments(postId);
-  //       setComments(commentData);
-  //     } catch (error) {
-  //       console.error('데이터 로드 실패:', error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   loadData();
-  // }, [postId]);
 
   const { mutate: createCommentMutate } = useCreateCommentMutation(postId?.toString() ?? '');
 
@@ -163,8 +158,10 @@ export default function PostDetailPage() {
     },
   ];
 
+  const isDataLoaded = postDetail && comments;
+
   return (
-    <div className="min-w-[375px] w-full mx-auto">
+    <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
       {/* 헤더 */}
       <SiteHeader
         title="헤어상담"
@@ -179,23 +176,22 @@ export default function PostDetailPage() {
           )
         }
       />
-      {postDetail && <PostDetailItem postDetail={postDetail} />}
+      {isDataLoaded && (
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full overflow-y-auto">
+            <PostDetailItem postDetail={postDetail} />
+            <CommentList
+              comments={comments}
+              onAddComment={() => {}}
+              onEditComment={() => {}}
+              onDeleteComment={() => {}}
+            />
+          </div>
+        </div>
+      )}
 
-      {/* 댓글 섹션 */}
-      {/* <div className="px-5">
-        <CommentList
-          comments={comments}
-          currentUserId={CURRENT_USER.id}
-          onAddComment={handleAddComment}
-          onEditComment={handleEditComment}
-          onDeleteComment={handleDeleteComment}
-          className="mb-4"
-        />
-      </div> */}
-
-      <div className="h-30" />
       {/* 댓글 입력 필드 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-strong">
+      <div className="bg-white  shadow-strong">
         <div className="max-w-[600px] mx-auto">
           <CommentForm onSubmit={createCommentMutate} />
         </div>
