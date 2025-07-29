@@ -31,6 +31,7 @@ export default function PostDetailPage() {
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPostComments(
     postId?.toString() ?? '',
   );
+
   const comments = data?.pages.flatMap((page) =>
     page.data.comments.flatMap((comment) => [
       { ...comment, isReply: false },
@@ -43,10 +44,6 @@ export default function PostDetailPage() {
       fetchNextPage();
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  console.log(handleFetchNextPage);
-
-  console.log('comments', comments);
 
   const isWriter = postDetail?.hairConsultPostingCreateUserId === user.id;
 
@@ -182,6 +179,7 @@ export default function PostDetailPage() {
             <PostDetailItem postDetail={postDetail} />
             <CommentList
               comments={comments}
+              fetchNextPage={handleFetchNextPage}
               onAddComment={() => {}}
               onEditComment={() => {}}
               onDeleteComment={() => {}}
