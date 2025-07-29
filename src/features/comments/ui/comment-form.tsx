@@ -11,6 +11,7 @@ import { Textarea } from '@/shared/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import z from 'zod';
+import { useEffect } from 'react';
 
 export const COMMENT_FORM_FIELD_NAME = {
   content: 'content',
@@ -28,24 +29,29 @@ export type CommentFormValues = z.infer<typeof formSchema>;
 
 interface CommentFormProps {
   onSubmit: (data: CommentFormValues, options: { onSuccess: () => void }) => void;
-  isReply?: boolean;
-  parentAuthorName?: string;
+  isReply: boolean;
+  parentCommentId: number | null;
 }
 
-export function CommentForm({ onSubmit, isReply = false, parentAuthorName }: CommentFormProps) {
+export function CommentForm({ onSubmit, isReply, parentCommentId }: CommentFormProps) {
   const { isUserDesigner } = useAuthContext();
 
-  const placeholder =
-    isReply && parentAuthorName ? `${parentAuthorName}님에게 답글 작성...` : '댓글을 입력하세요';
+  const placeholder = isReply ? '대댓글을 입력하세요' : '댓글을 입력하세요';
 
   const method = useForm<CommentFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       [COMMENT_FORM_FIELD_NAME.content]: '',
       [COMMENT_FORM_FIELD_NAME.isVisibleToModel]: false,
-      [COMMENT_FORM_FIELD_NAME.parentCommentId]: null,
     },
   });
+
+  useEffect(() => {
+    if (parentCommentId) {
+      method.setValue(COMMENT_FORM_FIELD_NAME.parentCommentId, parentCommentId.toString());
+    }
+    method.setValue(COMMENT_FORM_FIELD_NAME.content, '');
+  }, [method, parentCommentId]);
 
   const isVisibleToModel = useWatch({
     control: method.control,
@@ -61,7 +67,7 @@ export function CommentForm({ onSubmit, isReply = false, parentAuthorName }: Com
   };
 
   return (
-    <div className={cn('w-full', isReply && 'pl-8')}>
+    <div className={cn('w-full')}>
       <FormProvider {...method}>
         <form onSubmit={method.handleSubmit(handleSubmit)}>
           <div className="px-5 py-3">
