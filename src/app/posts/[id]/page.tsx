@@ -197,6 +197,7 @@ export default function PostDetailPage() {
               onDelete={() => {}}
               onEdit={() => {}}
               onReport={() => {}}
+              onTriggerClick={resetFocusedCommentId}
             />
           </div>
         )}

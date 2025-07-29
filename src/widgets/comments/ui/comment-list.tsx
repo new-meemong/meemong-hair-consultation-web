@@ -12,6 +12,7 @@ interface CommentListProps {
   onDelete: (commentId: number) => void;
   onEdit: (commentId: number) => void;
   onReport: (commentId: number) => void;
+  onTriggerClick: () => void;
 }
 
 export function CommentList({
@@ -22,6 +23,7 @@ export function CommentList({
   onDelete,
   onEdit,
   onReport,
+  onTriggerClick,
 }: CommentListProps) {
   const observerRef = useIntersectionObserver({
     onIntersect: fetchNextPage,
@@ -40,6 +42,7 @@ export function CommentList({
           onDelete={() => onDelete(comment.id)}
           onEdit={() => onEdit(comment.id)}
           onReport={() => onReport(comment.id)}
+          onTriggerClick={() => onTriggerClick()}
         />
       ))}
       <div className="h-1" ref={observerRef} />

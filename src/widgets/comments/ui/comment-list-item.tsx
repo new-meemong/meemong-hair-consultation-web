@@ -21,6 +21,7 @@ type CommentListItemProps = {
   onDelete: () => void;
   onEdit: () => void;
   onReport: () => void;
+  onTriggerClick: () => void;
 };
 
 export default function CommentListItem({
@@ -30,6 +31,7 @@ export default function CommentListItem({
   onDelete,
   onEdit,
   onReport,
+  onTriggerClick,
 }: CommentListItemProps) {
   const { user } = useAuthContext();
 
@@ -83,6 +85,11 @@ export default function CommentListItem({
               trigger={<MoreIcon className="size-6" />}
               options={getMoreOptions()}
               contentClassName="-right-[14px] "
+              onOpenChange={(open) => {
+                if (open) {
+                  onTriggerClick();
+                }
+              }}
             />
           </div>
         </div>
