@@ -1,19 +1,31 @@
-import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
-import ReplyIcon from '@/assets/icons/reply.svg';
-import CommentAuthorProfile from './comment-author-profile';
 import CommentIcon from '@/assets/icons/comment.svg';
 import MoreIcon from '@/assets/icons/more-vertical.svg';
+import ReplyIcon from '@/assets/icons/reply.svg';
+import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
+import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import CommentAuthorProfile from './comment-author-profile';
 
 type CommentListItemProps = {
   comment: CommentWithReplyStatus;
+  onReplyClick: (commentId: number) => void;
+  isFocused: boolean;
 };
 
-export default function CommentListItem({ comment }: CommentListItemProps) {
+export default function CommentListItem({
+  comment,
+  onReplyClick,
+  isFocused,
+}: CommentListItemProps) {
   const { isReply, content, isVisibleToModel, createdAt } = comment;
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onReplyClick(comment.id);
+  };
+
   return (
-    <div className="flex gap-3 p-5">
+    <div className={cn('flex gap-3 p-5', isFocused && 'bg-focused')}>
       {isReply && <ReplyIcon className="size-4.5 fill-label-strong" />}
       <div className="flex flex-col gap-3 flex-1">
         <div className="flex items-center justify-between">
@@ -21,7 +33,11 @@ export default function CommentListItem({ comment }: CommentListItemProps) {
             <CommentAuthorProfile author={comment.user} isSecret={isVisibleToModel} />
           </div>
           <div className="flex items-center gap-2">
-            {!isReply && <CommentIcon className="size-5 fill-label-info" />}
+            {!isReply && (
+              <button onClick={(e) => handleClick(e)}>
+                <CommentIcon className="size-5 fill-label-info" />
+              </button>
+            )}
             <MoreIcon className="size-6" />
           </div>
         </div>

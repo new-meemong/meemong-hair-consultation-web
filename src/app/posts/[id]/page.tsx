@@ -16,7 +16,7 @@ import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { CommentList } from '@/widgets/comments';
 import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 export default function PostDetailPage() {
   const { isUserDesigner, user } = useAuthContext();
@@ -157,41 +157,55 @@ export default function PostDetailPage() {
 
   const isDataLoaded = postDetail && comments;
 
+  const [focusedCommentId, setFocusedCommentId] = useState<number | null>(null);
+  const handleReplyClick = (commentId: number | null) => {
+    if (focusedCommentId === commentId) {
+      setFocusedCommentId(null);
+    } else {
+      setFocusedCommentId(commentId);
+    }
+  };
+
+  const resetFocusedCommentId = () => {
+    setFocusedCommentId(null);
+  };
+
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
-      {/* 헤더 */}
-      <SiteHeader
-        title="헤어상담"
-        showBackButton
-        rightComponent={
-          isWriter && (
-            <MoreOptionsMenu
-              trigger={<MoreIcon className="size-7" />}
-              options={getMoreOptions()}
-              contentClassName="-right-[14px] "
-            />
-          )
-        }
-      />
-      {isDataLoaded && (
-        <div className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto">
+      <div className="flex-1 overflow-hidden flex flex-col" onClick={resetFocusedCommentId}>
+        <SiteHeader
+          title="헤어상담"
+          showBackButton
+          rightComponent={
+            isWriter && (
+              <MoreOptionsMenu
+                trigger={<MoreIcon className="size-7" />}
+                options={getMoreOptions()}
+                contentClassName="-right-[14px] "
+              />
+            )
+          }
+        />
+        {isDataLoaded && (
+          <div className="flex-1 overflow-y-auto">
             <PostDetailItem postDetail={postDetail} />
             <CommentList
               comments={comments}
               fetchNextPage={handleFetchNextPage}
+              onReplyClick={handleReplyClick}
+              focusedCommentId={focusedCommentId}
               onAddComment={() => {}}
               onEditComment={() => {}}
               onDeleteComment={() => {}}
             />
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* 댓글 입력 필드 */}
-      <div className="bg-white  shadow-strong">
+      <div className="bg-white shadow-strong">
         <div className="max-w-[600px] mx-auto">
-          <CommentForm onSubmit={createCommentMutate} />
+          <CommentForm onSubmit={createCommentMutate} isReply={!!focusedCommentId} />
         </div>
       </div>
     </div>

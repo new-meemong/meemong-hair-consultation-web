@@ -28,15 +28,13 @@ export type CommentFormValues = z.infer<typeof formSchema>;
 
 interface CommentFormProps {
   onSubmit: (data: CommentFormValues, options: { onSuccess: () => void }) => void;
-  isReply?: boolean;
-  parentAuthorName?: string;
+  isReply: boolean;
 }
 
-export function CommentForm({ onSubmit, isReply = false, parentAuthorName }: CommentFormProps) {
+export function CommentForm({ onSubmit, isReply }: CommentFormProps) {
   const { isUserDesigner } = useAuthContext();
 
-  const placeholder =
-    isReply && parentAuthorName ? `${parentAuthorName}님에게 답글 작성...` : '댓글을 입력하세요';
+  const placeholder = isReply ? '대댓글을 입력하세요' : '댓글을 입력하세요';
 
   const method = useForm<CommentFormValues>({
     resolver: zodResolver(formSchema),
@@ -61,7 +59,7 @@ export function CommentForm({ onSubmit, isReply = false, parentAuthorName }: Com
   };
 
   return (
-    <div className={cn('w-full', isReply && 'pl-8')}>
+    <div className={cn('w-full')}>
       <FormProvider {...method}>
         <form onSubmit={method.handleSubmit(handleSubmit)}>
           <div className="px-5 py-3">
