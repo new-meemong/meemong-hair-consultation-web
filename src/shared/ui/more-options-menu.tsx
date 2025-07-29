@@ -39,7 +39,14 @@ export const MoreOptionsMenu = ({
       <DropdownMenuContent className={contentClassName}>
         {options.map((option, index) => (
           <div key={option.label}>
-            <DropdownMenuItem key={index} onClick={option.onClick} className={cn(option.className)}>
+            <DropdownMenuItem
+              key={index}
+              onClick={(e) => {
+                e.stopPropagation();
+                option.onClick();
+              }}
+              className={cn(option.className)}
+            >
               {option.label}
             </DropdownMenuItem>
             {index < options.length - 1 && <DropdownMenuSeparator />}
