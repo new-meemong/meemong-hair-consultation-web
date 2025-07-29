@@ -64,11 +64,15 @@ export default function PostDetailPage() {
     INITIAL_COMMENT_FORM_STATE,
   );
 
-  const { mutate: createCommentMutate } = useCreateCommentMutation(postId?.toString() ?? '');
-  const { mutate: updateCommentMutate } = usePatchPostCommentMutation({
-    postId: postId?.toString() ?? '',
-    commentId: commentFormState.commentId?.toString() ?? '',
-  });
+  const { mutate: createCommentMutate, isPending: isCommentCreating } = useCreateCommentMutation(
+    postId?.toString() ?? '',
+  );
+  const { mutate: updateCommentMutate, isPending: isCommentUpdating } = usePatchPostCommentMutation(
+    {
+      postId: postId?.toString() ?? '',
+      commentId: commentFormState.commentId?.toString() ?? '',
+    },
+  );
 
   const { push } = useRouterWithUser();
 
@@ -222,6 +226,7 @@ export default function PostDetailPage() {
             isReply={commentFormState.state === 'reply'}
             commentId={commentFormState.commentId}
             content={commentFormState.content}
+            isPending={isCommentCreating || isCommentUpdating}
           />
         </div>
       </div>

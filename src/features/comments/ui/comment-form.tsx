@@ -32,9 +32,16 @@ export type CommentFormProps = {
   isReply: boolean;
   commentId: number | null;
   content: string | null;
+  isPending: boolean;
 };
 
-export function CommentForm({ onSubmit, isReply, commentId, content }: CommentFormProps) {
+export function CommentForm({
+  onSubmit,
+  isReply,
+  commentId,
+  content,
+  isPending,
+}: CommentFormProps) {
   const { isUserDesigner } = useAuthContext();
 
   const placeholder = isReply ? '대댓글을 입력하세요' : '댓글을 입력하세요';
@@ -47,6 +54,9 @@ export function CommentForm({ onSubmit, isReply, commentId, content }: CommentFo
       [COMMENT_FORM_FIELD_NAME.parentCommentId]: null,
     },
   });
+
+  const { isValid, isDirty, isSubmitting } = method.formState;
+  const isLoading = isSubmitting || isPending;
 
   useEffect(() => {
     method.setValue(COMMENT_FORM_FIELD_NAME.content, content ?? '');
@@ -90,7 +100,13 @@ export function CommentForm({ onSubmit, isReply, commentId, content }: CommentFo
                   className="w-full flex-1 typo-body-2-long-regular placeholder:text-label-placeholder text-label-strong"
                 />
               </div>
-              <Button type="submit" size="icon" variant="icon" className="px-1">
+              <Button
+                type="submit"
+                size="icon"
+                variant="icon"
+                className="px-1"
+                disabled={!isValid || !isDirty || isLoading}
+              >
                 <ArrowUpIcon className="fill-white" />
               </Button>
             </div>
