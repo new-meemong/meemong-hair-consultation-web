@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import CommentAuthorProfile from './comment-author-profile';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { MoreOptionsMenu } from '@/shared';
+import CommentListItemSecret from './comment-list-item-secret';
 
 const MORE_ACTION = {
   EDIT: 'edit',
@@ -66,6 +67,10 @@ export default function CommentListItem({
     }
     return [moreOption[MORE_ACTION.REPORT]];
   };
+
+  if (!isWriter && isVisibleToModel) {
+    return <CommentListItemSecret createdAt={createdAt} />;
+  }
 
   return (
     <div
