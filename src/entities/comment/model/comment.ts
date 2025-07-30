@@ -9,7 +9,7 @@ export type CommentUser = {
   role: ValueOf<typeof USER_ROLE>;
 };
 
-type Comment = {
+export type Comment = {
   id: number;
   content: string;
   isVisibleToModel: boolean;
