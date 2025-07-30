@@ -9,10 +9,10 @@ interface CommentListProps {
   fetchNextPage: () => void;
   onReplyClick: (commentId: number) => void;
   focusedCommentId: number | null;
-  onAddComment: (content: string, isPrivate: boolean, parentId?: string) => void;
-  onEditComment?: (commentId: string, content: string) => void;
-  onDeleteComment?: (commentId: string) => void;
-  onReportComment?: (commentId: string) => void;
+  onDelete: (commentId: number) => void;
+  onEdit: (commentId: number) => void;
+  onReport: (commentId: number) => void;
+  onTriggerClick: () => void;
 }
 
 export function CommentList({
@@ -20,6 +20,10 @@ export function CommentList({
   fetchNextPage,
   onReplyClick,
   focusedCommentId,
+  onDelete,
+  onEdit,
+  onReport,
+  onTriggerClick,
 }: CommentListProps) {
   const observerRef = useIntersectionObserver({
     onIntersect: fetchNextPage,
@@ -35,6 +39,10 @@ export function CommentList({
           comment={comment}
           onReplyClick={onReplyClick}
           isFocused={isFocused(comment.id)}
+          onDelete={() => onDelete(comment.id)}
+          onEdit={() => onEdit(comment.id)}
+          onReport={() => onReport(comment.id)}
+          onTriggerClick={() => onTriggerClick()}
         />
       ))}
       <div className="h-1" ref={observerRef} />

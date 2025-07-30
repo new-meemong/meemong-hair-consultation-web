@@ -27,13 +27,23 @@ const formSchema = z.object({
 
 export type CommentFormValues = z.infer<typeof formSchema>;
 
-interface CommentFormProps {
+export type CommentFormProps = {
   onSubmit: (data: CommentFormValues, options: { onSuccess: () => void }) => void;
   isReply: boolean;
-  parentCommentId: number | null;
-}
+  commentId: number | null;
+  content: string | null;
+  isPending: boolean;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+};
 
-export function CommentForm({ onSubmit, isReply, parentCommentId }: CommentFormProps) {
+export function CommentForm({
+  onSubmit,
+  isReply,
+  commentId,
+  content,
+  isPending,
+  textareaRef,
+}: CommentFormProps) {
   const { isUserDesigner } = useAuthContext();
 
   const placeholder = isReply ? '대댓글을 입력하세요' : '댓글을 입력하세요';
@@ -41,17 +51,22 @@ export function CommentForm({ onSubmit, isReply, parentCommentId }: CommentFormP
   const method = useForm<CommentFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      [COMMENT_FORM_FIELD_NAME.content]: '',
+      [COMMENT_FORM_FIELD_NAME.content]: content ?? '',
       [COMMENT_FORM_FIELD_NAME.isVisibleToModel]: false,
+      [COMMENT_FORM_FIELD_NAME.parentCommentId]: null,
     },
   });
 
+  const { isValid, isDirty, isSubmitting } = method.formState;
+  const isLoading = isSubmitting || isPending;
+
   useEffect(() => {
-    if (parentCommentId) {
-      method.setValue(COMMENT_FORM_FIELD_NAME.parentCommentId, parentCommentId.toString());
-    }
-    method.setValue(COMMENT_FORM_FIELD_NAME.content, '');
-  }, [method, parentCommentId]);
+    method.setValue(COMMENT_FORM_FIELD_NAME.content, content ?? '');
+  }, [content, method]);
+
+  useEffect(() => {
+    method.setValue(COMMENT_FORM_FIELD_NAME.parentCommentId, commentId?.toString() ?? null);
+  }, [method, commentId]);
 
   const isVisibleToModel = useWatch({
     control: method.control,
@@ -83,11 +98,18 @@ export function CommentForm({ onSubmit, isReply, parentCommentId }: CommentFormP
               <div className="flex-1">
                 <Textarea
                   {...method.register(COMMENT_FORM_FIELD_NAME.content)}
+                  ref={textareaRef}
                   placeholder={placeholder}
                   className="w-full flex-1 typo-body-2-long-regular placeholder:text-label-placeholder text-label-strong"
                 />
               </div>
-              <Button type="submit" size="icon" variant="icon" className="px-1">
+              <Button
+                type="submit"
+                size="icon"
+                variant="icon"
+                className="px-1"
+                disabled={!isValid || !isDirty || isLoading}
+              >
                 <ArrowUpIcon className="fill-white" />
               </Button>
             </div>
