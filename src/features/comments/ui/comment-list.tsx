@@ -33,19 +33,19 @@ export function CommentList({
 
   return (
     <>
-      {comments.map((comment) => (
-        <CommentListItem
-          key={comment.id}
-          comment={comment}
-          onReplyClick={onReplyClick}
-          isFocused={isFocused(comment.id)}
-          onDelete={() => onDelete(comment.id)}
-          onEdit={() => onEdit(comment.id)}
-          onReport={() => onReport(comment.id)}
-          onTriggerClick={() => onTriggerClick()}
-        />
+      {comments.map((comment, index) => (
+        <div key={comment.id} ref={index === comments.length - 2 ? observerRef : undefined}>
+          <CommentListItem
+            comment={comment}
+            onReplyClick={onReplyClick}
+            isFocused={isFocused(comment.id)}
+            onDelete={() => onDelete(comment.id)}
+            onEdit={() => onEdit(comment.id)}
+            onReport={() => onReport(comment.id)}
+            onTriggerClick={() => onTriggerClick()}
+          />
+        </div>
       ))}
-      <div className="h-1" ref={observerRef} />
     </>
   );
 }
