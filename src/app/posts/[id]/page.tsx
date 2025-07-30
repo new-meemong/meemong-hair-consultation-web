@@ -1,30 +1,22 @@
 'use client';
 
-import MoreIcon from '@/assets/icons/more-horizontal.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useCreateCommentMutation from '@/features/comments/api/use-create-comment-mutation';
 import useDeletePostCommentMutation from '@/features/comments/api/use-delete-post-comment-mutation';
 import useGetPostComments from '@/features/comments/api/use-get-post-comments';
 import usePatchPostCommentMutation from '@/features/comments/api/use-patch-post-comment-mutation';
+import type { CommentFormState } from '@/features/comments/types/comment-form-state';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
-import useDeletePostMutation from '@/features/posts/api/use-delete-post-mutation';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import PostDetailItem from '@/features/posts/ui/post-detail-item';
-import { MoreOptionsMenu, ROUTES } from '@/shared';
+import PostDetailMoreButton from '@/features/posts/ui/post-detail-more-button';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { CommentList } from '@/widgets/comments';
 import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
-
-type CommentFormState = {
-  state: 'create' | 'edit' | 'reply';
-  commentId: number | null;
-  content: string | null;
-};
 
 const INITIAL_COMMENT_FORM_STATE: CommentFormState = {
   state: 'create',
@@ -75,66 +67,7 @@ export default function PostDetailPage() {
     },
   );
 
-  const { push } = useRouterWithUser();
-
-  const handleEdit = () => {
-    if (!postId) return;
-
-    push(ROUTES.POSTS_EDIT(postId.toString()));
-  };
-
   const showModal = useShowModal();
-
-  const { mutate: deletePost } = useDeletePostMutation();
-
-  const handleDelete = () => {
-    const handleDeletePost = () => {
-      if (!postId) return;
-
-      deletePost(Number(postId), {
-        onSuccess: () => {
-          showModal({
-            id: 'delete-post-confirm-modal',
-            text: '삭제가 완료되었습니다.',
-            buttons: [
-              {
-                label: '확인',
-                onClick: () => {
-                  push(ROUTES.POSTS);
-                },
-              },
-            ],
-          });
-        },
-      });
-    };
-
-    showModal({
-      id: 'delete-post-confirm-modal',
-      text: '해당 게시글을 삭제하시겠습니까?',
-      buttons: [
-        {
-          label: '삭제',
-          onClick: handleDeletePost,
-        },
-        {
-          label: '취소',
-        },
-      ],
-    });
-  };
-
-  const getMoreOptions = () => [
-    {
-      label: '수정하기',
-      onClick: handleEdit,
-    },
-    {
-      label: '삭제하기',
-      onClick: handleDelete,
-      className: 'text-negative',
-    },
-  ];
 
   const isDataLoaded = postDetail && comments;
 
@@ -208,21 +141,15 @@ export default function PostDetailPage() {
     });
   };
 
+  if (!postId) return null;
+
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
       <div className="flex-1 overflow-hidden flex flex-col" onClick={resetCommentState}>
         <SiteHeader
           title="헤어상담"
           showBackButton
-          rightComponent={
-            isWriter && (
-              <MoreOptionsMenu
-                trigger={<MoreIcon className="size-7" />}
-                options={getMoreOptions()}
-                contentClassName="-right-[14px] "
-              />
-            )
-          }
+          rightComponent={isWriter && <PostDetailMoreButton postId={postId.toString()} />}
         />
         {isDataLoaded && (
           <div className="flex-1 overflow-y-auto">
