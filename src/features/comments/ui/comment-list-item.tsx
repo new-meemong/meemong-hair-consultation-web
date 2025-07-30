@@ -68,7 +68,13 @@ export default function CommentListItem({
   };
 
   return (
-    <div className={cn('flex gap-3 p-5', isFocused && 'bg-focused')}>
+    <div
+      className={cn(
+        'flex gap-3 p-5 border-b-1 border-border-default',
+        isReply && 'bg-alternative',
+        isFocused && 'bg-focused',
+      )}
+    >
       {isReply && <ReplyIcon className="size-4.5 fill-label-strong" />}
       <div className="flex flex-col gap-3 flex-1">
         <div className="flex items-center justify-between">
