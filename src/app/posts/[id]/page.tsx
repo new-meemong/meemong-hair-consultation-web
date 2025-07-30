@@ -25,12 +25,12 @@ export default function PostDetailPage() {
 
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
-      <div className="flex-1 overflow-hidden flex flex-col">
-        <SiteHeader
-          title="헤어상담"
-          showBackButton
-          rightComponent={isWriter && <PostDetailMoreButton postId={postId.toString()} />}
-        />
+      <SiteHeader
+        title="헤어상담"
+        showBackButton
+        rightComponent={isWriter && <PostDetailMoreButton postId={postId.toString()} />}
+      />
+      <div className="flex-1 overflow-y-auto">
         {postDetail && (
           <PostDetailContainer postDetail={postDetail}>
             <CommentContainer postId={postId.toString()} />
