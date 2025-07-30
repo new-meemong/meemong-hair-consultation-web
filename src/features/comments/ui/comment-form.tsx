@@ -77,6 +77,9 @@ export function CommentForm({
     onSubmit(data, {
       onSuccess: () => {
         method.reset();
+        if (textareaRef.current) {
+          textareaRef.current.style.height = 'auto';
+        }
       },
     });
   };
