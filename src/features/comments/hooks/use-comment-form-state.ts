@@ -1,5 +1,5 @@
 import type { Comment } from '@/entities/comment/model/comment';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CommentFormState } from '../types/comment-form-state';
 import type { CommentFormValues } from '../ui/comment-form';
 import useCommentOperations from './use-comment-operations';
@@ -15,12 +15,14 @@ export const useCommentFormState = (postId: string) => {
     INITIAL_COMMENT_FORM_STATE,
   );
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const shouldFocusRef = useRef(false);
 
   const { handleCreate, handleUpdate, handleDelete, isCommentCreating, isCommentUpdating } =
     useCommentOperations(postId, commentFormState.commentId);
 
   const resetCommentState = useCallback(() => {
     setCommentFormState(INITIAL_COMMENT_FORM_STATE);
+    shouldFocusRef.current = false;
   }, []);
 
   const handleReplyClick = useCallback(
@@ -28,12 +30,12 @@ export const useCommentFormState = (postId: string) => {
       if (commentFormState.commentId === commentId) {
         resetCommentState();
       } else {
+        shouldFocusRef.current = true;
         setCommentFormState({
           state: 'reply',
           commentId,
           content: null,
         });
-        textareaRef.current?.focus();
       }
     },
     [commentFormState.commentId, resetCommentState],
@@ -43,12 +45,29 @@ export const useCommentFormState = (postId: string) => {
     const comment = comments?.find((comment) => comment.id === commentId);
     if (!comment) return;
 
-    setCommentFormState({
-      state: 'edit',
-      commentId,
-      content: comment.content,
-    });
+    shouldFocusRef.current = true;
+    setTimeout(() => {
+      setCommentFormState({
+        state: 'edit',
+        commentId,
+        content: comment.content,
+      });
+    }, 0);
   }, []);
+
+  useEffect(() => {
+    if (shouldFocusRef.current && textareaRef.current) {
+      const textarea = textareaRef.current;
+      const timeoutId = setTimeout(() => {
+        textarea.focus();
+        const length = textarea.value.length;
+        textarea.setSelectionRange(length, length);
+        shouldFocusRef.current = false;
+      }, 100);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [commentFormState]);
 
   const handleCommentFormSubmit = useCallback(
     (data: CommentFormValues, options: { onSuccess: () => void }) => {
