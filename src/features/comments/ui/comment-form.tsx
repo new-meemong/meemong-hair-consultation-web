@@ -77,6 +77,9 @@ export function CommentForm({
     onSubmit(data, {
       onSuccess: () => {
         method.reset();
+        if (textareaRef.current) {
+          textareaRef.current.style.height = 'auto';
+        }
       },
     });
   };
@@ -98,9 +101,15 @@ export function CommentForm({
               <div className="flex-1">
                 <Textarea
                   {...method.register(COMMENT_FORM_FIELD_NAME.content)}
-                  ref={textareaRef}
                   placeholder={placeholder}
                   className="w-full flex-1 typo-body-2-long-regular placeholder:text-label-placeholder text-label-strong"
+                  ref={(e) => {
+                    const { ref } = method.register(COMMENT_FORM_FIELD_NAME.content);
+                    ref(e);
+                    if (textareaRef && e) {
+                      textareaRef.current = e;
+                    }
+                  }}
                 />
               </div>
               <Button

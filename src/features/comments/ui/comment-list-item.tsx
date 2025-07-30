@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import CommentAuthorProfile from './comment-author-profile';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { MoreOptionsMenu } from '@/shared';
+import CommentListItemSecret from './comment-list-item-secret';
 
 const MORE_ACTION = {
   EDIT: 'edit',
@@ -67,39 +68,54 @@ export default function CommentListItem({
     return [moreOption[MORE_ACTION.REPORT]];
   };
 
+  const isSecret = !isWriter && isVisibleToModel;
+
   return (
-    <div className={cn('flex gap-3 p-5', isFocused && 'bg-focused')}>
-      {isReply && <ReplyIcon className="size-4.5 fill-label-strong" />}
-      <div className="flex flex-col gap-3 flex-1">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <CommentAuthorProfile author={comment.user} isSecret={isVisibleToModel} />
+    <div
+      className={cn(
+        'flex gap-3 p-5 border-b-1 border-border-default',
+        isReply && 'bg-alternative',
+        isFocused && 'bg-focused',
+        isSecret && 'py-4',
+      )}
+    >
+      <>
+        {isReply && <ReplyIcon className="size-4.5 fill-label-strong" />}
+        {isSecret ? (
+          <CommentListItemSecret createdAt={createdAt} />
+        ) : (
+          <div className="flex flex-col gap-3 flex-1">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <CommentAuthorProfile author={comment.user} isSecret={isVisibleToModel} />
+              </div>
+              <div className="flex items-center gap-2">
+                {!isReply && (
+                  <button onClick={(e) => handleClick(e)}>
+                    <CommentIcon className="size-5 fill-label-info" />
+                  </button>
+                )}
+                <MoreOptionsMenu
+                  trigger={<MoreIcon className="size-6" />}
+                  options={getMoreOptions()}
+                  contentClassName="-right-[14px] "
+                  onOpenChange={(open) => {
+                    if (open) {
+                      onTriggerClick();
+                    }
+                  }}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="typo-body-1-long-regular">{content}</div>
+              <span className="typo-body-3-regular text-label-info">
+                {format(createdAt, 'MM/dd hh:mm')}
+              </span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            {!isReply && (
-              <button onClick={(e) => handleClick(e)}>
-                <CommentIcon className="size-5 fill-label-info" />
-              </button>
-            )}
-            <MoreOptionsMenu
-              trigger={<MoreIcon className="size-6" />}
-              options={getMoreOptions()}
-              contentClassName="-right-[14px] "
-              onOpenChange={(open) => {
-                if (open) {
-                  onTriggerClick();
-                }
-              }}
-            />
-          </div>
-        </div>
-        <div className="flex flex-col gap-2">
-          <div className="typo-body-1-long-regular">{content}</div>
-          <span className="typo-body-3-regular text-label-info">
-            {format(createdAt, 'MM/dd hh:mm')}
-          </span>
-        </div>
-      </div>
+        )}
+      </>
     </div>
   );
 }

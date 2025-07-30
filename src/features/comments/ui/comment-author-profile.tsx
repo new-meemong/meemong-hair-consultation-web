@@ -17,7 +17,7 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
 
   const { profileImageUrl, name } = author;
 
-  const displayedName = isWriter ? name : `${name}(글쓴이)`;
+  const displayedName = isWriter ? `${name}(글쓴이)` : name;
 
   return (
     <div className="flex gap-2 items-center">
@@ -34,7 +34,7 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
         <p
           className={cn(
             'typo-body-1-semibold',
-            isWriter ? 'text-label-default' : 'text-negative-light',
+            isWriter ? 'text-negative-light' : 'text-label-default',
           )}
         >
           {displayedName}
