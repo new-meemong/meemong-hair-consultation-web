@@ -7,6 +7,7 @@ import type { ConsultingResponseFormValues } from '../../types/consulting-respon
 import ConsultingResponseFormStep1 from './consulting-response-form-step-1';
 import ConsultingResponseFormStep2 from './consulting-response-form-step-2';
 import ConsultingResponseFormStep3 from './consulting-response-form-step-3';
+import ConsultingResponseFormStep4 from './consulting-response-form-step-4';
 
 const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
   {
@@ -27,6 +28,12 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     required: false,
     children: <ConsultingResponseFormStep3 />,
   },
+  {
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option4,
+    question: '앞머리 추천 여부를 골라주세요',
+    required: true,
+    children: <ConsultingResponseFormStep4 />,
+  },
 ];
 
 export default function ConsultingResponseForm() {
@@ -42,6 +49,10 @@ export default function ConsultingResponseForm() {
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.option1) {
       const value = method.getValues(name);
       return !!value;
+    }
+    if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.option4) {
+      const value = method.getValues(name);
+      return value === null || value !== undefined;
     }
     return true;
   };
