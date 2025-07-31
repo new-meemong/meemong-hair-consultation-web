@@ -6,6 +6,7 @@ import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../constants/consulting-
 import type { ConsultingResponseFormValues } from '../../types/consulting-response-form-values';
 import ConsultingResponseFormStep1 from './consulting-response-form-step-1';
 import ConsultingResponseFormStep2 from './consulting-response-form-step-2';
+import ConsultingResponseFormStep3 from './consulting-response-form-step-3';
 
 const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
   {
@@ -20,10 +21,20 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     required: false,
     children: <ConsultingResponseFormStep2 />,
   },
+  {
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option3,
+    question: '고객님의 손상도를 골라주세요',
+    required: false,
+    children: <ConsultingResponseFormStep3 />,
+  },
 ];
 
 export default function ConsultingResponseForm() {
-  const method = useForm<ConsultingResponseFormValues>();
+  const method = useForm<ConsultingResponseFormValues>({
+    defaultValues: {
+      [CONSULTING_RESPONSE_FORM_FIELD_NAME.option3]: 1,
+    },
+  });
 
   console.log('method.getValues()', method.getValues());
 

@@ -22,7 +22,7 @@ const HAIR_TYPE_VALUES = [
 export const consultingResponseFormSchema = z.object({
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.option1]: z.enum(FACE_TYPE_VALUES),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.option2]: z.enum(HAIR_TYPE_VALUES).nullable().optional(),
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.option3]: z.string().optional(),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.option3]: z.number().nullable().optional(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.option4]: z.string().optional(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.option5]: z.string().optional(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.option6]: z.string().optional(),

@@ -1,9 +1,9 @@
-import { Checkbox, Label } from '@/shared';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../constants/consulting-response-form-field-name';
 import type { ConsultingFormOption } from '../../types/consulting-form-option';
-import ConsultingFormOptionList from '../consulting-form-option-list';
-import { useFormContext, useWatch } from 'react-hook-form';
 import type { ConsultingResponseFormValues } from '../../types/consulting-response-form-values';
+import ConsultingFormOptionList from '../consulting-form-option-list';
+import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
 
 export const HAIR_TYPE = {
   MALIGNANT_CURLY: 'malignantCurly',
@@ -54,17 +54,10 @@ export default function ConsultingResponseFormStep2() {
         name={CONSULTING_RESPONSE_FORM_FIELD_NAME.option2}
         canReset={true}
       />
-      <div className="flex gap-2 items-center justify-end">
-        <Label htmlFor="no-operation" className="typo-body-3-regular text-label-sub">
-          매장 상담이 필요해요
-        </Label>
-        <Checkbox
-          id="no-operation"
-          shape="round"
-          checked={needStoreConsulting}
-          onCheckedChange={handleNeedStoreConsultingChange}
-        />
-      </div>
+      <ConsultingResponseFormOptionNeedConsultation
+        value={needStoreConsulting}
+        onChange={handleNeedStoreConsultingChange}
+      />
     </div>
   );
 }
