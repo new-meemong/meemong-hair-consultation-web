@@ -81,6 +81,11 @@ export default function ConsultingPostFormOperationForm() {
       return;
     }
 
+    if (optionValue?.length === 0) {
+      setNoOperations();
+      return;
+    }
+
     showDeleteAllOperations({
       onConfirm: () => {
         setNoOperations();
