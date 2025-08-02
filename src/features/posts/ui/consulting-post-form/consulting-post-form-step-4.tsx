@@ -1,6 +1,6 @@
 import FormItem from '@/shared/ui/form-item';
 import ImageUploaderItem from '@/shared/ui/image-uploader-item';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import type { ConsultingPostFormValues } from '../../types/consulting-post-form-values';
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
 import type { Image } from '@/shared/ui/image-item';
@@ -10,9 +10,12 @@ import { Textarea } from '@/shared';
 const MAX_IMAGE_COUNT = 6;
 
 export default function ConsultingPostFormStep4() {
-  const { setValue, getValues, register } = useFormContext<ConsultingPostFormValues>();
+  const { setValue, control, register } = useFormContext<ConsultingPostFormValues>();
 
-  const currentOptionValue = getValues(CONSULTING_POST_FORM_FIELD_NAME.option4);
+  const currentOptionValue = useWatch({
+    name: CONSULTING_POST_FORM_FIELD_NAME.option4,
+    control,
+  });
   const currentImages = currentOptionValue?.images ?? [];
 
   const handleImageUpload = (file: File, index: number) => {
