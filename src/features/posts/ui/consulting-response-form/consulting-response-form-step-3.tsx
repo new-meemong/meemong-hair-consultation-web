@@ -7,27 +7,27 @@ import ConsultingResponseFormOptionNeedConsultation from './consulting-response-
 
 const HAIR_CONDITION_OPTION: Record<number, Option<number>> = {
   1: {
-    label: '매우 건강',
+    label: '모발이 매우 건강해요 ',
     value: 1,
   },
   2: {
-    label: '건강',
+    label: '모발이 건강해요',
     value: 2,
   },
   3: {
-    label: '약간 손상',
+    label: '시술에 따라 주의가 필요해요',
     value: 3,
   },
   4: {
-    label: '손상',
+    label: '일부 시술이 어려울 수 있어요',
     value: 4,
   },
   5: {
-    label: '심한 손상',
+    label: '대부분의 시술이 어려울 수 있어요',
     value: 5,
   },
   6: {
-    label: '극심한 손상',
+    label: '손상 케어가 필요해요',
     value: 6,
   },
 } as const;
@@ -65,8 +65,8 @@ export default function ConsultingResponseFormStep3() {
       <ProgressSlider
         total={HAIR_CONDITION_OPTION_VALUES.length}
         value={formValue}
-        leftLabel={HAIR_CONDITION_OPTION[1]?.label}
-        rightLabel={HAIR_CONDITION_OPTION[6]?.label}
+        leftLabel="매우 건강"
+        rightLabel="매우 손상"
         onChange={handleProgressChange}
       />
       <div className="flex items-center justify-center bg-alternative rounded-4 h-11.25 typo-body-1-regular text-label-info">
