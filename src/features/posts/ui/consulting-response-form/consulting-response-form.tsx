@@ -8,6 +8,7 @@ import ConsultingResponseFormStep1 from './consulting-response-form-step-1';
 import ConsultingResponseFormStep2 from './consulting-response-form-step-2';
 import ConsultingResponseFormStep3 from './consulting-response-form-step-3';
 import ConsultingResponseFormStep4 from './consulting-response-form-step-4';
+import ConsultingResponseFormStep5 from './consulting-response-form-step-5';
 
 const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
   {
@@ -34,12 +35,22 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     required: true,
     children: <ConsultingResponseFormStep4 />,
   },
+  {
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option5,
+    question: '어울리는 스타일을 추천해주세요',
+    required: true,
+    children: <ConsultingResponseFormStep5 />,
+  },
 ];
 
 export default function ConsultingResponseForm() {
   const method = useForm<ConsultingResponseFormValues>({
     defaultValues: {
       [CONSULTING_RESPONSE_FORM_FIELD_NAME.option3]: 1,
+      [CONSULTING_RESPONSE_FORM_FIELD_NAME.option5]: {
+        images: [],
+        description: '',
+      },
     },
   });
 
@@ -53,6 +64,10 @@ export default function ConsultingResponseForm() {
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.option4) {
       const value = method.getValues(name);
       return value === null || value !== undefined;
+    }
+    if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.option5) {
+      const value = method.getValues(name);
+      return value && value.images.length > 0 && !!value.description;
     }
     return true;
   };
