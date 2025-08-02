@@ -18,9 +18,8 @@ export default function ConsultingResponseFormStep5() {
   });
   const currentImages = currentOptionValue?.images ?? [];
 
-  const handleImageUpload = (file: File, index: number) => {
-    const newImages = [...currentImages];
-    newImages[index] = file;
+  const handleImageUpload = (file: File) => {
+    const newImages = [...currentImages, file];
 
     setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option5, {
       images: newImages,
@@ -56,7 +55,7 @@ export default function ConsultingResponseFormStep5() {
           {Array.from({ length: MAX_IMAGE_COUNT }).map((_, index) => (
             <ImageUploaderItem
               key={index}
-              onUpload={(file) => handleImageUpload(file, index)}
+              onUpload={handleImageUpload}
               currentImage={getCurrentImage(index)}
               onDelete={() => handleImageDelete(index)}
             />
