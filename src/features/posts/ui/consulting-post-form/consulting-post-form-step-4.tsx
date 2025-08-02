@@ -7,7 +7,7 @@ import type { Image } from '@/shared/ui/image-item';
 import { IMAGE_TYPE } from '@/shared/constants/image-type';
 import { Textarea } from '@/shared';
 
-const MAX_IMAGE_COUNT = 3;
+const MAX_IMAGE_COUNT = 6;
 
 export default function ConsultingPostFormStep4() {
   const { setValue, getValues, register } = useFormContext<ConsultingPostFormValues>();
