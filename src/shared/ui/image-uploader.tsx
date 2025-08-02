@@ -18,7 +18,6 @@ const ImageUploader = forwardRef<ImageUploaderRef, ImageUploaderProps>(
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const triggerFileSelect = () => {
-      console.log('triggerFileSelect');
       if (!validate()) return;
       fileInputRef.current?.click();
     };

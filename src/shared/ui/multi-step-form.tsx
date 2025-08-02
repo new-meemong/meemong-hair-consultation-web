@@ -49,7 +49,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
           </div>
           {description && <p className="typo-body-3-regular text-label-info">{description}</p>}
         </div>
-        <div className="flex-1 overflow-y-auto">{children}</div>
+        <div className="flex-1 overflow-y-auto scrollbar-hide">{children}</div>
       </form>
       <div className="px-5 py-3">
         <ProgressPagination

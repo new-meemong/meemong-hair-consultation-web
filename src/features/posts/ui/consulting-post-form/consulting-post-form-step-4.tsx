@@ -49,7 +49,7 @@ export default function ConsultingPostFormStep4() {
   return (
     <div className="flex flex-col gap-7">
       <FormItem label="이미지 첨부" description={`${MAX_IMAGE_COUNT}개까지 업로드 할 수 있어요`}>
-        <div className="flex gap-2 overflow-x-auto">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide">
           {Array.from({ length: MAX_IMAGE_COUNT }).map((_, index) => (
             <ImageUploaderItem
               key={index}
