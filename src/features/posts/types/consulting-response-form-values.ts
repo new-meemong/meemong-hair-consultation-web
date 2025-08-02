@@ -40,7 +40,13 @@ export const consultingResponseFormSchema = z.object({
     images: z.array(z.instanceof(File)),
     description: z.string().optional(),
   }),
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.option6]: z.string().optional(),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.option6]: z.array(
+    z.object({
+      operationName: z.string(),
+      minPrice: z.number(),
+      maxPrice: z.number(),
+    }),
+  ),
 });
 
 export type ConsultingResponseFormValues = z.infer<typeof consultingResponseFormSchema>;
