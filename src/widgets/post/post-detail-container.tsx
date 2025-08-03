@@ -1,5 +1,5 @@
 import type { PostDetail } from '@/entities/posts/model/post-detail';
-import PostDetailItem from '../../features/posts/ui/post-detail-item';
+import PostDetailItem from '../../features/posts/ui/post-detail/post-detail-item';
 
 type PostDetailContainerProps = {
   postDetail: PostDetail;

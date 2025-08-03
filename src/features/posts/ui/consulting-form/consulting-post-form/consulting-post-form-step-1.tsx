@@ -1,10 +1,10 @@
 import { Textarea } from '@/shared';
 import FormItem from '@/shared/ui/form-item';
 import { useFormContext } from 'react-hook-form';
-import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
-import type { ConsultingPostFormValues } from '../../types/consulting-post-form-values';
+import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
+import type { ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 import ConsultingFormOptionList from '../consulting-form-option-list';
-import type { ConsultingFormOption } from '../../types/consulting-form-option';
+import type { ConsultingFormOption } from '../../../types/consulting-form-option';
 
 export default function ConsultingPostFormStep1() {
   const method = useFormContext<ConsultingPostFormValues>();

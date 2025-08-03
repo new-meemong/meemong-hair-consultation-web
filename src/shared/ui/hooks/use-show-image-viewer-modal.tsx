@@ -9,7 +9,7 @@ function useShowImageViewerModal() {
   const { showModal } = useOverlayContext();
 
   const showImageViewerModal = useCallback(
-    (images: string[], initialIndex: number) => {
+    ({ imageUrl, title }: { imageUrl: string; title: string }) => {
       showModal({
         id: MODAL_ID,
         children: (
@@ -17,7 +17,7 @@ function useShowImageViewerModal() {
             className="p-0 max-w-full h-full sm:h-auto bg-black"
             showCloseButton={false}
           >
-            <ImageViewerModalContent id={MODAL_ID} images={images} initialIndex={initialIndex} />
+            <ImageViewerModalContent id={MODAL_ID} imageUrl={imageUrl} title={title} />
           </DialogContent>
         ),
       });

@@ -1,7 +1,7 @@
 import ProgressSlider from '@/shared/ui/progress-slider';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../constants/consulting-response-form-field-name';
-import type { ConsultingResponseFormValues } from '../../types/consulting-response-form-values';
+import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
+import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 import type { Option } from '@/shared/type/option';
 import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
 

@@ -1,8 +1,8 @@
 import { useFormContext, useWatch } from 'react-hook-form';
-import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
-import type { ConsultingPostFormValues } from '../../types/consulting-post-form-values';
+import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
+import type { ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 import ConsultingPostFormOperationForm from './consulting-post-form-operation-form';
-import ConsultingFormInputResultListItem from '../consulting-form-input-result-list-item';
+import ConsultingInputResultListItem from '../../consulting-input-result-list-item';
 import { format } from 'date-fns';
 
 export default function ConsultingPostFormStep2() {
@@ -30,7 +30,7 @@ export default function ConsultingPostFormStep2() {
       {operations && (
         <div className="flex flex-col gap-2">
           {operations.map((operation, index) => (
-            <ConsultingFormInputResultListItem
+            <ConsultingInputResultListItem
               key={`${operation.name}-${operation.date}-${index}`}
               name={operation.name}
               description={format(operation.date, 'yyyy.MM')}

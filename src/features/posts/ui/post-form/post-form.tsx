@@ -5,10 +5,10 @@ import { CREATE_POST_FORM_MAX_COUNT } from '@/features/posts/constants/create-po
 import { Button, Input, Label, Separator, Textarea } from '@/shared';
 import ControlledCheckbox from '@/shared/ui/controlled-checkbox';
 import { FormProvider, useWatch } from 'react-hook-form';
-import { POST_FORM_FIELD_NAME } from '../constants/post-form-field-name';
-import usePostForm from '../hooks/use-post-form';
-import useShowImageUploadLimitSheet from '../hooks/use-show-image-upload-limit-sheet';
-import type { PostFormValues } from '../types/post-form-values';
+import { POST_FORM_FIELD_NAME } from '../../constants/post-form-field-name';
+import usePostForm from '../../hooks/use-post-form';
+import useShowImageUploadLimitSheet from '../../hooks/use-show-image-upload-limit-sheet';
+import type { PostFormValues } from '../../types/post-form-values';
 import PostFormImageList from './post-form-image-list';
 import GalleryIcon from '@/assets/icons/gallery.svg';
 import ImageUploader from '@/shared/ui/image-uploader';
