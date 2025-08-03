@@ -92,6 +92,11 @@ function FaceTypeOption({ option, selected, onClick }: FaceTypeOptionProps) {
           width={92}
           height={108}
           className="object-cover"
+          style={{
+            width: '92px',
+            height: '108px',
+          }}
+          priority
         />
       </div>
       <div className="flex flex-col gap-1 w-full text-start">
