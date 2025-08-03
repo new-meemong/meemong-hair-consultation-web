@@ -49,7 +49,6 @@ export default function PostFormImageList({
         <ImageItem
           key={`${image.type}-${image.src}-${index}`}
           image={image}
-          index={index}
           handleImageDelete={handleImageDelete}
         />
       ))}

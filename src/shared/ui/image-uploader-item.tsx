@@ -10,7 +10,7 @@ type ImageUploaderProps = {
   onUpload: (file: File) => void;
   label?: string;
   currentImage: Image | null;
-  onDelete: (image: Image) => void;
+  onDelete?: (image: Image) => void;
 };
 
 export default function ImageUploaderItem({
@@ -53,14 +53,10 @@ export default function ImageUploaderItem({
     onUpload(file);
   };
 
-  const handleImageDelete = (image: Image) => {
-    onDelete(image);
-  };
-
   return (
     <div className="flex flex-col gap-2">
-      {currentImage ? (
-        <ImageItem image={currentImage} index={0} handleImageDelete={handleImageDelete} />
+      {currentImage && onDelete ? (
+        <ImageItem image={currentImage} handleImageDelete={onDelete} />
       ) : (
         <button
           className="w-25 h-25 rounded-6 bg-alternative flex items-center justify-center overflow-hidden"
