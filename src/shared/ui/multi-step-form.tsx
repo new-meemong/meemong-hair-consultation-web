@@ -9,12 +9,14 @@ type MultiStepFormProps<T extends Record<string, unknown>> = {
   steps: FormStep<T>[];
   canMoveNext: (name: KeyOf<T>) => boolean;
   onSubmit: (values: T) => void;
+  lastStepButtonLabel: string;
 };
 
 export default function MultiStepForm<T extends Record<string, unknown>>({
   steps,
   canMoveNext,
   onSubmit,
+  lastStepButtonLabel,
 }: MultiStepFormProps<T>) {
   const method = useFormContext<T>();
 
@@ -57,7 +59,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
           current={step}
           onPageChange={setStep}
           disabledToNext={required && !canMoveNext(name)}
-          nextButtonLabel={isLastStep ? '저장' : undefined}
+          nextButtonLabel={isLastStep ? lastStepButtonLabel : undefined}
           onNextButtonClick={handleNextButtonClick}
         />
       </div>

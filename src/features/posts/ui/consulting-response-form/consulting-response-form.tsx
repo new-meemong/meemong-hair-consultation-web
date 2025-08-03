@@ -93,6 +93,7 @@ export default function ConsultingResponseForm() {
         steps={CONSULTING_RESPONSE_FORM_STEPS}
         canMoveNext={canMoveNext}
         onSubmit={submit}
+        lastStepButtonLabel="보내기"
       />
     </FormProvider>
   );

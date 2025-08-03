@@ -100,6 +100,7 @@ export default function ConsultingPostForm() {
         steps={CONSULTING_POST_FORM_STEPS}
         canMoveNext={canMoveNext}
         onSubmit={submit}
+        lastStepButtonLabel="저장"
       />
     </FormProvider>
   );
