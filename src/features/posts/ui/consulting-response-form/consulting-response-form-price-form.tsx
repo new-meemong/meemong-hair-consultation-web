@@ -86,8 +86,8 @@ export default function ConsultingResponseFormPriceForm() {
         ...(prices ?? []),
         {
           operationName: formValue.operationName,
-          minPrice: Number(formValue.minPrice),
-          maxPrice: Number(formValue.maxPrice),
+          minPrice: Number(formValue.minPrice) * 10000,
+          maxPrice: Number(formValue.maxPrice) * 10000,
         },
       ],
       {
