@@ -12,10 +12,14 @@ import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { ROUTES } from '@/shared/lib/routes';
+import { Button } from '@/shared';
 
 export default function PostDetailPage() {
   const { isUserDesigner, user } = useAuthContext();
   const { id: postId } = useParams();
+  const { push } = useRouterWithUser();
 
   useGuidePopup(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
 
@@ -23,6 +27,16 @@ export default function PostDetailPage() {
   const postDetail = response?.data;
 
   const isWriter = postDetail?.hairConsultPostingCreateUserId === user.id;
+
+  // TODO: 추후 컨설팅 게시글 여부 확인 로직 추가
+  const isConsultingPost = true;
+  const canWriteConsultingResponse = isConsultingPost && isUserDesigner;
+
+  const handleWriteConsultingResponseClick = () => {
+    if (!postId) return;
+
+    push(ROUTES.POSTS_CREATE_CONSULTING_POST(postId.toString()));
+  };
 
   const { commentFormState, textareaRef, isCommentCreating, isCommentUpdating, handlers } =
     useCommentFormState(postId?.toString() ?? '');
@@ -61,18 +75,27 @@ export default function PostDetailPage() {
           </PostDetailContainer>
         )}
       </div>
-      <div className="f bg-white shadow-strong">
-        <div className="max-w-[600px] mx-auto">
-          <CommentForm
-            onSubmit={handlers.handleCommentFormSubmit}
-            isReply={commentFormState.state === 'reply'}
-            commentId={commentFormState.commentId}
-            content={commentFormState.content}
-            isPending={isCommentCreating || isCommentUpdating}
-            textareaRef={textareaRef}
-          />
+
+      {canWriteConsultingResponse ? (
+        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-upper px-5 py-3">
+          <Button size="lg" className="w-full" onClick={handleWriteConsultingResponseClick}>
+            컨설팅 답글 보내기
+          </Button>
         </div>
-      </div>
+      ) : (
+        <div className="f bg-white shadow-strong">
+          <div className="max-w-[600px] mx-auto">
+            <CommentForm
+              onSubmit={handlers.handleCommentFormSubmit}
+              isReply={commentFormState.state === 'reply'}
+              commentId={commentFormState.commentId}
+              content={commentFormState.content}
+              isPending={isCommentCreating || isCommentUpdating}
+              textareaRef={textareaRef}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -62,13 +62,13 @@ function DesignerOnboardingSheetContent() {
         buttons={
           step < 2
             ? [
-                <Button key="next" onClick={handleNextClick}>
+                <Button size="lg" key="next" onClick={handleNextClick}>
                   {buttonLabel}
                 </Button>,
               ]
             : [
                 <DrawerClose asChild key="close">
-                  <Button>{buttonLabel}</Button>
+                  <Button size="lg">{buttonLabel}</Button>
                 </DrawerClose>,
               ]
         }

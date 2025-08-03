@@ -1,19 +1,19 @@
+import { Textarea } from '@/shared';
 import FormItem from '@/shared/ui/form-item';
 import ImageUploaderItem from '@/shared/ui/image-uploader-item';
 import { useFormContext, useWatch } from 'react-hook-form';
-import type { ConsultingPostFormValues } from '../../types/consulting-post-form-values';
-import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
+import type { ConsultingResponseFormValues } from '../../types/consulting-response-form-values';
+import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../constants/consulting-response-form-field-name';
 import type { Image } from '@/shared/ui/image-item';
 import { IMAGE_TYPE } from '@/shared/constants/image-type';
-import { Textarea } from '@/shared';
 
 const MAX_IMAGE_COUNT = 6;
 
-export default function ConsultingPostFormStep4() {
-  const { setValue, control, register } = useFormContext<ConsultingPostFormValues>();
+export default function ConsultingResponseFormStep5() {
+  const { register, setValue, control } = useFormContext<ConsultingResponseFormValues>();
 
   const currentOptionValue = useWatch({
-    name: CONSULTING_POST_FORM_FIELD_NAME.option4,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option5,
     control,
   });
   const currentImages = currentOptionValue?.images ?? [];
@@ -21,7 +21,7 @@ export default function ConsultingPostFormStep4() {
   const handleImageUpload = (file: File) => {
     const newImages = [...currentImages, file];
 
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.option4, {
+    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option5, {
       images: newImages,
       description: currentOptionValue?.description,
     });
@@ -31,7 +31,7 @@ export default function ConsultingPostFormStep4() {
     const newImages = [...currentImages];
     newImages.splice(index, 1);
 
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.option4, {
+    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option5, {
       images: newImages,
       description: currentOptionValue?.description,
     });
@@ -62,10 +62,10 @@ export default function ConsultingPostFormStep4() {
           ))}
         </div>
       </FormItem>
-      <FormItem label="추구미 설명">
+      <FormItem label="스타일 설명">
         <Textarea
-          {...register(`${CONSULTING_POST_FORM_FIELD_NAME.option4}.description`)}
-          placeholder="어떤 고민이 있는지 상세히 설명해주세요"
+          {...register(`${CONSULTING_RESPONSE_FORM_FIELD_NAME.option5}.description`)}
+          placeholder="추천하는 스타일을 설명해보세요"
           className="min-h-38"
           hasBorder
         />

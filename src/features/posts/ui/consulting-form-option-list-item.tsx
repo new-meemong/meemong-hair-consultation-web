@@ -1,17 +1,17 @@
 import { Checkbox, Label } from '@/shared';
-import type { ConsultingPostFormOption } from '../../types/consulting-post-form-option';
+import type { ConsultingFormOption } from '../types/consulting-form-option';
 
-type ConsultingPostFormOptionListItemProps = {
-  option: ConsultingPostFormOption;
+type ConsultingFormOptionListItemProps = {
+  option: ConsultingFormOption;
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
 };
 
-export default function ConsultingPostFormOptionListItem({
+export default function ConsultingFormOptionListItem({
   option,
   checked,
   onCheckedChange,
-}: ConsultingPostFormOptionListItemProps) {
+}: ConsultingFormOptionListItemProps) {
   const { label, additional, value } = option;
 
   return (

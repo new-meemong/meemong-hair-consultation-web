@@ -5,6 +5,7 @@ export const ROUTES = {
   // 게시글
   POSTS: '/posts',
   POSTS_CREATE: '/posts/create',
+  POSTS_CREATE_CONSULTING_POST: (id: string) => `/posts/create/${id}`,
   POSTS_DETAIL: (id: string | number) => `/posts/${id}`,
   POSTS_EDIT: (id: string) => `/posts/edit/${id}`,
 

@@ -2,18 +2,24 @@ import { Button, Checkbox, Input, Label } from '@/shared';
 import FormItem from '@/shared/ui/form-item';
 import useYearMonthPicker from '@/shared/ui/hooks/use-year-month-picker';
 import { format } from 'date-fns';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
 import useShowDeleteAllOperations from '../../hooks/use-show-delete-all-operations';
+import { type ConsultingPostFormValues } from '../../types/consulting-post-form-values';
 
 export default function ConsultingPostFormOperationForm() {
-  const { setValue, getValues } = useFormContext();
+  const { setValue, getValues, control } = useFormContext<ConsultingPostFormValues>();
+
+  const optionValue = useWatch({
+    control,
+    name: CONSULTING_POST_FORM_FIELD_NAME.option2,
+  });
 
   const [name, setName] = useState<string>('');
   const [date, setDate] = useState<Date | undefined>(undefined);
-  const [noOperation, setNoOperation] = useState(false);
+  const [noOperation, setNoOperation] = useState(optionValue === null);
 
   const { showYearMonthPicker } = useYearMonthPicker();
 
@@ -34,7 +40,10 @@ export default function ConsultingPostFormOperationForm() {
   };
 
   const handleSubmit = () => {
-    const currentOperations = getValues(CONSULTING_POST_FORM_FIELD_NAME.option2) || [];
+    if (!date) return;
+
+    const currentOperations = getValues(CONSULTING_POST_FORM_FIELD_NAME.option2) ?? [];
+
     setValue(CONSULTING_POST_FORM_FIELD_NAME.option2, [
       ...currentOperations,
       {
@@ -69,6 +78,11 @@ export default function ConsultingPostFormOperationForm() {
     setNoOperation((prev) => !prev);
     if (noOperation) {
       resetOperations();
+      return;
+    }
+
+    if (optionValue?.length === 0) {
+      setNoOperations();
       return;
     }
 

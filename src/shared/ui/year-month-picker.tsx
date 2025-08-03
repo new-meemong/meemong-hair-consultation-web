@@ -82,7 +82,9 @@ export function YearMonthPicker({
       <DrawerFooter
         buttons={[
           <DrawerClose asChild key="confirm">
-            <Button onClick={handleConfirm}>확인</Button>
+            <Button size="lg" onClick={handleConfirm}>
+              확인
+            </Button>
           </DrawerClose>,
         ]}
       />

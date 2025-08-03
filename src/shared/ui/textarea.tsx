@@ -42,7 +42,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           }
         }}
         className={cn(
-          'flex w-full h-auto text-label-default placeholder:text-label-placeholder overflow-y-auto outline-none resize-none overflow-hidden',
+          'flex w-full h-auto typo-body-2-long-regular text-label-default placeholder:text-label-placeholder overflow-y-auto outline-none resize-none overflow-hidden',
           hasBorder && 'p-3 rounded-6 border-1 border-border-default',
           className,
         )}
