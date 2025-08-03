@@ -1,53 +1,31 @@
 import type { Post } from '@/entities/posts';
-import { apiClient } from '@/shared/api/client';
-import { filterUndefined } from '@/shared/lib/filter-undefined';
-import { useInfiniteQuery, type Query } from '@tanstack/react-query';
-import type { PostListTab } from '../types/post-list-tab';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
+import type { PostListTab } from '../types/post-list-tab';
+import type { PagingQueryParams } from '@/shared/api/types/paging-query-params';
+import type { PagingResponse } from '@/shared/api/types/paging-response';
+import { DEFAULT_LIMIT } from '@/shared/api/constants/default-limit';
+import useCursorInfiniteQuery from '@/shared/api/hooks/use-cursor-infinite-query';
 
-const GET_POSTS_QUERY_KEY_PREFIX = `${HAIR_CONSULT_POSTING_API_PREFIX}/main`;
-export const getPostsQueryKey = () => [GET_POSTS_QUERY_KEY_PREFIX];
+const GET_POSTS_QUERY_ENDPOINT = `${HAIR_CONSULT_POSTING_API_PREFIX}/main`;
+export const getPostsQueryKeyPrefix = () => GET_POSTS_QUERY_ENDPOINT;
 
-type GetPostsQueryParams = {
-  __limit?: number;
+type GetPostsQueryParams = PagingQueryParams & {
   filter?: PostListTab;
 };
 
-type GetPostsResponse = {
+type GetPostsResponse = PagingResponse & {
   hairConsultPostingList: Post[];
-  nextCursor: string;
-};
-
-type GetPostsInfiniteData = {
-  pages: GetPostsResponse[];
-  pageParams: (string | undefined)[];
 };
 
 export default function useGetPosts(params: GetPostsQueryParams) {
-  const { __limit = 10, filter } = params;
+  const { __limit = DEFAULT_LIMIT, filter } = params;
 
-  return useInfiniteQuery({
-    queryKey: [GET_POSTS_QUERY_KEY_PREFIX, params],
-    queryFn: ({ pageParam }) => {
-      const searchParams = filterUndefined({
-        __limit,
-        __nextCursor: pageParam,
-        filter,
-      });
-
-      return apiClient.get<GetPostsResponse>(GET_POSTS_QUERY_KEY_PREFIX, {
-        searchParams,
-      });
-    },
-    getNextPageParam: (lastPage) => {
-      return lastPage.data.nextCursor || undefined;
-    },
-    initialPageParam: undefined as string | undefined,
-    meta: {
-      skipLoadingOverlay: (query: Query<GetPostsInfiniteData>) => {
-        const isFetchingNextPage = (query.state.data?.pages?.length ?? 0) > 0;
-        return isFetchingNextPage;
-      },
+  return useCursorInfiniteQuery<GetPostsResponse>({
+    endpoint: GET_POSTS_QUERY_ENDPOINT,
+    queryKey: [getPostsQueryKeyPrefix(), params],
+    __limit,
+    additionalParams: {
+      filter,
     },
   });
 }
