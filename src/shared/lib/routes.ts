@@ -5,9 +5,10 @@ export const ROUTES = {
   // 게시글
   POSTS: '/posts',
   POSTS_CREATE: '/posts/create',
-  POSTS_CREATE_CONSULTING_POST: (id: string) => `/posts/create/${id}`,
+  POSTS_CREATE_CONSULTING_POST: (id: string) => `/posts/consulting/create/${id}`,
   POSTS_DETAIL: (id: string | number) => `/posts/${id}`,
   POSTS_EDIT: (id: string) => `/posts/edit/${id}`,
+  POSTS_CONSULTING_RESPONSE: (id: string) => `/posts/consulting/${id}`,
 
   // 헤어상담
   TODAY_CONSULTANT: '/today-consultant',
