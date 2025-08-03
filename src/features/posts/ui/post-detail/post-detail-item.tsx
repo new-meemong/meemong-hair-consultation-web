@@ -6,6 +6,7 @@ import { LikeButton } from '@/features/likes/ui/like-button';
 import { Separator } from '@/shared/ui';
 import ActionItem from '@/shared/ui/action-item';
 import PostDetailContent from './post-detail-content';
+import PostDetailConsultingContent from './post-detail-consulting-content';
 
 type PostDetailItemProps = {
   postDetail: PostDetail;
@@ -14,9 +15,16 @@ type PostDetailItemProps = {
 function PostDetailItem({ postDetail }: PostDetailItemProps) {
   const { id, likeCount, commentCount, isFavorited } = postDetail;
 
+  // TODO: 컨설팅 게시글 여부 확인
+  const isConsultingPost = true;
+
   return (
     <>
-      <PostDetailContent postDetail={postDetail} />
+      {isConsultingPost ? (
+        <PostDetailConsultingContent />
+      ) : (
+        <PostDetailContent postDetail={postDetail} />
+      )}
 
       <Separator />
       <div className="flex items-center justify-between gap-5 px-5">
