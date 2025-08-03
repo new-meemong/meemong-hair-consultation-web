@@ -2,6 +2,7 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 import Image from 'next/image';
 import LockIcon from '@/assets/icons/lock.svg';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
+import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
 
 function HiddenImage() {
   return (
@@ -18,13 +19,15 @@ function HiddenImage() {
 
 type PostDetailImageProps = {
   image: string;
-  onClick: () => void;
+  totalImages: number;
+  currentIndex: number;
   onlyShowToDesigner: boolean;
 };
 
 export default function PostDetailImage({
   image,
-  onClick,
+  totalImages,
+  currentIndex,
   onlyShowToDesigner,
 }: PostDetailImageProps) {
   const { isUserDesigner } = useAuthContext();
@@ -33,10 +36,19 @@ export default function PostDetailImage({
 
   const isValidImageUrl = isValidUrl(image);
 
+  const showImageViewerModal = useShowImageViewerModal();
+
+  const handleImageClick = () => {
+    showImageViewerModal({
+      title: `${currentIndex + 1}/${totalImages}`,
+      imageUrl: image,
+    });
+  };
+
   return (
     <div
       className="relative min-w-35 h-35 rounded-6 cursor-pointer overflow-hidden"
-      onClick={shouldShowImage ? onClick : undefined}
+      onClick={shouldShowImage ? handleImageClick : undefined}
     >
       {shouldShowImage && isValidImageUrl ? (
         <Image
