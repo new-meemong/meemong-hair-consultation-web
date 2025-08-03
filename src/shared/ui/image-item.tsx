@@ -10,18 +10,17 @@ export type Image = {
   src: string;
 };
 
-type PostFormImageListItemProps = {
+type ImageItemProps = {
   image: Image;
-  index: number;
   handleImageDelete: (image: Image) => void;
 };
 
-export default function ImageItem({ image, index, handleImageDelete }: PostFormImageListItemProps) {
+export default function ImageItem({ image, handleImageDelete }: ImageItemProps) {
   return (
     <div className="relative w-25 h-25 flex-shrink-0">
       <Image
         src={image.src}
-        alt={`업로드 이미지 ${index + 1}`}
+        alt={`업로드 이미지 ${image.name}`}
         fill
         className="object-cover rounded-md"
       />
