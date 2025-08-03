@@ -10,6 +10,7 @@ import ConsultingResponseFormStep3 from './consulting-response-form-step-3';
 import ConsultingResponseFormStep4 from './consulting-response-form-step-4';
 import ConsultingResponseFormStep5 from './consulting-response-form-step-5';
 import ConsultingResponseFormStep6 from './consulting-response-form-step-6';
+import ConsultingResponseFormStep7 from './consulting-response-form-step-7';
 
 const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
   {
@@ -47,6 +48,12 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     question: '예상 시술 가격 견적을 작성해주세요',
     required: true,
     children: <ConsultingResponseFormStep6 />,
+  },
+  {
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option7,
+    question: '컨설팅에 대한 코멘트를 작성하세요',
+    required: false,
+    children: <ConsultingResponseFormStep7 />,
   },
 ];
 
