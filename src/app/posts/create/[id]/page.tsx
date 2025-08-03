@@ -1,6 +1,6 @@
 'use client';
 
-import ConsultingResponseForm from '@/features/posts/ui/consulting-response-form/consulting-response-form';
+import ConsultingResponseForm from '@/features/posts/ui/consulting-form/consulting-response-form/consulting-response-form';
 import { SiteHeader } from '@/widgets/header';
 import { useParams } from 'next/navigation';
 

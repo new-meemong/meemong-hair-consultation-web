@@ -5,7 +5,7 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 import { CommentContainer } from '@/widgets/comments/ui/comment-container';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { PostDetailContainer } from '@/widgets/post/post-detail-container';
-import PostDetailMoreButton from '@/features/posts/ui/post-detail-more-button';
+import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { SiteHeader } from '@/widgets/header';

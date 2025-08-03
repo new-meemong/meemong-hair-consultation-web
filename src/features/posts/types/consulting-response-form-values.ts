@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../constants/consulting-response-form-field-name';
-import { FACE_TYPE } from '../ui/consulting-response-form/consulting-response-form-step-1';
-import { HAIR_TYPE } from '../ui/consulting-response-form/consulting-response-form-step-2';
-import { MALE_BANG_STYLE } from '../ui/consulting-response-form/consulting-response-form-step-4';
-import { FEMALE_BANG_STYLE } from '../ui/consulting-response-form/consulting-response-form-step-4';
+import { FACE_TYPE } from '../ui/consulting-form/consulting-response-form/consulting-response-form-step-1';
+import { HAIR_TYPE } from '../ui/consulting-form/consulting-response-form/consulting-response-form-step-2';
+import { MALE_BANG_STYLE } from '../ui/consulting-form/consulting-response-form/consulting-response-form-step-4';
+import { FEMALE_BANG_STYLE } from '../ui/consulting-form/consulting-response-form/consulting-response-form-step-4';
 
 const FACE_TYPE_VALUES = [
   FACE_TYPE.OVAL,

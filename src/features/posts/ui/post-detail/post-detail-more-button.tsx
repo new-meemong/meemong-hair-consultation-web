@@ -1,7 +1,7 @@
 import { MoreOptionsMenu, ROUTES } from '@/shared';
 
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
-import useDeletePost from '../hooks/use-delete-post';
+import useDeletePost from '../../hooks/use-delete-post';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { useCallback, useMemo } from 'react';
 

@@ -1,7 +1,7 @@
 import { useFormContext, useWatch } from 'react-hook-form';
-import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../constants/consulting-response-form-field-name';
-import type { ConsultingFormOption } from '../../types/consulting-form-option';
-import type { ConsultingResponseFormValues } from '../../types/consulting-response-form-values';
+import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
+import type { ConsultingFormOption } from '../../../types/consulting-form-option';
+import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 import ConsultingFormOptionList from '../consulting-form-option-list';
 import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
 

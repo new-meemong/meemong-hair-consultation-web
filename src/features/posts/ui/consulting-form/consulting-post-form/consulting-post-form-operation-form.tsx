@@ -5,9 +5,9 @@ import { format } from 'date-fns';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
-import useShowDeleteAllOperations from '../../hooks/use-show-delete-all-operations';
-import { type ConsultingPostFormValues } from '../../types/consulting-post-form-values';
+import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
+import useShowDeleteAllOperations from '../../../hooks/use-show-delete-all-operations';
+import { type ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 
 export default function ConsultingPostFormOperationForm() {
   const { setValue, getValues, control } = useFormContext<ConsultingPostFormValues>();

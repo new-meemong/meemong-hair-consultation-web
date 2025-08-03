@@ -1,5 +1,5 @@
-import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
-import type { ConsultingFormOption } from '../../types/consulting-form-option';
+import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
+import type { ConsultingFormOption } from '../../../types/consulting-form-option';
 import ConsultingFormOptionList from '../consulting-form-option-list';
 
 const SKIN_COLOR = {

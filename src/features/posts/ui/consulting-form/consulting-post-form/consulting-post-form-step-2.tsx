@@ -1,6 +1,6 @@
 import { useFormContext, useWatch } from 'react-hook-form';
-import { CONSULTING_POST_FORM_FIELD_NAME } from '../../constants/consulting-post-form-field-name';
-import type { ConsultingPostFormValues } from '../../types/consulting-post-form-values';
+import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
+import type { ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 import ConsultingPostFormOperationForm from './consulting-post-form-operation-form';
 import ConsultingFormInputResultListItem from '../consulting-form-input-result-list-item';
 import { format } from 'date-fns';

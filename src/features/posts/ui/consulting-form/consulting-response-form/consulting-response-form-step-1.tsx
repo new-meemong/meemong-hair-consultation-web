@@ -2,8 +2,8 @@ import { cn } from '@/lib/utils';
 import type { ValueOf } from '@/shared/type/types';
 import Image from 'next/image';
 import { useFormContext, useWatch } from 'react-hook-form';
-import type { ConsultingResponseFormValues } from '../../types/consulting-response-form-values';
-import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../constants/consulting-response-form-field-name';
+import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
+import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 
 export const FACE_TYPE = {
   OVAL: 'oval',
