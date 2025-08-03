@@ -3,6 +3,7 @@ import Image from 'next/image';
 import LockIcon from '@/assets/icons/lock.svg';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
 import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
+import { cn } from '@/lib/utils';
 
 function HiddenImage() {
   return (
@@ -22,13 +23,28 @@ type PostDetailImageProps = {
   totalImages: number;
   currentIndex: number;
   onlyShowToDesigner: boolean;
+  size: 'small' | 'large';
 };
+
+const SIZE = {
+  small: {
+    sizes: '100px',
+    width: 'min-w-25',
+    height: 'h-25',
+  },
+  large: {
+    sizes: '140px',
+    width: 'min-w-35',
+    height: 'h-35',
+  },
+} as const;
 
 export default function PostDetailImage({
   image,
   totalImages,
   currentIndex,
   onlyShowToDesigner,
+  size,
 }: PostDetailImageProps) {
   const { isUserDesigner } = useAuthContext();
 
@@ -47,7 +63,11 @@ export default function PostDetailImage({
 
   return (
     <div
-      className="relative min-w-35 h-35 rounded-6 cursor-pointer overflow-hidden"
+      className={cn(
+        'relative rounded-6 cursor-pointer overflow-hidden',
+        SIZE[size].width,
+        SIZE[size].height,
+      )}
       onClick={shouldShowImage ? handleImageClick : undefined}
     >
       {shouldShowImage && isValidImageUrl ? (
@@ -56,7 +76,7 @@ export default function PostDetailImage({
           alt={`게시글 이미지`}
           fill
           className="object-cover"
-          sizes="140px"
+          sizes={SIZE[size].sizes}
           priority
         />
       ) : (

@@ -41,6 +41,7 @@ export default function PostDetailContent({ postDetail }: PostDetailContentProps
             totalImages={images.length}
             currentIndex={index}
             onlyShowToDesigner={false}
+            size="large"
           />
         ))}
       </div>
