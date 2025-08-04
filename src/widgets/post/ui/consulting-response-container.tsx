@@ -1,4 +1,4 @@
-import ConsultingResponseTab from '@/features/posts/ui/consulting-response/consulting-response-tab';
+import ConsultingResponseTab from '@/widgets/post/ui/consulting-response-tab';
 import {
   CONSULTING_RESPONSE_TAB,
   CONSULTING_RESPONSE_TAB_OPTION,
