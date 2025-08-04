@@ -3,7 +3,7 @@
 import ConsultingResponseForm from '@/features/posts/ui/consulting-form/consulting-response-form/consulting-response-form';
 import ConsultingResponseSidebarButton from '@/features/posts/ui/consulting-form/consulting-response-form/consulting-response-sidebar/consulting-response-sidebar-button';
 import { SiteHeader } from '@/widgets/header';
-import ConsultingResponseSidebar from '@/widgets/post/ui/consulting-response-sidebar';
+import ConsultingResponseSidebar from '@/widgets/post/ui/consulting-response-sidebar/consulting-response-sidebar';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 

@@ -1,9 +1,9 @@
 import GalleryIcon from '@/assets/icons/gallery.svg';
 import StarIcon from '@/assets/icons/star.svg';
 import ArticleIcon from '@/assets/icons/article.svg';
-import ConsultingResponseSidebarCurrentStateTabView from '../ui/consulting-response-sidebar-current-state-tab-view';
-import ConsultingResponseSidebarDesiredStyleTabView from '../ui/consulting-response-sidebar-desired-style-tab-view';
-import ConsultingResponseSidebarAdditionalInfoTabView from '../ui/consulting-response-sidebar-additional-info-tab-view';
+import ConsultingResponseSidebarCurrentStateTabView from '../ui/consulting-response-sidebar/consulting-response-sidebar-current-state-tab-view';
+import ConsultingResponseSidebarDesiredStyleTabView from '../ui/consulting-response-sidebar/consulting-response-sidebar-desired-style-tab-view';
+import ConsultingResponseSidebarAdditionalInfoTabView from '../ui/consulting-response-sidebar/consulting-response-sidebar-additional-info-tab-view';
 
 export const CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE = {
   CURRENT_STATE: 'currentState',
