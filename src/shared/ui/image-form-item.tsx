@@ -10,12 +10,12 @@ export type Image = {
   src: string;
 };
 
-type ImageItemProps = {
+type ImageFormItemProps = {
   image: Image;
   handleImageDelete: (image: Image) => void;
 };
 
-export default function ImageItem({ image, handleImageDelete }: ImageItemProps) {
+export default function ImageFormItem({ image, handleImageDelete }: ImageFormItemProps) {
   return (
     <div className="relative w-25 h-25 flex-shrink-0">
       <Image
