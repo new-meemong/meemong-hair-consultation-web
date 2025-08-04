@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 import useShowModal from './hooks/use-show-modal';
-import type { Image } from './image-item';
+import type { Image } from './image-form-item';
 import type { ImageUploaderRef } from './image-uploader';
-import ImageItem from './image-item';
+import ImageFormItem from './image-form-item';
 import PlusIcon from '@/assets/icons/plus.svg';
 import ImageUploader from './image-uploader';
 
@@ -56,7 +56,7 @@ export default function ImageUploaderItem({
   return (
     <div className="flex flex-col gap-2">
       {currentImage && onDelete ? (
-        <ImageItem image={currentImage} handleImageDelete={onDelete} />
+        <ImageFormItem image={currentImage} handleImageDelete={onDelete} />
       ) : (
         <button
           className="w-25 h-25 rounded-6 bg-alternative flex items-center justify-center overflow-hidden"

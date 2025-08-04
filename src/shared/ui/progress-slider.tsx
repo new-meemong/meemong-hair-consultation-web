@@ -113,7 +113,7 @@ type ProgressSliderProps = {
   value: number | null;
   leftLabel?: string;
   rightLabel?: string;
-  onChange: (value: number) => void;
+  onChange?: (value: number) => void;
 };
 
 export default function ProgressSlider({
@@ -123,17 +123,21 @@ export default function ProgressSlider({
   rightLabel,
   onChange,
 }: ProgressSliderProps) {
+  const handleChange = (value: number) => {
+    onChange?.(value);
+  };
+
   return (
     <div className="flex flex-col gap-3">
       <div
         className="bg-alternative h-3 rounded-12 relative my-2.5"
         style={{ paddingLeft: PROGRESS_BAR_PADDING, paddingRight: PROGRESS_BAR_PADDING }}
       >
-        <ProgressPointer total={total} value={value ?? 0} onChange={onChange} />
+        <ProgressPointer total={total} value={value ?? 0} onChange={handleChange} />
         {value && (
           <>
             <SelectedProgressBar total={total} value={value} />
-            <SelectedProgressPointer value={value} total={total} onChange={onChange} />
+            <SelectedProgressPointer value={value} total={total} onChange={handleChange} />
           </>
         )}
       </div>

@@ -1,6 +1,6 @@
 import { IMAGE_TYPE } from '../constants/image-type';
-import type { Image } from './image-item';
-import ImageItem from './image-item';
+import type { Image } from './image-form-item';
+import ImageFormItem from './image-form-item';
 import ImageUploaderItem from './image-uploader-item';
 
 type ImageUploaderListProps = {
@@ -30,7 +30,7 @@ export default function ImageUploaderList({
     <div className="flex gap-2 overflow-x-auto scrollbar-hide">
       {canUpload && <ImageUploaderItem onUpload={onUpload} currentImage={null} />}
       {images.map((image, index) => (
-        <ImageItem
+        <ImageFormItem
           key={`${image.name}-${index}`}
           image={getCurrentImage(image)}
           handleImageDelete={() => onDelete(index)}

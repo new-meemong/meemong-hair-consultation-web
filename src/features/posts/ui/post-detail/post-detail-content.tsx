@@ -1,21 +1,28 @@
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 import PostDetailAuthorProfile from './post-detail-author-profile';
 import PostDetailImage from './post-detail-image';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 
 type PostDetailContentProps = {
   postDetail: PostDetail;
 };
 
 export default function PostDetailContent({ postDetail }: PostDetailContentProps) {
+  const { user } = useAuthContext();
+
   const {
     hairConsultPostingCreateUserProfileImageUrl: authorImageUrl,
+    hairConsultPostingCreateUserId: authorId,
     hairConsultPostingCreateUserName: authorName,
     hairConsultPostingCreateUserRegion: authorRegion,
     createdAt,
     title,
     content,
     images,
+    isPhotoVisibleToDesigner: shouldShowImage,
   } = postDetail;
+
+  const isWriter = authorId === user.id;
 
   return (
     <div className="flex flex-col gap-5 py-6">
@@ -40,7 +47,7 @@ export default function PostDetailContent({ postDetail }: PostDetailContentProps
             image={image}
             totalImages={images.length}
             currentIndex={index}
-            onlyShowToDesigner={false}
+            onlyShowToDesigner={shouldShowImage && !isWriter}
             size="large"
           />
         ))}

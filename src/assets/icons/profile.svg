@@ -1,5 +1,5 @@
-<svg width="current" height="current" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="current" height="current" rx="6" fill="current"/>
+<svg width="100%" height="100%" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="100%" height="100%" rx="6" fill="current"/>
 <circle cx="23.9998" cy="15.5789" r="7.57895" fill="white"/>
 <path d="M9.68408 29.8948C9.68408 28.0345 11.1922 26.5264 13.0525 26.5264H34.9472C36.8076 26.5264 38.3157 28.0345 38.3157 29.8948V36.6316C38.3157 38.492 36.8076 40.0001 34.9472 40.0001H13.0525C11.1922 40.0001 9.68408 38.492 9.68408 36.6316V29.8948Z" fill="white"/>
 </svg>

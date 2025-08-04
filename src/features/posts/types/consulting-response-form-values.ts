@@ -1,9 +1,8 @@
 import { z } from 'zod';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../constants/consulting-response-form-field-name';
-import { FACE_TYPE } from '../ui/consulting-form/consulting-response-form/consulting-response-form-step-1';
-import { HAIR_TYPE } from '../ui/consulting-form/consulting-response-form/consulting-response-form-step-2';
-import { MALE_BANG_STYLE } from '../ui/consulting-form/consulting-response-form/consulting-response-form-step-4';
-import { FEMALE_BANG_STYLE } from '../ui/consulting-form/consulting-response-form/consulting-response-form-step-4';
+import { FACE_TYPE } from '../constants/face-type';
+import { HAIR_TYPE } from '../constants/hair-type';
+import { BANG_STYLE } from '../constants/bang-style';
 
 const FACE_TYPE_VALUES = [
   FACE_TYPE.OVAL,
@@ -22,13 +21,13 @@ const HAIR_TYPE_VALUES = [
 ] as const;
 
 const BANG_TYLE_VALUES = [
-  MALE_BANG_STYLE.ALL,
-  MALE_BANG_STYLE.COVERED_FOREHEAD,
-  MALE_BANG_STYLE.EXPOSED_FOREHEAD,
-  FEMALE_BANG_STYLE.NO_BANGS,
-  FEMALE_BANG_STYLE.SIDE_SWEPT_BANGS,
-  FEMALE_BANG_STYLE.STRAIGHT_BANGS,
-  FEMALE_BANG_STYLE.ALL,
+  BANG_STYLE.ALL,
+  BANG_STYLE.COVERED_FOREHEAD,
+  BANG_STYLE.EXPOSED_FOREHEAD,
+  BANG_STYLE.NO_BANGS,
+  BANG_STYLE.SIDE_SWEPT_BANGS,
+  BANG_STYLE.STRAIGHT_BANGS,
+  BANG_STYLE.ALL,
 ] as const;
 
 export const consultingResponseFormSchema = z.object({

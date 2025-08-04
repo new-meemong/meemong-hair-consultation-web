@@ -6,8 +6,10 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import CommentAuthorProfile from './comment-author-profile';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import { MoreOptionsMenu } from '@/shared';
+import { MoreOptionsMenu, ROUTES } from '@/shared';
 import CommentListItemSecret from './comment-list-item-secret';
+import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 const MORE_ACTION = {
   EDIT: 'edit',
@@ -35,6 +37,7 @@ export default function CommentListItem({
   onTriggerClick,
 }: CommentListItemProps) {
   const { user } = useAuthContext();
+  const { push } = useRouterWithUser();
 
   const { isReply, content, isVisibleToModel, createdAt, user: author } = comment;
 
@@ -69,6 +72,15 @@ export default function CommentListItem({
   };
 
   const isSecret = !isWriter && isVisibleToModel;
+
+  // TODO: 추후 컨설팅 댓글 여부 확인 로직 추가
+  const isConsultingResult = true;
+  const designerShopName = '주노헤어';
+  const consultingResultContent = `${designerShopName} ${author.name}디자이너님이 컨설팅 답변을 보냈습니다! 버튼을 눌러 확인해보세요`;
+
+  const handleConsultingResponseClick = () => {
+    push(ROUTES.POSTS_CONSULTING_RESPONSE(comment.id.toString()));
+  };
 
   return (
     <div
@@ -108,10 +120,22 @@ export default function CommentListItem({
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <div className="typo-body-1-long-regular">{content}</div>
+              <div className="typo-body-1-long-regular">
+                {isConsultingResult ? consultingResultContent : content}
+              </div>
               <span className="typo-body-3-regular text-label-info">
                 {format(createdAt, 'MM/dd hh:mm')}
               </span>
+              {isConsultingResult && !isReply && (
+                <button
+                  type="button"
+                  className="w-full mt-1 py-3 px-4 flex items-center justify-between rounded-6 border-1 border-border-default typo-body-1-medium text-label-default"
+                  onClick={handleConsultingResponseClick}
+                >
+                  컨설팅 결과 보러가기
+                  <ChevronRightIcon className="size-5 fill-label-info" />
+                </button>
+              )}
             </div>
           </div>
         )}

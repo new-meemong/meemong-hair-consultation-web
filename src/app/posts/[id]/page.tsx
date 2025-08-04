@@ -78,6 +78,7 @@ export default function PostDetailPage() {
 
       {canWriteConsultingResponse ? (
         <div className="fixed bottom-0 left-0 right-0 bg-white shadow-upper px-5 py-3">
+          {/* TODO: 이어서 작성하기 기능 추가 */}
           <Button size="lg" className="w-full" onClick={handleWriteConsultingResponseClick}>
             컨설팅 답글 보내기
           </Button>

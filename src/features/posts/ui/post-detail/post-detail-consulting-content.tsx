@@ -4,6 +4,7 @@ import ConsultingInputResultListItem from '../consulting-input-result-list-item'
 import SkinColorLabel, { SKIN_COLOR_TYPE } from '../skin-color-label';
 import PostDetailAuthorProfile from './post-detail-author-profile';
 import PostDetailImage from './post-detail-image';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 
 function Separator() {
   return <div className="bg-alternative h-1.5" />;
@@ -26,16 +27,22 @@ function ContentItem({
   );
 }
 
-function ImageList({ images }: { images: string[] }) {
+function ImageList({
+  images,
+  onlyShowToDesigner,
+}: {
+  images: string[];
+  onlyShowToDesigner: boolean;
+}) {
   return (
-    <div className="flex gap-2 px-5 overflow-x-auto scrollbar-hide">
+    <div className="flex gap-2 overflow-x-auto scrollbar-hide">
       {images.map((image, index) => (
         <PostDetailImage
           key={`${index}-${image}`}
           image={image}
           totalImages={images.length}
           currentIndex={index}
-          onlyShowToDesigner={false}
+          onlyShowToDesigner={onlyShowToDesigner}
           size="small"
         />
       ))}
@@ -44,6 +51,8 @@ function ImageList({ images }: { images: string[] }) {
 }
 
 export default function PostDetailConsultingContent() {
+  const { user } = useAuthContext();
+
   const authorImageUrl = null;
   const authorName = '익명';
   const authorRegion = '강남구';
@@ -66,6 +75,10 @@ export default function PostDetailConsultingContent() {
       description: '2025.03',
     },
   ];
+  const authorId = 1;
+
+  const isWriter = authorId === user.id;
+  const onlyShowToDesigner = !isWriter;
 
   return (
     <div className="flex flex-col gap-6 py-6">
@@ -81,7 +94,7 @@ export default function PostDetailConsultingContent() {
           <p className="typo-body-2-long-regular text-label-info">헤어 고민 종류</p>
         </ContentItem>
         <ContentItem label="현재 내 사진">
-          <ImageList images={images} />
+          <ImageList images={images} onlyShowToDesigner={onlyShowToDesigner} />
         </ContentItem>
       </div>
       <Separator />
@@ -96,7 +109,7 @@ export default function PostDetailConsultingContent() {
           ))}
         </ContentItem>
         <ContentItem label="추구미 / 평소스타일">
-          <ImageList images={images} />
+          <ImageList images={images} onlyShowToDesigner={onlyShowToDesigner} />
         </ContentItem>
         <ContentItem label="피부톤" className="flex flex-row items-center justify-between">
           <SkinColorLabel type={SKIN_COLOR_TYPE.VERY_BRIGHT} />

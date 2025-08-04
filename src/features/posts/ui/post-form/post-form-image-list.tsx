@@ -1,6 +1,6 @@
 import { IMAGE_TYPE } from '@/shared/constants/image-type';
-import type { Image } from '@/shared/ui/image-item';
-import ImageItem from '@/shared/ui/image-item';
+import type { Image } from '@/shared/ui/image-form-item';
+import ImageFormItem from '@/shared/ui/image-form-item';
 
 type ImageListProps = {
   imageFiles: File[];
@@ -46,7 +46,7 @@ export default function PostFormImageList({
   return (
     <div className="flex gap-2 px-5 overflow-x-auto">
       {images.map((image, index) => (
-        <ImageItem
+        <ImageFormItem
           key={`${image.type}-${image.src}-${index}`}
           image={image}
           handleImageDelete={handleImageDelete}
