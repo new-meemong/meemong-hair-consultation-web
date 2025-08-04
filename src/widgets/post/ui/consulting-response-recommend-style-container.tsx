@@ -1,7 +1,7 @@
 import { Separator } from '@/shared';
 import { BANG_STYLE } from '../../../features/posts/constants/bang-style';
 import ConsultingResponseBangStyle from '../../../features/posts/ui/consulting-response/consulting-response-bang-style';
-import ConsultingResponseStyle from '../../../features/posts/ui/consulting-response/consulting-response-style';
+import ConsultingResponseRecommendStyle from '../../../features/posts/ui/consulting-response/consulting-response-recommend-style';
 
 export default function ConsultingResponseRecommendStyleContainer() {
   // const bangStyle = null;
@@ -22,7 +22,7 @@ export default function ConsultingResponseRecommendStyleContainer() {
     <div className="flex flex-col gap-8">
       <ConsultingResponseBangStyle value={bangStyle} />
       <Separator />
-      <ConsultingResponseStyle value={value} images={images} />
+      <ConsultingResponseRecommendStyle value={value} images={images} />
     </div>
   );
 }

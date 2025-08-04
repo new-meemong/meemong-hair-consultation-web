@@ -6,7 +6,10 @@ type ConsultingResponseStyleProps = {
   images: string[] | null;
 };
 
-export default function ConsultingResponseStyle({ value, images }: ConsultingResponseStyleProps) {
+export default function ConsultingResponseRecommendStyle({
+  value,
+  images,
+}: ConsultingResponseStyleProps) {
   return (
     <ConsultingResponseItem title="스타일 추천" content="어울리는 스타일을 디자이너가 추천했어요">
       {value && (
