@@ -25,6 +25,7 @@ const buttonVariants = cva(
         black: 'typo-body-1-semibold bg-label-default hover:bg-label-sub text-white',
         white:
           'typo-body-2-medium bg-white hover:bg-label-sub text-label-sub border border-border-default',
+        whiteBorder: 'rounded-4 border-1 border-white bg-transparent text-white typo-body-2-medium',
       },
     },
     defaultVariants: {
