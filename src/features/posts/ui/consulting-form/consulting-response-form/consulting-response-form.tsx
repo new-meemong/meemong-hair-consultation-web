@@ -11,9 +11,6 @@ import ConsultingResponseFormStep4 from './consulting-response-form-step-4';
 import ConsultingResponseFormStep5 from './consulting-response-form-step-5';
 import ConsultingResponseFormStep6 from './consulting-response-form-step-6';
 import ConsultingResponseFormStep7 from './consulting-response-form-step-7';
-import ConsultingResponseSidebarButton from './consulting-response-sidebar-button';
-import { useState } from 'react';
-import ConsultingResponseSidebar from './consulting-response-sidebar';
 
 const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
   {
@@ -97,12 +94,6 @@ export default function ConsultingResponseForm() {
     console.log('submit', values);
   };
 
-  const [showedSidebar, setShowedSidebar] = useState(false);
-
-  const handleSidebarButtonClick = () => {
-    setShowedSidebar((prev) => !prev);
-  };
-
   return (
     <FormProvider {...method}>
       <MultiStepForm
@@ -111,10 +102,6 @@ export default function ConsultingResponseForm() {
         onSubmit={submit}
         lastStepButtonLabel="보내기"
       />
-      <ConsultingResponseSidebar isOpen={showedSidebar} onClose={handleSidebarButtonClick} />
-      <div className="absolute bottom-25.5 right-5">
-        <ConsultingResponseSidebarButton onClick={handleSidebarButtonClick} />
-      </div>
     </FormProvider>
   );
 }
