@@ -13,8 +13,10 @@ export default function ConsultingResponsePage() {
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
       <SiteHeader title="컨설팅 답변" showBackButton />
-      <ConsultingResponseHeader postId={id.toString()} />
-      <ConsultingResponseContainer />
+      <div className="overflow-y-auto scrollbar-hide">
+        <ConsultingResponseHeader postId={id.toString()} />
+        <ConsultingResponseContainer />
+      </div>
     </div>
   );
 }
