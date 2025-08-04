@@ -1,9 +1,9 @@
 import { Separator } from '@/shared';
-import { BANG_STYLE } from '../../constants/bang-style';
-import ConsultingResponseBangStyle from './consulting-response-bang-style';
-import ConsultingResponseStyle from './consulting-response-style';
+import { BANG_STYLE } from '../../../features/posts/constants/bang-style';
+import ConsultingResponseBangStyle from '../../../features/posts/ui/consulting-response/consulting-response-bang-style';
+import ConsultingResponseStyle from '../../../features/posts/ui/consulting-response/consulting-response-style';
 
-export default function ConsultingResponseRecommendStyle() {
+export default function ConsultingResponseRecommendStyleContainer() {
   // const bangStyle = null;
   const bangStyle = BANG_STYLE.EXPOSED_FOREHEAD;
 

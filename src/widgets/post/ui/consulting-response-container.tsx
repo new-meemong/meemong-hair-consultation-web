@@ -3,7 +3,7 @@ import {
   CONSULTING_RESPONSE_TAB,
   CONSULTING_RESPONSE_TAB_OPTION,
   CONSULTING_RESPONSE_TAB_OPTIONS,
-} from '@/features/posts/constants/consulting-response-tab';
+} from '@/widgets/post/constants/consulting-response-tab';
 import type { ValueOf } from '@/shared/type/types';
 import { useState } from 'react';
 
