@@ -1,5 +1,6 @@
 import { HAIR_TYPE_OPTION } from '../../constants/hair-type';
 import ConsultingResponseItem from './consulting-response-item';
+import ConsultingResponseItemResult from './consulting-response-item-result';
 import ConsultingResponseNeedShopConsulting from './consulting-response-need-shop-consulting';
 
 type ConsultingResponseHairTypeProps = {
@@ -13,9 +14,7 @@ export default function ConsultingResponseHairType({ value }: ConsultingResponse
       content="올려주신 사진을 바탕으로 모발타입을 진단했어요"
     >
       {value ? (
-        <div className="rounded-4 bg-alternative p-3 flex items-center justify-start">
-          <p className="typo-body-2-medium text-label-sub">{HAIR_TYPE_OPTION[value].label}</p>
-        </div>
+        <ConsultingResponseItemResult label={HAIR_TYPE_OPTION[value].label} />
       ) : (
         <ConsultingResponseNeedShopConsulting />
       )}

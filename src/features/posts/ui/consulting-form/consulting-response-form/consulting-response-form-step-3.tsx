@@ -1,13 +1,8 @@
-import ProgressSlider from '@/shared/ui/progress-slider';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
-import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
-import {
-  HAIR_CONDITION_OPTION,
-  HAIR_CONDITION_OPTION_VALUES,
-} from '@/features/posts/constants/hair-condition';
 import ConsultingHairCondition from '../../consulting-hair-condition';
+import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
 
 export default function ConsultingResponseFormStep3() {
   const { control, setValue } = useFormContext<ConsultingResponseFormValues>();
