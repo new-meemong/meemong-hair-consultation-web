@@ -5,6 +5,8 @@ import type { KeyOf } from '../type/types';
 import type { Path } from 'react-hook-form';
 import ProgressPagination from './progress-pagination';
 
+export const MULTI_STEP_FORM_PORTAL_ID = 'multi-step-form-portal';
+
 type MultiStepFormProps<T extends Record<string, unknown>> = {
   steps: FormStep<T>[];
   canMoveNext: (name: KeyOf<T>) => boolean;
@@ -39,7 +41,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
 
   return (
     <>
-      <form className="flex flex-col flex-1 min-h-0 px-5 py-7 gap-7">
+      <form className="flex flex-col flex-1 min-h-0 px-5 pt-7 gap-7 relative">
         <div className="flex flex-col gap-3 flex-shrink-0">
           <div className="flex items-center justify-between">
             <p className="typo-headline-medium text-label-default">{question}</p>
@@ -51,7 +53,8 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
           </div>
           {description && <p className="typo-body-3-regular text-label-info">{description}</p>}
         </div>
-        <div className="flex-1 overflow-y-auto scrollbar-hide">{children}</div>
+        <div className="flex-1 overflow-y-auto scrollbar-hide pb-7">{children}</div>
+        <div id={MULTI_STEP_FORM_PORTAL_ID} />
       </form>
       <div className="px-5 py-3 border-t border-1 border-border-default">
         <ProgressPagination
