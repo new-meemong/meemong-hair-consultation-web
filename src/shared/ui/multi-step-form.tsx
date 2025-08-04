@@ -53,7 +53,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
         </div>
         <div className="flex-1 overflow-y-auto scrollbar-hide">{children}</div>
       </form>
-      <div className="px-5 py-3">
+      <div className="px-5 py-3 border-t border-1 border-border-default">
         <ProgressPagination
           total={steps.length}
           current={step}
