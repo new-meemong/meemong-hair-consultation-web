@@ -1,5 +1,5 @@
-import ConsultingInputResultListItem from '../consulting-input-result-list-item';
-import ConsultingResponseItem from './consulting-response-item';
+import ConsultingInputResultListItem from '../../consulting-input-result-list-item';
+import ConsultingResponseItem from '../consulting-response-item';
 
 type ConsultingResponsePriceProps = {
   designerName: string;

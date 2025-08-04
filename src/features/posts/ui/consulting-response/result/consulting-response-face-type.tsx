@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import ConsultingResponseItem from './consulting-response-item';
-import { FACE_TYPE, FACE_TYPE_OPTION } from '../../constants/face-type';
+import ConsultingResponseItem from '../consulting-response-item';
+import { FACE_TYPE, FACE_TYPE_OPTION } from '../../../constants/face-type';
 
 export default function ConsultingResponseFaceType() {
   const currentFaceType = FACE_TYPE.OVAL;

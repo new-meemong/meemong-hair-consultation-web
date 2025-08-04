@@ -1,4 +1,4 @@
-import ConsultingResponseItem from './consulting-response-item';
+import ConsultingResponseItem from '../consulting-response-item';
 
 type ConsultingResponseCommentProps = {
   comment: string;

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import ConsultingResponseItem from './consulting-response-item';
+import ConsultingResponseItem from '../consulting-response-item';
 
 type ConsultingResponseStyleProps = {
   value: string | null;

@@ -1,8 +1,8 @@
 import type { ValueOf } from '@/shared/type/types';
-import { BANG_STYLE, BANG_STYLE_OPTION } from '../../constants/bang-style';
-import ConsultingResponseItem from './consulting-response-item';
-import ConsultingResponseItemResult from './consulting-response-item-result';
-import ConsultingResponseNeedShopConsulting from './consulting-response-need-shop-consulting';
+import { BANG_STYLE, BANG_STYLE_OPTION } from '../../../constants/bang-style';
+import ConsultingResponseItem from '../consulting-response-item';
+import ConsultingResponseItemResult from '../consulting-response-item-result';
+import ConsultingResponseNeedShopConsulting from '../consulting-response-need-shop-consulting';
 
 type ConsultingResponseBangStyleProps = {
   value: ValueOf<typeof BANG_STYLE> | null;

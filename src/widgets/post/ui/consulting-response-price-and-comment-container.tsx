@@ -1,5 +1,5 @@
-import ConsultingResponseComment from '@/features/posts/ui/consulting-response/consulting-response-comment';
-import ConsultingResponsePrice from '@/features/posts/ui/consulting-response/consulting-response-price';
+import ConsultingResponseComment from '@/features/posts/ui/consulting-response/result/consulting-response-comment';
+import ConsultingResponsePrice from '@/features/posts/ui/consulting-response/result/consulting-response-price';
 import { Separator } from '@/shared';
 
 export default function ConsultingResponsePriceAndCommentContainer() {

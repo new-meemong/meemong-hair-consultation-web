@@ -1,6 +1,6 @@
-import ConsultingHairCondition from '../consulting-hair-condition';
-import ConsultingResponseItem from './consulting-response-item';
-import ConsultingResponseNeedShopConsulting from './consulting-response-need-shop-consulting';
+import ConsultingHairCondition from '../../consulting-hair-condition';
+import ConsultingResponseItem from '../consulting-response-item';
+import ConsultingResponseNeedShopConsulting from '../consulting-response-need-shop-consulting';
 
 export default function ConsultingResponseHairCondition() {
   const currentHairCondition = null;
