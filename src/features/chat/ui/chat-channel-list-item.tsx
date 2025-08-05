@@ -1,15 +1,15 @@
-import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
-import { format } from 'date-fns';
-import { useState, type ReactNode } from 'react';
+import ChatTrashIcon from '@/assets/icons/chat-trash.svg';
+import PinOffIcon from '@/assets/icons/pin-off.svg';
+import PinIcon from '@/assets/icons/pin.svg';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import type { UserHairConsultationChatChannelType } from '@/features/chat/type/user-hair-consultation-chat-channel-type';
-import { useAuthContext } from '@/features/auth/context/auth-context';
-import PinIcon from '@/assets/icons/pin.svg';
-import PinOffIcon from '@/assets/icons/pin-off.svg';
-import ChatTrashIcon from '@/assets/icons/chat-trash.svg';
 import { cn } from '@/lib/utils';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
+import { format } from 'date-fns';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useState, type ReactNode } from 'react';
 
 function ActionButton({
   children,
@@ -36,11 +36,9 @@ type ChatChannelListItemProps = {
 
 export default function ChatChannelListItem({ chatChannel }: ChatChannelListItemProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [offset, setOffset] = useState(0);
   const [startX, setStartX] = useState(0);
-  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
   const { user } = useAuthContext();
   const userId = user.id;
