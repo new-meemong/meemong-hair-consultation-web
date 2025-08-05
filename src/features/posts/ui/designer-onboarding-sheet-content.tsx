@@ -58,15 +58,21 @@ function DesignerOnboardingSheetContent() {
         priority={step === 0}
         loading={step === 0 ? 'eager' : 'lazy'}
       />
-      <DrawerFooter>
-        {step < 2 ? (
-          <Button onClick={handleNextClick}>{buttonLabel}</Button>
-        ) : (
-          <DrawerClose asChild>
-            <Button>{buttonLabel}</Button>
-          </DrawerClose>
-        )}
-      </DrawerFooter>
+      <DrawerFooter
+        buttons={
+          step < 2
+            ? [
+                <Button size="lg" key="next" onClick={handleNextClick}>
+                  {buttonLabel}
+                </Button>,
+              ]
+            : [
+                <DrawerClose asChild key="close">
+                  <Button size="lg">{buttonLabel}</Button>
+                </DrawerClose>,
+              ]
+        }
+      ></DrawerFooter>
     </>
   );
 }

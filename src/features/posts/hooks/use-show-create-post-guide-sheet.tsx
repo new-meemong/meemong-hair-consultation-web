@@ -32,11 +32,13 @@ function useShowCreatePostGuideSheet() {
               width={384}
               height={192}
             />
-            <DrawerFooter>
-              <DrawerClose asChild>
-                <Button>완료</Button>
-              </DrawerClose>
-            </DrawerFooter>
+            <DrawerFooter
+              buttons={[
+                <DrawerClose asChild key="close">
+                  <Button size="lg">완료</Button>
+                </DrawerClose>,
+              ]}
+            />
           </>
         ),
       });

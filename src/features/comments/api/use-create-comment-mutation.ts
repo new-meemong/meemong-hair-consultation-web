@@ -1,8 +1,9 @@
 import type { CreateCommentRequest } from '@/entities/comment/api/create-comment-request';
-import { getPostDetailQueryKey } from '@/features/posts/api/use-get-post-detail';
+import { getPostDetailQueryKeyPrefix } from '@/features/posts/api/use-get-post-detail';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '@/features/posts/constants/api';
 import { apiClient } from '@/shared/api/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { getGetPostCommentsQueryKeyPrefix } from './use-get-post-comments';
 
 export default function useCreateCommentMutation(postId: string) {
   const queryClient = useQueryClient();
@@ -12,7 +13,10 @@ export default function useCreateCommentMutation(postId: string) {
       apiClient.post(`${HAIR_CONSULT_POSTING_API_PREFIX}/${postId}/comments`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: getPostDetailQueryKey(postId),
+        queryKey: [getPostDetailQueryKeyPrefix(postId)],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [getGetPostCommentsQueryKeyPrefix(postId)],
       });
     },
   });

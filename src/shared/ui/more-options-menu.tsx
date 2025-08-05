@@ -21,6 +21,7 @@ interface MoreOptionsMenuProps {
   options: OptionItem[];
   triggerClassName?: string;
   contentClassName?: string;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export const MoreOptionsMenu = ({
@@ -28,16 +29,24 @@ export const MoreOptionsMenu = ({
   options,
   triggerClassName,
   contentClassName,
+  onOpenChange,
 }: MoreOptionsMenuProps) => {
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={onOpenChange}>
       <DropdownMenuTrigger className={cn('outline-none', triggerClassName)}>
         {trigger}
       </DropdownMenuTrigger>
       <DropdownMenuContent className={contentClassName}>
         {options.map((option, index) => (
           <div key={option.label}>
-            <DropdownMenuItem key={index} onClick={option.onClick} className={cn(option.className)}>
+            <DropdownMenuItem
+              key={index}
+              onClick={(e) => {
+                e.stopPropagation();
+                option.onClick();
+              }}
+              className={cn(option.className)}
+            >
               {option.label}
             </DropdownMenuItem>
             {index < options.length - 1 && <DropdownMenuSeparator />}

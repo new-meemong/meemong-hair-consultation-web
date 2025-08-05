@@ -66,6 +66,10 @@ export class ApiClient {
     return this.api.put(endpoint, { json: data }).json<ApiResponse<T>>();
   }
 
+  async patch<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
+    return this.api.patch(endpoint, { json: data }).json<ApiResponse<T>>();
+  }
+
   async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
     return this.api.delete(endpoint).json<ApiResponse<T>>();
   }

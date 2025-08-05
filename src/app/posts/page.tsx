@@ -5,7 +5,7 @@ import useGetPosts from '@/features/posts/api/use-get-posts';
 import { POST_TABS, type POST_TAB_VALUES } from '@/features/posts/constants/post-tabs';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
-import PostList from '@/features/posts/ui/post-list';
+import PostList from '@/features/posts/ui/post-list/post-list';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { ROUTES } from '@/shared';
 import { useAuthContext } from '@/features/auth/context/auth-context';
@@ -16,15 +16,12 @@ import Tab from '@/shared/ui/tab';
 import { BellButton, SiteHeader } from '@/widgets/header';
 import { useCallback, useState } from 'react';
 
-const POST_LIMIT = 20;
-
 export default function PostsPage() {
   const { user, isUserModel } = useAuthContext();
   const [activeTab, setActiveTab] = useState<PostListTab>('latest');
   const router = useRouterWithUser();
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
-    __limit: POST_LIMIT,
     filter: activeTab,
   });
 

@@ -11,6 +11,7 @@ import { Textarea } from '@/shared/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import z from 'zod';
+import { useEffect } from 'react';
 
 export const COMMENT_FORM_FIELD_NAME = {
   content: 'content',
@@ -26,26 +27,46 @@ const formSchema = z.object({
 
 export type CommentFormValues = z.infer<typeof formSchema>;
 
-interface CommentFormProps {
+export type CommentFormProps = {
   onSubmit: (data: CommentFormValues, options: { onSuccess: () => void }) => void;
-  isReply?: boolean;
-  parentAuthorName?: string;
-}
+  isReply: boolean;
+  commentId: number | null;
+  content: string | null;
+  isPending: boolean;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+};
 
-export function CommentForm({ onSubmit, isReply = false, parentAuthorName }: CommentFormProps) {
+export function CommentForm({
+  onSubmit,
+  isReply,
+  commentId,
+  content,
+  isPending,
+  textareaRef,
+}: CommentFormProps) {
   const { isUserDesigner } = useAuthContext();
 
-  const placeholder =
-    isReply && parentAuthorName ? `${parentAuthorName}님에게 답글 작성...` : '댓글을 입력하세요';
+  const placeholder = isReply ? '대댓글을 입력하세요' : '댓글을 입력하세요';
 
   const method = useForm<CommentFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      [COMMENT_FORM_FIELD_NAME.content]: '',
+      [COMMENT_FORM_FIELD_NAME.content]: content ?? '',
       [COMMENT_FORM_FIELD_NAME.isVisibleToModel]: false,
       [COMMENT_FORM_FIELD_NAME.parentCommentId]: null,
     },
   });
+
+  const { isValid, isDirty, isSubmitting } = method.formState;
+  const isLoading = isSubmitting || isPending;
+
+  useEffect(() => {
+    method.setValue(COMMENT_FORM_FIELD_NAME.content, content ?? '');
+  }, [content, method]);
+
+  useEffect(() => {
+    method.setValue(COMMENT_FORM_FIELD_NAME.parentCommentId, commentId?.toString() ?? null);
+  }, [method, commentId]);
 
   const isVisibleToModel = useWatch({
     control: method.control,
@@ -56,12 +77,15 @@ export function CommentForm({ onSubmit, isReply = false, parentAuthorName }: Com
     onSubmit(data, {
       onSuccess: () => {
         method.reset();
+        if (textareaRef.current) {
+          textareaRef.current.style.height = 'auto';
+        }
       },
     });
   };
 
   return (
-    <div className={cn('w-full', isReply && 'pl-8')}>
+    <div className={cn('w-full')}>
       <FormProvider {...method}>
         <form onSubmit={method.handleSubmit(handleSubmit)}>
           <div className="px-5 py-3">
@@ -79,9 +103,22 @@ export function CommentForm({ onSubmit, isReply = false, parentAuthorName }: Com
                   {...method.register(COMMENT_FORM_FIELD_NAME.content)}
                   placeholder={placeholder}
                   className="w-full flex-1 typo-body-2-long-regular placeholder:text-label-placeholder text-label-strong"
+                  ref={(e) => {
+                    const { ref } = method.register(COMMENT_FORM_FIELD_NAME.content);
+                    ref(e);
+                    if (textareaRef && e) {
+                      textareaRef.current = e;
+                    }
+                  }}
                 />
               </div>
-              <Button type="submit" size="icon" variant="icon" className="px-1">
+              <Button
+                type="submit"
+                size="icon"
+                variant="icon"
+                className="px-1"
+                disabled={!isValid || !isDirty || isLoading}
+              >
                 <ArrowUpIcon className="fill-white" />
               </Button>
             </div>
@@ -90,7 +127,10 @@ export function CommentForm({ onSubmit, isReply = false, parentAuthorName }: Com
             <>
               <Separator />
               <div className="flex items-center px-5 py-3 gap-2">
-                <ControlledCheckbox name={COMMENT_FORM_FIELD_NAME.isVisibleToModel} />
+                <ControlledCheckbox
+                  name={COMMENT_FORM_FIELD_NAME.isVisibleToModel}
+                  shape="square"
+                />
                 <Label
                   htmlFor={COMMENT_FORM_FIELD_NAME.isVisibleToModel}
                   className="typo-body-3-regular"

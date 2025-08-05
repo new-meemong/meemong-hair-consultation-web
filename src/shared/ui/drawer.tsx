@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
 import { cn } from '@/shared/lib/utils';
+import CloseIcon from '@/assets/icons/close.svg';
 
 function Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
   return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
@@ -70,23 +71,44 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function DrawerFooter({ className, ...props }: React.ComponentProps<'div'>) {
+function DrawerFooter({
+  className,
+  buttons,
+  ...props
+}: React.ComponentProps<'div'> & { buttons: React.ReactNode[] }) {
   return (
     <div
       data-slot="drawer-footer"
-      className={cn('mt-auto flex flex-col gap-2', className)}
+      className={cn('mt-auto flex gap-3 items-center w-full flex-1', className)}
       {...props}
-    />
+    >
+      {buttons.map((button, index) => (
+        <div className="flex flex-col flex-1" key={index}>
+          {button}
+        </div>
+      ))}
+    </div>
   );
 }
 
-function DrawerTitle({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Title>) {
+function DrawerTitle({
+  className,
+  showCloseButton = false,
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Title> & { showCloseButton?: boolean }) {
   return (
-    <DrawerPrimitive.Title
-      data-slot="drawer-title"
-      className={cn('typo-title-3-semibold', className)}
-      {...props}
-    />
+    <div className="flex items-center justify-between">
+      <DrawerPrimitive.Title
+        data-slot="drawer-title"
+        className={cn('typo-title-3-semibold', className)}
+        {...props}
+      />
+      {showCloseButton && (
+        <DrawerClose asChild>
+          <CloseIcon />
+        </DrawerClose>
+      )}
+    </div>
   );
 }
 

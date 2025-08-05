@@ -1,29 +1,42 @@
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import * as React from 'react';
 
-import CheckboxIcon from '@/assets/icons/checkbox.svg';
+import SquareCheckboxIcon from '@/assets/icons/square-checkbox.svg';
+import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
+import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
 import { cn } from '@/shared/lib/utils';
 
-const Checkbox = React.forwardRef<
-  React.ElementRef<typeof CheckboxPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <div className="size-6 flex items-center justify-center">
-    <CheckboxPrimitive.Root
-      ref={ref}
-      className={cn(
-        'peer size-5 rounded-2 border border-border-default focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-0',
-        className,
-      )}
-      {...props}
-    >
-      <CheckboxPrimitive.Indicator>
-        {/* 체크박스 아이콘 또는 내용 */}
-        <CheckboxIcon />
-      </CheckboxPrimitive.Indicator>
-    </CheckboxPrimitive.Root>
-  </div>
-));
+export type CheckboxProps = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {
+  shape?: 'square' | 'round';
+};
+
+const Checkbox = React.forwardRef<React.ElementRef<typeof CheckboxPrimitive.Root>, CheckboxProps>(
+  ({ className, shape, ...props }, ref) => {
+    return (
+      <div className="size-6 flex items-center justify-center">
+        <CheckboxPrimitive.Root
+          ref={ref}
+          className={cn(
+            'peer focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+            shape === 'square' &&
+              'size-5 border border-border-default data-[state=checked]:border-0',
+            className,
+          )}
+          {...props}
+        >
+          {shape === 'round' && (
+            <>{props.checked ? <RoundCheckboxIcon /> : <RoundCheckboxEmptyIcon />}</>
+          )}
+          {shape === 'square' && (
+            <CheckboxPrimitive.Indicator>
+              <SquareCheckboxIcon />
+            </CheckboxPrimitive.Indicator>
+          )}
+        </CheckboxPrimitive.Root>
+      </div>
+    );
+  },
+);
 Checkbox.displayName = CheckboxPrimitive.Root.displayName;
 
 export { Checkbox };

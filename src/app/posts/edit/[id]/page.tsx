@@ -4,7 +4,7 @@ import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { POST_FORM_FIELD_NAME } from '@/features/posts/constants/post-form-field-name';
 import useEditPost from '@/features/posts/hooks/use-edit-post';
 import type { PostFormValues } from '@/features/posts/types/post-form-values';
-import PostForm from '@/features/posts/ui/post-form';
+import PostForm from '@/features/posts/ui/post-form/post-form';
 import { ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';

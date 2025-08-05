@@ -1,7 +1,7 @@
 import { apiClient } from '@/shared/api/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
-import { getPostsQueryKey } from './use-get-posts';
+import { getPostsQueryKeyPrefix } from './use-get-posts';
 
 export default function useDeletePostMutation() {
   const queryClient = useQueryClient();
@@ -16,7 +16,7 @@ export default function useDeletePostMutation() {
       onSuccess: () => {
         onSuccess();
         queryClient.invalidateQueries({
-          queryKey: getPostsQueryKey(),
+          queryKey: [getPostsQueryKeyPrefix()],
         });
       },
     });

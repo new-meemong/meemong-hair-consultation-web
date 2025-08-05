@@ -1,14 +1,14 @@
 import { cn } from '../lib';
-import type { TabOption } from '../type/tab-option';
+import type { Option } from '../type/option';
 
 type TabProps<T> = {
-  options: TabOption<T>[];
+  options: Option<T>[];
   value: T;
   onChange: (value: T) => void;
 };
 
 export default function Tab<T>({ options, value, onChange }: TabProps<T>) {
-  const selected = (option: TabOption<T>) => option.value === value;
+  const selected = (option: Option<T>) => option.value === value;
 
   return (
     <div className="px-5 flex items-center justify-stretch border-b-1 border-border-default">
@@ -27,7 +27,7 @@ export default function Tab<T>({ options, value, onChange }: TabProps<T>) {
               selected(option) ? 'typo-body-1-semibold' : 'typo-body-1-medium',
             )}
           >
-            {option.name}
+            {option.label}
           </span>
         </button>
       ))}
