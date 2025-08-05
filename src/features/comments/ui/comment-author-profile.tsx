@@ -9,6 +9,7 @@ import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-
 import { useHairConsultationChatMessageStore } from '@/features/chat/store/hair-consultation-chat-message-store';
 import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
 import { removeQueryParams } from '@/shared/lib/remove-query-params';
+import { useShowInvalidChatRequestSheet } from '@/features/chat/hook/use-show-invalid-chat-request-sheet';
 
 type CommentAuthorProfileProps = {
   author: CommentUser;
@@ -16,7 +17,7 @@ type CommentAuthorProfileProps = {
 };
 
 export default function CommentAuthorProfile({ author, isSecret }: CommentAuthorProfileProps) {
-  const { user } = useAuthContext();
+  const { user, isUserDesigner } = useAuthContext();
 
   const isWriter = user.id === author.userId;
 
@@ -24,7 +25,7 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
 
   const displayedName = isWriter ? `${name}(글쓴이)` : name;
 
-  const isAuthorDesigner = author.role === USER_ROLE.DESIGNER;
+  const isCommentAuthorDesigner = author.role === USER_ROLE.DESIGNER;
 
   const { findOrCreateChannel } = useHairConsultationChatChannelStore((state) => ({
     findOrCreateChannel: state.findOrCreateChannel,
@@ -34,8 +35,15 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
     sendMessage: state.sendMessage,
   }));
 
+  const showInvalidChatRequestBottomSheet = useShowInvalidChatRequestSheet();
+
   const handleClick = async () => {
-    if (!isAuthorDesigner || isWriter) return;
+    if (isUserDesigner) {
+      showInvalidChatRequestBottomSheet();
+      return;
+    }
+
+    if (!isCommentAuthorDesigner || isWriter) return;
 
     const senderId = user.id.toString();
     const receiverId = author.userId.toString();
@@ -79,7 +87,7 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
 
   return (
     <div
-      className={cn('flex gap-2 items-center', isAuthorDesigner && 'cursor-pointer')}
+      className={cn('flex gap-2 items-center', isCommentAuthorDesigner && 'cursor-pointer')}
       onClick={handleClick}
     >
       <Avatar className="size-8">
