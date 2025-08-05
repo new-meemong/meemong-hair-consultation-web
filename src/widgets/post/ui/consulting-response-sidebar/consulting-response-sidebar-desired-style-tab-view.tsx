@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { Separator } from '@/shared';
 import Image from 'next/image';
+import ConsultingResponseSidebarItem from './consulting-response-sidebar-item';
 
 type ConsultingResponseSidebarDesiredStyleTabViewProps = {
   description?: string;
@@ -15,12 +16,12 @@ export default function ConsultingResponseSidebarDesiredStyleTabView({
     <div className={cn('flex, flex-col, gap-5 pb-8')}>
       {description && (
         <div className="flex flex-col gap-4 pb-5 pt-8">
-          <div className="flex flex-col gap-4">
-            <p className="typo-body-1-semibold text-label-default">추구미 설명</p>
+          <ConsultingResponseSidebarItem label="추구미 설명">
             <p className="typo-body-2-long-regular text-label-info whitespace-pre-line">
               {description}
             </p>
-          </div>
+          </ConsultingResponseSidebarItem>
+
           <Separator />
         </div>
       )}
