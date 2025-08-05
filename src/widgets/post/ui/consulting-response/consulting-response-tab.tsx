@@ -3,7 +3,7 @@ import type { ValueOf } from '@/shared/type/types';
 import {
   CONSULTING_RESPONSE_TAB,
   CONSULTING_RESPONSE_TAB_OPTIONS,
-} from '../constants/consulting-response-tab';
+} from '../../constants/consulting-response-tab';
 
 type ConsultingResponseTabProps = {
   activeTab: ValueOf<typeof CONSULTING_RESPONSE_TAB>;

@@ -1,7 +1,7 @@
 import { Separator } from '@/shared';
-import { BANG_STYLE } from '../../../features/posts/constants/bang-style';
-import ConsultingResponseBangStyle from '../../../features/posts/ui/consulting-response/result/consulting-response-bang-style';
-import ConsultingResponseRecommendStyle from '../../../features/posts/ui/consulting-response/result/consulting-response-recommend-style';
+import { BANG_STYLE } from '@/features/posts/constants/bang-style';
+import ConsultingResponseBangStyle from '@/features/posts/ui/consulting-response/result/consulting-response-bang-style';
+import ConsultingResponseRecommendStyle from '@/features/posts/ui/consulting-response/result/consulting-response-recommend-style';
 
 export default function ConsultingResponseRecommendStyleContainer() {
   // const bangStyle = null;

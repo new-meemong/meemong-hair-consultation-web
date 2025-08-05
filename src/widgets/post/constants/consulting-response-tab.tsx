@@ -1,9 +1,9 @@
 import type { Option } from '@/shared/type/option';
 import type { ValueOf } from '@/shared/type/types';
 import type { ComponentType } from 'react';
-import ConsultingResponseCurrentStateContainer from '../ui/consulting-response-current-state-container';
-import ConsultingResponsePriceAndCommentContainer from '../ui/consulting-response-price-and-comment-container';
-import ConsultingResponseRecommendStyleContainer from '../ui/consulting-response-recommend-style-container';
+import ConsultingResponseCurrentStateContainer from '../ui/consulting-response/consulting-response-current-state-container';
+import ConsultingResponsePriceAndCommentContainer from '../ui/consulting-response/consulting-response-price-and-comment-container';
+import ConsultingResponseRecommendStyleContainer from '../ui/consulting-response/consulting-response-recommend-style-container';
 
 export const CONSULTING_RESPONSE_TAB = {
   CURRENT_STATE: 'currentState',
