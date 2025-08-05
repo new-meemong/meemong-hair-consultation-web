@@ -7,21 +7,24 @@ import {
   onSnapshot,
   runTransaction,
   serverTimestamp,
+  setDoc,
   updateDoc,
 } from 'firebase/firestore';
 
 import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
-import type { HairConsultationChatChannelUserMetaType } from '../type/hair-consultation-chat-channel-user-meta-type';
+import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 import { create } from 'zustand';
 import { db } from '@/shared/lib/firebase';
 import { getUser } from '@/features/auth/api/use-webview-login';
 import type { HairConsultationChatChannelType } from '../type/hair-consultation-chat-channel-type';
-import type { HairConsultationChatMessageType } from '../type/hair-consultation-chat-message-type';
-import { getCurrentUser } from '@/shared';
+import {
+  HairConsultationChatMessageTypeEnum,
+  type HairConsultationChatMessageType,
+} from '../type/hair-consultation-chat-message-type';
 
 interface ChatChannelState {
-  chatChannelUserMetas: HairConsultationChatChannelUserMetaType[];
-  otherUserMeta: HairConsultationChatChannelUserMetaType | null;
+  userHairConsultationChatChannelUserMetas: UserHairConsultationChatChannelType[];
+  otherUserHairConsultationChatChannel: UserHairConsultationChatChannelType | null;
   loading: boolean;
   error: string | null;
 
@@ -33,11 +36,8 @@ interface ChatChannelState {
 
   subscribeToChannels: (userId: number) => () => void;
 
-  // 해당 채널의 유저 unreadCount + 1
-  addChannelUserMetaUnreadCount: (channelId: string, receiverId: string) => Promise<void>;
-
   // 해당 채널의 유저 unreadCount 초기화
-  resetChannelUserMetaUnreadCount: (channelId: string, userId: string) => Promise<void>;
+  resetUnreadCount: (channelId: string, userId: string) => Promise<void>;
 
   updateUserLastReadAt: (channelId: string, userId: string) => Promise<void>;
 
@@ -52,33 +52,64 @@ interface ChatChannelState {
 
   getChannel: (channelId: string) => Promise<HairConsultationChatChannelType | null>;
 
-  subscribeToOtherUserMeta: (channelId: string, otherUserId: string) => () => void;
+  subscribeToOtherUser: (channelId: string, otherUserId: string) => () => void;
+
+  subscribeToMine: (channelId: string, userId: string) => () => void;
 
   updateChannelUserInfo: (channelId: string, userId: string) => Promise<void>;
+
+  leaveChannel: (channelId: string, userId: string, userName: string) => Promise<void>;
+}
+
+function getDbPath(userId: string) {
+  return `users/${userId}/userHairConsultationChatChannel`;
 }
 
 export const useHairConsultationChatChannelStore = create<ChatChannelState>((set) => ({
-  chatChannelUserMetas: [],
+  userHairConsultationChatChannelUserMetas: [],
   loading: false,
   error: null,
-  otherUserMeta: null,
+  otherUserHairConsultationChatChannel: null,
 
   findOrCreateChannel: async ({ senderId, receiverId }) => {
     try {
       // 참여자 ID 정렬 및 channelKey 생성
       const participantIds = [senderId, receiverId].sort();
-      const channelKey = `${
-        ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS
-      }_${participantIds.join('_')}`;
+      const channelKey = `${ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS}_${participantIds.join('_')}`;
 
       // 채널 레퍼런스 생성
-      const channelRef = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelKey);
+      const channelRef = doc(db, ChatChannelTypeEnum.JOB_POSTING_CHAT_CHANNELS, channelKey);
 
       // 트랜잭션을 사용하여 채널 생성 및 중복 방지
       const result = await runTransaction(db, async (transaction) => {
         const channelSnapshot = await transaction.get(channelRef);
+
         if (channelSnapshot.exists()) {
-          // 채널이 이미 존재하면 반환
+          // 채널이 존재하는 경우 삭제 여부 확인
+          const participantRefs = participantIds.map((userId) =>
+            doc(db, getDbPath(userId), channelRef.id),
+          );
+
+          const participantSnapshots = await Promise.all(
+            participantRefs.map((ref) => transaction.get(ref)),
+          );
+
+          // 참여자 중 한명이라도 deletedAt이 있으면 채널 재활성화
+          const hasDeletedChannel = participantSnapshots.some(
+            (snap) => snap.exists() && snap.data().deletedAt,
+          );
+
+          if (hasDeletedChannel) {
+            // 모든 참여자의 채널을 재활성화
+            participantRefs.forEach((ref) => {
+              transaction.update(ref, {
+                deletedAt: null,
+                updatedAt: serverTimestamp(),
+              });
+            });
+            return { channelId: channelRef.id, isCreated: true };
+          }
+
           return { channelId: channelRef.id, isCreated: false };
         }
 
@@ -101,11 +132,11 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
         // 참여자별 메타데이터 생성 (경로 변경)
         participantIds.forEach((userId) => {
-          const userMetaRef = doc(db, `users/${userId}/chatChannelUserMetas`, channelRef.id);
+          const userMetaRef = doc(db, getDbPath(userId), channelRef.id);
           const otherUserId = participantIds.filter((id) => id !== userId)[0];
           const otherUserData = userId === senderId ? receiverData.data : senderData.data;
 
-          const userMeta: HairConsultationChatChannelUserMetaType = {
+          const useMeta: UserHairConsultationChatChannelType = {
             channelId: channelRef.id,
             otherUserId,
             userId,
@@ -118,8 +149,9 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
             lastReadAt: null,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
+            deletedAt: null,
           };
-          transaction.set(userMetaRef, userMeta);
+          transaction.set(userMetaRef, useMeta);
         });
 
         return { channelId: channelRef.id, isCreated: true };
@@ -134,24 +166,28 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
   },
 
   subscribeToChannels: (userId: number) => {
-    set({ loading: true });
-
+    set({ loading: true, userHairConsultationChatChannelUserMetas: [] });
     // 사용자별 채널 메타데이터 구독 (경로 변경)
-    const userMetaRef = collection(db, `users/${userId}/chatChannelUserMetas`);
+    const ref = collection(db, getDbPath(userId.toString()));
 
     const unsubscribe = onSnapshot(
-      userMetaRef,
+      ref,
       async (snapshot) => {
         try {
-          const userMetas = snapshot.docs.map((doc) => ({
-            channelId: doc.id,
-            ...doc.data(),
-          })) as HairConsultationChatChannelUserMetaType[];
+          const channels = snapshot.docs
+            .filter((doc) => {
+              const data = doc.data();
+              return !data.deletedAt; // null이거나 undefined인 경우 true
+            })
+            .map((doc) => ({
+              channelId: doc.id,
+              ...doc.data(),
+            })) as UserHairConsultationChatChannelType[];
 
-          const sortedChannels = sortChannels(userMetas);
+          const sortedChannels = sortChannels(channels);
 
           set({
-            chatChannelUserMetas: sortedChannels,
+            userHairConsultationChatChannelUserMetas: sortedChannels,
             loading: false,
           });
         } catch (error) {
@@ -159,6 +195,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           set({
             error: '채널 정보를 불러오는 중 오류가 발생했습니다.',
             loading: false,
+            userHairConsultationChatChannelUserMetas: [],
           });
         }
       },
@@ -167,6 +204,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
         set({
           error: '채널 메타데이터를 불러오는 중 오류가 발생했습니다.',
           loading: false,
+          userHairConsultationChatChannelUserMetas: [],
         });
       },
     );
@@ -174,24 +212,11 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
     return unsubscribe;
   },
 
-  addChannelUserMetaUnreadCount: async (channelId: string, receiverId: string) => {
+  resetUnreadCount: async (channelId: string, userId: string) => {
     try {
-      const userMetaRef = doc(db, `users/${receiverId}/chatChannelUserMetas`, channelId);
+      const ref = doc(db, getDbPath(userId), channelId);
 
-      await updateDoc(userMetaRef, {
-        unreadCount: increment(1),
-        updatedAt: serverTimestamp(),
-      });
-    } catch (error) {
-      console.error('안 읽은 메시지 카운트 업데이트 중 오류 발생:', error);
-    }
-  },
-
-  resetChannelUserMetaUnreadCount: async (channelId: string, userId: string) => {
-    try {
-      const userMetaRef = doc(db, `users/${userId}/chatChannelUserMetas`, channelId);
-
-      await updateDoc(userMetaRef, {
+      await updateDoc(ref, {
         unreadCount: 0,
         updatedAt: serverTimestamp(),
       });
@@ -202,7 +227,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
   updateUserLastReadAt: async (channelId: string, userId: string) => {
     try {
-      const userMetaRef = doc(db, `users/${userId}/chatChannelUserMetas`, channelId);
+      const userMetaRef = doc(db, getDbPath(userId), channelId);
 
       await updateDoc(userMetaRef, {
         lastReadAt: serverTimestamp(),
@@ -215,7 +240,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
   blockChannel: async (channelId: string, userId: string) => {
     try {
-      const userMetaRef = doc(db, `users/${userId}/chatChannelUserMetas`, channelId);
+      const userMetaRef = doc(db, getDbPath(userId), channelId);
 
       await updateDoc(userMetaRef, {
         isBlockChannel: true,
@@ -228,7 +253,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
   unblockChannel: async (channelId: string, userId: string) => {
     try {
-      const userMetaRef = doc(db, `users/${userId}/chatChannelUserMetas`, channelId);
+      const userMetaRef = doc(db, getDbPath(userId), channelId);
 
       await updateDoc(userMetaRef, {
         isBlockChannel: false,
@@ -241,7 +266,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
   pinChannel: async (channelId: string, userId: string) => {
     try {
-      const userMetaRef = doc(db, `users/${userId}/chatChannelUserMetas`, channelId);
+      const userMetaRef = doc(db, getDbPath(userId), channelId);
 
       await updateDoc(userMetaRef, {
         isPinned: true,
@@ -255,7 +280,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
   unpinChannel: async (channelId: string, userId: string) => {
     try {
-      const userMetaRef = doc(db, `users/${userId}/chatChannelUserMetas`, channelId);
+      const userMetaRef = doc(db, getDbPath(userId), channelId);
 
       await updateDoc(userMetaRef, {
         isPinned: false,
@@ -267,24 +292,30 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
     }
   },
 
+  addChannelUserMetaUnreadCount: async (channelId: string, receiverId: string) => {
+    try {
+      const ref = doc(db, getDbPath(receiverId), channelId);
+
+      await updateDoc(ref, {
+        unreadCount: increment(1),
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error('안 읽은 메시지 카운트 업데이트 중 오류 발생:', error);
+    }
+  },
+
   getChannel: async (channelId: string) => {
     try {
-      const currentUserId = getCurrentUser()?.UserID;
       const channelRef = doc(db, ChatChannelTypeEnum.JOB_POSTING_CHAT_CHANNELS, channelId);
       const channelSnap = await getDoc(channelRef);
 
       if (channelSnap.exists()) {
         const channelData = channelSnap.data();
-        // 현재 사용자가 아닌 다른 참여자의 ID를 찾습니다
-        const otherUserId = channelData.participantsIds.find((id: string) => id !== currentUserId);
-
-        // 다른 사용자의 정보를 가져옵니다
-        const otherUserData = await getUser(otherUserId);
 
         return {
           id: channelSnap.id,
           ...channelData,
-          otherUser: otherUserData.success ? otherUserData.data : null,
         } as HairConsultationChatChannelType;
       }
       return null;
@@ -294,27 +325,64 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
     }
   },
 
-  subscribeToOtherUserMeta: (channelId: string, otherUserId: string) => {
-    const otherUserMetaRef = doc(db, `users/${otherUserId}/chatChannelUserMetas`, channelId);
+  subscribeToOtherUser: (channelId: string, otherUserId: string) => {
+    set({ loading: true });
+    const ref = doc(db, getDbPath(otherUserId), channelId);
 
     const unsubscribe = onSnapshot(
-      otherUserMetaRef,
+      ref,
       async (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.data();
-          const res = await getUser(data.otherUserId);
 
           set({
-            otherUserMeta: {
+            otherUserHairConsultationChatChannel: {
               channelId: snapshot.id,
               ...data,
-              otherUser: res.success ? res.data : null,
-            } as HairConsultationChatChannelUserMetaType,
+            } as UserHairConsultationChatChannelType,
+            loading: false,
+          });
+        } else {
+          set({
+            loading: false,
           });
         }
       },
       (error) => {
         console.error('상대방 메타데이터 구독 에러:', error);
+        set({
+          loading: false,
+        });
+      },
+    );
+
+    return unsubscribe;
+  },
+
+  subscribeToMine: (channelId: string, userId: string) => {
+    const ref = doc(db, getDbPath(userId), channelId);
+
+    const unsubscribe = onSnapshot(
+      ref,
+      async (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+
+          set((state) => ({
+            userHairConsultationChatChannelUserMetas: [
+              {
+                channelId: snapshot.id,
+                ...data,
+              } as UserHairConsultationChatChannelType,
+              ...state.userHairConsultationChatChannelUserMetas.filter(
+                (channel) => channel.channelId !== channelId,
+              ),
+            ],
+          }));
+        }
+      },
+      (error) => {
+        console.error('내 메타데이터 구독 에러:', error);
       },
     );
 
@@ -323,16 +391,29 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
   updateChannelUserInfo: async (channelId: string, userId: string) => {
     try {
-      const userMetaRef = doc(db, `users/${userId}/chatChannelUserMetas`, channelId);
+      const ref = doc(db, getDbPath(userId), channelId);
 
-      const userMetaSnap = await getDoc(userMetaRef);
-      if (!userMetaSnap.exists()) return;
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
 
-      const userMeta = userMetaSnap.data();
-      const userData = await getUser(userMeta.otherUserId);
+      const userHairConsultationChatChannel = snap.data();
+
+      // channelType이 없는 경우 처리
+      if (!userHairConsultationChatChannel.channelType) {
+        const channelRef = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelId);
+        const channelSnap = await getDoc(channelRef);
+
+        if (channelSnap.exists()) {
+          await updateDoc(ref, {
+            updatedAt: serverTimestamp(),
+          });
+        }
+      }
+
+      const userData = await getUser(userHairConsultationChatChannel.otherUserId);
 
       if (userData.success) {
-        await updateDoc(userMetaRef, {
+        await updateDoc(ref, {
           otherUser: userData.data,
           updatedAt: serverTimestamp(),
         });
@@ -341,10 +422,59 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
       console.error('사용자 정보 업데이트 중 오류 발생:', error);
     }
   },
+
+  leaveChannel: async (channelId: string, userId: string, userName: string) => {
+    try {
+      // 1. 시스템 메시지 전송
+      const messageRef = doc(
+        collection(
+          db,
+          `${ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS}/${channelId}/messages`,
+        ),
+      );
+
+      await setDoc(messageRef, {
+        id: messageRef.id,
+        message: `${userName}님이 나갔습니다.`,
+        messageType: HairConsultationChatMessageTypeEnum.SYSTEM,
+        metaPathList: [],
+        senderId: 'system',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      // 2. 유저의 채널 메타데이터 업데이트
+      const ref = doc(db, getDbPath(userId), channelId);
+      await updateDoc(ref, {
+        deletedAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      // 3. 채널의 참여자 목록에서 유저 제거
+      const channelRef = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelId);
+      const channelSnap = await getDoc(channelRef);
+
+      if (channelSnap.exists()) {
+        const channelData = channelSnap.data();
+        const updatedParticipants = channelData.participantsIds.filter(
+          (id: string) => id !== userId,
+        );
+
+        await updateDoc(channelRef, {
+          participantsIds: updatedParticipants,
+          updatedAt: serverTimestamp(),
+        });
+      }
+
+      console.log('채널 나가기 완료');
+    } catch (error) {
+      console.error('채널 나가기 중 오류 발생:', error);
+    }
+  },
 }));
 
 // 채널 데이터를 정렬하는 함수
-const sortChannels = (channels: HairConsultationChatChannelUserMetaType[]) => {
+const sortChannels = (channels: UserHairConsultationChatChannelType[]) => {
   return channels.sort((a, b) => {
     // 둘 다 고정된 경우 pinnedAt으로 비교
     if (a.isPinned && b.isPinned) {
