@@ -3,6 +3,7 @@ export enum HairConsultationChatMessageTypeEnum {
   TEXT = 'text',
   IMAGE = 'image',
   FILE = 'file',
+  SYSTEM = 'system',
 }
 
 export interface MetaPathType {

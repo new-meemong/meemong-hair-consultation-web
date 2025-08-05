@@ -29,8 +29,6 @@ interface ChatChannelState {
   findOrCreateChannel: (params: {
     senderId: string;
     receiverId: string;
-    jobPostingId: string | null; // 선택적 매개변수 추가
-    resumeId: string | null; // 선택적 매개변수 추가
   }) => Promise<{ channelId: string | null; isCreated: boolean }>;
 
   subscribeToChannels: (userId: number) => () => void;
@@ -65,16 +63,16 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
   error: null,
   otherUserMeta: null,
 
-  findOrCreateChannel: async ({ senderId, receiverId, jobPostingId, resumeId }) => {
+  findOrCreateChannel: async ({ senderId, receiverId }) => {
     try {
       // 참여자 ID 정렬 및 channelKey 생성
       const participantIds = [senderId, receiverId].sort();
       const channelKey = `${
-        ChatChannelTypeEnum.JOB_POSTING_CHAT_CHANNELS
-      }_${participantIds.join('_')}_${jobPostingId}_${resumeId}`;
+        ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS
+      }_${participantIds.join('_')}`;
 
       // 채널 레퍼런스 생성
-      const channelRef = doc(db, ChatChannelTypeEnum.JOB_POSTING_CHAT_CHANNELS, channelKey);
+      const channelRef = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelKey);
 
       // 트랜잭션을 사용하여 채널 생성 및 중복 방지
       const result = await runTransaction(db, async (transaction) => {
