@@ -2,6 +2,7 @@
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
+import ChatChannelListItem from '@/features/chat/ui/chat-channel-list-item';
 import { useEffect } from 'react';
 
 export default function HairConsultationChatPage() {
@@ -10,7 +11,7 @@ export default function HairConsultationChatPage() {
 
   const { chatChannelUserMetas, subscribeToChannels, loading } =
     useHairConsultationChatChannelStore((state) => ({
-      chatChannelUserMetas: state.chatChannelUserMetas,
+      chatChannelUserMetas: state.userHairConsultationChatChannelUserMetas,
       subscribeToChannels: state.subscribeToChannels,
       loading: state.loading,
     }));
@@ -41,5 +42,11 @@ export default function HairConsultationChatPage() {
     };
   }, [userId, subscribeToChannels]);
 
-  return <div>HairConsultationChatPage</div>;
+  return (
+    <div className="min-w-[375px] w-full h-screen mx-auto pb-20">
+      {chatChannelUserMetas.map((chatChannel) => (
+        <ChatChannelListItem key={chatChannel.channelId} chatChannel={chatChannel} />
+      ))}
+    </div>
+  );
 }
