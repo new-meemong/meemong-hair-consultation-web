@@ -40,7 +40,7 @@ export default function ConsultingPostFormOperationForm() {
   };
 
   const handleSubmit = () => {
-    if (!date) return;
+    if (!date || !name) return;
 
     const currentOperations = getValues(CONSULTING_POST_FORM_FIELD_NAME.option2) ?? [];
 
