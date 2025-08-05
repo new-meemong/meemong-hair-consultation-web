@@ -121,7 +121,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
           <div className="flex gap-2">
             <ImageUploader setImages={addImageFiles} validate={validateImageCount}>
               <Button type="button" variant="icon" size="iconLg">
-                <GalleryIcon className="size-6" />
+                <GalleryIcon className="size-6 fill-white" />
               </Button>
             </ImageUploader>
             <Button
