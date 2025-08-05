@@ -1,16 +1,18 @@
+import CloseIcon from '@/assets/icons/close.svg';
 import { MULTI_STEP_FORM_PORTAL_ID } from '@/shared/ui/multi-step-form';
 import { createPortal } from 'react-dom';
-import CloseIcon from '@/assets/icons/close.svg';
 
+import { cn } from '@/lib/utils';
 import { ToggleChip, ToggleChipGroup } from '@/shared';
-import { useState, useRef, useEffect } from 'react';
 import type { ValueOf } from '@/shared/type/types';
 import {
-  CONSULTING_RESPONSE_SIDEBAR_TAB,
   CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE,
   CONSULTING_RESPONSE_SIDEBAR_TABS,
 } from '@/widgets/post/constants/consulting-response-sidebar-tab';
-import { cn } from '@/lib/utils';
+import { useRef, useState } from 'react';
+import ConsultingResponseSidebarAdditionalInfoTabView from './consulting-response-sidebar-additional-info-tab-view';
+import ConsultingResponseSidebarCurrentStateTabView from './consulting-response-sidebar-current-state-tab-view';
+import ConsultingResponseSidebarDesiredStyleTabView from './consulting-response-sidebar-desired-style-tab-view';
 
 type ConsultingResponseSidebarProps = {
   isOpen: boolean;
@@ -31,6 +33,30 @@ export default function ConsultingResponseSidebar({
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     setHasScroll(e.currentTarget.scrollTop > 0);
+  };
+
+  const images = [
+    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/22/images/7b759976-7139-4f69-8e74-c8e6a4137d7c/7b759976-7139-4f69-8e74-c8e6a4137d7c.png',
+    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/22/images/7b759976-7139-4f69-8e74-c8e6a4137d7c/7b759976-7139-4f69-8e74-c8e6a4137d7c.png',
+    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/22/images/7b759976-7139-4f69-8e74-c8e6a4137d7c/7b759976-7139-4f69-8e74-c8e6a4137d7c.png',
+    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/22/images/7b759976-7139-4f69-8e74-c8e6a4137d7c/7b759976-7139-4f69-8e74-c8e6a4137d7c.png',
+    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/22/images/7b759976-7139-4f69-8e74-c8e6a4137d7c/7b759976-7139-4f69-8e74-c8e6a4137d7c.png',
+  ];
+
+  const description =
+    '출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요... \n솔직히 블루클럽 가도 되긴하는데 이왕 자르는거 좀 예쁘게도 자르고 싶기도 하구요... 잘하는데 좀 있나요? 출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요...';
+
+  const renderTabView = () => {
+    switch (activeTab) {
+      case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.CURRENT_STATE:
+        return <ConsultingResponseSidebarCurrentStateTabView images={images} />;
+      case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.DESIRED_STYLE:
+        return (
+          <ConsultingResponseSidebarDesiredStyleTabView images={images} description={description} />
+        );
+      case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.ADDITIONAL_INFO:
+        return <ConsultingResponseSidebarAdditionalInfoTabView />;
+    }
   };
 
   return createPortal(
@@ -71,7 +97,7 @@ export default function ConsultingResponseSidebar({
            `}
           onScroll={handleScroll}
         >
-          {CONSULTING_RESPONSE_SIDEBAR_TAB[activeTab].component}
+          {renderTabView()}
         </div>
       </div>
     </div>,
