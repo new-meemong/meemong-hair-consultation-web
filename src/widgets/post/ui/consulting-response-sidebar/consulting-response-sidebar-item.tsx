@@ -1,16 +1,19 @@
+import { cn } from '@/lib/utils';
 import type { ReactNode } from 'react';
 
 type ConsultingResponseSidebarItemProps = {
   label: string;
   children: ReactNode;
+  className?: string;
 };
 
 export default function ConsultingResponseSidebarItem({
   label,
   children,
+  className,
 }: ConsultingResponseSidebarItemProps) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className={cn('flex flex-col gap-4', className)}>
       <p className="typo-body-1-semibold text-label-default">{label}</p>
       {children}
     </div>

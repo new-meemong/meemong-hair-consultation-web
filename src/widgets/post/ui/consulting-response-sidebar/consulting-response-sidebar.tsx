@@ -13,6 +13,7 @@ import { useRef, useState } from 'react';
 import ConsultingResponseSidebarAdditionalInfoTabView from './consulting-response-sidebar-additional-info-tab-view';
 import ConsultingResponseSidebarCurrentStateTabView from './consulting-response-sidebar-current-state-tab-view';
 import ConsultingResponseSidebarDesiredStyleTabView from './consulting-response-sidebar-desired-style-tab-view';
+import { SKIN_COLOR_TYPE } from '@/features/posts/ui/skin-color-label';
 
 type ConsultingResponseSidebarProps = {
   isOpen: boolean;
@@ -46,6 +47,20 @@ export default function ConsultingResponseSidebar({
   const description =
     '출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요... \n솔직히 블루클럽 가도 되긴하는데 이왕 자르는거 좀 예쁘게도 자르고 싶기도 하구요... 잘하는데 좀 있나요? 출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요...';
 
+  const hairConcern =
+    '출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요... \n솔직히 블루클럽 가도 되긴하는데 이왕 자르는거 좀 예쁘게도 자르고 싶기도 하구요... 잘하는데 좀 있나요? 출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요...';
+  const skinColorType = SKIN_COLOR_TYPE.VERY_BRIGHT;
+  const operations = [
+    {
+      name: '헤어 고민 종류',
+      description: '2025.03',
+    },
+    {
+      name: '헤어 고민 종류',
+      description: '2025.03',
+    },
+  ];
+
   const renderTabView = () => {
     switch (activeTab) {
       case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.CURRENT_STATE:
@@ -55,7 +70,13 @@ export default function ConsultingResponseSidebar({
           <ConsultingResponseSidebarDesiredStyleTabView images={images} description={description} />
         );
       case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.ADDITIONAL_INFO:
-        return <ConsultingResponseSidebarAdditionalInfoTabView />;
+        return (
+          <ConsultingResponseSidebarAdditionalInfoTabView
+            hairConcern={hairConcern}
+            skinColorType={skinColorType}
+            operations={operations}
+          />
+        );
     }
   };
 

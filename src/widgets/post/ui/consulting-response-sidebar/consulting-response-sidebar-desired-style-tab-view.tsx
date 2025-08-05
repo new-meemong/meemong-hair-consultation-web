@@ -21,7 +21,6 @@ export default function ConsultingResponseSidebarDesiredStyleTabView({
               {description}
             </p>
           </ConsultingResponseSidebarItem>
-
           <Separator />
         </div>
       )}
