@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import useShowModal from './hooks/use-show-modal';
 import type { Image } from './image-form-item';
 import type { ImageUploaderRef } from './image-uploader';
 import ImageFormItem from './image-form-item';
@@ -19,34 +18,10 @@ export default function ImageUploaderItem({
   currentImage,
   onDelete,
 }: ImageUploaderProps) {
-  const showModal = useShowModal();
   const imageUploaderRef = useRef<ImageUploaderRef>(null);
 
   const handleClick = () => {
-    showModal({
-      id: 'consulting-post-image-upload-modal',
-      text: '사진 업로드 수단을\n선택해주세요',
-      buttons: [
-        {
-          label: '갤러리에서 선택하기',
-          onClick: () => {
-            imageUploaderRef.current?.triggerFileSelect();
-          },
-        },
-        {
-          label: '새로 촬영하기',
-          onClick: () => {
-            console.log('카메라로 촬영하기');
-          },
-        },
-        {
-          label: '닫기',
-          onClick: () => {
-            console.log('취소');
-          },
-        },
-      ],
-    });
+    imageUploaderRef.current?.triggerFileSelect();
   };
 
   const handleImageUpload = (file: File) => {
