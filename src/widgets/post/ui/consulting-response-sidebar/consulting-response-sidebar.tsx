@@ -96,7 +96,7 @@ export default function ConsultingResponseSidebar({
       >
         <div className={cn('flex flex-col gap-3 py-5', hasScroll && 'shadow-emphasize')}>
           <button type="button" className="self-end pr-5" onClick={onClose}>
-            <CloseIcon />
+            <CloseIcon className="size-7 fill-label-info" />
           </button>
           <ToggleChipGroup className="flex overflow-x-auto scrollbar-hide px-5">
             {CONSULTING_RESPONSE_SIDEBAR_TABS.map(({ value, icon, label }) => (
