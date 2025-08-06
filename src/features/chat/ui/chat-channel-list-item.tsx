@@ -5,6 +5,8 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import type { UserHairConsultationChatChannelType } from '@/features/chat/type/user-hair-consultation-chat-channel-type';
 import { cn } from '@/lib/utils';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { ROUTES } from '@/shared/lib/routes';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -35,7 +37,7 @@ type ChatChannelListItemProps = {
 };
 
 export default function ChatChannelListItem({ chatChannel }: ChatChannelListItemProps) {
-  const router = useRouter();
+  const router = useRouterWithUser();
 
   const [offset, setOffset] = useState(0);
   const [startX, setStartX] = useState(0);
@@ -96,7 +98,7 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
     // }
 
     // if (!source || source === SourceType.WEB) {
-    router.push(`/chat/hair-consultation/${chatChannel.channelId}`);
+    router.push(ROUTES.CHAT_HAIR_CONSULTATION_DETAIL(chatChannel.channelId));
     // }
   };
 

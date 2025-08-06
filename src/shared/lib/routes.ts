@@ -10,6 +10,10 @@ export const ROUTES = {
   POSTS_EDIT: (id: string) => `/posts/edit/${id}`,
   POSTS_CONSULTING_RESPONSE: (id: string) => `/posts/consulting/${id}`,
 
+  // 채팅
+  CHAT_HAIR_CONSULTATION: '/chat/hair-consultation',
+  CHAT_HAIR_CONSULTATION_DETAIL: (id: string) => `/chat/hair-consultation/${id}`,
+
   // 헤어상담
   TODAY_CONSULTANT: '/today-consultant',
 } as const;
