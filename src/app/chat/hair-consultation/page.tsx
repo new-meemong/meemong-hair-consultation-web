@@ -11,7 +11,7 @@ export default function HairConsultationChatPage() {
 
   const { chatChannelUserMetas, subscribeToChannels, loading } =
     useHairConsultationChatChannelStore((state) => ({
-      chatChannelUserMetas: state.userHairConsultationChatChannelUserMetas,
+      chatChannelUserMetas: state.userHairConsultationChatChannels,
       subscribeToChannels: state.subscribeToChannels,
       loading: state.loading,
     }));

@@ -23,7 +23,7 @@ import {
 } from '../type/hair-consultation-chat-message-type';
 
 interface ChatChannelState {
-  userHairConsultationChatChannelUserMetas: UserHairConsultationChatChannelType[];
+  userHairConsultationChatChannels: UserHairConsultationChatChannelType[];
   otherUserHairConsultationChatChannel: UserHairConsultationChatChannelType | null;
   loading: boolean;
   error: string | null;
@@ -66,7 +66,7 @@ function getDbPath(userId: string) {
 }
 
 export const useHairConsultationChatChannelStore = create<ChatChannelState>((set) => ({
-  userHairConsultationChatChannelUserMetas: [],
+  userHairConsultationChatChannels: [],
   loading: false,
   error: null,
   otherUserHairConsultationChatChannel: null,
@@ -166,7 +166,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
   },
 
   subscribeToChannels: (userId: number) => {
-    set({ loading: true, userHairConsultationChatChannelUserMetas: [] });
+    set({ loading: true, userHairConsultationChatChannels: [] });
     // 사용자별 채널 메타데이터 구독 (경로 변경)
     const ref = collection(db, getDbPath(userId.toString()));
 
@@ -187,7 +187,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           const sortedChannels = sortChannels(channels);
 
           set({
-            userHairConsultationChatChannelUserMetas: sortedChannels,
+            userHairConsultationChatChannels: sortedChannels,
             loading: false,
           });
         } catch (error) {
@@ -195,7 +195,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           set({
             error: '채널 정보를 불러오는 중 오류가 발생했습니다.',
             loading: false,
-            userHairConsultationChatChannelUserMetas: [],
+            userHairConsultationChatChannels: [],
           });
         }
       },
@@ -204,7 +204,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
         set({
           error: '채널 메타데이터를 불러오는 중 오류가 발생했습니다.',
           loading: false,
-          userHairConsultationChatChannelUserMetas: [],
+          userHairConsultationChatChannels: [],
         });
       },
     );
@@ -369,12 +369,12 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           const data = snapshot.data();
 
           set((state) => ({
-            userHairConsultationChatChannelUserMetas: [
+            userHairConsultationChatChannels: [
               {
                 channelId: snapshot.id,
                 ...data,
               } as UserHairConsultationChatChannelType,
-              ...state.userHairConsultationChatChannelUserMetas.filter(
+              ...state.userHairConsultationChatChannels.filter(
                 (channel) => channel.channelId !== channelId,
               ),
             ],
