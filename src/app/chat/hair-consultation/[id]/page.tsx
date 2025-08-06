@@ -19,7 +19,6 @@ export default function HairConsultationChatDetailPage() {
   // const source = searchParams.get("source") || "web";
 
   const [userChannel, setUserChannel] = useState<UserHairConsultationChatChannelType | null>(null);
-  const [messageText, setMessageText] = useState('');
 
   const [error, setError] = useState<string | null>(null);
 
@@ -111,7 +110,7 @@ export default function HairConsultationChatDetailPage() {
         channelId: chatChannelId,
         senderId: userId, // TODO: 실제 사용자 ID로 교체 필요
         receiverId: userChannel.otherUser.id.toString(),
-        message: messageText,
+        message: message,
         messageType: HairConsultationChatMessageTypeEnum.TEXT,
       });
 
@@ -144,7 +143,9 @@ export default function HairConsultationChatDetailPage() {
         title={userChannel?.otherUser?.DisplayName ?? ''}
         rightComponent={<ChatDetailMoreButton />}
       />
-      <MessageSection userChannel={userChannel} />
+      <div className="flex-1">
+        <MessageSection userChannel={userChannel} />
+      </div>
       <ChatMessageForm onSubmit={handleSendMessage} />
     </div>
   );

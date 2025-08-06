@@ -10,6 +10,8 @@ import {
 } from '../type/hair-consultation-chat-message-type';
 import SystemMessage from './system-message';
 import ChatMessageForm from './chat-message-form';
+import MyMessage from './my-message';
+import OtherMessage from './other-message';
 
 type MessageSectionProps = {
   userChannel: UserHairConsultationChatChannelType;
@@ -113,25 +115,26 @@ export default function MessageSection({ userChannel }: MessageSectionProps) {
   console.log('messages', messages);
 
   return (
-    <div className="flex-1 overflow-y-auto scrollbar-hide">
+    <div className="flex flex-col overflow-y-auto scrollbar-hide px-5 gap-6">
       {messages.map((message) => {
-        const messageCreatedAt = message.createdAt as Timestamp;
-        const isRead = checkIsRead(messageCreatedAt, message);
-
         if (message.messageType === HairConsultationChatMessageTypeEnum.SYSTEM) {
           return <SystemMessage key={message.id} message={message} />;
         }
 
-        //   return message.senderId === userId ? (
-        //     <MyMessage key={message.id} message={message} isRead={isRead} source={source} />
-        //   ) : (
-        //     <OtherMessage
-        //       key={message.id}
-        //       message={message}
-        //       userChannel={userChannel}
-        //       source={source}
-        //     />
-        //   );
+        return message.senderId === userId ? (
+          <MyMessage
+            key={message.id}
+            message={message}
+            //   source={source}
+          />
+        ) : (
+          <OtherMessage
+            key={message.id}
+            message={message}
+            authorProfileImageUrl={userChannel.otherUser.ProfilePictureURL}
+            //   source={source}
+          />
+        );
       })}
       <div ref={messagesEndRef} /> {/* 스크롤 위치 지정을 위한 요소 */}
     </div>
