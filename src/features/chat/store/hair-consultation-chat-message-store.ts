@@ -40,6 +40,10 @@ interface JobPostingChatMessageState {
   clearMessages: () => void;
 }
 
+function getDbPath(userId: string) {
+  return `users/${userId}/userHairConsultationChatChannel`;
+}
+
 export const useHairConsultationChatMessageStore = create<JobPostingChatMessageState>((set) => ({
   messages: [],
   loading: false,
@@ -116,12 +120,8 @@ export const useHairConsultationChatMessageStore = create<JobPostingChatMessageS
       });
 
       // 양쪽 사용자의 메타데이터에 lastMessage 업데이트
-      const senderMetaRef = doc(db, `users/${senderId}/userHairConsultationChatChannel`, channelId);
-      const receiverMetaRef = doc(
-        db,
-        `users/${receiverId}/userHairConsultationChatChannel`,
-        channelId,
-      );
+      const senderMetaRef = doc(db, getDbPath(senderId), channelId);
+      const receiverMetaRef = doc(db, getDbPath(receiverId), channelId);
 
       const lastMessageData = {
         id: messageRef.id,
