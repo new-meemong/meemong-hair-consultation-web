@@ -1,9 +1,9 @@
 import type { CommentWithReplies } from '@/entities/comment/model/comment';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '@/features/posts/constants/api';
 import { DEFAULT_LIMIT } from '@/shared/api/constants/default-limit';
+import useCursorInfiniteQuery from '@/shared/api/hooks/use-cursor-infinite-query';
 import type { PagingQueryParams } from '@/shared/api/types/paging-query-params';
 import type { PagingResponse } from '@/shared/api/types/paging-response';
-import useCursorInfiniteQuery from '@/shared/api/hooks/use-cursor-infinite-query';
 
 const getGetPostCommentsEndpoint = (postId: string) =>
   `${HAIR_CONSULT_POSTING_API_PREFIX}/${postId}/comments`;

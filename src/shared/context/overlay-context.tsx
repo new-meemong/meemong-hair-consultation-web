@@ -2,9 +2,11 @@
 
 import { createContext, useContext, useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
+
 import { BottomSheet, type BottomSheetProps } from '@/shared/ui/bottom-sheet';
-import { SNACK_BAR_ANIMATION_DURATION, SnackBar, type SnackBarProps } from '../ui/snack-bar';
+
 import { ModalWrapper, type ModalWrapperProps } from '../ui/modal-wrapper';
+import { SNACK_BAR_ANIMATION_DURATION, SnackBar, type SnackBarProps } from '../ui/snack-bar';
 
 type SnackBarWithId = Omit<SnackBarProps, 'onClose'> & {
   id: string;

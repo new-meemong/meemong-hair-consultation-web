@@ -1,8 +1,11 @@
-import useShowModal from '@/shared/ui/hooks/use-show-modal';
-import useDeletePostMutation from '../api/use-delete-post-mutation';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import { ROUTES } from '@/shared';
 import { useCallback } from 'react';
+
+import { ROUTES } from '@/shared';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
+
+import useDeletePostMutation from '../api/use-delete-post-mutation';
+
 
 export default function useDeletePost(postId: string) {
   const showModal = useShowModal();

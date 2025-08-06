@@ -1,7 +1,10 @@
-import type { Comment } from '@/entities/comment/model/comment';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+import type { Comment } from '@/entities/comment/model/comment';
+
 import type { CommentFormState } from '../types/comment-form-state';
 import type { CommentFormValues } from '../ui/comment-form';
+
 import useCommentOperations from './use-comment-operations';
 
 const INITIAL_COMMENT_FORM_STATE: CommentFormState = {

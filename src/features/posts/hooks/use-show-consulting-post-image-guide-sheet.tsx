@@ -1,9 +1,11 @@
+import { useCallback } from 'react';
+
+import Image from 'next/image';
+
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { Button } from '@/shared/ui/button';
 import Dot from '@/shared/ui/dot';
 import { DrawerClose, DrawerFooter, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer';
-import Image from 'next/image';
-import { useCallback } from 'react';
 
 const guideContents = [
   <div key="1">

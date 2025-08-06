@@ -1,20 +1,21 @@
 'use client';
 
-import { POST_TAB_VALUES, POST_TABS } from '@/features/posts/constants/post-tabs';
+import { useEffect, useState } from 'react';
+
+import { POST_TABS, POST_TAB_VALUES } from '@/features/posts/constants/post-tabs';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
-import PostForm from '@/features/posts/ui/post-form/post-form';
+import useShowReloadConsultingPostModal from '@/features/posts/hooks/use-show-reload-consulting-post-modal';
 import type { PostFormValues } from '@/features/posts/types/post-form-values';
+import ConsultingPostForm from '@/features/posts/ui/consulting-form/consulting-post-form/consulting-post-form';
+import PostForm from '@/features/posts/ui/post-form/post-form';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { ValueOf } from '@/shared/type/types';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
-import { useEffect, useState } from 'react';
-import ConsultingPostForm from '@/features/posts/ui/consulting-form/consulting-post-form/consulting-post-form';
-import useShowModal from '@/shared/ui/hooks/use-show-modal';
-import useShowReloadConsultingPostModal from '@/features/posts/hooks/use-show-reload-consulting-post-modal';
 
 const tabs = POST_TABS.reverse();
 

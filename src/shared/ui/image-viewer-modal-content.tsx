@@ -1,5 +1,7 @@
 import Image from 'next/image';
+
 import { XIcon } from 'lucide-react';
+
 import { useOverlayContext } from '../context/overlay-context';
 
 type ImageViewerModalContentProps = {

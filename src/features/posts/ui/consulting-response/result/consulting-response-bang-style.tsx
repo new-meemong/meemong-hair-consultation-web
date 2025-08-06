@@ -1,4 +1,5 @@
 import type { ValueOf } from '@/shared/type/types';
+
 import { BANG_STYLE, BANG_STYLE_OPTION } from '../../../constants/bang-style';
 import ConsultingResponseItem from '../consulting-response-item';
 import ConsultingResponseItemResult from '../consulting-response-item-result';

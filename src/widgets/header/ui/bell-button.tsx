@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import BellIcon from '@/assets/icons/bell.svg';
 
 interface BellButtonProps {

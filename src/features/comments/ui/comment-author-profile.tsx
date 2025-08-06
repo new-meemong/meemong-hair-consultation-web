@@ -1,9 +1,9 @@
+import LockIcon from '@/assets/icons/lock.svg';
 import ProfileIcon from '@/assets/icons/profile.svg';
 import type { CommentUser } from '@/entities/comment/model/comment';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
-import LockIcon from '@/assets/icons/lock.svg';
 
 type CommentAuthorProfileProps = {
   author: CommentUser;

@@ -1,8 +1,9 @@
 import { Separator } from '@/shared';
-import ConsultingResponseFaceType from '../../../../features/posts/ui/consulting-response/result/consulting-response-face-type';
-import ConsultingResponseHairType from '../../../../features/posts/ui/consulting-response/result/consulting-response-hair-type';
-import ConsultingResponseHairCondition from '../../../../features/posts/ui/consulting-response/result/consulting-response-hair-condition';
+
 import { HAIR_TYPE } from '../../../../features/posts/constants/hair-type';
+import ConsultingResponseFaceType from '../../../../features/posts/ui/consulting-response/result/consulting-response-face-type';
+import ConsultingResponseHairCondition from '../../../../features/posts/ui/consulting-response/result/consulting-response-hair-condition';
+import ConsultingResponseHairType from '../../../../features/posts/ui/consulting-response/result/consulting-response-hair-type';
 
 export default function ConsultingResponseCurrentStateContainer() {
   //   const currentHairType = null;

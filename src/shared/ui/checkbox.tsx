@@ -1,9 +1,10 @@
-import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import * as React from 'react';
 
-import SquareCheckboxIcon from '@/assets/icons/square-checkbox.svg';
-import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+
 import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
+import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
+import SquareCheckboxIcon from '@/assets/icons/square-checkbox.svg';
 import { cn } from '@/shared/lib/utils';
 
 export type CheckboxProps = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {

@@ -1,5 +1,6 @@
-import ky from 'ky';
 import type { SearchParamsOption } from 'ky';
+import ky from 'ky';
+
 import { getToken } from '../lib/auth';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';

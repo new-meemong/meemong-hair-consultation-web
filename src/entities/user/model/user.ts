@@ -1,5 +1,6 @@
-import { USER_ROLE } from '../constants/user-role';
 import type { ValueOf } from '@/shared/type/types';
+
+import { USER_ROLE } from '../constants/user-role';
 
 export interface User {
   id: number;

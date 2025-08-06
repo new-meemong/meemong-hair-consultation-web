@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { createPortal } from 'react-dom';
-import { cn } from '@/lib/utils';
+
 import CheckIcon from '@/assets/icons/check.svg';
+import { cn } from '@/lib/utils';
 
 export const SNACK_BAR_ANIMATION_DURATION = 2000;
 

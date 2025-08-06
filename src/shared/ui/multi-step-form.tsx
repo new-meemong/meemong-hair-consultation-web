@@ -1,8 +1,11 @@
 import { useState } from 'react';
+
 import { useFormContext, useWatch } from 'react-hook-form';
+import type { Path } from 'react-hook-form';
+
 import type { FormStep } from '../type/form-step';
 import type { KeyOf } from '../type/types';
-import type { Path } from 'react-hook-form';
+
 import ProgressPagination from './progress-pagination';
 
 export const MULTI_STEP_FORM_PORTAL_ID = 'multi-step-form-portal';

@@ -1,20 +1,22 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useAuthContext } from '@/features/auth/context/auth-context';
-import { CommentContainer } from '@/widgets/comments/ui/comment-container';
-import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
-import { PostDetailContainer } from '@/widgets/post/post-detail-container';
-import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
-import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
-import useGuidePopup from '@/shared/hooks/use-guide-popup';
-import { SiteHeader } from '@/widgets/header';
+
 import { useParams } from 'next/navigation';
+
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
+import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
+import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
+import { Button } from '@/shared';
+import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ROUTES } from '@/shared/lib/routes';
-import { Button } from '@/shared';
+import { CommentContainer } from '@/widgets/comments/ui/comment-container';
+import { SiteHeader } from '@/widgets/header';
+import { PostDetailContainer } from '@/widgets/post/post-detail-container';
 
 export default function PostDetailPage() {
   const { isUserDesigner, user } = useAuthContext();

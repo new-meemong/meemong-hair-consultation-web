@@ -1,10 +1,13 @@
+import { useState } from 'react';
+
+import { useFormContext, useWatch } from 'react-hook-form';
+
 import { Button } from '@/shared';
 import FormItem from '@/shared/ui/form-item';
 import { Input } from '@/shared/ui/input';
-import { useState } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
-import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
+
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
+import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
 type FormValue = {
   operationName: string;

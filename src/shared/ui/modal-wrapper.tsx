@@ -1,7 +1,8 @@
 'use client';
 
-import { Dialog, DialogTitle } from '@/shared/ui/dialog';
 import React from 'react';
+
+import { Dialog, DialogTitle } from '@/shared/ui/dialog';
 
 export type ModalWrapperProps = {
   id: string;

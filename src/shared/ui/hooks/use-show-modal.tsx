@@ -1,5 +1,7 @@
-import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useCallback } from 'react';
+
+import { useOverlayContext } from '@/shared/context/overlay-context';
+
 import Modal, { type ModalButtonProps } from '../modal';
 
 type UseShowModalProps = {

@@ -1,8 +1,10 @@
 import { useRef } from 'react';
-import type { Image } from './image-form-item';
-import type { ImageUploaderRef } from './image-uploader';
-import ImageFormItem from './image-form-item';
+
 import PlusIcon from '@/assets/icons/plus.svg';
+
+import type { Image } from './image-form-item';
+import ImageFormItem from './image-form-item';
+import type { ImageUploaderRef } from './image-uploader';
 import ImageUploader from './image-uploader';
 
 type ImageUploaderProps = {

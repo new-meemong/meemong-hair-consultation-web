@@ -1,8 +1,9 @@
 'use client';
 
+import { type ReactNode } from 'react';
+
 import { cn } from '@/shared/lib/utils';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/shared/ui/drawer';
-import { type ReactNode } from 'react';
 
 export interface BottomSheetProps {
   id: string;

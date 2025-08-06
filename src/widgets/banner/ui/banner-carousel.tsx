@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Carousel, CarouselContent, CarouselItem } from '@/shared/ui/carousel';
+
 import { type Banner } from '@/entities/posts';
+import { Carousel, CarouselContent, CarouselItem } from '@/shared/ui/carousel';
 
 interface BannerCarouselProps {
   banners: Banner[];

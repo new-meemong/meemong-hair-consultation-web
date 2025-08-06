@@ -1,4 +1,5 @@
 import z from 'zod';
+
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
 
 export const CONSULTING_POST_FORM_IMAGE_POSITION = {

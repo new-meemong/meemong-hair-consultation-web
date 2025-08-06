@@ -1,5 +1,7 @@
-import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useCallback } from 'react';
+
+import { useOverlayContext } from '@/shared/context/overlay-context';
+
 import { DialogContent } from '../dialog';
 import ImageViewerModalContent from '../image-viewer-modal-content';
 

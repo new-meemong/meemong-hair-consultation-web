@@ -1,6 +1,8 @@
+import Image from 'next/image';
+
 import { cn } from '@/lib/utils';
 import { Separator } from '@/shared';
-import Image from 'next/image';
+
 import ConsultingResponseSidebarItem from './consulting-response-sidebar-item';
 
 type ConsultingResponseSidebarDesiredStyleTabViewProps = {

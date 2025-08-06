@@ -1,7 +1,8 @@
+import Image from 'next/image';
+
+import CrownIcon from '@/assets/icons/crown.svg';
 import { Carousel, cn } from '@/shared';
 import { CarouselContent, CarouselItem } from '@/shared/ui/carousel';
-import Image from 'next/image';
-import CrownIcon from '@/assets/icons/crown.svg';
 
 function Avatar({ avatarUrl, name }: { avatarUrl: string | null; name: string }) {
   return (

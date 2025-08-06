@@ -1,6 +1,7 @@
 import z from 'zod';
-import { POST_FORM_FIELD_NAME } from '../constants/post-form-field-name';
+
 import { CREATE_POST_FORM_MAX_COUNT } from '../constants/create-post-form';
+import { POST_FORM_FIELD_NAME } from '../constants/post-form-field-name';
 
 export const formSchema = z.object({
   [POST_FORM_FIELD_NAME.title]: z

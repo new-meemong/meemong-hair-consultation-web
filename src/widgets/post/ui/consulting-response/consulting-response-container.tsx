@@ -1,11 +1,13 @@
-import ConsultingResponseTab from '@/widgets/post/ui/consulting-response/consulting-response-tab';
+import { useState } from 'react';
+
+import type { ValueOf } from '@/shared/type/types';
 import {
   CONSULTING_RESPONSE_TAB,
   CONSULTING_RESPONSE_TAB_OPTION,
   CONSULTING_RESPONSE_TAB_OPTIONS,
 } from '@/widgets/post/constants/consulting-response-tab';
-import type { ValueOf } from '@/shared/type/types';
-import { useState } from 'react';
+import ConsultingResponseTab from '@/widgets/post/ui/consulting-response/consulting-response-tab';
+
 
 export default function ConsultingResponseContainer() {
   const [activeTab, setActiveTab] = useState<ValueOf<typeof CONSULTING_RESPONSE_TAB>>(

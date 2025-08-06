@@ -1,8 +1,10 @@
-import SkinColorLabel, { SKIN_COLOR_TYPE } from '@/features/posts/ui/skin-color-label';
-import ConsultingResponseSidebarItem from './consulting-response-sidebar-item';
-import type { ValueOf } from '@/shared/type/types';
-import { Separator } from '@/shared';
 import ConsultingInputResultListItem from '@/features/posts/ui/consulting-input-result-list-item';
+import SkinColorLabel, { SKIN_COLOR_TYPE } from '@/features/posts/ui/skin-color-label';
+import { Separator } from '@/shared';
+import type { ValueOf } from '@/shared/type/types';
+
+import ConsultingResponseSidebarItem from './consulting-response-sidebar-item';
+
 
 type ConsultingResponseSidebarAdditionalInfoTabViewProps = {
   hairConcern: string;

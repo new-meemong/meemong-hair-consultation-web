@@ -1,11 +1,15 @@
+import '../styles/globals.css';
+
+import { Suspense } from 'react';
+
+import type { Metadata } from 'next';
+
+import localFont from 'next/font/local';
+
 import { AuthProvider } from '@/features/auth/context/auth-context';
 import { LoadingProvider } from '@/shared/context/loading-context';
 import { OverlayProvider } from '@/shared/context/overlay-context';
 import { QueryProvider } from '@/shared/ui/providers/query-provider';
-import type { Metadata } from 'next';
-import localFont from 'next/font/local';
-import { Suspense } from 'react';
-import '../styles/globals.css';
 
 const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',

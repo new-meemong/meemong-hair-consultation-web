@@ -1,6 +1,7 @@
+import { useMutation } from '@tanstack/react-query';
+
 import type { User } from '@/entities/user/model/user';
 import { apiClient } from '@/shared/api/client';
-import { useMutation } from '@tanstack/react-query';
 
 const WEBVIEW_API_KEY = process.env.NEXT_PUBLIC_WEBVIEW_API_KEY;
 
