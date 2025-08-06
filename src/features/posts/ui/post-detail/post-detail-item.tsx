@@ -16,7 +16,7 @@ function PostDetailItem({ postDetail }: PostDetailItemProps) {
   const { id, likeCount, commentCount, isFavorited } = postDetail;
 
   // TODO: 컨설팅 게시글 여부 확인
-  const isConsultingPost = true;
+  const isConsultingPost = false;
 
   return (
     <>
