@@ -21,6 +21,7 @@ import {
   HairConsultationChatMessageTypeEnum,
   type HairConsultationChatMessageType,
 } from '../type/hair-consultation-chat-message-type';
+import { getDbPath } from '../lib/get-db-path';
 
 interface ChatChannelState {
   userHairConsultationChatChannels: UserHairConsultationChatChannelType[];
@@ -59,10 +60,6 @@ interface ChatChannelState {
   updateChannelUserInfo: (channelId: string, userId: string) => Promise<void>;
 
   leaveChannel: (channelId: string, userId: string, userName: string) => Promise<void>;
-}
-
-function getDbPath(userId: string) {
-  return `users/${userId}/userHairConsultationChatChannel`;
 }
 
 export const useHairConsultationChatChannelStore = create<ChatChannelState>((set) => ({

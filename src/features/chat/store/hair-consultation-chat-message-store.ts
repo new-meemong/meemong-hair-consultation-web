@@ -18,8 +18,9 @@ import type {
   HairConsultationChatMessageTypeEnum,
   MetaPathType,
 } from '../type/hair-consultation-chat-message-type';
+import { getDbPath } from '../lib/get-db-path';
 
-interface JobPostingChatMessageState {
+interface HairConsultationChatMessageState {
   messages: HairConsultationChatMessageType[];
   loading: boolean;
   error: string | null;
@@ -40,117 +41,121 @@ interface JobPostingChatMessageState {
   clearMessages: () => void;
 }
 
-function getDbPath(userId: string) {
-  return `users/${userId}/userHairConsultationChatChannel`;
-}
+export const useHairConsultationChatMessageStore = create<HairConsultationChatMessageState>(
+  (set) => ({
+    messages: [],
+    loading: false,
+    error: null,
+    hasMore: true,
+    lastMessage: null,
 
-export const useHairConsultationChatMessageStore = create<JobPostingChatMessageState>((set) => ({
-  messages: [],
-  loading: false,
-  error: null,
-  hasMore: true,
-  lastMessage: null,
+    subscribeToMessages: (channelId: string) => {
+      set({ loading: true });
 
-  subscribeToMessages: (channelId: string) => {
-    set({ loading: true });
-
-    const q = query(
-      collection(db, `${ChatChannelTypeEnum.JOB_POSTING_CHAT_CHANNELS}/${channelId}/messages`),
-      orderBy('createdAt', 'desc'),
-    );
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const messages = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as HairConsultationChatMessageType[];
-
-        set({
-          messages: messages.reverse(),
-          loading: false,
-        });
-      },
-      (error) => {
-        set({
-          error: '메시지를 불러오는 중 오류가 발생했습니다.',
-          loading: false,
-        });
-        console.error('Error fetching messages:', error);
-      },
-    );
-
-    return unsubscribe;
-  },
-
-  sendMessage: async ({
-    channelId,
-    senderId,
-    receiverId,
-    message,
-    messageType,
-    metaPathList = [],
-  }) => {
-    try {
-      if (!channelId) {
-        return { success: false, channelId: null };
-      }
-
-      // 메시지 생성
-      const messageRef = doc(
-        collection(db, `${ChatChannelTypeEnum.JOB_POSTING_CHAT_CHANNELS}/${channelId}/messages`),
+      const q = query(
+        collection(
+          db,
+          `${ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS}/${channelId}/messages`,
+        ),
+        orderBy('createdAt', 'desc'),
       );
 
-      const newMessage: Omit<HairConsultationChatMessageType, 'id'> = {
-        message,
-        messageType,
-        metaPathList,
-        senderId,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      };
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const messages = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as HairConsultationChatMessageType[];
 
-      await setDoc(messageRef, newMessage);
+          set({
+            messages: messages.reverse(),
+            loading: false,
+          });
+        },
+        (error) => {
+          set({
+            error: '메시지를 불러오는 중 오류가 발생했습니다.',
+            loading: false,
+          });
+          console.error('Error fetching messages:', error);
+        },
+      );
 
-      // 채널의 lastMessage 업데이트
-      const channelRef = doc(db, ChatChannelTypeEnum.JOB_POSTING_CHAT_CHANNELS, channelId);
-      await updateDoc(channelRef, {
-        updatedAt: serverTimestamp(),
-      });
+      return unsubscribe;
+    },
 
-      // 양쪽 사용자의 메타데이터에 lastMessage 업데이트
-      const senderMetaRef = doc(db, getDbPath(senderId), channelId);
-      const receiverMetaRef = doc(db, getDbPath(receiverId), channelId);
+    sendMessage: async ({
+      channelId,
+      senderId,
+      receiverId,
+      message,
+      messageType,
+      metaPathList = [],
+    }) => {
+      try {
+        if (!channelId) {
+          return { success: false, channelId: null };
+        }
 
-      const lastMessageData = {
-        id: messageRef.id,
-        ...newMessage,
-      };
+        // 메시지 생성
+        const messageRef = doc(
+          collection(
+            db,
+            `${ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS}/${channelId}/messages`,
+          ),
+        );
 
-      // 사용자 메타데이터 업데이트
-      const updateSenderMeta = updateDoc(senderMetaRef, {
-        lastMessage: lastMessageData,
-        updatedAt: serverTimestamp(),
-      });
+        const newMessage: Omit<HairConsultationChatMessageType, 'id'> = {
+          message,
+          messageType,
+          metaPathList,
+          senderId,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        };
 
-      const updateReceiverMeta = updateDoc(receiverMetaRef, {
-        lastMessage: lastMessageData,
-        updatedAt: serverTimestamp(),
-        unreadCount: increment(1),
-      });
+        await setDoc(messageRef, newMessage);
 
-      await Promise.all([updateSenderMeta, updateReceiverMeta]);
+        // 채널의 lastMessage 업데이트
+        const channelRef = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelId);
+        await updateDoc(channelRef, {
+          updatedAt: serverTimestamp(),
+        });
 
-      return { success: true, channelId };
-    } catch (error) {
-      console.error('Error sending message:', error);
-      set({ error: '메시지 전송에 실패했습니다.' });
-      return { success: false, channelId: null };
-    }
-  },
+        // 양쪽 사용자의 메타데이터에 lastMessage 업데이트
+        const senderMetaRef = doc(db, getDbPath(senderId), channelId);
+        const receiverMetaRef = doc(db, getDbPath(receiverId), channelId);
 
-  clearMessages: () => {
-    set({ messages: [] });
-  },
-}));
+        const lastMessageData = {
+          id: messageRef.id,
+          ...newMessage,
+        };
+
+        // 사용자 메타데이터 업데이트
+        const updateSenderMeta = updateDoc(senderMetaRef, {
+          lastMessage: lastMessageData,
+          updatedAt: serverTimestamp(),
+        });
+
+        const updateReceiverMeta = updateDoc(receiverMetaRef, {
+          lastMessage: lastMessageData,
+          updatedAt: serverTimestamp(),
+          unreadCount: increment(1),
+        });
+
+        await Promise.all([updateSenderMeta, updateReceiverMeta]);
+
+        return { success: true, channelId };
+      } catch (error) {
+        console.error('Error sending message:', error);
+        set({ error: '메시지 전송에 실패했습니다.' });
+        return { success: false, channelId: null };
+      }
+    },
+
+    clearMessages: () => {
+      set({ messages: [] });
+    },
+  }),
+);
