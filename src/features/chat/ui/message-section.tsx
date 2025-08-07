@@ -1,17 +1,12 @@
-import { useEffect, useRef } from 'react';
-import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
-import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useEffect, useRef } from 'react';
 import { useHairConsultationChatChannelStore } from '../store/hair-consultation-chat-channel-store';
-import type { Timestamp } from 'firebase/firestore';
-import {
-  HairConsultationChatMessageTypeEnum,
-  type HairConsultationChatMessageType,
-} from '../type/hair-consultation-chat-message-type';
-import SystemMessage from './system-message';
-import ChatMessageForm from './chat-message-form';
+import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
+import { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
+import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 import MyMessage from './my-message';
 import OtherMessage from './other-message';
+import SystemMessage from './system-message';
 
 type MessageSectionProps = {
   userChannel: UserHairConsultationChatChannelType;
@@ -29,17 +24,12 @@ export default function MessageSection({ userChannel }: MessageSectionProps) {
   const { user } = useAuthContext();
   const userId = user.id.toString();
 
-  const {
-    updateUserLastReadAt,
-    otherUserHairConsultationChatChannel,
-    subscribeToOtherUser,
-    resetUnreadCount,
-  } = useHairConsultationChatChannelStore((state) => ({
-    updateUserLastReadAt: state.updateUserLastReadAt,
-    otherUserHairConsultationChatChannel: state.otherUserHairConsultationChatChannel,
-    subscribeToOtherUser: state.subscribeToOtherUser,
-    resetUnreadCount: state.resetUnreadCount,
-  }));
+  const { updateUserLastReadAt, subscribeToOtherUser, resetUnreadCount } =
+    useHairConsultationChatChannelStore((state) => ({
+      updateUserLastReadAt: state.updateUserLastReadAt,
+      subscribeToOtherUser: state.subscribeToOtherUser,
+      resetUnreadCount: state.resetUnreadCount,
+    }));
 
   useEffect(() => {
     if (!userChannel.channelId || !userChannel.otherUser?.id) return;
@@ -103,19 +93,8 @@ export default function MessageSection({ userChannel }: MessageSectionProps) {
     scrollToBottom();
   }, [messages.length]);
 
-  const checkIsRead = (messageCreatedAt: Timestamp, message: HairConsultationChatMessageType) => {
-    // 내가 보낸 메시지인 경우에만 상대방의 lastReadAt 확인
-    if (userId === message.senderId) {
-      const otherLastReadAt = otherUserHairConsultationChatChannel?.lastReadAt as Timestamp | null;
-      return otherLastReadAt ? messageCreatedAt?.toMillis() <= otherLastReadAt?.toMillis() : false;
-    }
-    return true; // 상대방 메시지는 항상 false 반환
-  };
-
-  console.log('messages', messages);
-
   return (
-    <div className="flex flex-col overflow-y-auto scrollbar-hide px-5 gap-6">
+    <div className="flex flex-col overflow-y-auto scrollbar-hide px-5 gap-6 h-full">
       {messages.map((message) => {
         if (message.messageType === HairConsultationChatMessageTypeEnum.SYSTEM) {
           return <SystemMessage key={message.id} message={message} />;

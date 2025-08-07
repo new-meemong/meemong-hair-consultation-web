@@ -85,7 +85,7 @@ export default function HairConsultationChatDetailPage() {
   //   }, [source, userHairConsultationChatChannels, userChannel]);
 
   useEffect(() => {
-    if (params.id) {
+    if (chatChannelId) {
       const unsubscribe = subscribeToMessages(chatChannelId);
       return () => unsubscribe();
     }
@@ -143,37 +143,10 @@ export default function HairConsultationChatDetailPage() {
         title={userChannel?.otherUser?.DisplayName ?? ''}
         rightComponent={<ChatDetailMoreButton />}
       />
-      <div className="flex-1">
+      <div className="flex-1 overflow-hidden">
         <MessageSection userChannel={userChannel} />
       </div>
       <ChatMessageForm onSubmit={handleSendMessage} />
     </div>
   );
-
-  //   return (
-  //     <Container>
-  //       <JobPostingChatDetailHeader
-  //         otherUserDisplayName={userChannel?.otherUser?.DisplayName || ''}
-  //         source={source}
-  //       />
-
-  //       <TopButtonSection userChannel={userChannel} userId={userId || null} />
-
-  //       <MessageSection userChannel={userChannel!} source={source} />
-  //       <InputContainer>
-  //         <MessageInput
-  //           type="text"
-  //           value={messageText}
-  //           onChange={(e) => setMessageText(e.target.value)}
-  //           placeholder="메시지를 입력하세요..."
-  //           onKeyDown={(e) => {
-  //             if (e.key === 'Enter') {
-  //               handleSendMessage();
-  //             }
-  //           }}
-  //         />
-  //         <SendButton onClick={handleSendMessage}>전송</SendButton>
-  //       </InputContainer>
-  //     </Container>
-  //   );
 }
