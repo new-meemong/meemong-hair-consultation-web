@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
 import ChatMessageActionBox from './chat-message-action-box';
+import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 
 const CHAT_MESSAGE_INPUT_FIELD_NAME = {
   content: 'content',
@@ -22,9 +23,10 @@ type ChatMessageFormProps = {
   onSubmit: (
     data: ChatMessageInputValues,
   ) => Promise<{ success: boolean; channelId: string | null }>;
+  userChannel: UserHairConsultationChatChannelType;
 };
 
-export default function ChatMessageForm({ onSubmit }: ChatMessageFormProps) {
+export default function ChatMessageForm({ onSubmit, userChannel }: ChatMessageFormProps) {
   const [showedActionBox, setShowedActionBox] = useState(false);
 
   const method = useForm<ChatMessageInputValues>({
@@ -74,7 +76,7 @@ export default function ChatMessageForm({ onSubmit }: ChatMessageFormProps) {
             <SendIcon className="size-7 fill-label-sub" />
           </button>
         </div>
-        {showedActionBox && <ChatMessageActionBox />}
+        {showedActionBox && <ChatMessageActionBox userChannel={userChannel} />}
       </form>
     </FormProvider>
   );

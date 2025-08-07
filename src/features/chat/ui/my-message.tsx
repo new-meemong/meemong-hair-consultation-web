@@ -1,9 +1,23 @@
 import MyChatMessageTip from '@/assets/icons/my-chat-message-tip.svg';
-import { format } from 'date-fns';
 import type { Timestamp } from 'firebase/firestore';
 import { useHairConsultationChatChannelStore } from '../store/hair-consultation-chat-channel-store';
-import type { HairConsultationChatMessageType } from '../type/hair-consultation-chat-message-type';
+import {
+  HairConsultationChatMessageTypeEnum,
+  type HairConsultationChatMessageType,
+} from '../type/hair-consultation-chat-message-type';
 import MessageDate from './message-date';
+import ImageMessage from './image-message';
+
+function MyChatMessageBox({ message }: { message: string }) {
+  return (
+    <div className="flex items-end">
+      <div className="rounded-l-10 rounded-tr-10 bg-label-default p-4 flex">
+        <p className="typo-body-2-long-regular text-white">{message}</p>
+      </div>
+      <MyChatMessageTip />
+    </div>
+  );
+}
 
 type MyMessageProps = {
   message: HairConsultationChatMessageType;
@@ -27,12 +41,11 @@ export default function MyMessage({ message }: MyMessageProps) {
     <div className="flex flex-1 justify-end">
       <div className="flex gap-2 items-end">
         <MessageDate messageCreatedAt={message.createdAt as Timestamp} />
-        <div className="flex items-end">
-          <div className="rounded-l-10 rounded-tr-10 bg-label-default p-4 flex">
-            <p className="typo-body-2-long-regular text-white">{message.message}</p>
-          </div>
-          <MyChatMessageTip />
-        </div>
+        {message.messageType === HairConsultationChatMessageTypeEnum.IMAGE ? (
+          <ImageMessage message={message.message} />
+        ) : (
+          <MyChatMessageBox message={message.message} />
+        )}
       </div>
     </div>
   );

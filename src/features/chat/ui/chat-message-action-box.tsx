@@ -1,10 +1,16 @@
-import type { ReactNode } from 'react';
-import GalleryIcon from '@/assets/icons/gallery.svg';
 import CalendarIcon from '@/assets/icons/calendar.svg';
-import ResumeIcon from '@/assets/icons/resume.svg';
 import ContractIcon from '@/assets/icons/contract.svg';
+import GalleryIcon from '@/assets/icons/gallery.svg';
+import ResumeIcon from '@/assets/icons/resume.svg';
+import useUploadPostImageMutation from '@/features/posts/api/use-upload-post-image';
+import { removeQueryParams } from '@/shared/lib/remove-query-params';
 import type { ValueOf } from '@/shared/type/types';
 import ImageUploader from '@/shared/ui/image-uploader';
+import { type ReactNode } from 'react';
+import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
+import { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
+import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
+import { createChatImagesMessage } from '../lib/create-chat-images-message';
 
 const ACTION_ITEM_VALUE = {
   PHOTO: 'photo',
@@ -26,9 +32,35 @@ function ActionItem({ label, icon }: { label: string; icon: ReactNode }) {
   );
 }
 
-export default function ChatMessageActionBox() {
-  const handleImageUpload = (file: File) => {
-    console.log(file);
+type ChatMessageActionBoxProps = {
+  userChannel: UserHairConsultationChatChannelType;
+};
+
+export default function ChatMessageActionBox({ userChannel }: ChatMessageActionBoxProps) {
+  const { sendMessage } = useHairConsultationChatMessageStore();
+  const { mutateAsync: uploadImage, isPending: isUploading } = useUploadPostImageMutation();
+
+  const handleImageUpload = async (file: File[]) => {
+    if (isUploading) return;
+
+    try {
+      const response = await uploadImage(file);
+
+      await sendMessage({
+        channelId: userChannel.channelId,
+        senderId: userChannel.userId,
+        receiverId: userChannel.otherUser.id.toString(),
+        message: createChatImagesMessage(response.dataList.map((img) => img.imageURL)),
+        messageType: HairConsultationChatMessageTypeEnum.IMAGE,
+        metaPathList: [
+          {
+            href: removeQueryParams(window.location.href),
+          },
+        ],
+      });
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+    }
   };
 
   const renderItem = (
@@ -64,7 +96,7 @@ export default function ChatMessageActionBox() {
 
         if (item === ACTION_ITEM_VALUE.PHOTO) {
           return (
-            <ImageUploader key={label} setImages={handleImageUpload}>
+            <ImageUploader key={label} setImages={handleImageUpload} validate={() => !isUploading}>
               <ActionItem label={label} icon={icon} />
             </ImageUploader>
           );

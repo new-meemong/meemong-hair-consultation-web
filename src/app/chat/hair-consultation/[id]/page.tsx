@@ -146,7 +146,7 @@ export default function HairConsultationChatDetailPage() {
       <div className="flex-1 overflow-hidden">
         <MessageSection userChannel={userChannel} />
       </div>
-      <ChatMessageForm onSubmit={handleSendMessage} />
+      <ChatMessageForm onSubmit={handleSendMessage} userChannel={userChannel} />
     </div>
   );
 }
