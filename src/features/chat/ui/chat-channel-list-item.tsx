@@ -10,7 +10,6 @@ import { ROUTES } from '@/shared/lib/routes';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { format } from 'date-fns';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 
 function ActionButton({
@@ -153,7 +152,7 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
           height={60}
           className="size-15 rounded-4 object-cover"
         />
-        <div className="flex flex-col gap-2 flex-1">
+        <div className="flex flex-col gap-2 flex-1 overflow-hidden">
           <div className="flex items-center gap-0.5">
             {chatChannel.isPinned && <PinIcon className="size-4 fill-label-info" />}
             <p className="typo-headline-bold text-label-strong">
