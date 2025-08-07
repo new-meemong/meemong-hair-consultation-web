@@ -49,7 +49,7 @@ export default function ChatMessageForm({ onSubmit }: ChatMessageFormProps) {
   return (
     <FormProvider {...method}>
       <form
-        className="flex flex-col px-5 py-3 shadow-emphasize gap-4"
+        className="flex flex-col px-5 py-4 shadow-emphasize gap-4"
         onSubmit={method.handleSubmit(handleSubmit)}
       >
         <div className="flex gap-3 rounded-12 bg-alternative px-3 py-2 items-center">
