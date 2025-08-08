@@ -15,13 +15,13 @@ import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 import { create } from 'zustand';
 import { db } from '@/shared/lib/firebase';
-import { getUser } from '@/features/auth/api/use-webview-login';
 import type { HairConsultationChatChannelType } from '../type/hair-consultation-chat-channel-type';
 import {
   HairConsultationChatMessageTypeEnum,
   type HairConsultationChatMessageType,
 } from '../type/hair-consultation-chat-message-type';
 import { getDbPath } from '../lib/get-db-path';
+import { getUser } from '@/features/auth/api/use-get-user';
 
 interface ChatChannelState {
   userHairConsultationChatChannels: UserHairConsultationChatChannelType[];
