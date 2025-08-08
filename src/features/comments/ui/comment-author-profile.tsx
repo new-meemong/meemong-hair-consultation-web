@@ -63,7 +63,7 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
       if (isCreated) {
         const { success } = await sendMessage({
           channelId,
-          message: `TODO: 초기 메시지 추가 ex) 답변 보고 대화를 시작했습니다.`,
+          message: `헤어상담 채팅이 시작되었습니다.`,
           messageType: HairConsultationChatMessageTypeEnum.SYSTEM,
           metaPathList: [
             {
