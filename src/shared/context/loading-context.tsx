@@ -8,10 +8,18 @@ import {
   type Mutation,
 } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { LoadingComponent } from '../ui/loading-component';
 
-const LoadingContext = createContext<null>(null);
+interface LoadingContextType {
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
+}
+
+const LoadingContext = createContext<LoadingContextType>({
+  loading: false,
+  setLoading: () => {},
+});
 
 function shouldSkipLoadingOverlay(meta: QueryMeta | undefined, operation: Query | Mutation) {
   return typeof meta?.skipLoadingOverlay === 'function'
@@ -19,7 +27,7 @@ function shouldSkipLoadingOverlay(meta: QueryMeta | undefined, operation: Query 
     : meta?.skipLoadingOverlay;
 }
 
-function GlobalLoadingOverlay() {
+function GlobalLoadingOverlay({ loading }: { loading: boolean }) {
   const isFetching = !!useIsFetching({
     predicate: (query) => {
       const meta = query.meta as QueryMeta | undefined;
@@ -34,16 +42,18 @@ function GlobalLoadingOverlay() {
     },
   });
 
-  const isLoading = isFetching || isMutating;
+  const isLoading = loading || isFetching || isMutating;
 
   return <LoadingComponent.Page isLoading={isLoading} />;
 }
 
 export function LoadingProvider({ children }: { children: ReactNode }) {
+  const [loading, setLoading] = useState(false);
+
   return (
-    <LoadingContext.Provider value={null}>
+    <LoadingContext.Provider value={{ loading, setLoading }}>
       {children}
-      <GlobalLoadingOverlay />
+      <GlobalLoadingOverlay loading={loading} />
     </LoadingContext.Provider>
   );
 }
