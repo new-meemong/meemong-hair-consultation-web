@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { getChatImages } from '../lib/get-chat-images';
 import { cn } from '@/lib/utils';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
+import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
 
 const getLayouts = (images: string[]) => {
   const totalImages = images.length;
@@ -33,6 +34,15 @@ export default function ImageMessage({ message }: ImageMessageProps) {
 
   const layouts = getLayouts(images);
 
+  const showImageViewerModal = useShowImageViewerModal();
+
+  const handleImageClick = (image: string) => {
+    showImageViewerModal({
+      images,
+      initialIndex: images.indexOf(image),
+    });
+  };
+
   return (
     <div className="w-59 flex flex-col gap-1">
       {layouts.map((layout, index) => (
@@ -44,7 +54,13 @@ export default function ImageMessage({ message }: ImageMessageProps) {
 
             return (
               <div key={image} className={cn('relative aspect-square')}>
-                <Image src={image} alt="image" fill className="object-cover rounded-10" />
+                <Image
+                  src={image}
+                  alt="image"
+                  fill
+                  className="object-cover rounded-10"
+                  onClick={() => handleImageClick(image)}
+                />
               </div>
             );
           })}

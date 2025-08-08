@@ -19,8 +19,7 @@ function HiddenImage() {
 }
 
 type PostDetailImageProps = {
-  image: string;
-  totalImages: number;
+  images: string[];
   currentIndex: number;
   onlyShowToDesigner: boolean;
   size: 'small' | 'large';
@@ -40,8 +39,7 @@ const SIZE = {
 } as const;
 
 export default function PostDetailImage({
-  image,
-  totalImages,
+  images,
   currentIndex,
   onlyShowToDesigner,
   size,
@@ -50,14 +48,15 @@ export default function PostDetailImage({
 
   const shouldShowImage = isUserDesigner || !onlyShowToDesigner;
 
-  const isValidImageUrl = isValidUrl(image);
+  const currentImage = images[currentIndex];
+  const isValidImageUrl = isValidUrl(currentImage);
 
   const showImageViewerModal = useShowImageViewerModal();
 
   const handleImageClick = () => {
     showImageViewerModal({
-      title: `${currentIndex + 1}/${totalImages}`,
-      imageUrl: image,
+      images,
+      initialIndex: currentIndex,
     });
   };
 
@@ -72,7 +71,7 @@ export default function PostDetailImage({
     >
       {shouldShowImage && isValidImageUrl ? (
         <Image
-          src={image}
+          src={currentImage}
           alt={`게시글 이미지`}
           fill
           className="object-cover"

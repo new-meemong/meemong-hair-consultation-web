@@ -44,8 +44,7 @@ export default function PostDetailContent({ postDetail }: PostDetailContentProps
         {images.map((image, index) => (
           <PostDetailImage
             key={`${index}-${image}`}
-            image={image}
-            totalImages={images.length}
+            images={images}
             currentIndex={index}
             onlyShowToDesigner={shouldShowImage && !isWriter}
             size="large"
