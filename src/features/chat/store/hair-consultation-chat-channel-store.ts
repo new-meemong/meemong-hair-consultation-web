@@ -59,7 +59,11 @@ interface ChatChannelState {
 
   updateChannelUserInfo: (channelId: string, userId: string) => Promise<void>;
 
-  leaveChannel: (channelId: string, userId: string, userName: string) => Promise<void>;
+  leaveChannel: (
+    channelId: string,
+    userId: string,
+    userName: string,
+  ) => Promise<{ success: boolean }>;
 }
 
 export const useHairConsultationChatChannelStore = create<ChatChannelState>((set) => ({
@@ -463,9 +467,10 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
         });
       }
 
-      console.log('채널 나가기 완료');
+      return { success: true };
     } catch (error) {
       console.error('채널 나가기 중 오류 발생:', error);
+      return { success: false };
     }
   },
 }));

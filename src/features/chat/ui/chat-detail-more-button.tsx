@@ -2,24 +2,33 @@ import { MoreOptionsMenu, ROUTES } from '@/shared';
 import { useCallback, useMemo } from 'react';
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import useLeaveChat from '../hook/use-leave-chat';
+import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 
 type ChatDetailMoreButtonProps = {
-  otherUserId: string;
+  chatChannel: UserHairConsultationChatChannelType;
 };
 
-export default function ChatDetailMoreButton({ otherUserId }: ChatDetailMoreButtonProps) {
+export default function ChatDetailMoreButton({ chatChannel }: ChatDetailMoreButtonProps) {
   const router = useRouterWithUser();
 
   const handleReport = useCallback(() => {
-    router.push(ROUTES.REPORT(otherUserId));
-  }, [router, otherUserId]);
+    router.push(ROUTES.REPORT(chatChannel.otherUser.id.toString()));
+  }, [router, chatChannel.otherUser.id]);
 
-  const handleLeave = () => {
-    console.log('나가기');
-  };
-  const handleBlock = () => {
+  const handleLeaveChat = useLeaveChat();
+
+  const handleLeave = useCallback(() => {
+    handleLeaveChat(chatChannel, {
+      onSuccess: () => {
+        router.back();
+      },
+    });
+  }, [handleLeaveChat, router, chatChannel]);
+
+  const handleBlock = useCallback(() => {
     console.log('차단하기');
-  };
+  }, []);
 
   const moreOptions = useMemo(
     () => [
@@ -37,7 +46,7 @@ export default function ChatDetailMoreButton({ otherUserId }: ChatDetailMoreButt
         className: 'text-negative',
       },
     ],
-    [handleReport],
+    [handleReport, handleLeave, handleBlock],
   );
 
   return (

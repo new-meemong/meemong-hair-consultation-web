@@ -7,10 +7,10 @@ import type { UserHairConsultationChatChannelType } from '@/features/chat/type/u
 import { cn } from '@/lib/utils';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ROUTES } from '@/shared/lib/routes';
-import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { useState, type ReactNode } from 'react';
+import useLeaveChat from '../hook/use-leave-chat';
 
 function ActionButton({
   children,
@@ -44,13 +44,10 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
   const { user } = useAuthContext();
   const userId = user.id;
 
-  const { pinChannel, unpinChannel, leaveChannel } = useHairConsultationChatChannelStore(
-    (state) => ({
-      pinChannel: state.pinChannel,
-      unpinChannel: state.unpinChannel,
-      leaveChannel: state.leaveChannel,
-    }),
-  );
+  const { pinChannel, unpinChannel } = useHairConsultationChatChannelStore((state) => ({
+    pinChannel: state.pinChannel,
+    unpinChannel: state.unpinChannel,
+  }));
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setStartX(e.touches[0].clientX);
@@ -101,33 +98,14 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
     // }
   };
 
-  const showModal = useShowModal();
+  const handleLeaveChat = useLeaveChat();
 
   const handleDeleteClick = () => {
-    showModal({
-      id: 'delete-chat-channel-modal',
-      text: '채팅방을 나가면 복구할 수 없습니다.\n정말 채팅방에서 나가시겠어요?',
-      buttons: [
-        {
-          label: '나가기',
-          textColor: 'text-negative',
-          onClick: handleLeaveChannel,
-        },
-        {
-          label: '취소',
-        },
-      ],
+    handleLeaveChat(chatChannel, {
+      onSuccess: () => {
+        setOffset(0);
+      },
     });
-  };
-
-  const handleLeaveChannel = async () => {
-    if (!userId) return;
-    try {
-      await leaveChannel(chatChannel.channelId, userId.toString(), user?.DisplayName || '');
-      setOffset(0);
-    } catch (error) {
-      console.error('채널 나가기 실패:', error);
-    }
   };
 
   const { lastMessage, otherUser } = chatChannel;
