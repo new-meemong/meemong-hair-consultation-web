@@ -1,4 +1,4 @@
-import { jobApiClient } from '@/shared/api/client';
+import { apiClient } from '@/shared/api/client';
 import { useMutation } from '@tanstack/react-query';
 
 type SendNotificationRequest = {
@@ -10,7 +10,7 @@ export default function useSendPushNotification() {
   const mutation = useMutation({
     mutationFn: async (data: SendNotificationRequest) => {
       try {
-        const response = await jobApiClient.post('push/chat-messages', data);
+        const response = await apiClient.post('push/chat-messages', data);
         return response;
       } catch (error) {
         console.error('푸시 알림 API 호출 실패:', error);

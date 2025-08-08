@@ -4,8 +4,6 @@ import { getToken } from '../lib/auth';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const JOB_API_BASE_URL = process.env.NEXT_PUBLIC_JOB_API_URL || 'http://localhost:3000';
-
 export interface ApiResponse<T = unknown> {
   data: T;
   message?: string;
@@ -18,9 +16,9 @@ export interface ApiError {
   status?: number;
 }
 
-const createApiInstance = ({ apiUrl }: { apiUrl?: string }) => {
+const createApiInstance = () => {
   return ky.create({
-    prefixUrl: `${apiUrl ?? API_BASE_URL}/api/v1`,
+    prefixUrl: `${API_BASE_URL}/api/v1`,
     hooks: {
       beforeRequest: [
         (request) => {
@@ -51,11 +49,7 @@ const createApiInstance = ({ apiUrl }: { apiUrl?: string }) => {
 };
 
 export class ApiClient {
-  private api;
-
-  constructor({ apiUrl }: { apiUrl?: string } = {}) {
-    this.api = createApiInstance({ apiUrl });
-  }
+  private api = createApiInstance();
 
   async get<T>(
     endpoint: string,
@@ -92,4 +86,3 @@ export class ApiClient {
 
 // 기본 인스턴스는 토큰 없이 생성
 export const apiClient = new ApiClient();
-export const jobApiClient = new ApiClient({ apiUrl: JOB_API_BASE_URL });
