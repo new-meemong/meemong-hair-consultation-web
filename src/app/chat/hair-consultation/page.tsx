@@ -3,7 +3,9 @@
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import ChatChannelListItem from '@/features/chat/ui/chat-channel-list-item';
+import ChatChannelListItemSkeleton from '@/features/chat/ui/chat-channel-list-item-skeleton';
 import { useEffect } from 'react';
+import { useDynamicSkeletonCount } from '@/shared/hooks/use-dynamic-skeleton-count';
 
 export default function HairConsultationChatPage() {
   const { user } = useAuthContext();
@@ -39,6 +41,12 @@ export default function HairConsultationChatPage() {
       }
     };
   }, [userId, subscribeToChannels]);
+
+  const skeletonCount = useDynamicSkeletonCount(100);
+
+  if (loading) {
+    return <ChatChannelListItemSkeleton count={skeletonCount} />;
+  }
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto pb-20">
