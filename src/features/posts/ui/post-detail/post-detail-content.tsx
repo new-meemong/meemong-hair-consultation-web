@@ -42,15 +42,16 @@ export default function PostDetailContent({ postDetail }: PostDetailContentProps
 
       {/* 게시글 이미지 */}
       <div className="flex gap-2 px-5 overflow-x-auto scrollbar-hide">
-        {images.map((image, index) => (
-          <PostDetailImage
-            key={`${index}-${image}`}
-            images={images}
-            currentIndex={index}
-            onlyShowToDesigner={shouldShowImage && !isWriter}
-            size="large"
-          />
-        ))}
+        {images &&
+          images.map((image, index) => (
+            <PostDetailImage
+              key={`${index}-${image}`}
+              images={images}
+              currentIndex={index}
+              onlyShowToDesigner={shouldShowImage && !isWriter}
+              size="large"
+            />
+          ))}
       </div>
     </div>
   );

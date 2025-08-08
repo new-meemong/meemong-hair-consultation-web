@@ -6,7 +6,7 @@ export type PostDetail = {
   title: string;
   content: string;
   createdAt: string;
-  images: string[];
+  images?: string[];
   isFavorited: boolean;
   likeCount: number;
   commentCount: number;
