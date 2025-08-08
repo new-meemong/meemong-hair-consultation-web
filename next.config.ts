@@ -3,7 +3,11 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['picsum.photos', 'meemong-job-storage.s3.ap-northeast-2.amazonaws.com'],
+    domains: [
+      'picsum.photos',
+      'meemong-job-storage.s3.ap-northeast-2.amazonaws.com',
+      'k.kakaocdn.net',
+    ],
   },
   devIndicators: false,
   webpack(config) {

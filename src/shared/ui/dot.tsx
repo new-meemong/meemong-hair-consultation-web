@@ -1,11 +1,12 @@
 import { cn } from '@/lib/utils';
 
 type DotProps = {
-  size: 'sm' | 'md';
+  size: 'xs' | 'sm' | 'md';
   className?: string;
 };
 
 const sizeMap = {
+  xs: 'size-0.5',
   sm: 'size-0.75',
   md: 'size-1.25',
 };

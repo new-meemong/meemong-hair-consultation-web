@@ -34,7 +34,7 @@ export const SiteHeader = ({
         /* 백버튼이 있는 헤더 디자인 (가운데 정렬 제목) */
         <div className="flex items-center justify-between w-full">
           <button onClick={handleBackClick} aria-label="뒤로 가기">
-            <ChevronLeftIcon className="size-7 fill-rank-second" />
+            <ChevronLeftIcon className="size-7 fill-label-info" />
           </button>
           <h1 className="typo-title-3-semibold flex-1 text-center">{title}</h1>
           {rightComponent ? rightComponent : <div className="w-7" />}

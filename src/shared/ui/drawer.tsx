@@ -106,7 +106,7 @@ function DrawerTitle({
       />
       {showCloseButton && (
         <DrawerClose asChild>
-          <CloseIcon />
+          <CloseIcon className="size-7 fill-label-info" />
         </DrawerClose>
       )}
     </div>

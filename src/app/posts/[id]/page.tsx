@@ -86,7 +86,7 @@ export default function PostDetailPage() {
           </Button>
         </div>
       ) : (
-        <div className="f bg-white shadow-strong">
+        <div className="bg-white shadow-strong">
           <div className="max-w-[600px] mx-auto">
             <CommentForm
               onSubmit={handlers.handleCommentFormSubmit}
