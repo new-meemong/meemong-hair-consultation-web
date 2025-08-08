@@ -17,6 +17,9 @@ export default function useSendPushNotification() {
         throw error;
       }
     },
+    meta: {
+      skipLoadingOverlay: true,
+    },
   });
 
   return {

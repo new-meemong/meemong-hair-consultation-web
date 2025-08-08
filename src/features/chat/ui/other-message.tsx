@@ -25,7 +25,6 @@ type OtherMessageProps = {
 };
 
 export default function OtherMessage({ message, authorProfileImageUrl }: OtherMessageProps) {
-  console.log('authorProfileImageUrl', authorProfileImageUrl);
   return (
     <div className="flex flex-1 justify-start">
       <div className="flex gap-2 items-end">
