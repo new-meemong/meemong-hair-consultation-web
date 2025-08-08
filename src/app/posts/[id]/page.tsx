@@ -29,7 +29,7 @@ export default function PostDetailPage() {
   const isWriter = postDetail?.hairConsultPostingCreateUserId === user.id;
 
   // TODO: 추후 컨설팅 게시글 여부 확인 로직 추가
-  const isConsultingPost = true;
+  const isConsultingPost = false;
   const canWriteConsultingResponse = isConsultingPost && isUserDesigner;
 
   const handleWriteConsultingResponseClick = () => {
