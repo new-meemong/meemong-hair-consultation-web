@@ -12,8 +12,8 @@ function OtherChatMessageBox({ message }: { message: string }) {
   return (
     <div className="flex items-end">
       <OtherChatMessageTip />
-      <div className="rounded-r-10 rounded-tl-10 bg-alternative p-4 flex">
-        <p className="typo-body-2-long-regular text-black">{message}</p>
+      <div className="rounded-r-10 rounded-tl-10 bg-alternative p-4 flex max-w-57">
+        <p className="typo-body-2-long-regular text-black max-w-49">{message}</p>
       </div>
     </div>
   );
@@ -25,11 +25,12 @@ type OtherMessageProps = {
 };
 
 export default function OtherMessage({ message, authorProfileImageUrl }: OtherMessageProps) {
+  console.log('authorProfileImageUrl', authorProfileImageUrl);
   return (
     <div className="flex flex-1 justify-start">
       <div className="flex gap-2 items-end">
         <Image
-          src={authorProfileImageUrl ?? '/profile.svg'}
+          src={authorProfileImageUrl || '/profile.svg'}
           alt="User profile"
           width={24}
           height={24}

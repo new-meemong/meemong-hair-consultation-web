@@ -7,12 +7,13 @@ import {
 } from '../type/hair-consultation-chat-message-type';
 import MessageDate from './message-date';
 import ImageMessage from './image-message';
+import Dot from '@/shared/ui/dot';
 
 function MyChatMessageBox({ message }: { message: string }) {
   return (
     <div className="flex items-end">
-      <div className="rounded-l-10 rounded-tr-10 bg-label-default p-4 flex">
-        <p className="typo-body-2-long-regular text-white">{message}</p>
+      <div className="rounded-l-10 rounded-tr-10 bg-label-default p-4 flex max-w-57">
+        <p className="typo-body-2-long-regular text-white max-w-49">{message}</p>
       </div>
       <MyChatMessageTip />
     </div>
@@ -35,12 +36,18 @@ export default function MyMessage({ message }: MyMessageProps) {
       : false;
   };
 
-  console.log('isRead', isRead());
-
   return (
     <div className="flex flex-1 justify-end">
       <div className="flex gap-2 items-end">
-        <MessageDate messageCreatedAt={message.createdAt as Timestamp} />
+        <div className="flex gap-1 items-center">
+          <MessageDate messageCreatedAt={message.createdAt as Timestamp} />
+          {isRead() && (
+            <>
+              <Dot size="xs" />
+              <span className="typo-caption-1-regular text-label-info">읽음</span>
+            </>
+          )}
+        </div>
         {message.messageType === HairConsultationChatMessageTypeEnum.IMAGE ? (
           <ImageMessage message={message.message} />
         ) : (
