@@ -3,7 +3,7 @@ import PlusIcon from '@/assets/icons/plus.svg';
 import SendIcon from '@/assets/icons/send.svg';
 import { Textarea } from '@/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
@@ -26,6 +26,7 @@ type ChatMessageFormProps = {
 
 export default function ChatMessageForm({ onSubmit, userChannel }: ChatMessageFormProps) {
   const [showedActionBox, setShowedActionBox] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const method = useForm<ChatMessageInputValues>({
     resolver: zodResolver(formSchema),
@@ -39,6 +40,9 @@ export default function ChatMessageForm({ onSubmit, userChannel }: ChatMessageFo
 
     if (success) {
       method.reset();
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
     }
   };
 
@@ -68,6 +72,13 @@ export default function ChatMessageForm({ onSubmit, userChannel }: ChatMessageFo
               {...method.register(CHAT_MESSAGE_INPUT_FIELD_NAME.content)}
               placeholder="메시지 보내기"
               className="w-full flex-1 typo-body-2-regular placeholder:text-label-placeholder text-black"
+              ref={(e) => {
+                const { ref } = method.register(CHAT_MESSAGE_INPUT_FIELD_NAME.content);
+                ref(e);
+                if (e) {
+                  textareaRef.current = e;
+                }
+              }}
             />
           </div>
           <button type="submit" className="typo-body-2-medium rounded-4 self-end">
