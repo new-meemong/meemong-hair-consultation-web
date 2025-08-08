@@ -1,8 +1,9 @@
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { removeQueryParams } from '@/shared/lib/remove-query-params';
+
+import useSendPushNotification from '../api/useSendPushNotification';
 import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
 import type { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
-import { useAuthContext } from '@/features/auth/context/auth-context';
-import useSendPushNotification from '../api/useSendPushNotification';
 
 export default function useSendMessage() {
   const { user } = useAuthContext();

@@ -10,18 +10,19 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
+import { create } from 'zustand';
+
+import { getUser } from '@/features/auth/api/use-get-user';
+import { db } from '@/shared/lib/firebase';
 
 import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
-import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
-import { create } from 'zustand';
-import { db } from '@/shared/lib/firebase';
+import { getDbPath } from '../lib/get-db-path';
 import type { HairConsultationChatChannelType } from '../type/hair-consultation-chat-channel-type';
 import {
   HairConsultationChatMessageTypeEnum,
   type HairConsultationChatMessageType,
 } from '../type/hair-consultation-chat-message-type';
-import { getDbPath } from '../lib/get-db-path';
-import { getUser } from '@/features/auth/api/use-get-user';
+import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 
 interface ChatChannelState {
   userHairConsultationChatChannels: UserHairConsultationChatChannelType[];

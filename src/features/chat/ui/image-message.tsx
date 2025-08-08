@@ -1,8 +1,10 @@
 import Image from 'next/image';
-import { getChatImages } from '../lib/get-chat-images';
+
 import { cn } from '@/lib/utils';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
 import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
+
+import { getChatImages } from '../lib/get-chat-images';
 
 const getLayouts = (images: string[]) => {
   const totalImages = images.length;

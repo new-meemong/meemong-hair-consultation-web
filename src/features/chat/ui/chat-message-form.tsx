@@ -1,12 +1,17 @@
+import { useRef, useState } from 'react';
+
+import { FormProvider, useForm } from 'react-hook-form';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
+
 import CloseIcon from '@/assets/icons/close.svg';
 import PlusIcon from '@/assets/icons/plus.svg';
 import SendIcon from '@/assets/icons/send.svg';
 import { Textarea } from '@/shared';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRef, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
-import z from 'zod';
+
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
+
 import ChatMessageActionBox from './chat-message-action-box';
 
 const CHAT_MESSAGE_INPUT_FIELD_NAME = {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { type CarouselApi } from '@/shared/ui/carousel';
 
 type UseCarouselIndexProps = {

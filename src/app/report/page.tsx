@@ -1,9 +1,10 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
+
+import ReportForm from '@/features/report/ui/report-form';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { SiteHeader } from '@/widgets/header';
-import ReportForm from '@/features/report/ui/report-form';
 
 export default function ReportPage() {
   const searchParams = useSearchParams();

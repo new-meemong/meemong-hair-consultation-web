@@ -1,3 +1,9 @@
+import { useState, type ReactNode } from 'react';
+
+import Image from 'next/image';
+
+import { format } from 'date-fns';
+
 import ChatTrashIcon from '@/assets/icons/chat-trash.svg';
 import PinOffIcon from '@/assets/icons/pin-off.svg';
 import PinIcon from '@/assets/icons/pin.svg';
@@ -7,9 +13,7 @@ import type { UserHairConsultationChatChannelType } from '@/features/chat/type/u
 import { cn } from '@/lib/utils';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ROUTES } from '@/shared/lib/routes';
-import { format } from 'date-fns';
-import Image from 'next/image';
-import { useState, type ReactNode } from 'react';
+
 import useLeaveChat from '../hook/use-leave-chat';
 
 function ActionButton({

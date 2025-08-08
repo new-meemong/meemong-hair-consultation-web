@@ -1,5 +1,6 @@
-import type { User } from '@/entities/user/model/user';
 import { FieldValue, Timestamp } from 'firebase/firestore';
+
+import type { User } from '@/entities/user/model/user';
 
 export interface HairConsultationChatChannelType {
   id: string; // 채널 ID

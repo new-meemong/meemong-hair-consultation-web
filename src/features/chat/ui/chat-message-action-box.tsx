@@ -1,10 +1,12 @@
+import { type ReactNode } from 'react';
+
 import CalendarIcon from '@/assets/icons/calendar.svg';
 import ContractIcon from '@/assets/icons/contract.svg';
 import GalleryIcon from '@/assets/icons/gallery.svg';
 import useUploadPostImageMutation from '@/features/posts/api/use-upload-post-image';
 import type { ValueOf } from '@/shared/type/types';
 import ImageUploader from '@/shared/ui/image-uploader';
-import { type ReactNode } from 'react';
+
 import useSendMessage from '../hook/use-send-message';
 import { createChatImagesMessage } from '../lib/create-chat-images-message';
 import { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';

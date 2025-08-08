@@ -1,4 +1,5 @@
 import { FieldValue, Timestamp } from 'firebase/firestore';
+
 export enum HairConsultationChatMessageTypeEnum {
   TEXT = 'text',
   IMAGE = 'image',

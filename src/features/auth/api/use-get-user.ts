@@ -1,6 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
+
 import type { User } from '@/entities/user/model/user';
 import { apiClient } from '@/shared/api/client';
-import { useQuery } from '@tanstack/react-query';
 
 const getGetUserEndpoint = (userId: string) => `users/${userId}`;
 export const getGetUserQueryKeyPrefix = (userId: string) => getGetUserEndpoint(userId);

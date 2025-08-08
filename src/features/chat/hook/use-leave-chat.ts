@@ -1,6 +1,7 @@
-import useShowModal from '@/shared/ui/hooks/use-show-modal';
-import { useHairConsultationChatChannelStore } from '../store/hair-consultation-chat-channel-store';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
+
+import { useHairConsultationChatChannelStore } from '../store/hair-consultation-chat-channel-store';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 
 export default function useLeaveChat() {

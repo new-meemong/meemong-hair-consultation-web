@@ -1,12 +1,16 @@
-import OtherChatMessageTip from '@/assets/icons/other-chat-message-tip.svg';
-import type { Timestamp } from 'firebase/firestore';
 import Image from 'next/image';
+
+import type { Timestamp } from 'firebase/firestore';
+
+import OtherChatMessageTip from '@/assets/icons/other-chat-message-tip.svg';
+
 import {
   HairConsultationChatMessageTypeEnum,
   type HairConsultationChatMessageType,
 } from '../type/hair-consultation-chat-message-type';
-import MessageDate from './message-date';
+
 import ImageMessage from './image-message';
+import MessageDate from './message-date';
 
 function OtherChatMessageBox({ message }: { message: string }) {
   return (

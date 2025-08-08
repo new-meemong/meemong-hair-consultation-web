@@ -9,16 +9,17 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
-
 import { create } from 'zustand';
-import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
+
 import { db } from '@/shared/lib/firebase';
+
+import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
+import { getDbPath } from '../lib/get-db-path';
 import type {
   HairConsultationChatMessageType,
   HairConsultationChatMessageTypeEnum,
   MetaPathType,
 } from '../type/hair-consultation-chat-message-type';
-import { getDbPath } from '../lib/get-db-path';
 
 interface HairConsultationChatMessageState {
   messages: HairConsultationChatMessageType[];

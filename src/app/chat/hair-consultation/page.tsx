@@ -1,10 +1,11 @@
 'use client';
 
+import { useEffect } from 'react';
+
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import ChatChannelListItem from '@/features/chat/ui/chat-channel-list-item';
 import ChatChannelListItemSkeleton from '@/features/chat/ui/chat-channel-list-item-skeleton';
-import { useEffect } from 'react';
 import { useDynamicSkeletonCount } from '@/shared/hooks/use-dynamic-skeleton-count';
 
 export default function HairConsultationChatPage() {

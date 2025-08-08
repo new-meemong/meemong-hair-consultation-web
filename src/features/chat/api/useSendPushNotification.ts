@@ -1,5 +1,6 @@
-import { apiClient } from '@/shared/api/client';
 import { useMutation } from '@tanstack/react-query';
+
+import { apiClient } from '@/shared/api/client';
 
 type SendNotificationRequest = {
   userId: string;

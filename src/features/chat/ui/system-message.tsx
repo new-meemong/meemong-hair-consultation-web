@@ -1,4 +1,5 @@
 import WarnIcon from '@/assets/icons/warn-triangle.svg';
+
 import type { HairConsultationChatMessageType } from '../type/hair-consultation-chat-message-type';
 
 type SystemMessageProps = {

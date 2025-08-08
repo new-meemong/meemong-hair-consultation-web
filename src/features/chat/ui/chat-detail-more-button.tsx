@@ -1,10 +1,12 @@
-import { MoreOptionsMenu, ROUTES } from '@/shared';
 import { useCallback, useMemo } from 'react';
+
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
+import { MoreOptionsMenu, ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
+
 import useLeaveChat from '../hook/use-leave-chat';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
-import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 type ChatDetailMoreButtonProps = {
   chatChannel: UserHairConsultationChatChannelType;

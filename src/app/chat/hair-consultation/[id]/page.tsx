@@ -1,5 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
+import { useParams } from 'next/navigation';
+
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useSendMessage from '@/features/chat/hook/use-send-message';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
@@ -11,8 +15,6 @@ import ChatMessageForm, { type ChatMessageInputValues } from '@/features/chat/ui
 import MessageSection from '@/features/chat/ui/message-section';
 import { useLoadingContext } from '@/shared/context/loading-context';
 import { SiteHeader } from '@/widgets/header';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 export default function HairConsultationChatDetailPage() {
   const params = useParams();
