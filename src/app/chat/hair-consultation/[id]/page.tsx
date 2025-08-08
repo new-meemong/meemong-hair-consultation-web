@@ -22,6 +22,8 @@ export default function HairConsultationChatDetailPage() {
 
   const [error, setError] = useState<string | null>(null);
 
+  console.log('error', error);
+
   const { user } = useAuthContext();
   const userId = user.id.toString();
 

@@ -1,21 +1,19 @@
 import CalendarIcon from '@/assets/icons/calendar.svg';
 import ContractIcon from '@/assets/icons/contract.svg';
 import GalleryIcon from '@/assets/icons/gallery.svg';
-import ResumeIcon from '@/assets/icons/resume.svg';
 import useUploadPostImageMutation from '@/features/posts/api/use-upload-post-image';
 import { removeQueryParams } from '@/shared/lib/remove-query-params';
 import type { ValueOf } from '@/shared/type/types';
 import ImageUploader from '@/shared/ui/image-uploader';
 import { type ReactNode } from 'react';
+import { createChatImagesMessage } from '../lib/create-chat-images-message';
 import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
 import { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
-import { createChatImagesMessage } from '../lib/create-chat-images-message';
 
 const ACTION_ITEM_VALUE = {
   PHOTO: 'photo',
   SCHEDULE: 'schedule',
-  RESUME: 'resume',
   CONTRACTING: 'contracting',
 } as const;
 
@@ -77,11 +75,6 @@ export default function ChatMessageActionBox({ userChannel }: ChatMessageActionB
           label: '약속잡기',
           icon: <CalendarIcon className="size-8 fill-white" />,
         };
-      case ACTION_ITEM_VALUE.RESUME:
-        return {
-          label: '이력서',
-          icon: <ResumeIcon className="size-8 fill-white" />,
-        };
       case ACTION_ITEM_VALUE.CONTRACTING:
         return {
           label: '초상권계약',
@@ -90,7 +83,7 @@ export default function ChatMessageActionBox({ userChannel }: ChatMessageActionB
     }
   };
   return (
-    <div className="flex justify-between px-3">
+    <div className="flex justify-between px-12.5">
       {ACTION_ITEMS.map((item) => {
         const { label, icon } = renderItem(item);
 
