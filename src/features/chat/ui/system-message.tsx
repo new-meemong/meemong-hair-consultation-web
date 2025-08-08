@@ -1,6 +1,5 @@
-import { format } from 'date-fns';
+import WarnIcon from '@/assets/icons/warn-triangle.svg';
 import type { HairConsultationChatMessageType } from '../type/hair-consultation-chat-message-type';
-import type { Timestamp } from 'firebase/firestore';
 
 type SystemMessageProps = {
   message: HairConsultationChatMessageType;
@@ -8,9 +7,9 @@ type SystemMessageProps = {
 
 export default function SystemMessage({ message }: SystemMessageProps) {
   return (
-    <div>
-      {format((message.createdAt as Timestamp).toDate(), 'yyyy년 MM월 dd일(e)')}
-      {message.message}
+    <div className="flex bg-alternative px-4 py-2.5 gap-3">
+      <WarnIcon className="size-5 fill-label-info" />
+      <p className="typo-body-3-regular text-label-info text-12">{message.message}</p>
     </div>
   );
 }
