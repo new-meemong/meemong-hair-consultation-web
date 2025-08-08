@@ -2,9 +2,10 @@ import Image from 'next/image';
 import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
 import { XIcon } from 'lucide-react';
 import { useOverlayContext } from '../context/overlay-context';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { downloadImage } from '@/shared/lib/download-image';
-import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from './carousel';
+import { Carousel, CarouselContent, CarouselItem } from './carousel';
+import { useCarouselIndex } from './hooks/use-carousel-index';
 import DownloadIcon from '@/assets/icons/download.svg';
 
 function ImageViewerModalHeader({
@@ -40,22 +41,7 @@ function ImageViewerModalContent({
 }: ImageViewerModalContentProps) {
   const { closeModal } = useOverlayContext();
 
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [api, setApi] = useState<CarouselApi>();
-
-  useEffect(() => {
-    if (!api) return;
-
-    const onSelect = () => {
-      setCurrentIndex(api.selectedScrollSnap());
-    };
-
-    api.on('select', onSelect);
-
-    return () => {
-      api.off('select', onSelect);
-    };
-  }, [api]);
+  const { currentIndex, setApi } = useCarouselIndex({ initialIndex });
 
   const handleClose = () => {
     closeModal(id);
