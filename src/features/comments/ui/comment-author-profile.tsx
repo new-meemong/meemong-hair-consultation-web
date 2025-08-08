@@ -4,7 +4,7 @@ import type { CommentUser } from '@/entities/comment/model/comment';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useShowInvalidChatRequestSheet } from '@/features/chat/hook/use-show-invalid-chat-request-sheet';
-import useSendMessage from '@/features/chat/hook/useSendMessage';
+import useSendMessage from '@/features/chat/hook/use-send-message';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
 import { cn } from '@/lib/utils';

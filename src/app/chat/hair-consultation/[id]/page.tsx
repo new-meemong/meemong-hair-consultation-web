@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import useSendMessage from '@/features/chat/hook/useSendMessage';
+import useSendMessage from '@/features/chat/hook/use-send-message';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import { useHairConsultationChatMessageStore } from '@/features/chat/store/hair-consultation-chat-message-store';
 import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
