@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
 import { XIcon } from 'lucide-react';
 import { useOverlayContext } from '../context/overlay-context';
 import React, { useEffect, useState } from 'react';
@@ -8,14 +9,16 @@ import DownloadIcon from '@/assets/icons/download.svg';
 
 function ImageViewerModalHeader({
   title,
+  leftComponent,
   rightComponent,
 }: {
   title: string;
-  rightComponent?: React.ReactNode;
+  leftComponent?: React.ReactNode;
+  rightComponent: React.ReactNode;
 }) {
   return (
     <div className="flex items-center justify-between w-full px-5 py-5">
-      <div className="w-7 h-7" />
+      {leftComponent}
       <span className="text-center text-white typo-title-3-semibold">{title}</span>
       {rightComponent}
     </div>
@@ -78,6 +81,14 @@ function ImageViewerModalContent({
     </button>
   );
 
+  const BackButton = () => (
+    <button onClick={handleClose}>
+      <ChevronLeftIcon className="size-7 fill-label-info" />
+    </button>
+  );
+
+  const showBackButton = iconType === 'download';
+
   const renderRightComponent = () => {
     switch (iconType) {
       case 'close':
@@ -91,6 +102,7 @@ function ImageViewerModalContent({
     <div className="flex flex-col items-center justify-center w-full h-screen">
       <ImageViewerModalHeader
         title={`${currentIndex + 1}/${images.length}`}
+        leftComponent={showBackButton && <BackButton />}
         rightComponent={renderRightComponent()}
       />
 
