@@ -1,3 +1,5 @@
+import { SEARCH_PARAMS } from '../constants/search-params';
+
 export const ROUTES = {
   // 메인 페이지
   HOME: '/',
@@ -16,6 +18,9 @@ export const ROUTES = {
 
   // 헤어상담
   TODAY_CONSULTANT: '/today-consultant',
+
+  // 신고
+  REPORT: (targetId: string) => `/report?${SEARCH_PARAMS.REPORT_TARGET_ID}=${targetId}`,
 } as const;
 
 /**

@@ -149,7 +149,7 @@ export default function HairConsultationChatDetailPage() {
       <SiteHeader
         showBackButton
         title={userChannel?.otherUser?.DisplayName ?? ''}
-        rightComponent={<ChatDetailMoreButton />}
+        rightComponent={<ChatDetailMoreButton otherUserId={userChannel.otherUser.id.toString()} />}
       />
       <div className="flex-1 overflow-hidden">
         <MessageSection userChannel={userChannel} />

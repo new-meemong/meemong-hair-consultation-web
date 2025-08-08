@@ -1,11 +1,19 @@
-import { MoreOptionsMenu } from '@/shared';
-import { useMemo } from 'react';
+import { MoreOptionsMenu, ROUTES } from '@/shared';
+import { useCallback, useMemo } from 'react';
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
-export default function ChatDetailMoreButton() {
-  const handleReport = () => {
-    console.log('신고하기');
-  };
+type ChatDetailMoreButtonProps = {
+  otherUserId: string;
+};
+
+export default function ChatDetailMoreButton({ otherUserId }: ChatDetailMoreButtonProps) {
+  const router = useRouterWithUser();
+
+  const handleReport = useCallback(() => {
+    router.push(ROUTES.REPORT(otherUserId));
+  }, [router, otherUserId]);
+
   const handleLeave = () => {
     console.log('나가기');
   };
@@ -29,7 +37,7 @@ export default function ChatDetailMoreButton() {
         className: 'text-negative',
       },
     ],
-    [],
+    [handleReport],
   );
 
   return (
