@@ -24,7 +24,7 @@ function ImageViewerModalHeader({
 }) {
   return (
     <div className="flex items-center justify-between w-full px-5 py-5">
-      {leftComponent}
+      {leftComponent ? leftComponent : <div className="size-7" />}
       <span className="text-center text-white typo-title-3-semibold">{title}</span>
       {rightComponent}
     </div>
