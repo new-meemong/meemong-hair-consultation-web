@@ -1,7 +1,9 @@
+import { useFormContext, useWatch } from 'react-hook-form';
+
 import { Textarea } from '@/shared';
 import FormItem from '@/shared/ui/form-item';
 import ImageUploaderList from '@/shared/ui/image-uploader-list';
-import { useFormContext, useWatch } from 'react-hook-form';
+
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 

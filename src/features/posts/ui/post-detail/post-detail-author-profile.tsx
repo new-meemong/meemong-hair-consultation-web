@@ -1,7 +1,8 @@
+import { useCallback } from 'react';
+
 import ProfileIcon from '@/assets/icons/profile.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
-import { useCallback } from 'react';
 
 type PostDetailAuthorProfileProps = {
   imageUrl: string | null;

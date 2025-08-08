@@ -1,6 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
-import ProfileIcon from '@/assets/icons/profile.svg';
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
+import ProfileIcon from '@/assets/icons/profile.svg';
+import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 type ConsultingResponseHeaderProps = {

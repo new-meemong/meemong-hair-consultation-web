@@ -1,3 +1,7 @@
+import { useCallback } from 'react';
+
+import Image from 'next/image';
+
 import { Button } from '@/shared';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import type { UseGuidePopupProps } from '@/shared/hooks/use-guide-popup';
@@ -8,8 +12,6 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/shared/ui/drawer';
-import Image from 'next/image';
-import { useCallback } from 'react';
 
 function useShowCreatePostGuideSheet() {
   const { showBottomSheet } = useOverlayContext();

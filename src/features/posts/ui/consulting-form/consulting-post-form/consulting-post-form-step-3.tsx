@@ -1,14 +1,17 @@
+import { useFormContext, useWatch } from 'react-hook-form';
+
 import { Button } from '@/shared';
 import { IMAGE_TYPE } from '@/shared/constants/image-type';
 import type { ValueOf } from '@/shared/type/types';
-import { useFormContext, useWatch } from 'react-hook-form';
+import ImageUploaderItem from '@/shared/ui/image-uploader-item';
+
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
 import useShowConsultingPostImageGuideSheet from '../../../hooks/use-show-consulting-post-image-guide-sheet';
 import {
   CONSULTING_POST_FORM_IMAGE_POSITION,
   type ConsultingPostFormValues,
 } from '../../../types/consulting-post-form-values';
-import ImageUploaderItem from '@/shared/ui/image-uploader-item';
+
 
 export default function ConsultingPostFormStep3() {
   const { setValue, getValues, control } = useFormContext<ConsultingPostFormValues>();

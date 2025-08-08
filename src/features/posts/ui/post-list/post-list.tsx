@@ -2,11 +2,12 @@
 
 import ErrorIcon from '@/assets/icons/error.svg';
 import { type Post } from '@/entities/posts';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { POST_LIST_TAB } from '@/features/posts/constants/post-list-tabs';
 import { type PostListTab } from '@/features/posts/types/post-list-tab';
-import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+
 import PostListItem from './post-list-item';
 
 type PostListProps = {

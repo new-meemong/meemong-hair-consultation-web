@@ -5,8 +5,9 @@ import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
 import { LikeButton } from '@/features/likes/ui/like-button';
 import { Separator } from '@/shared/ui';
 import ActionItem from '@/shared/ui/action-item';
-import PostDetailContent from './post-detail-content';
+
 import PostDetailConsultingContent from './post-detail-consulting-content';
+import PostDetailContent from './post-detail-content';
 
 type PostDetailItemProps = {
   postDetail: PostDetail;

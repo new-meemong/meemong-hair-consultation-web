@@ -1,8 +1,9 @@
 import { z } from 'zod';
+
+import { BANG_STYLE } from '../constants/bang-style';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../constants/consulting-response-form-field-name';
 import { FACE_TYPE } from '../constants/face-type';
 import { HAIR_TYPE } from '../constants/hair-type';
-import { BANG_STYLE } from '../constants/bang-style';
 
 const FACE_TYPE_VALUES = [
   FACE_TYPE.OVAL,

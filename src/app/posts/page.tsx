@@ -1,5 +1,8 @@
 'use client';
 
+import { useCallback, useState } from 'react';
+
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
 import useGetPosts from '@/features/posts/api/use-get-posts';
 import { POST_TABS, type POST_TAB_VALUES } from '@/features/posts/constants/post-tabs';
@@ -8,13 +11,11 @@ import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import PostList from '@/features/posts/ui/post-list/post-list';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { ROUTES } from '@/shared';
-import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { ValueOf } from '@/shared/type/types';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import Tab from '@/shared/ui/tab';
 import { BellButton, SiteHeader } from '@/widgets/header';
-import { useCallback, useState } from 'react';
 
 export default function PostsPage() {
   const { user, isUserModel } = useAuthContext();

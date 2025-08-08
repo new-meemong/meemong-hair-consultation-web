@@ -1,9 +1,12 @@
 import { useFormContext, useWatch } from 'react-hook-form';
+
+import { format } from 'date-fns';
+
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
 import type { ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
-import ConsultingPostFormOperationForm from './consulting-post-form-operation-form';
 import ConsultingInputResultListItem from '../../consulting-input-result-list-item';
-import { format } from 'date-fns';
+
+import ConsultingPostFormOperationForm from './consulting-post-form-operation-form';
 
 export default function ConsultingPostFormStep2() {
   const { control, setValue } = useFormContext<ConsultingPostFormValues>();

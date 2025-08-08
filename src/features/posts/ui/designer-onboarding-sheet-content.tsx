@@ -1,9 +1,9 @@
-import { Button } from '@/shared';
-import { DrawerClose } from '@/shared/ui/drawer';
-import { DrawerFooter } from '@/shared/ui/drawer';
-import { DrawerDescription, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer';
-import Image from 'next/image';
 import { useState } from 'react';
+
+import Image from 'next/image';
+
+import { Button } from '@/shared';
+import { DrawerClose , DrawerFooter , DrawerDescription, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer';
 
 type DesignerOnboardingGuideContent = {
   title: string;

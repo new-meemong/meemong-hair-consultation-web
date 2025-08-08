@@ -1,12 +1,14 @@
 'use client';
 
 import { forwardRef, useRef, useEffect } from 'react';
+
 import Lottie, { type LottieRefCurrentProps } from 'lottie-react';
-import { cn } from '@/shared/lib/utils';
+
 
 import loaderDark from '@/assets/lottie/Loader_final_dark.json';
-import loaderWhite from '@/assets/lottie/Loader_final_white.json';
 import loaderShort from '@/assets/lottie/Loader_final_short.json';
+import loaderWhite from '@/assets/lottie/Loader_final_white.json';
+import { cn } from '@/shared/lib/utils';
 
 interface LoaderProps {
   /** 로더 크기 */

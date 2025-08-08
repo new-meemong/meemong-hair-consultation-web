@@ -1,12 +1,14 @@
-import type { PostListTab } from '../types/post-list-tab';
-import RecentIcon from '@/assets/icons/mdi_recent.svg';
-import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
-import PopularIcon from '@/assets/icons/recent.svg';
-import HeartIcon from '@/assets/icons/mdi_heart.svg';
-import CommentIcon from '@/assets/icons/comment.svg';
 import type { ReactNode } from 'react';
+
+import CommentIcon from '@/assets/icons/comment.svg';
+import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
+import HeartIcon from '@/assets/icons/mdi_heart.svg';
+import RecentIcon from '@/assets/icons/mdi_recent.svg';
+import PopularIcon from '@/assets/icons/recent.svg';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
 import type { ValueOf } from '@/shared/type/types';
+
+import type { PostListTab } from '../types/post-list-tab';
 
 type TabInfo = {
   id: PostListTab;

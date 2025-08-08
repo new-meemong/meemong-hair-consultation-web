@@ -1,9 +1,12 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { getPostDetailQueryKeyPrefix } from '@/features/posts/api/use-get-post-detail';
+import { getPostsQueryKeyPrefix } from '@/features/posts/api/use-get-posts';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '@/features/posts/constants/api';
 import { apiClient } from '@/shared/api/client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { getGetPostCommentsQueryKeyPrefix } from './use-get-post-comments';
-import { getPostsQueryKeyPrefix } from '@/features/posts/api/use-get-posts';
+
 
 type PatchPostCommentRequest = {
   content: string;

@@ -1,6 +1,8 @@
+import { useCallback } from 'react';
+
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
 import type { CommentFormState } from '@/features/comments/types/comment-form-state';
-import { useCallback } from 'react';
+
 import useGetPostComments from '../../../features/comments/api/use-get-post-comments';
 import { CommentList } from '../../../features/comments/ui/comment-list';
 

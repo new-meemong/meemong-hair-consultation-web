@@ -1,11 +1,16 @@
 import { Query, useInfiniteQuery, type QueryKey } from '@tanstack/react-query';
+
+import type { ApiResponse } from '@/shared/api/client';
+import { filterUndefined } from '@/shared/lib/filter-undefined';
+
+import { apiClient } from '../client';
+import { DEFAULT_LIMIT } from '../constants/default-limit';
+import type { GetInfiniteData } from '../types/get-infinite-data';
 import type { PagingQueryParams } from '../types/paging-query-params';
 import type { PagingResponse } from '../types/paging-response';
-import type { GetInfiniteData } from '../types/get-infinite-data';
-import { apiClient } from '../client';
-import { filterUndefined } from '@/shared/lib/filter-undefined';
-import { DEFAULT_LIMIT } from '../constants/default-limit';
-import type { ApiResponse } from '@/shared/api/client';
+
+
+
 
 type UseCursorInfiniteQueryParams = PagingQueryParams & {
   endpoint: string;

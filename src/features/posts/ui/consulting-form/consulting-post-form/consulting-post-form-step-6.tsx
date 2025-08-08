@@ -1,8 +1,10 @@
+import { useFormContext } from 'react-hook-form';
+
 import { Textarea } from '@/shared';
 import FormItem from '@/shared/ui/form-item';
-import { useFormContext } from 'react-hook-form';
-import type { ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
+
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
+import type { ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 
 export default function ConsultingPostFormStep6() {
   const { register } = useFormContext<ConsultingPostFormValues>();

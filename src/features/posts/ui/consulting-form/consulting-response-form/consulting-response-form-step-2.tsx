@@ -1,8 +1,11 @@
-import { HAIR_TYPE_OPTIONS } from '@/features/posts/constants/hair-type';
 import { useFormContext, useWatch } from 'react-hook-form';
+
+import { HAIR_TYPE_OPTIONS } from '@/features/posts/constants/hair-type';
+
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 import ConsultingFormOptionList from '../consulting-form-option-list';
+
 import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
 
 export default function ConsultingResponseFormStep2() {

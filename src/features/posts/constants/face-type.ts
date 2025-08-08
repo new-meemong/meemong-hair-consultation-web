@@ -1,4 +1,5 @@
 import type { ValueOf } from '@/shared/type/types';
+
 import type { FaceTypeOption } from '../types/face-type';
 
 export const FACE_TYPE = {

@@ -1,10 +1,14 @@
-import { cn } from '@/lib/utils';
 import type { ReactNode } from 'react';
+
+import { useAuthContext } from '@/features/auth/context/auth-context';
+import { cn } from '@/lib/utils';
+
 import ConsultingInputResultListItem from '../consulting-input-result-list-item';
 import SkinColorLabel, { SKIN_COLOR_TYPE } from '../skin-color-label';
+
 import PostDetailAuthorProfile from './post-detail-author-profile';
 import PostDetailImage from './post-detail-image';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+
 
 function Separator() {
   return <div className="bg-alternative h-1.5" />;

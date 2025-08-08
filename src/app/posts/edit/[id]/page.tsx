@@ -1,5 +1,7 @@
 'use client';
 
+import { useParams } from 'next/navigation';
+
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { POST_FORM_FIELD_NAME } from '@/features/posts/constants/post-form-field-name';
 import useEditPost from '@/features/posts/hooks/use-edit-post';
@@ -9,7 +11,6 @@ import { ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { SiteHeader } from '@/widgets/header';
-import { useParams } from 'next/navigation';
 
 export default function EditPostPage() {
   const { replace } = useRouterWithUser();

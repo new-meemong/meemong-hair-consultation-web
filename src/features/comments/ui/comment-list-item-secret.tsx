@@ -1,5 +1,6 @@
-import LockIcon from '@/assets/icons/lock.svg';
 import { format } from 'date-fns';
+
+import LockIcon from '@/assets/icons/lock.svg';
 
 type CommentListItemSecretProps = {
   createdAt: string;

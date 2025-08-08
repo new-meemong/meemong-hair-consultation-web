@@ -1,15 +1,18 @@
+import { format } from 'date-fns';
+
+import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
 import MoreIcon from '@/assets/icons/more-vertical.svg';
 import ReplyIcon from '@/assets/icons/reply.svg';
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import CommentAuthorProfile from './comment-author-profile';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import { cn } from '@/lib/utils';
 import { MoreOptionsMenu, ROUTES } from '@/shared';
-import CommentListItemSecret from './comment-list-item-secret';
-import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+
+import CommentAuthorProfile from './comment-author-profile';
+import CommentListItemSecret from './comment-list-item-secret';
+
 
 const MORE_ACTION = {
   EDIT: 'edit',

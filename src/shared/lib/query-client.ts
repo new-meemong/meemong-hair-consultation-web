@@ -1,4 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
+
 import { getErrorMessage, getFieldErrors } from './error-handler';
 
 function handleGlobalMutationError(error: unknown): void {

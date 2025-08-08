@@ -1,9 +1,12 @@
-import { MoreOptionsMenu, ROUTES } from '@/shared';
+import { useCallback, useMemo } from 'react';
 
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
-import useDeletePost from '../../hooks/use-delete-post';
+import { MoreOptionsMenu, ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import { useCallback, useMemo } from 'react';
+
+import useDeletePost from '../../hooks/use-delete-post';
+
+
 
 type PostDetailMoreButtonProps = {
   postId: string;

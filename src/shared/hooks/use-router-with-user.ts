@@ -1,7 +1,9 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
+
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 
 const createUrlWithUserId = (path: string, userId: string | null) => {

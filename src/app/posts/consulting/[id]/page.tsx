@@ -1,9 +1,10 @@
 'use client';
 
+import { useParams } from 'next/navigation';
+
 import ConsultingResponseHeader from '@/features/posts/ui/consulting-response/consulting-response-header';
 import { SiteHeader } from '@/widgets/header';
 import ConsultingResponseContainer from '@/widgets/post/ui/consulting-response/consulting-response-container';
-import { useParams } from 'next/navigation';
 
 export default function ConsultingResponsePage() {
   const { id } = useParams();

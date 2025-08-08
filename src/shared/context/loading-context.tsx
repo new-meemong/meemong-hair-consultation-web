@@ -1,5 +1,8 @@
 'use client';
 
+import type { ReactNode } from 'react';
+import { createContext, useContext, useState } from 'react';
+
 import {
   useIsFetching,
   useIsMutating,
@@ -7,8 +10,7 @@ import {
   type Query,
   type Mutation,
 } from '@tanstack/react-query';
-import type { ReactNode } from 'react';
-import { createContext, useContext, useState } from 'react';
+
 import { LoadingComponent } from '../ui/loading-component';
 
 interface LoadingContextType {

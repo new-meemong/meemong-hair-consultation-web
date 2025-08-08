@@ -1,12 +1,17 @@
-import Image from 'next/image';
-import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
-import { XIcon } from 'lucide-react';
-import { useOverlayContext } from '../context/overlay-context';
 import React from 'react';
+
+import Image from 'next/image';
+
+import { XIcon } from 'lucide-react';
+
+import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
+import DownloadIcon from '@/assets/icons/download.svg';
 import { downloadImage } from '@/shared/lib/download-image';
+
+import { useOverlayContext } from '../context/overlay-context';
+
 import { Carousel, CarouselContent, CarouselItem } from './carousel';
 import { useCarouselIndex } from './hooks/use-carousel-index';
-import DownloadIcon from '@/assets/icons/download.svg';
 
 function ImageViewerModalHeader({
   title,

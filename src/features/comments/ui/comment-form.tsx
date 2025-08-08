@@ -1,17 +1,22 @@
 'use client';
 
+import { useEffect } from 'react';
+
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
+
 import ArrowUpIcon from '@/assets/icons/arrow-up.svg';
 import LockIcon from '@/assets/icons/lock.svg';
-import { Label, Separator } from '@/shared';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import { Label, Separator } from '@/shared';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
 import ControlledCheckbox from '@/shared/ui/controlled-checkbox';
 import { Textarea } from '@/shared/ui/textarea';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import z from 'zod';
-import { useEffect } from 'react';
+
+
 
 export const COMMENT_FORM_FIELD_NAME = {
   content: 'content',

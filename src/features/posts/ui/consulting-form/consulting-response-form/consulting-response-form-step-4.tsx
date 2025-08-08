@@ -1,9 +1,12 @@
 import { useFormContext, useWatch } from 'react-hook-form';
+
+import { BANG_STYLE_OPTIONS } from '@/features/posts/constants/bang-style';
+
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 import ConsultingFormOptionList from '../consulting-form-option-list';
+
 import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
-import { BANG_STYLE_OPTIONS } from '@/features/posts/constants/bang-style';
 
 export default function ConsultingResponseFormStep4() {
   const { control, setValue } = useFormContext<ConsultingResponseFormValues>();

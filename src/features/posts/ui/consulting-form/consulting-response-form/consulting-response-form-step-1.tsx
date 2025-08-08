@@ -1,11 +1,15 @@
+import { useFormContext, useWatch } from 'react-hook-form';
+
+import Image from 'next/image';
+
+import { FACE_TYPE_OPTIONS, type FACE_TYPE } from '@/features/posts/constants/face-type';
+import type { FaceTypeOption } from '@/features/posts/types/face-type';
 import { cn } from '@/lib/utils';
 import type { ValueOf } from '@/shared/type/types';
-import Image from 'next/image';
-import { useFormContext, useWatch } from 'react-hook-form';
-import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
+
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
-import type { FaceTypeOption } from '@/features/posts/types/face-type';
-import { FACE_TYPE_OPTIONS, type FACE_TYPE } from '@/features/posts/constants/face-type';
+import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
+
 
 type FaceTypeOptionProps = {
   option: FaceTypeOption;

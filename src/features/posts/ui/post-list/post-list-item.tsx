@@ -1,12 +1,13 @@
 'use client';
 
+import Image from 'next/image';
+
 import CommentIcon from '@/assets/icons/comment.svg';
 import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import { type Post } from '@/entities/posts';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
-import Image from 'next/image';
 
 type PostItemProps = {
   post: Post;

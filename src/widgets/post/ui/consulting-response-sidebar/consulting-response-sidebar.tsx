@@ -1,19 +1,23 @@
-import CloseIcon from '@/assets/icons/close.svg';
-import { MULTI_STEP_FORM_PORTAL_ID } from '@/shared/ui/multi-step-form';
+import { useRef, useState } from 'react';
+
 import { createPortal } from 'react-dom';
 
+import CloseIcon from '@/assets/icons/close.svg';
+import { SKIN_COLOR_TYPE } from '@/features/posts/ui/skin-color-label';
 import { cn } from '@/lib/utils';
 import { ToggleChip, ToggleChipGroup } from '@/shared';
 import type { ValueOf } from '@/shared/type/types';
+import { MULTI_STEP_FORM_PORTAL_ID } from '@/shared/ui/multi-step-form';
 import {
   CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE,
   CONSULTING_RESPONSE_SIDEBAR_TABS,
 } from '@/widgets/post/constants/consulting-response-sidebar-tab';
-import { useRef, useState } from 'react';
+
+
 import ConsultingResponseSidebarAdditionalInfoTabView from './consulting-response-sidebar-additional-info-tab-view';
 import ConsultingResponseSidebarCurrentStateTabView from './consulting-response-sidebar-current-state-tab-view';
 import ConsultingResponseSidebarDesiredStyleTabView from './consulting-response-sidebar-desired-style-tab-view';
-import { SKIN_COLOR_TYPE } from '@/features/posts/ui/skin-color-label';
+
 
 type ConsultingResponseSidebarProps = {
   isOpen: boolean;

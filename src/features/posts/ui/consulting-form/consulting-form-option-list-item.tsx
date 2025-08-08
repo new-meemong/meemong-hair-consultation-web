@@ -1,4 +1,5 @@
 import { Checkbox, Label } from '@/shared';
+
 import type { ConsultingFormOption } from '../../types/consulting-form-option';
 
 type ConsultingFormOptionListItemProps = {

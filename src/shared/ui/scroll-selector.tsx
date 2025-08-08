@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+
 import { useScrollSelector } from './hooks/use-scroll-selector';
 
 type ScrollSelectorProps<T> = {
