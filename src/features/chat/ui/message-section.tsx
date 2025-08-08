@@ -4,9 +4,11 @@ import { useHairConsultationChatChannelStore } from '../store/hair-consultation-
 import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
 import { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
+import { shouldShowDateDivider } from '../lib/should-show-date-divider';
 import MyMessage from './my-message';
 import OtherMessage from './other-message';
 import SystemMessage from './system-message';
+import ChatDateDivider from './chat-date-divider';
 
 type MessageSectionProps = {
   userChannel: UserHairConsultationChatChannelType;
@@ -94,25 +96,35 @@ export default function MessageSection({ userChannel }: MessageSectionProps) {
   }, [messages.length]);
 
   return (
-    <div className="flex flex-col overflow-y-auto scrollbar-hide px-5 gap-6 h-full">
-      {messages.map((message) => {
-        if (message.messageType === HairConsultationChatMessageTypeEnum.SYSTEM) {
-          return <SystemMessage key={message.id} message={message} />;
-        }
+    <div className="flex flex-col overflow-y-auto scrollbar-hide p-5 gap-6 h-full">
+      {messages.map((message, index) => {
+        const previousMessage = index > 0 ? messages[index - 1] : null;
+        const showDateDivider = shouldShowDateDivider(
+          message.createdAt,
+          previousMessage?.createdAt,
+        );
 
-        return message.senderId === userId ? (
-          <MyMessage
-            key={message.id}
-            message={message}
-            //   source={source}
-          />
-        ) : (
-          <OtherMessage
-            key={message.id}
-            message={message}
-            authorProfileImageUrl={userChannel.otherUser.ProfilePictureURL}
-            //   source={source}
-          />
+        return (
+          <div key={message.id} className="flex flex-col gap-6">
+            {showDateDivider && message.createdAt && 'toDate' in message.createdAt && (
+              <ChatDateDivider date={message.createdAt} />
+            )}
+
+            {message.messageType === HairConsultationChatMessageTypeEnum.SYSTEM ? (
+              <SystemMessage message={message} />
+            ) : message.senderId === userId ? (
+              <MyMessage
+                message={message}
+                //   source={source}
+              />
+            ) : (
+              <OtherMessage
+                message={message}
+                authorProfileImageUrl={userChannel.otherUser.ProfilePictureURL}
+                //   source={source}
+              />
+            )}
+          </div>
         );
       })}
       <div ref={messagesEndRef} /> {/* 스크롤 위치 지정을 위한 요소 */}
