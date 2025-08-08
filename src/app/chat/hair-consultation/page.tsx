@@ -18,8 +18,6 @@ export default function HairConsultationChatPage() {
 
   console.log('loading', loading);
 
-  console.log(chatChannelUserMetas);
-
   useEffect(() => {
     if (!userId) return;
 

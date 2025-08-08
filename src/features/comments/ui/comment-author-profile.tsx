@@ -1,15 +1,14 @@
+import LockIcon from '@/assets/icons/lock.svg';
 import ProfileIcon from '@/assets/icons/profile.svg';
 import type { CommentUser } from '@/entities/comment/model/comment';
+import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useShowInvalidChatRequestSheet } from '@/features/chat/hook/use-show-invalid-chat-request-sheet';
+import useSendMessage from '@/features/chat/hook/useSendMessage';
+import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
+import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
-import LockIcon from '@/assets/icons/lock.svg';
-import { USER_ROLE } from '@/entities/user/constants/user-role';
-import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
-import { useHairConsultationChatMessageStore } from '@/features/chat/store/hair-consultation-chat-message-store';
-import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
-import { removeQueryParams } from '@/shared/lib/remove-query-params';
-import { useShowInvalidChatRequestSheet } from '@/features/chat/hook/use-show-invalid-chat-request-sheet';
 
 type CommentAuthorProfileProps = {
   author: CommentUser;
@@ -31,11 +30,8 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
     findOrCreateChannel: state.findOrCreateChannel,
   }));
 
-  const { sendMessage } = useHairConsultationChatMessageStore((state) => ({
-    sendMessage: state.sendMessage,
-  }));
-
   const showInvalidChatRequestBottomSheet = useShowInvalidChatRequestSheet();
+  const sendMessage = useSendMessage();
 
   const handleClick = async () => {
     if (isUserDesigner) {
@@ -61,24 +57,12 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
       }
 
       if (isCreated) {
-        const { success } = await sendMessage({
+        await sendMessage({
           channelId,
           message: `헤어상담 채팅이 시작되었습니다.`,
           messageType: HairConsultationChatMessageTypeEnum.SYSTEM,
-          metaPathList: [
-            {
-              href: removeQueryParams(window.location.href),
-            },
-          ],
-          senderId,
           receiverId,
         });
-
-        if (success) {
-          console.log('채팅 메시지 전송 성공');
-        } else {
-          console.error('채팅 메시지 전송 실패');
-        }
       }
     } catch (error) {
       console.error('요청 실패:', error);

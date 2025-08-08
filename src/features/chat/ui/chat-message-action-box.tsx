@@ -2,12 +2,11 @@ import CalendarIcon from '@/assets/icons/calendar.svg';
 import ContractIcon from '@/assets/icons/contract.svg';
 import GalleryIcon from '@/assets/icons/gallery.svg';
 import useUploadPostImageMutation from '@/features/posts/api/use-upload-post-image';
-import { removeQueryParams } from '@/shared/lib/remove-query-params';
 import type { ValueOf } from '@/shared/type/types';
 import ImageUploader from '@/shared/ui/image-uploader';
 import { type ReactNode } from 'react';
+import useSendMessage from '../hook/useSendMessage';
 import { createChatImagesMessage } from '../lib/create-chat-images-message';
-import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
 import { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 
@@ -35,8 +34,8 @@ type ChatMessageActionBoxProps = {
 };
 
 export default function ChatMessageActionBox({ userChannel }: ChatMessageActionBoxProps) {
-  const { sendMessage } = useHairConsultationChatMessageStore();
   const { mutateAsync: uploadImage, isPending: isUploading } = useUploadPostImageMutation();
+  const sendMessage = useSendMessage();
 
   const handleImageUpload = async (file: File[]) => {
     if (isUploading) return;
@@ -46,15 +45,9 @@ export default function ChatMessageActionBox({ userChannel }: ChatMessageActionB
 
       await sendMessage({
         channelId: userChannel.channelId,
-        senderId: userChannel.userId,
         receiverId: userChannel.otherUser.id.toString(),
         message: createChatImagesMessage(response.dataList.map((img) => img.imageURL)),
         messageType: HairConsultationChatMessageTypeEnum.IMAGE,
-        metaPathList: [
-          {
-            href: removeQueryParams(window.location.href),
-          },
-        ],
       });
     } catch (error) {
       console.error('이미지 업로드 실패:', error);

@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import useSendMessage from '@/features/chat/hook/useSendMessage';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import { useHairConsultationChatMessageStore } from '@/features/chat/store/hair-consultation-chat-message-store';
 import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
@@ -27,9 +28,8 @@ export default function HairConsultationChatDetailPage() {
   const { user } = useAuthContext();
   const userId = user.id.toString();
 
-  const { subscribeToMessages, sendMessage } = useHairConsultationChatMessageStore((state) => ({
+  const { subscribeToMessages } = useHairConsultationChatMessageStore((state) => ({
     subscribeToMessages: state.subscribeToMessages,
-    sendMessage: state.sendMessage,
   }));
 
   const {
@@ -101,23 +101,21 @@ export default function HairConsultationChatDetailPage() {
     resetUnreadCount(chatChannelId, userId);
   }, [userId, chatChannelId, updateChannelUserInfo, resetUnreadCount]);
 
+  const sendMessage = useSendMessage();
+
   async function handleSendMessage(data: ChatMessageInputValues) {
     const message = data.content;
     if (!message.trim() || !userChannel?.otherUser?.id || !userId) {
-      return { success: false, channelId: null };
+      return { success: false };
     }
 
     try {
       return await sendMessage({
         channelId: chatChannelId,
-        senderId: userId, // TODO: 실제 사용자 ID로 교체 필요
         receiverId: userChannel.otherUser.id.toString(),
         message: message,
         messageType: HairConsultationChatMessageTypeEnum.TEXT,
       });
-
-      //TODO: 푸시 알림보내기 api 확인
-      //   await sendPushNotification(userChannel.otherUser.id, messageText);
     } catch (error) {
       console.error('메시지 전송 실패:', error);
       return { success: false, channelId: null };

@@ -1,13 +1,13 @@
+import CloseIcon from '@/assets/icons/close.svg';
 import PlusIcon from '@/assets/icons/plus.svg';
 import SendIcon from '@/assets/icons/send.svg';
-import CloseIcon from '@/assets/icons/close.svg';
 import { Textarea } from '@/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
-import ChatMessageActionBox from './chat-message-action-box';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
+import ChatMessageActionBox from './chat-message-action-box';
 
 const CHAT_MESSAGE_INPUT_FIELD_NAME = {
   content: 'content',
@@ -20,9 +20,7 @@ const formSchema = z.object({
 export type ChatMessageInputValues = z.infer<typeof formSchema>;
 
 type ChatMessageFormProps = {
-  onSubmit: (
-    data: ChatMessageInputValues,
-  ) => Promise<{ success: boolean; channelId: string | null }>;
+  onSubmit: (data: ChatMessageInputValues) => Promise<{ success: boolean }>;
   userChannel: UserHairConsultationChatChannelType;
 };
 
