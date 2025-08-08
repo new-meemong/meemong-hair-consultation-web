@@ -40,6 +40,7 @@ export default function ImageMessage({ message }: ImageMessageProps) {
     showImageViewerModal({
       images,
       initialIndex: images.indexOf(image),
+      iconType: 'download',
     });
   };
 
