@@ -56,7 +56,7 @@ export default function PostsPage() {
   );
 
   return (
-    <div className="min-w-[375px] w-full h-screen mx-auto pb-20 flex flex-col">
+    <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">
       {/* 헤더 */}
       <SiteHeader title="헤어상담" rightComponent={<BellButton onClick={handleBellClick} />} />
 

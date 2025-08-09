@@ -6,6 +6,7 @@
 @import './radius.css';
 @import './typography.css';
 @import './effect.css';
+@import './viewport.css';
 
 @layer base {
   body {
