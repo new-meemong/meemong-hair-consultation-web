@@ -17,8 +17,6 @@ import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
 
-const tabs = POST_TABS.reverse();
-
 export default function CreatePostPage() {
   useGuidePopup(USER_GUIDE_KEYS.hasSeenCreatePostGuide);
 
@@ -37,7 +35,9 @@ export default function CreatePostPage() {
     }
   }, [hasSavedConsultingPost, showReloadConsultingPostModal]);
 
-  const [selectedTab, setSelectedTab] = useState<ValueOf<typeof POST_TAB_VALUES>>(tabs[0].value);
+  const [selectedTab, setSelectedTab] = useState<ValueOf<typeof POST_TAB_VALUES>>(
+    POST_TABS[0].value,
+  );
 
   const handleBackClick = () => {
     if (selectedTab === POST_TAB_VALUES.CONSULTING) {
@@ -118,7 +118,7 @@ export default function CreatePostPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <SiteHeader title="게시글 작성" showBackButton onBackClick={handleBackClick} />
-      <Tab options={tabs} value={selectedTab} onChange={handleTabChange} />
+      <Tab options={POST_TABS} value={selectedTab} onChange={handleTabChange} />
       {renderForm(selectedTab)}
     </div>
   );
