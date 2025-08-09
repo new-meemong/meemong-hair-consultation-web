@@ -13,11 +13,9 @@ import {
   CONSULTING_RESPONSE_SIDEBAR_TABS,
 } from '@/widgets/post/constants/consulting-response-sidebar-tab';
 
-
 import ConsultingResponseSidebarAdditionalInfoTabView from './consulting-response-sidebar-additional-info-tab-view';
 import ConsultingResponseSidebarCurrentStateTabView from './consulting-response-sidebar-current-state-tab-view';
 import ConsultingResponseSidebarDesiredStyleTabView from './consulting-response-sidebar-desired-style-tab-view';
-
 
 type ConsultingResponseSidebarProps = {
   isOpen: boolean;
@@ -85,7 +83,7 @@ export default function ConsultingResponseSidebar({
   };
 
   return createPortal(
-    <div className={`absolute inset-0 z-50 ${!isOpen ? 'pointer-events-none' : ''}`}>
+    <div className={`fixed inset-0 z-50 ${!isOpen ? 'pointer-events-none' : ''}`}>
       <div
         className={`absolute inset-0 bg-dimmer transition-opacity duration-500 ${
           isOpen ? 'opacity-100' : 'opacity-0'
