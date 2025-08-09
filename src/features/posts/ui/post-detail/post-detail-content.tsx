@@ -36,7 +36,7 @@ export default function PostDetailContent({ postDetail }: PostDetailContentProps
         />
         <div className="flex flex-col gap-3">
           <h1 className="typo-headline-bold text-label-strong">{title}</h1>
-          <p className="typo-body-1-regular text-label-default">{content}</p>
+          <p className="typo-body-1-regular text-label-default whitespace-pre-wrap">{content}</p>
         </div>
       </div>
 
