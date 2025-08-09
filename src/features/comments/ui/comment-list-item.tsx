@@ -13,7 +13,6 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import CommentAuthorProfile from './comment-author-profile';
 import CommentListItemSecret from './comment-list-item-secret';
 
-
 const MORE_ACTION = {
   EDIT: 'edit',
   DELETE: 'delete',
@@ -78,8 +77,7 @@ export default function CommentListItem({
 
   // TODO: 추후 컨설팅 댓글 여부 확인 로직 추가
   const isConsultingResult = true;
-  const designerShopName = '주노헤어';
-  const consultingResultContent = `${designerShopName} ${author.name}디자이너님이 컨설팅 답변을 보냈습니다! 버튼을 눌러 확인해보세요`;
+  const consultingResultContent = `${author.companyName ?? ''} ${author.name}디자이너님이 컨설팅 답변을 보냈습니다! 버튼을 눌러 확인해보세요`;
 
   const handleConsultingResponseClick = () => {
     push(ROUTES.POSTS_CONSULTING_RESPONSE(comment.id.toString()));

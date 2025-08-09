@@ -6,6 +6,7 @@ export type CommentUser = {
   name: string;
   profileImageUrl: string | null;
   address?: string;
+  companyName: string | null;
   role: ValueOf<typeof USER_ROLE>;
 };
 
