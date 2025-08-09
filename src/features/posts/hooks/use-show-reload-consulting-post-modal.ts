@@ -3,7 +3,7 @@ import useShowModal from '@/shared/ui/hooks/use-show-modal';
 export default function useShowReloadConsultingPostModal() {
   const showModal = useShowModal();
 
-  const showReloadConsultingPostModal = () => {
+  const showReloadConsultingPostModal = ({ onClose }: { onClose: () => void }) => {
     showModal({
       id: 'reload-consulting-post-modal',
       text: '작성중인 컨설팅 글이 있습니다.\n이어서 작성하시겠습니까?',
@@ -23,9 +23,7 @@ export default function useShowReloadConsultingPostModal() {
         },
         {
           label: '닫기',
-          onClick: () => {
-            //TODO: 모달 닫기 동작 확인필요
-          },
+          onClick: onClose,
         },
       ],
     });
