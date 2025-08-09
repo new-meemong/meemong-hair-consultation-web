@@ -44,6 +44,8 @@ const ImageUploader = forwardRef<ImageUploaderRef, ImageUploaderProps>(
       } else {
         (setImages as (image: File) => void)(newFiles[0]);
       }
+
+      e.target.value = '';
     };
 
     return (

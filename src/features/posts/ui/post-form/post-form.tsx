@@ -16,7 +16,6 @@ import type { PostFormValues } from '../../types/post-form-values';
 
 import PostFormImageList from './post-form-image-list';
 
-
 type PostFormProps = {
   initialData?: PostFormValues;
   onSubmit: (data: PostFormValues) => void;
@@ -60,10 +59,13 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
   };
 
   const addImageFiles = (newImageFiles: File[]) => {
+    console.log('newImageFiles', newImageFiles);
     const updatedImageFiles = [...imageFiles, ...newImageFiles];
 
     method.setValue(POST_FORM_FIELD_NAME.imageFiles, updatedImageFiles, { shouldDirty: true });
   };
+
+  console.log('method.formState.errors', method.formState.errors);
 
   return (
     <FormProvider {...method}>
