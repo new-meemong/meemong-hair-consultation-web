@@ -1,0 +1,25 @@
+@layer utilities {
+  .h-screen {
+    height: 100dvh;
+  }
+
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+
+  .h-screen-small {
+    height: 100svh;
+  }
+
+  .min-h-screen-small {
+    min-height: 100svh;
+  }
+
+  .h-screen-large {
+    height: 100lvh;
+  }
+
+  .min-h-screen-large {
+    min-height: 100lvh;
+  }
+}
