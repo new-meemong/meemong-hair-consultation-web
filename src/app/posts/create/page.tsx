@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { POST_TABS, POST_TAB_VALUES } from '@/features/posts/constants/post-tabs';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
 import useShowLeaveCreateConsultingPostModal from '@/features/posts/hooks/use-show-leave-create-consulting-post';
+import useShowLeaveCreateGeneralPostModal from '@/features/posts/hooks/use-show-leave-create-general-post-modal';
 import useShowReloadConsultingPostModal from '@/features/posts/hooks/use-show-reload-consulting-post-modal';
 import type { PostFormValues } from '@/features/posts/types/post-form-values';
 import ConsultingPostForm from '@/features/posts/ui/consulting-form/consulting-post-form/consulting-post-form';
@@ -43,10 +44,16 @@ export default function CreatePostPage() {
   }, [hasSavedConsultingPost, showReloadConsultingPostModal]);
 
   const showLeaveCreateConsultingPostModal = useShowLeaveCreateConsultingPostModal();
+  const showLeaveCreateGeneralPostModal = useShowLeaveCreateGeneralPostModal();
 
   const handleBackClick = () => {
     if (selectedTab === POST_TAB_VALUES.CONSULTING) {
       showLeaveCreateConsultingPostModal();
+      return;
+    }
+
+    if (selectedTab === POST_TAB_VALUES.GENERAL) {
+      showLeaveCreateGeneralPostModal();
       return;
     }
 
