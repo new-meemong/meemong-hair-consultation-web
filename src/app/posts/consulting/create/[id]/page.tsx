@@ -22,7 +22,7 @@ export default function CreateConsultingPostPage() {
   if (!postId) return null;
 
   return (
-    <div className="h-screen bg-white flex flex-col min-h-0">
+    <div className="h-screen bg-white flex flex-col min-h-0 overflow-x-hidden">
       <PostDetailProvider postId={postId.toString()}>
         <SiteHeader title="컨설팅 답변 작성" showBackButton />
         <ConsultingResponseForm />
