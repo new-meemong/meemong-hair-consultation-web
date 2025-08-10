@@ -31,7 +31,7 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
   if (posts.length === 0) {
     return (
       <div className="flex flex-col gap-2 items-center justify-center pt-30">
-        <ErrorIcon className="size-7" />
+        <ErrorIcon className="size-7 fill-label-info" />
         <p className="typo-body-1-medium text-label-placeholder">
           {POST_LIST_TAB[tab].getEmptyText(user.role)}
         </p>

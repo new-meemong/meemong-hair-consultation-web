@@ -1,4 +1,4 @@
-import type { SearchParamsOption } from 'ky';
+import type { SearchParamsOption, HTTPError } from 'ky';
 import ky from 'ky';
 
 import { getToken } from '../lib/auth';
@@ -12,9 +12,9 @@ export interface ApiResponse<T = unknown> {
 }
 
 export interface ApiError {
+  code: string;
   message: string;
-  code?: string;
-  status?: number;
+  httpCode: number;
 }
 
 const createApiInstance = () => {
@@ -31,14 +31,25 @@ const createApiInstance = () => {
         },
       ],
       beforeError: [
-        async (error) => {
+        async (error: HTTPError) => {
           const { response } = error;
           if (response && response.body) {
             try {
-              const errorData = (await response.json()) as { message?: string };
-              error.message = errorData.message || `API Error: ${response.status}`;
-            } catch {
-              error.message = `API Error: ${response.status}`;
+              const errorData = (await response.json()) as { error: ApiError };
+              error.message = errorData.error.message;
+
+              Object.defineProperty(error, 'response', {
+                value: Object.assign(response, {
+                  data: errorData,
+                }),
+                enumerable: true,
+                configurable: true,
+              });
+
+              return error;
+            } catch (parseError) {
+              console.error('Error parsing API error response:', parseError);
+              return error;
             }
           }
           return error;

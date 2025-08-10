@@ -1,35 +1,23 @@
-interface HttpError {
-  response?: {
-    status: number;
-    data?: ApiErrorResponse;
-  };
-  status?: number;
-  code?: string;
-}
+import type { ApiError } from '../api/client';
 
-export interface ValidationFieldError {
-  field: string;
-  value: string;
-  reason: string;
-}
-
-export interface ApiErrorResponse {
-  error: {
-    code: string;
-    message: string;
-    httpCode?: number;
-    fieldErrors?: ValidationFieldError[];
-  };
+export function getApiError(error: unknown): ApiError {
+  const apiError = error as ApiError;
+  return (
+    apiError ?? {
+      code: 'UNKNOWN_ERROR',
+      message: '알 수 없는 오류가 발생했습니다.',
+      httpCode: 500,
+    }
+  );
 }
 
 export function getErrorMessage(error: unknown): string {
-  const httpError = error as HttpError;
+  const apiError = getApiError(error);
 
-  const apiMessage = httpError?.response?.data?.error?.message;
+  const apiMessage = apiError?.message;
   if (apiMessage) return apiMessage;
 
-  // 백엔드 메시지 없을 경우
-  const status = httpError?.response?.status || httpError?.status;
+  const status = apiError?.httpCode;
   switch (status) {
     case 400:
       return '잘못된 요청입니다.';
@@ -46,9 +34,4 @@ export function getErrorMessage(error: unknown): string {
     default:
       return '알 수 없는 오류가 발생했습니다.';
   }
-}
-
-export function getFieldErrors(error: unknown): ValidationFieldError[] {
-  const httpError = error as HttpError;
-  return httpError?.response?.data?.error?.fieldErrors || [];
 }
