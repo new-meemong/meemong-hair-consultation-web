@@ -8,6 +8,7 @@ import useShowReloadConsultingPostModal from '@/features/posts/hooks/use-show-re
 import type { PostFormValues } from '@/features/posts/types/post-form-values';
 import ConsultingPostForm from '@/features/posts/ui/consulting-form/consulting-post-form/consulting-post-form';
 import PostForm from '@/features/posts/ui/post-form/post-form';
+import { getErrorMessage } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
@@ -100,6 +101,12 @@ export default function CreatePostPage() {
           message: '업로드가 완료되었습니다!',
         });
         replace('/posts');
+      },
+      onError: (error: unknown) => {
+        showSnackBar({
+          type: 'error',
+          message: getErrorMessage(error),
+        });
       },
     });
   };

@@ -8,7 +8,7 @@ export function useCreatePost() {
 
   const handleCreatePost = async (
     data: PostFormValues,
-    { onSuccess }: { onSuccess: () => void },
+    { onSuccess, onError }: { onSuccess: () => void; onError: (error: unknown) => void },
   ) => {
     try {
       let imageUrls: string[] = [];
@@ -27,6 +27,7 @@ export function useCreatePost() {
         },
         {
           onSuccess,
+          onError,
         },
       );
     } catch (error) {
