@@ -65,8 +65,6 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
     method.setValue(POST_FORM_FIELD_NAME.imageFiles, updatedImageFiles, { shouldDirty: true });
   };
 
-  console.log('method.formState.errors', method.formState.errors);
-
   return (
     <FormProvider {...method}>
       <form onSubmit={method.handleSubmit(onSubmit)} className="flex flex-col flex-1">
