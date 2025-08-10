@@ -55,7 +55,7 @@ export function SnackBar({ message, onClose, type, open = true }: SnackBarProps)
     <div className="fixed bottom-10 left-0 right-0 flex justify-center px-5 z-50">
       <div
         className={cn(
-          'flex gap-2 items-center justify-center h-11 w-full rounded-10 text-white shadow-strong typo-body-2-regular',
+          'flex gap-2 items-center justify-center h-11 w-full rounded-10 text-white shadow-strong typo-body-2-regular px-5',
           'transition-all duration-500',
           getBackgroundColor(type),
           open ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',

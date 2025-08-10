@@ -1,6 +1,6 @@
 'use client';
 
-import { Component, type ReactNode, useEffect } from 'react';
+import { Component, type ReactNode, useEffect, useRef } from 'react';
 
 import { useOverlayContext } from './context/overlay-context';
 import { getErrorMessage } from './lib/error-handler';
@@ -14,18 +14,20 @@ type State = {
   error?: Error;
 };
 
-function ErrorFallback({ error }: { error: Error }) {
+function ErrorFallback({ error, onHandled }: { error: Error; onHandled?: () => void }) {
   const { showSnackBar } = useOverlayContext();
+  const hasShownRef = useRef(false);
 
   useEffect(() => {
-    console.log('error', error);
-
+    if (hasShownRef.current) return;
+    hasShownRef.current = true;
     const errorMessage = getErrorMessage(error);
     showSnackBar({
       type: 'error',
       message: errorMessage,
     });
-  }, [error, showSnackBar]);
+    onHandled?.();
+  }, [error, onHandled, showSnackBar]);
 
   return null;
 }
@@ -49,7 +51,10 @@ export class ErrorBoundary extends Component<Props, State> {
       <>
         {this.props.children}
         {this.state.hasError && (
-          <ErrorFallback error={this.state.error || new Error('알 수 없는 오류가 발생했습니다.')} />
+          <ErrorFallback
+            error={this.state.error || new Error('알 수 없는 오류가 발생했습니다.')}
+            onHandled={() => this.setState({ hasError: false, error: undefined })}
+          />
         )}
       </>
     );

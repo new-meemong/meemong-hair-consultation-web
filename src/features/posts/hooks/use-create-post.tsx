@@ -8,31 +8,26 @@ export function useCreatePost() {
 
   const handleCreatePost = async (
     data: PostFormValues,
-    { onSuccess, onError }: { onSuccess: () => void; onError: (error: unknown) => void },
+    { onSuccess }: { onSuccess: () => void },
   ) => {
-    try {
-      let imageUrls: string[] = [];
+    let imageUrls: string[] = [];
 
-      if (data.imageFiles.length > 0) {
-        const uploadResult = await uploadImages(data.imageFiles);
-        imageUrls = uploadResult.dataList.map((img) => img.imageURL);
-      }
-
-      createPostMutate(
-        {
-          title: data.title,
-          content: data.content,
-          isPhotoVisibleToDesigner: data.isPhotoVisibleToDesigner,
-          hairConsultPostingImages: imageUrls,
-        },
-        {
-          onSuccess,
-          onError,
-        },
-      );
-    } catch (error) {
-      console.error('게시글 생성 중 오류:', error);
+    if (data.imageFiles.length > 0) {
+      const uploadResult = await uploadImages(data.imageFiles);
+      imageUrls = uploadResult.dataList.map((img) => img.imageURL);
     }
+
+    createPostMutate(
+      {
+        title: data.title,
+        content: data.content,
+        isPhotoVisibleToDesigner: data.isPhotoVisibleToDesigner,
+        hairConsultPostingImages: imageUrls,
+      },
+      {
+        onSuccess,
+      },
+    );
   };
 
   return {

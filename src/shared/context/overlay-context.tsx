@@ -1,8 +1,9 @@
 'use client';
 
-import { createContext, useContext, useCallback, useState } from 'react';
+import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
+import { registerShowSnackBar } from '@/shared/lib/global-overlay';
 import { BottomSheet, type BottomSheetProps } from '@/shared/ui/bottom-sheet';
 
 import { ModalWrapper, type ModalWrapperProps } from '../ui/modal-wrapper';
@@ -109,6 +110,14 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
   const handleSnackBarClose = (id: string) => {
     hideSnackBar(id);
   };
+
+  // expose global snackbar handler
+  useEffect(() => {
+    registerShowSnackBar((props) => {
+      const id = crypto.randomUUID();
+      setSnackBars((prev) => [...prev, { ...props, id, open: true }]);
+    });
+  }, []);
 
   return (
     <OverlayContext.Provider

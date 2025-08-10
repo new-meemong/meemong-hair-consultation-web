@@ -102,12 +102,6 @@ export default function CreatePostPage() {
         });
         replace('/posts');
       },
-      onError: (error: unknown) => {
-        showSnackBar({
-          type: 'error',
-          message: getErrorMessage(error),
-        });
-      },
     });
   };
 

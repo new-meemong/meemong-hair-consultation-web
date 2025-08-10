@@ -14,16 +14,11 @@ export default function useCreatePostMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [getPostsQueryKeyPrefix()] });
     },
-    throwOnError: false,
   });
 
-  const mutate = (
-    data: CreatePostRequest,
-    { onSuccess, onError }: { onSuccess: () => void; onError: (error: unknown) => void },
-  ) => {
+  const mutate = (data: CreatePostRequest, { onSuccess }: { onSuccess: () => void }) => {
     mutation.mutate(data, {
       onSuccess,
-      onError,
     });
   };
 
