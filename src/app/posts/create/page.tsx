@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { POST_TABS, POST_TAB_VALUES } from '@/features/posts/constants/post-tabs';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
@@ -28,27 +28,33 @@ export default function CreatePostPage() {
     POST_TABS[0].value,
   );
 
-  const showReloadConsultingPostModal = useShowReloadConsultingPostModal();
-  //TODO: 작성하던 데이터 저장 여부 로직 추가
-  const [hasSavedConsultingPost, setHasSavedConsultingPost] = useState(true);
-
   const handleCloseReloadConsultingPostModal = () => {
     setSelectedTab(POST_TAB_VALUES.GENERAL);
   };
 
-  useEffect(() => {
-    if (hasSavedConsultingPost) {
-      showReloadConsultingPostModal({ onClose: handleCloseReloadConsultingPostModal });
-      setHasSavedConsultingPost(false);
-    }
-  }, [hasSavedConsultingPost, showReloadConsultingPostModal]);
+  const showReloadConsultingPostModal = useShowReloadConsultingPostModal({
+    onClose: handleCloseReloadConsultingPostModal,
+  });
+
+  //TODO: 작성하던 데이터 저장 여부 로직 추가
+  const [hasSavedConsultingPost, setHasSavedConsultingPost] = useState(true);
+
+  console.log('setHasSavedConsultingPost', setHasSavedConsultingPost);
+
+  // TODO: 탭 이동 테스트를 위해 임시 주석처리
+  // useEffect(() => {
+  //   if (hasSavedConsultingPost) {
+  //     showReloadConsultingPostModal();
+  //     setHasSavedConsultingPost(false);
+  //   }
+  // }, [hasSavedConsultingPost, showReloadConsultingPostModal]);
 
   const showLeaveCreateConsultingPostModal = useShowLeaveCreateConsultingPostModal();
   const showLeaveCreateGeneralPostModal = useShowLeaveCreateGeneralPostModal();
 
   const handleBackClick = () => {
     if (selectedTab === POST_TAB_VALUES.CONSULTING) {
-      showLeaveCreateConsultingPostModal();
+      showLeaveCreateConsultingPostModal({ onClose: back });
       return;
     }
 
@@ -60,9 +66,16 @@ export default function CreatePostPage() {
     back();
   };
 
+  console.log('hasSavedConsultingPost', hasSavedConsultingPost);
+
   const handleTabChange = (tab: ValueOf<typeof POST_TAB_VALUES>) => {
     if (tab === POST_TAB_VALUES.GENERAL && hasSavedConsultingPost) {
-      showLeaveCreateConsultingPostModal();
+      showLeaveCreateConsultingPostModal({ onClose: () => setSelectedTab(tab) });
+      return;
+    }
+
+    if (tab === POST_TAB_VALUES.CONSULTING && hasSavedConsultingPost) {
+      showReloadConsultingPostModal({ onFinish: () => setSelectedTab(tab) });
       return;
     }
 
