@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { POST_TABS, POST_TAB_VALUES } from '@/features/posts/constants/post-tabs';
+import { POST_TABS, POST_TAB_VALUE } from '@/features/posts/constants/post-tabs';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
 import useShowLeaveCreateConsultingPostModal from '@/features/posts/hooks/use-show-leave-create-consulting-post';
 import useShowLeaveCreateGeneralPostModal from '@/features/posts/hooks/use-show-leave-create-general-post-modal';
@@ -24,12 +24,12 @@ export default function CreatePostPage() {
   const { replace, back } = useRouterWithUser();
   const { showSnackBar } = useOverlayContext();
 
-  const [selectedTab, setSelectedTab] = useState<ValueOf<typeof POST_TAB_VALUES>>(
+  const [selectedTab, setSelectedTab] = useState<ValueOf<typeof POST_TAB_VALUE>>(
     POST_TABS[0].value,
   );
 
   const handleCloseReloadConsultingPostModal = () => {
-    setSelectedTab(POST_TAB_VALUES.GENERAL);
+    setSelectedTab(POST_TAB_VALUE.GENERAL);
   };
 
   const showReloadConsultingPostModal = useShowReloadConsultingPostModal({
@@ -53,12 +53,12 @@ export default function CreatePostPage() {
   const showLeaveCreateGeneralPostModal = useShowLeaveCreateGeneralPostModal();
 
   const handleBackClick = () => {
-    if (selectedTab === POST_TAB_VALUES.CONSULTING) {
+    if (selectedTab === POST_TAB_VALUE.CONSULTING) {
       showLeaveCreateConsultingPostModal({ onClose: back });
       return;
     }
 
-    if (selectedTab === POST_TAB_VALUES.GENERAL) {
+    if (selectedTab === POST_TAB_VALUE.GENERAL) {
       showLeaveCreateGeneralPostModal();
       return;
     }
@@ -68,13 +68,13 @@ export default function CreatePostPage() {
 
   console.log('hasSavedConsultingPost', hasSavedConsultingPost);
 
-  const handleTabChange = (tab: ValueOf<typeof POST_TAB_VALUES>) => {
-    if (tab === POST_TAB_VALUES.GENERAL && hasSavedConsultingPost) {
+  const handleTabChange = (tab: ValueOf<typeof POST_TAB_VALUE>) => {
+    if (tab === POST_TAB_VALUE.GENERAL && hasSavedConsultingPost) {
       showLeaveCreateConsultingPostModal({ onClose: () => setSelectedTab(tab) });
       return;
     }
 
-    if (tab === POST_TAB_VALUES.CONSULTING && hasSavedConsultingPost) {
+    if (tab === POST_TAB_VALUE.CONSULTING && hasSavedConsultingPost) {
       showReloadConsultingPostModal({ onFinish: () => setSelectedTab(tab) });
       return;
     }
@@ -96,11 +96,11 @@ export default function CreatePostPage() {
     });
   };
 
-  const renderForm = (type: ValueOf<typeof POST_TAB_VALUES>) => {
+  const renderForm = (type: ValueOf<typeof POST_TAB_VALUE>) => {
     switch (type) {
-      case POST_TAB_VALUES.CONSULTING:
+      case POST_TAB_VALUE.CONSULTING:
         return <ConsultingPostForm />;
-      case POST_TAB_VALUES.GENERAL:
+      case POST_TAB_VALUE.GENERAL:
         return <PostForm onSubmit={handleSubmit} isPending={isPending} />;
       default:
         return null;

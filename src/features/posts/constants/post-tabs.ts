@@ -1,19 +1,19 @@
 import type { Option } from '@/shared/type/option';
 import type { ValueOf } from '@/shared/type/types';
 
-export const POST_TAB_VALUES = {
+export const POST_TAB_VALUE = {
   CONSULTING: 'consulting',
   GENERAL: 'general',
 } as const;
 
-const POST_TAB: Record<ValueOf<typeof POST_TAB_VALUES>, Option<ValueOf<typeof POST_TAB_VALUES>>> = {
-  [POST_TAB_VALUES.CONSULTING]: {
+const POST_TAB: Record<ValueOf<typeof POST_TAB_VALUE>, Option<ValueOf<typeof POST_TAB_VALUE>>> = {
+  [POST_TAB_VALUE.CONSULTING]: {
     label: '헤어 컨설팅',
-    value: POST_TAB_VALUES.CONSULTING,
+    value: POST_TAB_VALUE.CONSULTING,
   },
-  [POST_TAB_VALUES.GENERAL]: {
+  [POST_TAB_VALUE.GENERAL]: {
     label: '일반 상담',
-    value: POST_TAB_VALUES.GENERAL,
+    value: POST_TAB_VALUE.GENERAL,
   },
 };
 
