@@ -4,6 +4,8 @@ import { Suspense } from 'react';
 
 import type { Metadata } from 'next';
 
+import Script from 'next/script';
+
 import localFont from 'next/font/local';
 
 import { AuthProvider } from '@/features/auth/context/auth-context';
@@ -43,6 +45,19 @@ export default function RootLayout({
             </ErrorBoundary>
           </QueryProvider>
         </OverlayProvider>
+        <Script id="send-message-to-flutter" strategy="afterInteractive">
+          {`
+            function goAppRouter(path){
+              if(window.GoAppRouter) {
+                window.GoAppRouter.postMessage(JSON.stringify(path));
+              } else {
+                console.log("goAppRouter channel is not available.");
+              }
+            }
+
+            window.goAppRouter = goAppRouter;
+          `}
+        </Script>
       </body>
     </html>
   );

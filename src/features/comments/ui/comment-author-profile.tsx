@@ -44,7 +44,8 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
     const senderId = user.id.toString();
     const receiverId = author.userId.toString();
 
-    //TODO: 앱 프로필 페이지로 이동하여 채팅 요청해야함
+    // TODO: 앱 프로필 페이지로 이동하여 채팅 요청해야함
+    // goDesignerProfilePage(author.userId.toString());
     try {
       const { channelId, isCreated } = await findOrCreateChannel({
         senderId,
