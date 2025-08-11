@@ -6,11 +6,21 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 
-const createUrlWithUserId = (path: string, userId: string | null) => {
+const createUrlWithUserId = (
+  path: string,
+  userId: string | null,
+  params?: Record<string, string>,
+) => {
   if (!userId) return path;
 
   const url = new URL(path, window.location.origin);
   url.searchParams.set(SEARCH_PARAMS.USER_ID, userId);
+
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      url.searchParams.set(key, value);
+    });
+  }
   return url.toString();
 };
 
@@ -27,8 +37,9 @@ export function useRouterWithUser() {
   );
 
   const replace = useCallback(
-    (path: string) => {
-      router.replace(createUrlWithUserId(path, userId));
+    (params?: Record<string, string>) => {
+      console.log('params', params);
+      router.replace(createUrlWithUserId(window.location.pathname, userId, params));
     },
     [router, userId],
   );
