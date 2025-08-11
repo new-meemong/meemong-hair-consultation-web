@@ -9,7 +9,6 @@ import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-
 import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
-import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 
 type CommentAuthorProfileProps = {
   author: CommentUser;
