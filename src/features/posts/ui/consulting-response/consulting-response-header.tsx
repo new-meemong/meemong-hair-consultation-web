@@ -3,7 +3,6 @@ import ProfileIcon from '@/assets/icons/profile.svg';
 import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
-import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 type ConsultingResponseHeaderProps = {
   postId: string;
