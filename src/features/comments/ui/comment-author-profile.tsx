@@ -9,6 +9,7 @@ import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-
 import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
+import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 
 type CommentAuthorProfileProps = {
   author: CommentUser;
@@ -45,6 +46,7 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
     const receiverId = author.userId.toString();
 
     //TODO: 앱 프로필 페이지로 이동하여 채팅 요청해야함
+    // goDesignerProfilePage(author.userId.toString());
     try {
       const { channelId, isCreated } = await findOrCreateChannel({
         senderId,

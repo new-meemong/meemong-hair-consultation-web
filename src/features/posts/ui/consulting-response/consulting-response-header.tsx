@@ -2,6 +2,8 @@ import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import ProfileIcon from '@/assets/icons/profile.svg';
 import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 type ConsultingResponseHeaderProps = {
   postId: string;
@@ -13,8 +15,10 @@ export default function ConsultingResponseHeader({ postId }: ConsultingResponseH
   const createdAt = '03/31 09:00';
   const profileImageUrl = null;
 
+  const designerId = '43793';
+
   const handleDesignerProfileClick = () => {
-    console.log('디자이너 프로필 보기');
+    goDesignerProfilePage(designerId);
   };
   const handleOriginalPostClick = () => {
     push(ROUTES.POSTS_DETAIL(postId));
