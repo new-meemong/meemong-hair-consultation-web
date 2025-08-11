@@ -17,4 +17,4 @@ const POST_TAB: Record<ValueOf<typeof POST_TAB_VALUES>, Option<ValueOf<typeof PO
   },
 };
 
-export const POST_TABS = [POST_TAB[POST_TAB_VALUES.GENERAL], POST_TAB[POST_TAB_VALUES.CONSULTING]];
+export const POST_TABS = Object.values(POST_TAB);
