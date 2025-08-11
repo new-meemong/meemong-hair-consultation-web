@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [user, setUser] = useState<UserData | null>(() => getCurrentUser());
 
-  const { mutate: login } = useWebviewLogin({
+  const { mutate: login, isError } = useWebviewLogin({
     onSuccess: (response) => {
       const userResponseData = response.data;
       if (userResponseData.token) {
@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, isUserModel, isUserDesigner, updateUser }}>
-      {children}
+      {isError ? <div>로그인 실패</div> : children}
     </AuthContext.Provider>
   );
 }
