@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { POST_TABS, POST_TAB_VALUE } from '@/features/posts/constants/post-tabs';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
+import { usePostTab } from '@/features/posts/hooks/use-post-tab';
 import useShowLeaveCreateConsultingPostModal from '@/features/posts/hooks/use-show-leave-create-consulting-post';
 import useShowLeaveCreateGeneralPostModal from '@/features/posts/hooks/use-show-leave-create-general-post-modal';
 import useShowReloadConsultingPostModal from '@/features/posts/hooks/use-show-reload-consulting-post-modal';
@@ -24,9 +25,7 @@ export default function CreatePostPage() {
   const { replace, back } = useRouterWithUser();
   const { showSnackBar } = useOverlayContext();
 
-  const [selectedTab, setSelectedTab] = useState<ValueOf<typeof POST_TAB_VALUE>>(
-    POST_TABS[0].value,
-  );
+  const [selectedTab, setSelectedTab] = usePostTab();
 
   const handleCloseReloadConsultingPostModal = () => {
     setSelectedTab(POST_TAB_VALUE.GENERAL);

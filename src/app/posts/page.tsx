@@ -12,6 +12,7 @@ import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import PostList from '@/features/posts/ui/post-list/post-list';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { ROUTES } from '@/shared';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import Tab from '@/shared/ui/tab';
@@ -49,7 +50,9 @@ export default function PostsPage() {
   const listTabs = getPostListTabs(user.role);
 
   const handleWriteButtonClick = () => {
-    router.push(ROUTES.POSTS_CREATE);
+    router.push(ROUTES.POSTS_CREATE, {
+      [SEARCH_PARAMS.POST_TAB]: activePostTab,
+    });
   };
 
   const posts = data?.pages.flatMap((page) => page.data.hairConsultPostingList);

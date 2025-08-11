@@ -30,16 +30,15 @@ export function useRouterWithUser() {
   const userId = searchParams.get(SEARCH_PARAMS.USER_ID);
 
   const push = useCallback(
-    (path: string) => {
-      router.push(createUrlWithUserId(path, userId));
+    (path: string, params?: Record<string, string>) => {
+      router.push(createUrlWithUserId(path, userId, params));
     },
     [router, userId],
   );
 
   const replace = useCallback(
-    (params?: Record<string, string>) => {
-      console.log('params', params);
-      router.replace(createUrlWithUserId(window.location.pathname, userId, params));
+    (path: string, params?: Record<string, string>) => {
+      router.replace(createUrlWithUserId(path, userId, params));
     },
     [router, userId],
   );

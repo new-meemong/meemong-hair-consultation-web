@@ -15,7 +15,7 @@ export function usePostTab() {
     POST_TAB_VALUE.CONSULTING;
 
   const setActivePostTab = (tab: ValueOf<typeof POST_TAB_VALUE>) => {
-    router.replace({
+    router.replace(window.location.pathname, {
       [SEARCH_PARAMS.POST_TAB]: tab,
     });
   };
