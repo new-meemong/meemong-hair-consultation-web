@@ -66,9 +66,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsInitialized(true);
   }, [login, isInitialized, userId, user?.id]);
 
-  if (!isInitialized || !user) {
-    return null;
-  }
+  if (userId === null) return <div>유저아이디가 누락되었습니다</div>;
+
+  if (!user || !isInitialized) return null;
 
   const isUserModel = isModel(user);
   const isUserDesigner = isDesigner(user);
