@@ -1,4 +1,4 @@
-import type { SearchParamsOption, HTTPError } from 'ky';
+import type { HTTPError, SearchParamsOption } from 'ky';
 import ky from 'ky';
 
 import { getToken } from '../lib/auth';
@@ -29,13 +29,85 @@ const createApiInstance = () => {
 
           request.headers.set('Authorization', `${token}`);
         },
+        // Request 로깅
+        (request) => {
+          console.group('🚀 API Request');
+          console.log('URL:', request.url);
+          console.log('Method:', request.method);
+          console.log('Headers:', Object.fromEntries(request.headers.entries()));
+
+          // Query parameters 로깅
+          const url = new URL(request.url);
+          if (url.searchParams.toString()) {
+            console.log('Query Params:', Object.fromEntries(url.searchParams.entries()));
+          }
+
+          // Body 로깅 (POST, PUT, PATCH 요청의 경우)
+          if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+            request
+              .clone()
+              .text()
+              .then((body) => {
+                if (body) {
+                  try {
+                    const parsedBody = JSON.parse(body);
+                    console.log('Request Body:', parsedBody);
+                  } catch {
+                    console.log('Request Body (raw):', body);
+                  }
+                }
+              })
+              .catch(() => {
+                console.log('Request Body: [Unable to read]');
+              });
+          }
+          console.groupEnd();
+        },
+      ],
+      afterResponse: [
+        // Response 로깅
+        async (request, options, response) => {
+          console.group('✅ API Response');
+          console.log('URL:', request.url);
+          console.log('Method:', request.method);
+          console.log('Status:', response.status, response.statusText);
+          console.log('Response Headers:', Object.fromEntries(response.headers.entries()));
+
+          // Response body 로깅
+          try {
+            const responseClone = response.clone();
+            const body = await responseClone.text();
+            if (body) {
+              try {
+                const parsedBody = JSON.parse(body);
+                console.log('Response Body:', parsedBody);
+              } catch {
+                console.log('Response Body (raw):', body);
+              }
+            }
+          } catch (error) {
+            console.log('Response Body: [Unable to read]', error);
+          }
+          console.groupEnd();
+
+          return response;
+        },
       ],
       beforeError: [
         async (error: HTTPError) => {
           const { response } = error;
+
+          // Error 로깅
+          console.group('❌ API Error');
+          console.log('URL:', error.request?.url);
+          console.log('Method:', error.request?.method);
+          console.log('Status:', response?.status, response?.statusText);
+          console.log('Error Message:', error.message);
+
           if (response && response.body) {
             try {
               const errorData = (await response.json()) as { error: ApiError };
+              console.log('Error Response Body:', errorData);
               error.message = errorData.error.message;
 
               Object.defineProperty(error, 'response', {
@@ -52,6 +124,7 @@ const createApiInstance = () => {
               return error;
             }
           }
+          console.groupEnd();
           return error;
         },
       ],
