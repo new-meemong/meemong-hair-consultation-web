@@ -43,7 +43,7 @@ export const consultingPostFormSchema = z.object({
     .optional(),
   [CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE]: z.string().optional(),
   [CONSULTING_POST_FORM_FIELD_NAME.CONTENT]: z.string().optional(),
-  [CONSULTING_POST_FORM_FIELD_NAME.option7]: z.string(),
+  [CONSULTING_POST_FORM_FIELD_NAME.TITLE]: z.string(),
 });
 
 export type ConsultingPostFormValues = z.infer<typeof consultingPostFormSchema>;

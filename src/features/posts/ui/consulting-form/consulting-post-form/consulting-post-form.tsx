@@ -12,12 +12,12 @@ import {
   type ConsultingPostFormValues,
 } from '../../../types/consulting-post-form-values';
 
-import ConsultingPostFormStep7 from './consulting-post-form-step-7';
 import ConsultingPostFormStepAspirationImages from './consulting-post-form-step-aspiration-images';
 import ConsultingPostFormStepConcern from './consulting-post-form-step-concern';
 import ConsultingPostFormStepContent from './consulting-post-form-step-content';
 import ConsultingPostFormStepMyImages from './consulting-post-form-step-my-images';
 import ConsultingPostFormStepSkinTone from './consulting-post-form-step-skin-tone';
+import ConsultingPostFormStepTitle from './consulting-post-form-step-title';
 import ConsultingPostFormStepTreatments from './consulting-post-form-step-treatments';
 
 const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
@@ -59,11 +59,11 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
     children: <ConsultingPostFormStepContent />,
   },
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.option7,
+    name: CONSULTING_POST_FORM_FIELD_NAME.TITLE,
     question: '글 제목을 입력하세요',
     description: '작성하지 않으면 고민 유형에 따라 자동으로 제목이 부여됩니다',
     required: false,
-    children: <ConsultingPostFormStep7 />,
+    children: <ConsultingPostFormStepTitle />,
   },
 ];
 
