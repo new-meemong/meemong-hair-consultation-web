@@ -1,24 +1,25 @@
 import z from 'zod';
 
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
-
-export const CONSULTING_POST_FORM_IMAGE_POSITION = {
-  FRONT: 'front',
-  PONYTAIL_FRONT: 'ponytailFront',
-  PONYTAIL_SIDE: 'ponytailSide',
-  WHOLE: 'whole',
-} as const;
+import { HAIR_CONCERN_OPTION_LABEL } from '../constants/hair-concern-option';
+import { HAIR_IMAGE_POSITION } from '../constants/hair-image-position';
 
 const IMAGE_POSITIONS = [
-  CONSULTING_POST_FORM_IMAGE_POSITION.FRONT,
-  CONSULTING_POST_FORM_IMAGE_POSITION.PONYTAIL_FRONT,
-  CONSULTING_POST_FORM_IMAGE_POSITION.PONYTAIL_SIDE,
-  CONSULTING_POST_FORM_IMAGE_POSITION.WHOLE,
+  HAIR_IMAGE_POSITION.FRONT_LOOSE,
+  HAIR_IMAGE_POSITION.FRONT_TIED,
+  HAIR_IMAGE_POSITION.SIDE_TIED,
+  HAIR_IMAGE_POSITION.UPPER_BODY,
+] as const;
+
+const CONCERN_OPTION = [
+  HAIR_CONCERN_OPTION_LABEL.designPossible,
+  HAIR_CONCERN_OPTION_LABEL.recommendStyle,
+  HAIR_CONCERN_OPTION_LABEL.etc,
 ] as const;
 
 export const consultingPostFormSchema = z.object({
   [CONSULTING_POST_FORM_FIELD_NAME.CONCERN]: z.object({
-    value: z.string(),
+    value: z.enum(CONCERN_OPTION),
     additional: z.string().optional(),
   }),
   [CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS]: z
