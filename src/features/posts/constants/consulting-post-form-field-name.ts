@@ -1,5 +1,5 @@
 export const CONSULTING_POST_FORM_FIELD_NAME = {
-  option1: 'option1',
+  HAIR_CONCERN: 'hairConcern',
   option2: 'option2',
   option3: 'option3',
   option4: 'option4',

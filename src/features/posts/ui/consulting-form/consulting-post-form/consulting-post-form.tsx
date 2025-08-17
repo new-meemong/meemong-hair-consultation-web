@@ -12,20 +12,20 @@ import {
   type ConsultingPostFormValues,
 } from '../../../types/consulting-post-form-values';
 
-import ConsultingPostFormStep1 from './consulting-post-form-step-1';
 import ConsultingPostFormStep2 from './consulting-post-form-step-2';
 import ConsultingPostFormStep3 from './consulting-post-form-step-3';
 import ConsultingPostFormStep4 from './consulting-post-form-step-4';
 import ConsultingPostFormStep5 from './consulting-post-form-step-5';
 import ConsultingPostFormStep6 from './consulting-post-form-step-6';
 import ConsultingPostFormStep7 from './consulting-post-form-step-7';
+import ConsultingPostFormStepHairConcern from './consulting-post-form-step-hair-concern';
 
 const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.option1,
+    name: CONSULTING_POST_FORM_FIELD_NAME.HAIR_CONCERN,
     question: '어떤 헤어 고민이 있나요?',
     required: true,
-    children: <ConsultingPostFormStep1 />,
+    children: <ConsultingPostFormStepHairConcern />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.option2,
@@ -73,7 +73,7 @@ export default function ConsultingPostForm() {
   });
 
   const canMoveNext = (name: KeyOf<ConsultingPostFormValues>) => {
-    if (name === CONSULTING_POST_FORM_FIELD_NAME.option1) {
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.HAIR_CONCERN) {
       const formValue = method.getValues(name);
       return (
         (formValue?.value && formValue.value !== '기타') ||
