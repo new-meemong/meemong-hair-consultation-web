@@ -12,10 +12,10 @@ import {
   type ConsultingPostFormValues,
 } from '../../../types/consulting-post-form-values';
 
-import ConsultingPostFormStep4 from './consulting-post-form-step-4';
 import ConsultingPostFormStep5 from './consulting-post-form-step-5';
 import ConsultingPostFormStep6 from './consulting-post-form-step-6';
 import ConsultingPostFormStep7 from './consulting-post-form-step-7';
+import ConsultingPostFormStepAspirationImages from './consulting-post-form-step-aspiration-images';
 import ConsultingPostFormStepConcern from './consulting-post-form-step-concern';
 import ConsultingPostFormStepMyImages from './consulting-post-form-step-my-images';
 import ConsultingPostFormStepTreatments from './consulting-post-form-step-treatments';
@@ -41,10 +41,10 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
     children: <ConsultingPostFormStepMyImages />,
   },
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.option4,
+    name: CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES,
     question: '평소 추구미를 알려주세요',
     required: false,
-    children: <ConsultingPostFormStep4 />,
+    children: <ConsultingPostFormStepAspirationImages />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.option5,

@@ -9,11 +9,11 @@ import type { ConsultingPostFormValues } from '../../../types/consulting-post-fo
 
 const MAX_IMAGE_COUNT = 6;
 
-export default function ConsultingPostFormStep4() {
+export default function ConsultingPostFormStepAspirationImages() {
   const { setValue, control, register } = useFormContext<ConsultingPostFormValues>();
 
   const currentOptionValue = useWatch({
-    name: CONSULTING_POST_FORM_FIELD_NAME.option4,
+    name: CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES,
     control,
   });
   const currentImages = currentOptionValue?.images ?? [];
@@ -21,7 +21,7 @@ export default function ConsultingPostFormStep4() {
   const handleImageUpload = (file: File) => {
     const newImages = [...currentImages, file];
 
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.option4, {
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
       images: newImages,
       description: currentOptionValue?.description,
     });
@@ -31,7 +31,7 @@ export default function ConsultingPostFormStep4() {
     const newImages = [...currentImages];
     newImages.splice(index, 1);
 
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.option4, {
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
       images: newImages,
       description: currentOptionValue?.description,
     });
@@ -49,7 +49,7 @@ export default function ConsultingPostFormStep4() {
       </FormItem>
       <FormItem label="추구미 설명">
         <Textarea
-          {...register(`${CONSULTING_POST_FORM_FIELD_NAME.option4}.description`)}
+          {...register(`${CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`)}
           placeholder="어떤 고민이 있는지 상세히 설명해주세요"
           className="min-h-38"
           hasBorder
