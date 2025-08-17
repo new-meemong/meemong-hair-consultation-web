@@ -12,26 +12,26 @@ import {
   type ConsultingPostFormValues,
 } from '../../../types/consulting-post-form-values';
 
-import ConsultingPostFormStep2 from './consulting-post-form-step-2';
 import ConsultingPostFormStep3 from './consulting-post-form-step-3';
 import ConsultingPostFormStep4 from './consulting-post-form-step-4';
 import ConsultingPostFormStep5 from './consulting-post-form-step-5';
 import ConsultingPostFormStep6 from './consulting-post-form-step-6';
 import ConsultingPostFormStep7 from './consulting-post-form-step-7';
-import ConsultingPostFormStepHairConcern from './consulting-post-form-step-hair-concern';
+import ConsultingPostFormStepConcern from './consulting-post-form-step-concern';
+import ConsultingPostFormStepTreatments from './consulting-post-form-step-treatments';
 
 const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.HAIR_CONCERN,
+    name: CONSULTING_POST_FORM_FIELD_NAME.CONCERN,
     question: '어떤 헤어 고민이 있나요?',
     required: true,
-    children: <ConsultingPostFormStepHairConcern />,
+    children: <ConsultingPostFormStepConcern />,
   },
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.option2,
+    name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
     question: '최근 2년 내 받은 시술을 입력하세요',
     required: true,
-    children: <ConsultingPostFormStep2 />,
+    children: <ConsultingPostFormStepTreatments />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.option3,
@@ -73,7 +73,7 @@ export default function ConsultingPostForm() {
   });
 
   const canMoveNext = (name: KeyOf<ConsultingPostFormValues>) => {
-    if (name === CONSULTING_POST_FORM_FIELD_NAME.HAIR_CONCERN) {
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.CONCERN) {
       const formValue = method.getValues(name);
       return (
         (formValue?.value && formValue.value !== '기타') ||
@@ -81,7 +81,7 @@ export default function ConsultingPostForm() {
       );
     }
 
-    if (name === CONSULTING_POST_FORM_FIELD_NAME.option2) {
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS) {
       const formValue = method.getValues(name);
       return formValue === null || formValue?.length > 0;
     }

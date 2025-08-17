@@ -17,11 +17,11 @@ const IMAGE_POSITIONS = [
 ] as const;
 
 export const consultingPostFormSchema = z.object({
-  [CONSULTING_POST_FORM_FIELD_NAME.HAIR_CONCERN]: z.object({
+  [CONSULTING_POST_FORM_FIELD_NAME.CONCERN]: z.object({
     value: z.string(),
     additional: z.string().optional(),
   }),
-  [CONSULTING_POST_FORM_FIELD_NAME.option2]: z
+  [CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS]: z
     .array(
       z.object({
         name: z.string(),

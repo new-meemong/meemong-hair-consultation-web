@@ -9,8 +9,6 @@ import { Button, Checkbox, Input, Label } from '@/shared';
 import FormItem from '@/shared/ui/form-item';
 import useYearMonthPicker from '@/shared/ui/hooks/use-year-month-picker';
 
-
-
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
 import useShowDeleteAllOperations from '../../../hooks/use-show-delete-all-operations';
 import { type ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
@@ -20,7 +18,7 @@ export default function ConsultingPostFormOperationForm() {
 
   const optionValue = useWatch({
     control,
-    name: CONSULTING_POST_FORM_FIELD_NAME.option2,
+    name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
   });
 
   const [name, setName] = useState<string>('');
@@ -48,9 +46,9 @@ export default function ConsultingPostFormOperationForm() {
   const handleSubmit = () => {
     if (!date || !name) return;
 
-    const currentOperations = getValues(CONSULTING_POST_FORM_FIELD_NAME.option2) ?? [];
+    const currentOperations = getValues(CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS) ?? [];
 
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.option2, [
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS, [
       ...currentOperations,
       {
         name,
@@ -63,7 +61,7 @@ export default function ConsultingPostFormOperationForm() {
   };
 
   const setNoOperations = () => {
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.option2, null, {
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS, null, {
       shouldDirty: true,
     });
     setName('');
@@ -71,7 +69,7 @@ export default function ConsultingPostFormOperationForm() {
   };
 
   const resetOperations = () => {
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.option2, [], {
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS, [], {
       shouldDirty: true,
     });
     setName('');
