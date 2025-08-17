@@ -12,12 +12,12 @@ import {
   type ConsultingPostFormValues,
 } from '../../../types/consulting-post-form-values';
 
-import ConsultingPostFormStep3 from './consulting-post-form-step-3';
 import ConsultingPostFormStep4 from './consulting-post-form-step-4';
 import ConsultingPostFormStep5 from './consulting-post-form-step-5';
 import ConsultingPostFormStep6 from './consulting-post-form-step-6';
 import ConsultingPostFormStep7 from './consulting-post-form-step-7';
 import ConsultingPostFormStepConcern from './consulting-post-form-step-concern';
+import ConsultingPostFormStepMyImages from './consulting-post-form-step-my-images';
 import ConsultingPostFormStepTreatments from './consulting-post-form-step-treatments';
 
 const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
@@ -34,11 +34,11 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
     children: <ConsultingPostFormStepTreatments />,
   },
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.option3,
+    name: CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES,
     question: '내 모습을 보여주세요',
     description: '올리신 사진은 디자이너들에게만 공개되며, 모델은 볼 수 없습니다.',
     required: true,
-    children: <ConsultingPostFormStep3 />,
+    children: <ConsultingPostFormStepMyImages />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.option4,
@@ -86,7 +86,7 @@ export default function ConsultingPostForm() {
       return formValue === null || formValue?.length > 0;
     }
 
-    if (name === CONSULTING_POST_FORM_FIELD_NAME.option3) {
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES) {
       const formValue = method.getValues(name);
       return formValue && formValue.length === 4;
     }

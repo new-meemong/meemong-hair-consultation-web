@@ -29,7 +29,7 @@ export const consultingPostFormSchema = z.object({
       }),
     )
     .nullable(),
-  [CONSULTING_POST_FORM_FIELD_NAME.option3]: z.array(
+  [CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES]: z.array(
     z.object({
       position: z.enum(IMAGE_POSITIONS),
       image: z.instanceof(File),

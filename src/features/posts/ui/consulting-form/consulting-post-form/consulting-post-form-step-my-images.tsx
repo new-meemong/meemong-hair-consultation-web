@@ -12,8 +12,7 @@ import {
   type ConsultingPostFormValues,
 } from '../../../types/consulting-post-form-values';
 
-
-export default function ConsultingPostFormStep3() {
+export default function ConsultingPostFormStepMyImages() {
   const { setValue, getValues, control } = useFormContext<ConsultingPostFormValues>();
 
   const showConsultingPostImageGuideSheet = useShowConsultingPostImageGuideSheet();
@@ -23,7 +22,7 @@ export default function ConsultingPostFormStep3() {
 
   const currentImages = useWatch({
     control,
-    name: CONSULTING_POST_FORM_FIELD_NAME.option3,
+    name: CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES,
   });
 
   const getCurrentImage = (position: string) => {
@@ -47,10 +46,10 @@ export default function ConsultingPostFormStep3() {
     file: File;
     position: ValueOf<typeof CONSULTING_POST_FORM_IMAGE_POSITION>;
   }) => {
-    const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.option3) || [];
+    const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES) || [];
     const newImage = { position, image: file };
 
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.option3, [...currentImages, newImage]);
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES, [...currentImages, newImage]);
   };
 
   const handleImageDelete = ({
@@ -58,11 +57,11 @@ export default function ConsultingPostFormStep3() {
   }: {
     position: ValueOf<typeof CONSULTING_POST_FORM_IMAGE_POSITION>;
   }) => {
-    const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.option3) || [];
+    const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES) || [];
     const newImages = currentImages.filter(
       (img: { position: string; image: File }) => img.position !== position,
     );
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.option3, newImages);
+    setValue(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES, newImages);
   };
 
   return (
