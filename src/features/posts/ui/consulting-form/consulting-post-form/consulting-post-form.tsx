@@ -12,12 +12,12 @@ import {
   type ConsultingPostFormValues,
 } from '../../../types/consulting-post-form-values';
 
-import ConsultingPostFormStep5 from './consulting-post-form-step-5';
 import ConsultingPostFormStep6 from './consulting-post-form-step-6';
 import ConsultingPostFormStep7 from './consulting-post-form-step-7';
 import ConsultingPostFormStepAspirationImages from './consulting-post-form-step-aspiration-images';
 import ConsultingPostFormStepConcern from './consulting-post-form-step-concern';
 import ConsultingPostFormStepMyImages from './consulting-post-form-step-my-images';
+import ConsultingPostFormStepSkinTone from './consulting-post-form-step-skin-tone';
 import ConsultingPostFormStepTreatments from './consulting-post-form-step-treatments';
 
 const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
@@ -47,10 +47,10 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
     children: <ConsultingPostFormStepAspirationImages />,
   },
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.option5,
+    name: CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE,
     question: '피부톤을 알려주세요',
     required: false,
-    children: <ConsultingPostFormStep5 />,
+    children: <ConsultingPostFormStepSkinTone />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.option6,

@@ -3,7 +3,7 @@ export const CONSULTING_POST_FORM_FIELD_NAME = {
   TREATMENTS: 'treatments',
   MY_IMAGES: 'myImages',
   ASPIRATION_IMAGES: 'aspirationImages',
-  option5: 'option5',
+  SKIN_TONE: 'skinTone',
   option6: 'option6',
   option7: 'option7',
 } as const;

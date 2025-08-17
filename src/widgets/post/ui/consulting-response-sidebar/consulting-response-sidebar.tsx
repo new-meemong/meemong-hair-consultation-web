@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import CloseIcon from '@/assets/icons/close.svg';
-import { SKIN_COLOR_TYPE } from '@/features/posts/ui/skin-color-label';
+import { SKIN_TONE_OPTION_VALUE } from '@/features/posts/constants/skin-tone';
 import { cn } from '@/lib/utils';
 import { ToggleChip, ToggleChipGroup } from '@/shared';
 import type { ValueOf } from '@/shared/type/types';
@@ -51,7 +51,7 @@ export default function ConsultingResponseSidebar({
 
   const hairConcern =
     '출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요... \n솔직히 블루클럽 가도 되긴하는데 이왕 자르는거 좀 예쁘게도 자르고 싶기도 하구요... 잘하는데 좀 있나요? 출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요...';
-  const skinColorType = SKIN_COLOR_TYPE.VERY_BRIGHT;
+  const skinColorType = SKIN_TONE_OPTION_VALUE.VERY_BRIGHT;
   const operations = [
     {
       name: '헤어 고민 종류',
@@ -75,7 +75,7 @@ export default function ConsultingResponseSidebar({
         return (
           <ConsultingResponseSidebarAdditionalInfoTabView
             hairConcern={hairConcern}
-            skinColorType={skinColorType}
+            skinToneOption={skinColorType}
             operations={operations}
           />
         );
