@@ -42,7 +42,7 @@ export const consultingPostFormSchema = z.object({
     })
     .optional(),
   [CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE]: z.string().optional(),
-  [CONSULTING_POST_FORM_FIELD_NAME.option6]: z.string().optional(),
+  [CONSULTING_POST_FORM_FIELD_NAME.CONTENT]: z.string().optional(),
   [CONSULTING_POST_FORM_FIELD_NAME.option7]: z.string(),
 });
 

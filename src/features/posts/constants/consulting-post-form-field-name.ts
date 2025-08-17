@@ -4,6 +4,6 @@ export const CONSULTING_POST_FORM_FIELD_NAME = {
   MY_IMAGES: 'myImages',
   ASPIRATION_IMAGES: 'aspirationImages',
   SKIN_TONE: 'skinTone',
-  option6: 'option6',
+  CONTENT: 'content',
   option7: 'option7',
 } as const;
