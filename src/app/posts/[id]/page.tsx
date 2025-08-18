@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 
 import { useParams } from 'next/navigation';
 
+import { isConsultingPost } from '@/entities/posts/lib/consulting-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
@@ -30,10 +31,6 @@ export default function PostDetailPage() {
 
   const isWriter = postDetail?.hairConsultPostingCreateUserId === user.id;
 
-  // TODO: 추후 컨설팅 게시글 여부 확인 로직 추가
-  const isConsultingPost = false;
-  const canWriteConsultingResponse = isConsultingPost && isUserDesigner;
-
   const handleWriteConsultingResponseClick = () => {
     if (!postId) return;
 
@@ -42,6 +39,11 @@ export default function PostDetailPage() {
 
   const { commentFormState, textareaRef, isCommentCreating, isCommentUpdating, handlers } =
     useCommentFormState(postId?.toString() ?? '');
+
+  const isCommentFormReply = commentFormState.state === 'reply';
+
+  const canWriteConsultingResponse =
+    postDetail && isConsultingPost(postDetail) && isUserDesigner && !isCommentFormReply;
 
   const handleContainerClick = useCallback(() => {
     handlers.resetCommentState();
@@ -90,7 +92,7 @@ export default function PostDetailPage() {
           <div className="max-w-[600px] mx-auto">
             <CommentForm
               onSubmit={handlers.handleCommentFormSubmit}
-              isReply={commentFormState.state === 'reply'}
+              isReply={isCommentFormReply}
               commentId={commentFormState.commentId}
               content={commentFormState.content}
               isPending={isCommentCreating || isCommentUpdating}

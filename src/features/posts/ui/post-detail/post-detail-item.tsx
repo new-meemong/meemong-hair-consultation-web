@@ -1,5 +1,6 @@
 import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
+import { isConsultingPost } from '@/entities/posts/lib/consulting-type';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
 import { LikeButton } from '@/features/likes/ui/like-button';
@@ -16,13 +17,10 @@ type PostDetailItemProps = {
 function PostDetailItem({ postDetail }: PostDetailItemProps) {
   const { id, likeCount, commentCount, isFavorited } = postDetail;
 
-  // TODO: 컨설팅 게시글 여부 확인
-  const isConsultingPost = false;
-
   return (
     <>
-      {isConsultingPost ? (
-        <PostDetailConsultingContent />
+      {isConsultingPost(postDetail) ? (
+        <PostDetailConsultingContent postDetail={postDetail} />
       ) : (
         <PostDetailContent postDetail={postDetail} />
       )}
