@@ -58,6 +58,7 @@ export default function ConsultingPostFormOperationForm() {
 
     setName('');
     setDate(undefined);
+    setNoOperation(false);
   };
 
   const setNoOperations = () => {
