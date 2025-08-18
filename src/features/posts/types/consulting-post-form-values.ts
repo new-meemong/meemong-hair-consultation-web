@@ -1,7 +1,7 @@
 import z from 'zod';
 
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
-import { HAIR_CONCERN_OPTION_LABEL } from '../constants/hair-concern-option';
+import { HAIR_CONCERN_OPTION_VALUE } from '../constants/hair-concern-option';
 import { HAIR_IMAGE_POSITION } from '../constants/hair-image-position';
 
 const IMAGE_POSITIONS = [
@@ -12,9 +12,9 @@ const IMAGE_POSITIONS = [
 ] as const;
 
 const CONCERN_OPTION = [
-  HAIR_CONCERN_OPTION_LABEL.designPossible,
-  HAIR_CONCERN_OPTION_LABEL.recommendStyle,
-  HAIR_CONCERN_OPTION_LABEL.etc,
+  HAIR_CONCERN_OPTION_VALUE.DESIGN_POSSIBLE,
+  HAIR_CONCERN_OPTION_VALUE.RECOMMEND_STYLE,
+  HAIR_CONCERN_OPTION_VALUE.ETC,
 ] as const;
 
 export const consultingPostFormSchema = z.object({
@@ -44,7 +44,7 @@ export const consultingPostFormSchema = z.object({
     .optional(),
   [CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE]: z.string().optional(),
   [CONSULTING_POST_FORM_FIELD_NAME.CONTENT]: z.string().optional(),
-  [CONSULTING_POST_FORM_FIELD_NAME.TITLE]: z.string(),
+  [CONSULTING_POST_FORM_FIELD_NAME.TITLE]: z.string().optional(),
 });
 
 export type ConsultingPostFormValues = z.infer<typeof consultingPostFormSchema>;

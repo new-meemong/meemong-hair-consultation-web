@@ -2,6 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { HAIR_CONCERN_OPTION_VALUE } from '@/features/posts/constants/hair-concern-option';
 import type { FormStep } from '@/shared/type/form-step';
 import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';
@@ -76,8 +77,8 @@ export default function ConsultingPostForm() {
     if (name === CONSULTING_POST_FORM_FIELD_NAME.CONCERN) {
       const formValue = method.getValues(name);
       return (
-        (formValue?.value && formValue.value !== '기타') ||
-        (formValue?.value === '기타' && formValue?.additional !== '')
+        (formValue?.value && formValue.value !== HAIR_CONCERN_OPTION_VALUE.ETC) ||
+        (formValue?.value === HAIR_CONCERN_OPTION_VALUE.ETC && formValue?.additional !== '')
       );
     }
 
