@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
 
+import type { PostDetail } from '@/entities/posts/model/post-detail';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/lib/utils';
+import type { ValueOf } from '@/shared/type/types';
 
-import { SKIN_TONE_OPTION_VALUE } from '../../constants/skin-tone';
+import { SKIN_TONE_OPTION_LABEL, SKIN_TONE_OPTION_VALUE } from '../../constants/skin-tone';
 import ConsultingInputResultListItem from '../consulting-input-result-list-item';
 import SkinColorLabel from '../skin-color-label';
 
@@ -53,35 +55,48 @@ function ImageList({
   );
 }
 
-export default function PostDetailConsultingContent() {
-  const { user } = useAuthContext();
+type PostDetailConsultingContentProps = {
+  postDetail: PostDetail;
+};
 
-  const authorImageUrl = null;
-  const authorName = '익명';
-  const authorRegion = '강남구';
-  const createdAt = '03/31 09:00';
-  const images = [
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/27/images/b58138c2-c419-45fe-ba1e-2ccd0797326f/b58138c2-c419-45fe-ba1e-2ccd0797326f.svg',
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/27/images/b58138c2-c419-45fe-ba1e-2ccd0797326f/b58138c2-c419-45fe-ba1e-2ccd0797326f.svg',
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/27/images/b58138c2-c419-45fe-ba1e-2ccd0797326f/b58138c2-c419-45fe-ba1e-2ccd0797326f.svg',
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/27/images/b58138c2-c419-45fe-ba1e-2ccd0797326f/b58138c2-c419-45fe-ba1e-2ccd0797326f.svg',
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/27/images/b58138c2-c419-45fe-ba1e-2ccd0797326f/b58138c2-c419-45fe-ba1e-2ccd0797326f.svg',
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/27/images/b58138c2-c419-45fe-ba1e-2ccd0797326f/b58138c2-c419-45fe-ba1e-2ccd0797326f.svg',
-  ];
-  const operations = [
-    {
-      name: '헤어 고민 종류',
-      description: '2025.03',
-    },
-    {
-      name: '헤어 고민 종류',
-      description: '2025.03',
-    },
-  ];
-  const authorId = 1;
+export default function PostDetailConsultingContent({
+  postDetail,
+}: PostDetailConsultingContentProps) {
+  const { user, isUserDesigner } = useAuthContext();
+
+  const {
+    hairConsultPostingCreateUserProfileImageUrl: authorImageUrl,
+    hairConsultPostingCreateUserName: authorName,
+    hairConsultPostingCreateUserRegion: authorRegion,
+    hairConsultPostingCreateUserId: authorId,
+    title,
+    hairConcern,
+    treatments,
+    createdAt,
+    myImages,
+    aspirationImages,
+    skinTone,
+  } = postDetail;
+
+  const myImageUrls = myImages
+    ? [
+        myImages.frontLooseImageUrl,
+        myImages.frontTiedImageUrl,
+        myImages.sideTiedImageUrl,
+        myImages.upperBodyImageUrl,
+      ]
+    : null;
+
+  const aspirationImageUrls = aspirationImages
+    ? aspirationImages.map(({ imageUrl }) => imageUrl)
+    : null;
 
   const isWriter = authorId === user.id;
-  const onlyShowToDesigner = !isWriter;
+  const onlyShowToDesigner = !isWriter || isUserDesigner;
+
+  const skinToneType = Object.entries(SKIN_TONE_OPTION_LABEL).find(
+    ([, label]) => label === skinTone,
+  )?.[0] as ValueOf<typeof SKIN_TONE_OPTION_VALUE>;
 
   return (
     <div className="flex flex-col gap-6 py-6">
@@ -92,31 +107,41 @@ export default function PostDetailConsultingContent() {
           region={authorRegion}
           createdAt={createdAt}
         />
-        <p className="typo-title-3-semibold text-label-default">컨설팅 글 제목</p>
-        <ContentItem label="헤어 고민 종류">
-          <p className="typo-body-2-long-regular text-label-info">헤어 고민 종류</p>
-        </ContentItem>
-        <ContentItem label="현재 내 사진">
-          <ImageList images={images} onlyShowToDesigner={onlyShowToDesigner} />
-        </ContentItem>
+        <p className="typo-title-3-semibold text-label-default">{title}</p>
+        {hairConcern && (
+          <ContentItem label="헤어 고민 종류">
+            <p className="typo-body-2-long-regular text-label-info">{hairConcern}</p>
+          </ContentItem>
+        )}
+        {myImageUrls && (
+          <ContentItem label="현재 내 사진">
+            <ImageList images={myImageUrls} onlyShowToDesigner={onlyShowToDesigner} />
+          </ContentItem>
+        )}
       </div>
       <Separator />
       <div className="flex flex-col gap-8 px-5">
-        <ContentItem label="최근 2년간 받은 시술">
-          {operations.map((operation, index) => (
-            <ConsultingInputResultListItem
-              key={`${operation.name}-${operation.description}-${index}`}
-              name={operation.name}
-              description={operation.description}
-            />
-          ))}
-        </ContentItem>
-        <ContentItem label="추구미 / 평소스타일">
-          <ImageList images={images} onlyShowToDesigner={onlyShowToDesigner} />
-        </ContentItem>
-        <ContentItem label="피부톤" className="flex flex-row items-center justify-between">
-          <SkinColorLabel type={SKIN_TONE_OPTION_VALUE.VERY_BRIGHT} />
-        </ContentItem>
+        {treatments && (
+          <ContentItem label="최근 2년간 받은 시술">
+            {treatments.map(({ treatmentName, treatmentDate }, index) => (
+              <ConsultingInputResultListItem
+                key={`${treatmentName}-${treatmentDate}-${index}`}
+                name={treatmentName}
+                description={treatmentDate}
+              />
+            ))}
+          </ContentItem>
+        )}
+        {aspirationImageUrls && (
+          <ContentItem label="추구미 / 평소스타일">
+            <ImageList images={aspirationImageUrls} onlyShowToDesigner={onlyShowToDesigner} />
+          </ContentItem>
+        )}
+        {skinToneType && (
+          <ContentItem label="피부톤" className="flex flex-row items-center justify-between">
+            <SkinColorLabel type={skinToneType} />
+          </ContentItem>
+        )}
       </div>
     </div>
   );
