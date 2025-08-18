@@ -3,6 +3,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { HAIR_CONCERN_OPTION_VALUE } from '@/features/posts/constants/hair-concern-option';
+import { useCreateConsultingPost } from '@/features/posts/hooks/use-create-consulting-post';
+import { ROUTES } from '@/shared';
+import { useOverlayContext } from '@/shared/context/overlay-context';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { FormStep } from '@/shared/type/form-step';
 import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';
@@ -69,6 +73,9 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
 ];
 
 export default function ConsultingPostForm() {
+  const { showSnackBar } = useOverlayContext();
+  const { replace } = useRouterWithUser();
+
   const method = useForm<ConsultingPostFormValues>({
     resolver: zodResolver(consultingPostFormSchema),
   });
@@ -95,8 +102,18 @@ export default function ConsultingPostForm() {
     return true;
   };
 
+  const { handleCreateConsultingPost } = useCreateConsultingPost();
+
   const submit = (values: ConsultingPostFormValues) => {
-    console.log('submit', values);
+    handleCreateConsultingPost(values, {
+      onSuccess: () => {
+        showSnackBar({
+          type: 'success',
+          message: '업로드가 완료되었습니다!',
+        });
+        replace(ROUTES.POSTS);
+      },
+    });
   };
 
   return (
