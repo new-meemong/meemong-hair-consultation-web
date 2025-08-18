@@ -1,14 +1,14 @@
+import type { SKIN_TONE_OPTION_VALUE } from '@/features/posts/constants/skin-tone';
 import ConsultingInputResultListItem from '@/features/posts/ui/consulting-input-result-list-item';
-import SkinColorLabel, { SKIN_COLOR_TYPE } from '@/features/posts/ui/skin-color-label';
+import SkinColorLabel from '@/features/posts/ui/skin-color-label';
 import { Separator } from '@/shared';
 import type { ValueOf } from '@/shared/type/types';
 
 import ConsultingResponseSidebarItem from './consulting-response-sidebar-item';
 
-
 type ConsultingResponseSidebarAdditionalInfoTabViewProps = {
   hairConcern: string;
-  skinColorType: ValueOf<typeof SKIN_COLOR_TYPE>;
+  skinToneOption: ValueOf<typeof SKIN_TONE_OPTION_VALUE>;
   operations: {
     name: string;
     description: string;
@@ -17,7 +17,7 @@ type ConsultingResponseSidebarAdditionalInfoTabViewProps = {
 
 export default function ConsultingResponseSidebarAdditionalInfoTabView({
   hairConcern,
-  skinColorType,
+  skinToneOption,
   operations,
 }: ConsultingResponseSidebarAdditionalInfoTabViewProps) {
   return (
@@ -42,7 +42,7 @@ export default function ConsultingResponseSidebarAdditionalInfoTabView({
         label="피부톤"
         className="flex flex-row items-center justify-between"
       >
-        <SkinColorLabel type={skinColorType} />
+        <SkinColorLabel type={skinToneOption} />
       </ConsultingResponseSidebarItem>
     </div>
   );

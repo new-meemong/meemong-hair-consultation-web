@@ -1,24 +1,28 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import type { CreatePostRequest } from '@/entities/posts/api/create-post-request';
-import type { CreatePostResponse } from '@/entities/posts/api/create-post-response';
+import type { CreateConsultingPostRequest } from '@/entities/posts/api/create-consulting-post-request';
+import type { CreateConsultingPostResponse } from '@/entities/posts/api/create-consulting-post-response';
 import { apiClient } from '@/shared/api/client';
 
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
 
 import { getPostsQueryKeyPrefix } from './use-get-posts';
 
-export default function useCreatePostMutation() {
+export default function useCreateConsultingPostMutation() {
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
-    mutationFn: (data: CreatePostRequest) =>
-      apiClient.post<CreatePostResponse>(`${HAIR_CONSULT_POSTING_API_PREFIX}`, data),
+    mutationFn: (data: CreateConsultingPostRequest) =>
+      apiClient.post<CreateConsultingPostResponse>(
+        `${HAIR_CONSULT_POSTING_API_PREFIX}/consultings`,
+        data,
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [getPostsQueryKeyPrefix()] });
     },
   });
 
-  const mutate = (data: CreatePostRequest, { onSuccess }: { onSuccess: () => void }) => {
+  const mutate = (data: CreateConsultingPostRequest, { onSuccess }: { onSuccess: () => void }) => {
     mutation.mutate(data, {
       onSuccess,
     });

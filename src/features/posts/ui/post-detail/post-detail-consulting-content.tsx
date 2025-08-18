@@ -3,12 +3,12 @@ import type { ReactNode } from 'react';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/lib/utils';
 
+import { SKIN_TONE_OPTION_VALUE } from '../../constants/skin-tone';
 import ConsultingInputResultListItem from '../consulting-input-result-list-item';
-import SkinColorLabel, { SKIN_COLOR_TYPE } from '../skin-color-label';
+import SkinColorLabel from '../skin-color-label';
 
 import PostDetailAuthorProfile from './post-detail-author-profile';
 import PostDetailImage from './post-detail-image';
-
 
 function Separator() {
   return <div className="bg-alternative h-1.5" />;
@@ -115,7 +115,7 @@ export default function PostDetailConsultingContent() {
           <ImageList images={images} onlyShowToDesigner={onlyShowToDesigner} />
         </ContentItem>
         <ContentItem label="피부톤" className="flex flex-row items-center justify-between">
-          <SkinColorLabel type={SKIN_COLOR_TYPE.VERY_BRIGHT} />
+          <SkinColorLabel type={SKIN_TONE_OPTION_VALUE.VERY_BRIGHT} />
         </ContentItem>
       </div>
     </div>

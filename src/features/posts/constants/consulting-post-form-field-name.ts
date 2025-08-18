@@ -1,9 +1,9 @@
 export const CONSULTING_POST_FORM_FIELD_NAME = {
-  option1: 'option1',
-  option2: 'option2',
-  option3: 'option3',
-  option4: 'option4',
-  option5: 'option5',
-  option6: 'option6',
-  option7: 'option7',
+  CONCERN: 'concern',
+  TREATMENTS: 'treatments',
+  MY_IMAGES: 'myImages',
+  ASPIRATION_IMAGES: 'aspirationImages',
+  SKIN_TONE: 'skinTone',
+  CONTENT: 'content',
+  TITLE: 'title',
 } as const;

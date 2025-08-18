@@ -8,18 +8,18 @@ import ConsultingInputResultListItem from '../../consulting-input-result-list-it
 
 import ConsultingPostFormOperationForm from './consulting-post-form-operation-form';
 
-export default function ConsultingPostFormStep2() {
+export default function ConsultingPostFormStepTreatments() {
   const { control, setValue } = useFormContext<ConsultingPostFormValues>();
   const operations = useWatch({
     control,
-    name: CONSULTING_POST_FORM_FIELD_NAME.option2,
+    name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
   });
 
   const handleDelete = (index: number) => {
     if (!operations) return;
 
     setValue(
-      CONSULTING_POST_FORM_FIELD_NAME.option2,
+      CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
       operations.filter((_, i) => i !== index),
       {
         shouldDirty: true,
