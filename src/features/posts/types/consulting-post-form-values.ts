@@ -3,6 +3,7 @@ import z from 'zod';
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
 import { HAIR_CONCERN_OPTION_VALUE } from '../constants/hair-concern-option';
 import { HAIR_IMAGE_POSITION } from '../constants/hair-image-position';
+import { SKIN_TONE_OPTION_VALUE } from '../constants/skin-tone';
 
 const IMAGE_POSITIONS = [
   HAIR_IMAGE_POSITION.FRONT_LOOSE,
@@ -15,6 +16,14 @@ const CONCERN_OPTION = [
   HAIR_CONCERN_OPTION_VALUE.DESIGN_POSSIBLE,
   HAIR_CONCERN_OPTION_VALUE.RECOMMEND_STYLE,
   HAIR_CONCERN_OPTION_VALUE.ETC,
+] as const;
+
+const SKIN_TONE_OPTION = [
+  SKIN_TONE_OPTION_VALUE.VERY_BRIGHT,
+  SKIN_TONE_OPTION_VALUE.BRIGHT,
+  SKIN_TONE_OPTION_VALUE.NORMAL,
+  SKIN_TONE_OPTION_VALUE.DARK,
+  SKIN_TONE_OPTION_VALUE.VERY_DARK,
 ] as const;
 
 export const consultingPostFormSchema = z.object({
@@ -36,13 +45,11 @@ export const consultingPostFormSchema = z.object({
       image: z.instanceof(File),
     }),
   ),
-  [CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES]: z
-    .object({
-      images: z.array(z.instanceof(File)),
-      description: z.string().optional(),
-    })
-    .optional(),
-  [CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE]: z.string().optional(),
+  [CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES]: z.object({
+    images: z.array(z.instanceof(File)).optional(),
+    description: z.string(),
+  }),
+  [CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE]: z.enum(SKIN_TONE_OPTION).optional(),
   [CONSULTING_POST_FORM_FIELD_NAME.CONTENT]: z.string().optional(),
   [CONSULTING_POST_FORM_FIELD_NAME.TITLE]: z.string().optional(),
 });
