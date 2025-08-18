@@ -70,6 +70,7 @@ export default function PostDetailConsultingContent({
     hairConsultPostingCreateUserRegion: authorRegion,
     hairConsultPostingCreateUserId: authorId,
     title,
+    content,
     hairConcern,
     treatments,
     createdAt,
@@ -140,6 +141,11 @@ export default function PostDetailConsultingContent({
         {skinToneType && (
           <ContentItem label="피부톤" className="flex flex-row items-center justify-between">
             <SkinColorLabel type={skinToneType} />
+          </ContentItem>
+        )}
+        {content && (
+          <ContentItem label="코멘트">
+            <p className="typo-body-2-long-regular text-label-info">{content}</p>
           </ContentItem>
         )}
       </div>
