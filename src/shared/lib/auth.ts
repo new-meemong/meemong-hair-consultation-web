@@ -1,5 +1,6 @@
 import type { User } from '@/entities/user/model/user';
-import type { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import type { UserWritingContent } from '@/features/posts/types/user-writing-content';
+import { USER_WRITING_CONTENT_KEYS, type USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 
 export interface JWTPayload {
   userId: number;
@@ -11,7 +12,7 @@ export interface UserGuideState {
   [USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide]: boolean;
 }
 
-export type UserData = User & UserGuideState;
+export type UserData = User & UserGuideState & UserWritingContent;
 
 const USER_DATA_KEY = 'user_data';
 
@@ -37,6 +38,7 @@ export const getDefaultUserData = (user: User): UserData => {
     ...user,
     hasSeenCreatePostGuide: false,
     hasSeenDesignerOnboardingGuide: false,
+    [USER_WRITING_CONTENT_KEYS.consultingPost]: null,
   };
 };
 

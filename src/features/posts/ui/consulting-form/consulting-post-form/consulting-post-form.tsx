@@ -1,21 +1,12 @@
-import { FormProvider, useForm } from 'react-hook-form';
-
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useFormContext } from 'react-hook-form';
 
 import { HAIR_CONCERN_OPTION_VALUE } from '@/features/posts/constants/hair-concern-option';
-import { useCreateConsultingPost } from '@/features/posts/hooks/use-create-consulting-post';
-import { ROUTES } from '@/shared';
-import { useOverlayContext } from '@/shared/context/overlay-context';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { FormStep } from '@/shared/type/form-step';
 import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';
 
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
-import {
-  consultingPostFormSchema,
-  type ConsultingPostFormValues,
-} from '../../../types/consulting-post-form-values';
+import { type ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 
 import ConsultingPostFormStepAspirationImages from './consulting-post-form-step-aspiration-images';
 import ConsultingPostFormStepConcern from './consulting-post-form-step-concern';
@@ -72,13 +63,12 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   },
 ];
 
-export default function ConsultingPostForm() {
-  const { showSnackBar } = useOverlayContext();
-  const { replace } = useRouterWithUser();
+type ConsultingPostFormProps = {
+  onSubmit: (values: ConsultingPostFormValues) => void;
+};
 
-  const method = useForm<ConsultingPostFormValues>({
-    resolver: zodResolver(consultingPostFormSchema),
-  });
+export default function ConsultingPostForm({ onSubmit }: ConsultingPostFormProps) {
+  const method = useFormContext<ConsultingPostFormValues>();
 
   const canMoveNext = (name: KeyOf<ConsultingPostFormValues>) => {
     if (name === CONSULTING_POST_FORM_FIELD_NAME.CONCERN) {
@@ -102,28 +92,12 @@ export default function ConsultingPostForm() {
     return true;
   };
 
-  const { handleCreateConsultingPost } = useCreateConsultingPost();
-
-  const submit = (values: ConsultingPostFormValues) => {
-    handleCreateConsultingPost(values, {
-      onSuccess: () => {
-        showSnackBar({
-          type: 'success',
-          message: '업로드가 완료되었습니다!',
-        });
-        replace(ROUTES.POSTS);
-      },
-    });
-  };
-
   return (
-    <FormProvider {...method}>
-      <MultiStepForm
-        steps={CONSULTING_POST_FORM_STEPS}
-        canMoveNext={canMoveNext}
-        onSubmit={submit}
-        lastStepButtonLabel="저장"
-      />
-    </FormProvider>
+    <MultiStepForm
+      steps={CONSULTING_POST_FORM_STEPS}
+      canMoveNext={canMoveNext}
+      onSubmit={onSubmit}
+      lastStepButtonLabel="저장"
+    />
   );
 }

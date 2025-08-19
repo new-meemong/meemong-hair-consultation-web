@@ -1,13 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { FormProvider } from 'react-hook-form';
 
 import { POST_TABS, POST_TAB_VALUE } from '@/features/posts/constants/post-tabs';
+import useConsultingPostForm from '@/features/posts/hooks/use-consulting-post-form';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
-import { usePostTab } from '@/features/posts/hooks/use-post-tab';
-import useShowLeaveCreateConsultingPostModal from '@/features/posts/hooks/use-show-leave-create-consulting-post';
-import useShowLeaveCreateGeneralPostModal from '@/features/posts/hooks/use-show-leave-create-general-post-modal';
-import useShowReloadConsultingPostModal from '@/features/posts/hooks/use-show-reload-consulting-post-modal';
+import usePostFormNavigation from '@/features/posts/hooks/use-post-form-navigation';
 import type { PostFormValues } from '@/features/posts/types/post-form-values';
 import ConsultingPostForm from '@/features/posts/ui/consulting-form/consulting-post-form/consulting-post-form';
 import PostForm from '@/features/posts/ui/post-form/post-form';
@@ -22,64 +20,14 @@ import { SiteHeader } from '@/widgets/header';
 export default function CreatePostPage() {
   useGuidePopup(USER_GUIDE_KEYS.hasSeenCreatePostGuide);
 
-  const { replace, back } = useRouterWithUser();
+  const { replace } = useRouterWithUser();
   const { showSnackBar } = useOverlayContext();
 
-  const [selectedTab, setSelectedTab] = usePostTab();
+  const { method, submit: submitConsultingForm } = useConsultingPostForm();
 
-  const handleCloseReloadConsultingPostModal = () => {
-    setSelectedTab(POST_TAB_VALUE.GENERAL);
-  };
-
-  const showReloadConsultingPostModal = useShowReloadConsultingPostModal({
-    onClose: handleCloseReloadConsultingPostModal,
+  const { selectedTab, handleBackClick, handleTabChange } = usePostFormNavigation({
+    method,
   });
-
-  //TODO: 작성하던 데이터 저장 여부 로직 추가
-  const [hasSavedConsultingPost, setHasSavedConsultingPost] = useState(true);
-
-  console.log('setHasSavedConsultingPost', setHasSavedConsultingPost);
-
-  // TODO: 탭 이동 테스트를 위해 임시 주석처리
-  // useEffect(() => {
-  //   if (hasSavedConsultingPost) {
-  //     showReloadConsultingPostModal();
-  //     setHasSavedConsultingPost(false);
-  //   }
-  // }, [hasSavedConsultingPost, showReloadConsultingPostModal]);
-
-  const showLeaveCreateConsultingPostModal = useShowLeaveCreateConsultingPostModal();
-  const showLeaveCreateGeneralPostModal = useShowLeaveCreateGeneralPostModal();
-
-  const handleBackClick = () => {
-    if (selectedTab === POST_TAB_VALUE.CONSULTING) {
-      showLeaveCreateConsultingPostModal({ onClose: back });
-      return;
-    }
-
-    if (selectedTab === POST_TAB_VALUE.GENERAL) {
-      showLeaveCreateGeneralPostModal();
-      return;
-    }
-
-    back();
-  };
-
-  console.log('hasSavedConsultingPost', hasSavedConsultingPost);
-
-  const handleTabChange = (tab: ValueOf<typeof POST_TAB_VALUE>) => {
-    if (tab === POST_TAB_VALUE.GENERAL && hasSavedConsultingPost) {
-      showLeaveCreateConsultingPostModal({ onClose: () => setSelectedTab(tab) });
-      return;
-    }
-
-    if (tab === POST_TAB_VALUE.CONSULTING && hasSavedConsultingPost) {
-      showReloadConsultingPostModal({ onFinish: () => setSelectedTab(tab) });
-      return;
-    }
-
-    setSelectedTab(tab);
-  };
 
   const { handleCreatePost, isPending } = useCreatePost();
 
@@ -98,7 +46,7 @@ export default function CreatePostPage() {
   const renderForm = (type: ValueOf<typeof POST_TAB_VALUE>) => {
     switch (type) {
       case POST_TAB_VALUE.CONSULTING:
-        return <ConsultingPostForm />;
+        return <ConsultingPostForm onSubmit={submitConsultingForm} />;
       case POST_TAB_VALUE.GENERAL:
         return <PostForm onSubmit={handleSubmit} isPending={isPending} />;
       default:
@@ -108,9 +56,11 @@ export default function CreatePostPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <SiteHeader title="게시글 작성" showBackButton onBackClick={handleBackClick} />
-      <Tab options={POST_TABS} value={selectedTab} onChange={handleTabChange} />
-      {renderForm(selectedTab)}
+      <FormProvider {...method}>
+        <SiteHeader title="게시글 작성" showBackButton onBackClick={handleBackClick} />
+        <Tab options={POST_TABS} value={selectedTab} onChange={handleTabChange} />
+        {renderForm(selectedTab)}
+      </FormProvider>
     </div>
   );
 }
