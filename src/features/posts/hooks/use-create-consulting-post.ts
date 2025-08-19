@@ -53,9 +53,10 @@ export function useCreateConsultingPost() {
       string
     >;
 
-    const uploadedAspirationImages = data.aspirationImages.images
-      ? await uploadImages(data.aspirationImages.images)
-      : undefined;
+    const uploadedAspirationImages =
+      data.aspirationImages.images && data.aspirationImages.images.length > 0
+        ? await uploadImages(data.aspirationImages.images)
+        : undefined;
 
     const aspirationDescription = data.aspirationImages.description;
 
