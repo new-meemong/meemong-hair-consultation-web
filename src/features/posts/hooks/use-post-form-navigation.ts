@@ -71,6 +71,7 @@ export default function usePostFormNavigation({
       }
 
       back();
+      return;
     }
 
     if (selectedTab === POST_TAB_VALUE.GENERAL) {
