@@ -2,16 +2,16 @@ import { z } from 'zod';
 
 import { BANG_STYLE } from '../constants/bang-style';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../constants/consulting-response-form-field-name';
-import { FACE_TYPE } from '../constants/face-type';
+import { FACE_SHAPE } from '../constants/face-shape';
 import { HAIR_TYPE } from '../constants/hair-type';
 
-const FACE_TYPE_VALUES = [
-  FACE_TYPE.OVAL,
-  FACE_TYPE.DIAMOND,
-  FACE_TYPE.HEART,
-  FACE_TYPE.PEANUT,
-  FACE_TYPE.HEXAGONAL,
-  FACE_TYPE.ROUND,
+const FACE_SHAPE_VALUES = [
+  FACE_SHAPE.OVAL,
+  FACE_SHAPE.DIAMOND,
+  FACE_SHAPE.HEART,
+  FACE_SHAPE.PEANUT,
+  FACE_SHAPE.HEXAGONAL,
+  FACE_SHAPE.ROUND,
 ] as const;
 
 const HAIR_TYPE_VALUES = [
@@ -32,7 +32,7 @@ const BANG_TYLE_VALUES = [
 ] as const;
 
 export const consultingResponseFormSchema = z.object({
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.option1]: z.enum(FACE_TYPE_VALUES),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE]: z.enum(FACE_SHAPE_VALUES),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.option2]: z.enum(HAIR_TYPE_VALUES).nullable().optional(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.option3]: z.number().nullable().optional(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.option4]: z.enum(BANG_TYLE_VALUES).nullable().optional(),
