@@ -5,15 +5,15 @@ import type { UserWritingContent } from '@/features/posts/types/user-writing-con
 
 import type { KeyOf } from '../type/types';
 
-export default function useWritingContent(key: KeyOf<UserWritingContent>) {
+export default function useWritingContent<K extends KeyOf<UserWritingContent>>(key: K) {
   const { user, updateUser } = useAuthContext();
 
-  const getSavedContent = useCallback(() => {
+  const getSavedContent = useCallback((): UserWritingContent[K] => {
     return user[key];
   }, [user, key]);
 
   const saveContent = useCallback(
-    (content: UserWritingContent[keyof UserWritingContent]) => {
+    (content: UserWritingContent[K]) => {
       updateUser({ [key]: content });
     },
     [key, updateUser],
