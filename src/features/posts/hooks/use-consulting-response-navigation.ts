@@ -53,7 +53,7 @@ export default function useConsultingResponseNavigation({
     }
 
     back();
-  }, [back, method, saveContent, savedContent, showLeaveCreateConsultingResponseModal]);
+  }, [back, isDirty, method, saveContent, savedContent, showLeaveCreateConsultingResponseModal]);
 
   useEffect(() => {
     if (hasSavedContent && !initialize) {
