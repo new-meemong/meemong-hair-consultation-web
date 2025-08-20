@@ -24,6 +24,8 @@ export default function usePostFormNavigation({
 
   const [selectedTab, setSelectedTab] = usePostTab();
 
+  const { isDirty } = method.formState;
+
   const { getSavedContent, saveContent } = useWritingContent(
     USER_WRITING_CONTENT_KEYS.consultingPost,
   );
@@ -60,7 +62,7 @@ export default function usePostFormNavigation({
 
   const handleBackClick = useCallback(() => {
     if (selectedTab === POST_TAB_VALUE.CONSULTING) {
-      if (savedContent || method.formState.isDirty) {
+      if (savedContent || isDirty) {
         showLeaveCreateConsultingPostModal({
           onClose: () => {
             back();
@@ -84,6 +86,7 @@ export default function usePostFormNavigation({
     selectedTab,
     back,
     savedContent,
+    isDirty,
     method,
     showLeaveCreateConsultingPostModal,
     saveContent,
