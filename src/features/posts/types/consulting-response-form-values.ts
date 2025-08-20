@@ -39,7 +39,7 @@ export const consultingResponseFormSchema = z.object({
     .enum(BANG_TYLE_VALUES)
     .nullable()
     .optional(),
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.option5]: z.object({
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE]: z.object({
     images: z.array(z.instanceof(File)),
     description: z.string().optional(),
   }),

@@ -3,7 +3,7 @@ export const CONSULTING_RESPONSE_FORM_FIELD_NAME = {
   HAIR_TYPE: 'hairType',
   DAMAGE_LEVEL: 'damageLevel',
   BANGS_RECOMMENDATION: 'bangsRecommendation',
-  option5: 'option5',
+  STYLE: 'style',
   option6: 'option6',
   option7: 'option7',
 } as const;

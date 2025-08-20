@@ -7,13 +7,13 @@ import MultiStepForm from '@/shared/ui/multi-step-form';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
-import ConsultingResponseFormStep5 from './consulting-response-form-step-5';
 import ConsultingResponseFormStep6 from './consulting-response-form-step-6';
 import ConsultingResponseFormStep7 from './consulting-response-form-step-7';
 import ConsultingResponseFormStepBangsRecommendation from './consulting-response-form-step-bangs-recommendation';
 import ConsultingResponseFormStepDamageLevel from './consulting-response-form-step-damage-level';
 import ConsultingResponseFormStepFaceShape from './consulting-response-form-step-face-shape';
 import ConsultingResponseFormStepHairType from './consulting-response-form-step-hair-type';
+import ConsultingResponseFormStepStyle from './consulting-response-form-step-style';
 
 const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
   {
@@ -41,10 +41,10 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     children: <ConsultingResponseFormStepBangsRecommendation />,
   },
   {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option5,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
     question: '어울리는 스타일을 추천해주세요',
     required: true,
-    children: <ConsultingResponseFormStep5 />,
+    children: <ConsultingResponseFormStepStyle />,
   },
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option6,
@@ -74,7 +74,7 @@ export default function ConsultingResponseForm({
       const value = method.getValues(name);
       return value === null || value !== undefined;
     }
-    if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.option5) {
+    if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE) {
       const value = method.getValues(name);
       return value && value.images.length > 0 && !!value.description;
     }
