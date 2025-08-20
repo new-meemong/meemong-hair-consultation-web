@@ -36,7 +36,7 @@ export default function CreateConsultingPostPage() {
       <PostDetailProvider postId={postId.toString()}>
         <FormProvider {...method}>
           <SiteHeader title="컨설팅 답변 작성" showBackButton onBackClick={handleBackClick} />
-          <ConsultingResponseForm method={method} />
+          <ConsultingResponseForm method={method} hairConsultPostingId={postId.toString()} />
           <ConsultingResponseSidebar isOpen={showedSidebar} onClose={handleSidebarButtonClick} />
           <div className="absolute bottom-25.5 right-5">
             <ConsultingResponseSidebarButton onClick={handleSidebarButtonClick} />

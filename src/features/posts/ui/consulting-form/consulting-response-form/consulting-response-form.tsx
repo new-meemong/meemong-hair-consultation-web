@@ -1,5 +1,9 @@
 import { type UseFormReturn } from 'react-hook-form';
 
+import useCreateConsultingResponse from '@/features/posts/hooks/use-create-consulting-response';
+import { ROUTES } from '@/shared';
+import { useOverlayContext } from '@/shared/context/overlay-context';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { FormStep } from '@/shared/type/form-step';
 import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';
@@ -60,11 +64,34 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
   },
 ];
 
+type ConsultingResponseFormProps = {
+  method: UseFormReturn<ConsultingResponseFormValues>;
+  hairConsultPostingId: string;
+};
+
 export default function ConsultingResponseForm({
   method,
-}: {
-  method: UseFormReturn<ConsultingResponseFormValues>;
-}) {
+  hairConsultPostingId,
+}: ConsultingResponseFormProps) {
+  const { showSnackBar } = useOverlayContext();
+  const { replace } = useRouterWithUser();
+
+  const { handleCreateConsultingResponse, isPending } =
+    useCreateConsultingResponse(hairConsultPostingId);
+
+  const submit = (values: ConsultingResponseFormValues) => {
+    handleCreateConsultingResponse(values, {
+      onSuccess: () => {
+        showSnackBar({
+          type: 'success',
+          message: '컨설팅 답변을 보냈습니다!',
+        });
+
+        replace(ROUTES.POSTS_DETAIL(hairConsultPostingId));
+      },
+    });
+  };
+
   const canMoveNext = (name: KeyOf<ConsultingResponseFormValues>) => {
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE) {
       const value = method.getValues(name);
@@ -82,11 +109,7 @@ export default function ConsultingResponseForm({
       const value = method.getValues(name);
       return value && value.length > 0;
     }
-    return true;
-  };
-
-  const submit = (values: ConsultingResponseFormValues) => {
-    console.log('submit', values);
+    return !isPending;
   };
 
   return (
