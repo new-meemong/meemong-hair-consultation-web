@@ -35,7 +35,10 @@ export const consultingResponseFormSchema = z.object({
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE]: z.enum(FACE_SHAPE_VALUES),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE]: z.enum(HAIR_TYPE_VALUES).nullable().optional(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL]: z.number().nullable().optional(),
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.option4]: z.enum(BANG_TYLE_VALUES).nullable().optional(),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION]: z
+    .enum(BANG_TYLE_VALUES)
+    .nullable()
+    .optional(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.option5]: z.object({
     images: z.array(z.instanceof(File)),
     description: z.string().optional(),
