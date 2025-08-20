@@ -5,6 +5,7 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/lib/utils';
 import type { ValueOf } from '@/shared/type/types';
 
+import { HAIR_CONCERN_OPTION } from '../../constants/hair-concern-option';
 import { SKIN_TONE_OPTION_LABEL, SKIN_TONE_OPTION_VALUE } from '../../constants/skin-tone';
 import ConsultingInputResultListItem from '../consulting-input-result-list-item';
 import SkinColorLabel from '../skin-color-label';
@@ -72,6 +73,7 @@ export default function PostDetailConsultingContent({
     title,
     content,
     hairConcern,
+    hairConcernDetail,
     treatments,
     createdAt,
     myImages,
@@ -88,16 +90,14 @@ export default function PostDetailConsultingContent({
       ]
     : null;
 
-  const aspirationImageUrls = aspirationImages
-    ? aspirationImages.map(({ imageUrl }) => imageUrl)
-    : null;
-
   const isWriter = authorId === user.id;
   const onlyShowToDesigner = !isWriter || isUserDesigner;
 
   const skinToneType = Object.entries(SKIN_TONE_OPTION_LABEL).find(
     ([, label]) => label === skinTone,
   )?.[0] as ValueOf<typeof SKIN_TONE_OPTION_VALUE>;
+
+  const concern = hairConcern === HAIR_CONCERN_OPTION.etc.label ? hairConcernDetail : hairConcern;
 
   return (
     <div className="flex flex-col gap-6 py-6">
@@ -109,13 +109,13 @@ export default function PostDetailConsultingContent({
           createdAt={createdAt}
         />
         <p className="typo-title-3-semibold text-label-default">{title}</p>
-        {hairConcern && (
-          <ContentItem label="헤어 고민 종류">
-            <p className="typo-body-2-long-regular text-label-info">{hairConcern}</p>
+        {concern && (
+          <ContentItem label="헤어 고민">
+            <p className="typo-body-2-long-regular text-label-info">{concern}</p>
           </ContentItem>
         )}
         {myImageUrls && (
-          <ContentItem label="현재 내 사진">
+          <ContentItem label="최근 내 사진">
             <ImageList images={myImageUrls} onlyShowToDesigner={onlyShowToDesigner} />
           </ContentItem>
         )}
@@ -123,7 +123,7 @@ export default function PostDetailConsultingContent({
       <Separator />
       <div className="flex flex-col gap-8 px-5">
         {treatments && (
-          <ContentItem label="최근 2년간 받은 시술">
+          <ContentItem label="최근 받은 시술">
             {treatments.map(({ treatmentName, treatmentDate }, index) => (
               <ConsultingInputResultListItem
                 key={`${treatmentName}-${treatmentDate}-${index}`}
@@ -133,9 +133,16 @@ export default function PostDetailConsultingContent({
             ))}
           </ContentItem>
         )}
-        {aspirationImageUrls && (
-          <ContentItem label="추구미 / 평소스타일">
-            <ImageList images={aspirationImageUrls} onlyShowToDesigner={onlyShowToDesigner} />
+        {aspirationImages && (
+          <ContentItem label="원하는 스타일">
+            {aspirationImages.images.length > 0 && (
+              <ImageList images={aspirationImages.images} onlyShowToDesigner={onlyShowToDesigner} />
+            )}
+            {aspirationImages.description && (
+              <p className="typo-body-2-long-regular text-label-info">
+                {aspirationImages.description}
+              </p>
+            )}
           </ContentItem>
         )}
         {skinToneType && (
