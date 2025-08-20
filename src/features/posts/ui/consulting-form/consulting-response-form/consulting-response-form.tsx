@@ -7,13 +7,13 @@ import MultiStepForm from '@/shared/ui/multi-step-form';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
-import ConsultingResponseFormStep2 from './consulting-response-form-step-2';
 import ConsultingResponseFormStep3 from './consulting-response-form-step-3';
 import ConsultingResponseFormStep4 from './consulting-response-form-step-4';
 import ConsultingResponseFormStep5 from './consulting-response-form-step-5';
 import ConsultingResponseFormStep6 from './consulting-response-form-step-6';
 import ConsultingResponseFormStep7 from './consulting-response-form-step-7';
 import ConsultingResponseFormStepFaceShape from './consulting-response-form-step-face-shape';
+import ConsultingResponseFormStepHairType from './consulting-response-form-step-hair-type';
 
 const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
   {
@@ -23,10 +23,10 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     children: <ConsultingResponseFormStepFaceShape />,
   },
   {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option2,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE,
     question: '고객님의 모발 타입을 골라주세요',
     required: false,
-    children: <ConsultingResponseFormStep2 />,
+    children: <ConsultingResponseFormStepHairType />,
   },
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option3,

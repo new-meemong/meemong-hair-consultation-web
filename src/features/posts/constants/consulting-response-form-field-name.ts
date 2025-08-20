@@ -1,6 +1,6 @@
 export const CONSULTING_RESPONSE_FORM_FIELD_NAME = {
   FACE_SHAPE: 'faceShape',
-  option2: 'option2',
+  HAIR_TYPE: 'hairType',
   option3: 'option3',
   option4: 'option4',
   option5: 'option5',
