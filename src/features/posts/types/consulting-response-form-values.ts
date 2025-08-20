@@ -43,7 +43,7 @@ export const consultingResponseFormSchema = z.object({
     images: z.array(z.instanceof(File)),
     description: z.string().optional(),
   }),
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.option6]: z.array(
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS]: z.array(
     z.object({
       operationName: z.string(),
       minPrice: z.number(),

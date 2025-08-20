@@ -4,6 +4,6 @@ export const CONSULTING_RESPONSE_FORM_FIELD_NAME = {
   DAMAGE_LEVEL: 'damageLevel',
   BANGS_RECOMMENDATION: 'bangsRecommendation',
   STYLE: 'style',
-  option6: 'option6',
+  TREATMENTS: 'treatments',
   option7: 'option7',
 } as const;

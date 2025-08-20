@@ -7,13 +7,13 @@ import MultiStepForm from '@/shared/ui/multi-step-form';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
-import ConsultingResponseFormStep6 from './consulting-response-form-step-6';
 import ConsultingResponseFormStep7 from './consulting-response-form-step-7';
 import ConsultingResponseFormStepBangsRecommendation from './consulting-response-form-step-bangs-recommendation';
 import ConsultingResponseFormStepDamageLevel from './consulting-response-form-step-damage-level';
 import ConsultingResponseFormStepFaceShape from './consulting-response-form-step-face-shape';
 import ConsultingResponseFormStepHairType from './consulting-response-form-step-hair-type';
 import ConsultingResponseFormStepStyle from './consulting-response-form-step-style';
+import ConsultingResponseFormStepTreatments from './consulting-response-form-step-treatments';
 
 const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
   {
@@ -47,10 +47,10 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     children: <ConsultingResponseFormStepStyle />,
   },
   {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option6,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
     question: '예상 시술 가격 견적을 작성해주세요',
     required: true,
-    children: <ConsultingResponseFormStep6 />,
+    children: <ConsultingResponseFormStepTreatments />,
   },
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option7,
@@ -78,7 +78,7 @@ export default function ConsultingResponseForm({
       const value = method.getValues(name);
       return value && value.images.length > 0 && !!value.description;
     }
-    if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.option6) {
+    if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS) {
       const value = method.getValues(name);
       return value && value.length > 0;
     }
