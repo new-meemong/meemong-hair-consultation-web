@@ -90,10 +90,6 @@ export default function PostDetailConsultingContent({
       ]
     : null;
 
-  const aspirationImageUrls = aspirationImages
-    ? aspirationImages.map(({ imageUrl }) => imageUrl)
-    : null;
-
   const isWriter = authorId === user.id;
   const onlyShowToDesigner = !isWriter || isUserDesigner;
 
@@ -137,9 +133,16 @@ export default function PostDetailConsultingContent({
             ))}
           </ContentItem>
         )}
-        {aspirationImageUrls && (
+        {aspirationImages && (
           <ContentItem label="원하는 스타일">
-            <ImageList images={aspirationImageUrls} onlyShowToDesigner={onlyShowToDesigner} />
+            {aspirationImages.images.length > 0 && (
+              <ImageList images={aspirationImages.images} onlyShowToDesigner={onlyShowToDesigner} />
+            )}
+            {aspirationImages.description && (
+              <p className="typo-body-2-long-regular text-label-info">
+                {aspirationImages.description}
+              </p>
+            )}
           </ContentItem>
         )}
         {skinToneType && (

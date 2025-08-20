@@ -18,8 +18,8 @@ type MyImages = {
 };
 
 type AspirationImage = {
-  imageUrl: string;
-  description: string;
+  images: string[];
+  description?: string;
 };
 
 export type PostDetail = {
@@ -42,8 +42,8 @@ export type PostDetail = {
   hairConcern?: string;
   hairConcernDetail?: string | null;
   hasNoRecentTreatment?: boolean;
-  skinTone?: ValueOf<typeof SKIN_TONE_OPTION_LABEL>;
+  skinTone?: ValueOf<typeof SKIN_TONE_OPTION_LABEL> | null;
   treatments?: Treatment[];
   myImages?: MyImages;
-  aspirationImages?: AspirationImage[];
+  aspirationImages?: AspirationImage | null;
 };
