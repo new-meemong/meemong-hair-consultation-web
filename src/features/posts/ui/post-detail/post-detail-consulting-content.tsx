@@ -110,12 +110,12 @@ export default function PostDetailConsultingContent({
         />
         <p className="typo-title-3-semibold text-label-default">{title}</p>
         {hairConcern && (
-          <ContentItem label="헤어 고민 종류">
+          <ContentItem label="헤어 고민">
             <p className="typo-body-2-long-regular text-label-info">{hairConcern}</p>
           </ContentItem>
         )}
         {myImageUrls && (
-          <ContentItem label="현재 내 사진">
+          <ContentItem label="최근 내 사진">
             <ImageList images={myImageUrls} onlyShowToDesigner={onlyShowToDesigner} />
           </ContentItem>
         )}
@@ -123,7 +123,7 @@ export default function PostDetailConsultingContent({
       <Separator />
       <div className="flex flex-col gap-8 px-5">
         {treatments && (
-          <ContentItem label="최근 2년간 받은 시술">
+          <ContentItem label="최근 받은 시술">
             {treatments.map(({ treatmentName, treatmentDate }, index) => (
               <ConsultingInputResultListItem
                 key={`${treatmentName}-${treatmentDate}-${index}`}
@@ -134,7 +134,7 @@ export default function PostDetailConsultingContent({
           </ContentItem>
         )}
         {aspirationImageUrls && (
-          <ContentItem label="추구미 / 평소스타일">
+          <ContentItem label="원하는 스타일">
             <ImageList images={aspirationImageUrls} onlyShowToDesigner={onlyShowToDesigner} />
           </ContentItem>
         )}
