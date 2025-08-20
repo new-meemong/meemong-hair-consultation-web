@@ -40,6 +40,7 @@ export type PostDetail = {
   hairConsultPostingCreateUserRole: ValueOf<typeof USER_ROLE>;
   hairConsultPostingCreateUserId: number;
   hairConcern?: string;
+  hairConcernDetail?: string | null;
   hasNoRecentTreatment?: boolean;
   skinTone?: ValueOf<typeof SKIN_TONE_OPTION_LABEL>;
   treatments?: Treatment[];

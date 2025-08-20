@@ -5,6 +5,7 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/lib/utils';
 import type { ValueOf } from '@/shared/type/types';
 
+import { HAIR_CONCERN_OPTION } from '../../constants/hair-concern-option';
 import { SKIN_TONE_OPTION_LABEL, SKIN_TONE_OPTION_VALUE } from '../../constants/skin-tone';
 import ConsultingInputResultListItem from '../consulting-input-result-list-item';
 import SkinColorLabel from '../skin-color-label';
@@ -72,6 +73,7 @@ export default function PostDetailConsultingContent({
     title,
     content,
     hairConcern,
+    hairConcernDetail,
     treatments,
     createdAt,
     myImages,
@@ -99,6 +101,8 @@ export default function PostDetailConsultingContent({
     ([, label]) => label === skinTone,
   )?.[0] as ValueOf<typeof SKIN_TONE_OPTION_VALUE>;
 
+  const concern = hairConcern === HAIR_CONCERN_OPTION.etc.label ? hairConcernDetail : hairConcern;
+
   return (
     <div className="flex flex-col gap-6 py-6">
       <div className="flex flex-col gap-5 px-5">
@@ -109,9 +113,9 @@ export default function PostDetailConsultingContent({
           createdAt={createdAt}
         />
         <p className="typo-title-3-semibold text-label-default">{title}</p>
-        {hairConcern && (
+        {concern && (
           <ContentItem label="헤어 고민">
-            <p className="typo-body-2-long-regular text-label-info">{hairConcern}</p>
+            <p className="typo-body-2-long-regular text-label-info">{concern}</p>
           </ContentItem>
         )}
         {myImageUrls && (
