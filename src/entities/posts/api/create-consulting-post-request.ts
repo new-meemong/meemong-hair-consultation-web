@@ -6,6 +6,7 @@ export type CreateConsultingPostRequest = {
   title: string;
   content?: string;
   hairConcern: ValueOf<typeof HAIR_CONCERN_OPTION_LABEL>;
+  hairConcernDetail?: string;
   hasNoRecentTreatment: boolean;
   skinTone?: ValueOf<typeof SKIN_TONE_OPTION_LABEL>;
   treatments?: {

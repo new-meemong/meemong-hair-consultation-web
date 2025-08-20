@@ -72,6 +72,8 @@ export function useCreateConsultingPost() {
       title: createTitle(data),
       content: data.content,
       hairConcern: HAIR_CONCERN_OPTION_LABEL[data.concern.value],
+      hairConcernDetail:
+        data.concern.value === HAIR_CONCERN_OPTION_VALUE.ETC ? data.concern.additional : undefined,
       hasNoRecentTreatment: data.treatments === null,
       skinTone: data.skinTone ? SKIN_TONE_OPTION_LABEL[data.skinTone] : undefined,
       treatments: data.treatments?.map(({ name, date }) => ({
