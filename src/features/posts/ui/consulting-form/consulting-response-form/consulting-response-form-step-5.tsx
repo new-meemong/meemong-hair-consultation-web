@@ -31,10 +31,16 @@ export default function ConsultingResponseFormStep5() {
     const newImages = [...currentImages];
     newImages.splice(index, 1);
 
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option5, {
-      images: newImages,
-      description: currentOptionValue?.description,
-    });
+    setValue(
+      CONSULTING_RESPONSE_FORM_FIELD_NAME.option5,
+      {
+        images: newImages,
+        description: currentOptionValue?.description,
+      },
+      {
+        shouldDirty: true,
+      },
+    );
   };
 
   return (
