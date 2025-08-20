@@ -7,8 +7,8 @@ import MultiStepForm from '@/shared/ui/multi-step-form';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
-import ConsultingResponseFormStep7 from './consulting-response-form-step-7';
 import ConsultingResponseFormStepBangsRecommendation from './consulting-response-form-step-bangs-recommendation';
+import ConsultingResponseFormStepComment from './consulting-response-form-step-comment';
 import ConsultingResponseFormStepDamageLevel from './consulting-response-form-step-damage-level';
 import ConsultingResponseFormStepFaceShape from './consulting-response-form-step-face-shape';
 import ConsultingResponseFormStepHairType from './consulting-response-form-step-hair-type';
@@ -53,10 +53,10 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     children: <ConsultingResponseFormStepTreatments />,
   },
   {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option7,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.COMMENT,
     question: '컨설팅에 대한 코멘트를 작성하세요',
     required: false,
-    children: <ConsultingResponseFormStep7 />,
+    children: <ConsultingResponseFormStepComment />,
   },
 ];
 

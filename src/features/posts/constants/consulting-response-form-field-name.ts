@@ -5,5 +5,5 @@ export const CONSULTING_RESPONSE_FORM_FIELD_NAME = {
   BANGS_RECOMMENDATION: 'bangsRecommendation',
   STYLE: 'style',
   TREATMENTS: 'treatments',
-  option7: 'option7',
+  COMMENT: 'comment',
 } as const;

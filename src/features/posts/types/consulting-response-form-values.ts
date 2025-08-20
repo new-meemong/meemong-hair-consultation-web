@@ -50,7 +50,7 @@ export const consultingResponseFormSchema = z.object({
       maxPrice: z.number(),
     }),
   ),
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.option7]: z.string().optional(),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.COMMENT]: z.string().optional(),
 });
 
 export type ConsultingResponseFormValues = z.infer<typeof consultingResponseFormSchema>;
