@@ -39,6 +39,7 @@ export const getDefaultUserData = (user: User): UserData => {
     hasSeenCreatePostGuide: false,
     hasSeenDesignerOnboardingGuide: false,
     [USER_WRITING_CONTENT_KEYS.consultingPost]: null,
+    [USER_WRITING_CONTENT_KEYS.consultingResponse]: null,
   };
 };
 

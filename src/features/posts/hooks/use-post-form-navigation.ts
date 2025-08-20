@@ -58,7 +58,6 @@ export default function usePostFormNavigation({
     setInitialize(true);
   }, [hasSavedConsultingPost, showReloadConsultingPostModal, initialize]);
 
-  console.log('method.formState.isDirty', method.formState.isDirty);
   const handleBackClick = useCallback(() => {
     if (selectedTab === POST_TAB_VALUE.CONSULTING) {
       if (savedContent || method.formState.isDirty) {
