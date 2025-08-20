@@ -1,4 +1,4 @@
-import { FormProvider, useForm } from 'react-hook-form';
+import { type UseFormReturn } from 'react-hook-form';
 
 import type { FormStep } from '@/shared/type/form-step';
 import type { KeyOf } from '@/shared/type/types';
@@ -60,19 +60,11 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
   },
 ];
 
-export default function ConsultingResponseForm() {
-  const method = useForm<ConsultingResponseFormValues>({
-    defaultValues: {
-      [CONSULTING_RESPONSE_FORM_FIELD_NAME.option3]: 1,
-      [CONSULTING_RESPONSE_FORM_FIELD_NAME.option5]: {
-        images: [],
-        description: '',
-      },
-    },
-  });
-
-  console.log('method.getValues()', method.getValues());
-
+export default function ConsultingResponseForm({
+  method,
+}: {
+  method: UseFormReturn<ConsultingResponseFormValues>;
+}) {
   const canMoveNext = (name: KeyOf<ConsultingResponseFormValues>) => {
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.option1) {
       const value = method.getValues(name);
@@ -98,13 +90,11 @@ export default function ConsultingResponseForm() {
   };
 
   return (
-    <FormProvider {...method}>
-      <MultiStepForm
-        steps={CONSULTING_RESPONSE_FORM_STEPS}
-        canMoveNext={canMoveNext}
-        onSubmit={submit}
-        lastStepButtonLabel="보내기"
-      />
-    </FormProvider>
+    <MultiStepForm
+      steps={CONSULTING_RESPONSE_FORM_STEPS}
+      canMoveNext={canMoveNext}
+      onSubmit={submit}
+      lastStepButtonLabel="보내기"
+    />
   );
 }
