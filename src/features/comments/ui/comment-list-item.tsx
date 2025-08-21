@@ -41,11 +41,12 @@ export default function CommentListItem({
 }: CommentListItemProps) {
   const { user } = useAuthContext();
   const { push } = useRouterWithUser();
-  const { isConsultingPost } = usePostDetail();
+  const { isConsultingPost, postDetail } = usePostDetail();
 
   const { isReply, content, isVisibleToModel, createdAt, user: author } = comment;
 
-  const isWriter = author.userId === user?.id;
+  const isPostWriter = postDetail.hairConsultPostingCreateUserId === user.id;
+  const isCommentWriter = author.userId === user.id;
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -69,16 +70,16 @@ export default function CommentListItem({
   };
 
   const getMoreOptions = () => {
-    if (isWriter) {
+    if (isCommentWriter) {
       return [moreOption[MORE_ACTION.EDIT], moreOption[MORE_ACTION.DELETE]];
     }
     return [moreOption[MORE_ACTION.REPORT]];
   };
 
-  const isSecret = !isWriter && isVisibleToModel;
+  const isSecret = !isPostWriter && !isCommentWriter && isVisibleToModel;
 
   const handleConsultingResponseClick = () => {
-    push(ROUTES.POSTS_CONSULTING_RESPONSE(comment.id.toString()));
+    push(ROUTES.POSTS_CONSULTING_RESPONSE(postDetail.id.toString()));
   };
 
   return (
