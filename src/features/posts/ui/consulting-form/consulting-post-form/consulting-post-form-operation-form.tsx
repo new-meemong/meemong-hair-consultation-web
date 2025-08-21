@@ -104,11 +104,11 @@ export default function ConsultingPostFormOperationForm() {
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="예)전체탈색, 블랙염색 등"
+          placeholder="예) 전체탈색, 블랙염색 등"
           className="typo-body-2-regular h-9"
         />
       </FormItem>
-      <FormItem hasUnderline label="시술시점">
+      <FormItem hasUnderline label="시술 시점">
         <div
           onClick={handleDateClick}
           className="flex items-center justify-between cursor-pointer h-9"
@@ -119,7 +119,7 @@ export default function ConsultingPostFormOperationForm() {
               date ? 'text-label-default' : 'text-label-placeholder',
             )}
           >
-            {date ? format(date, 'yyyy/MM') : '해당 시술을 한 시점을 대략적으로 선택해주세요'}
+            {date ? format(date, 'yyyy/MM') : '시술 시점을 선택해주세요'}
           </span>
         </div>
       </FormItem>

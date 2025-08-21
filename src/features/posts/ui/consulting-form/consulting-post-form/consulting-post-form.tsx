@@ -25,13 +25,14 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
-    question: '최근 2년 내 받은 시술을 입력하세요',
+    question: '최근 받은 헤어시술을 알려주세요',
+    description: '탈색, 블랙염색 등 중요 시술은 2~3년 전 이력도 작성해주세요',
     required: true,
     children: <ConsultingPostFormStepTreatments />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES,
-    question: '내 모습을 보여주세요',
+    question: '최근 내 모습을 보여주세요',
     description: '올리신 사진은 디자이너들에게만 공개되며, 모델은 볼 수 없습니다.',
     required: true,
     children: <ConsultingPostFormStepMyImages />,
