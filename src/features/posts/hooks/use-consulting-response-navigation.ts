@@ -1,26 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import type { UseFormReturn } from 'react-hook-form';
-
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
 import type { ConsultingResponseFormValues } from '../types/consulting-response-form-values';
+import type { WritingStep } from '../types/user-writing-content';
 
 import useShowLeaveCreateConsultingResponseModal from './use-show-leave-create-consulting-response-modal';
 import useShowReloadConsultingResponseModal from './use-show-reload-consulting-response-modal';
 
 export default function useConsultingResponseNavigation({
-  method,
+  onSavedContentReload,
 }: {
-  method: UseFormReturn<ConsultingResponseFormValues>;
+  onSavedContentReload: (savedContent: WritingStep<ConsultingResponseFormValues>) => void;
 }) {
   const [initialize, setInitialize] = useState(false);
 
   const { back } = useRouterWithUser();
-
-  const { isDirty } = method.formState;
 
   const { getSavedContent, saveContent } = useWritingContent(
     USER_WRITING_CONTENT_KEYS.consultingResponse,
@@ -31,29 +28,28 @@ export default function useConsultingResponseNavigation({
 
   const showLeaveCreateConsultingResponseModal = useShowLeaveCreateConsultingResponseModal();
   const showReloadConsultingResponseModal = useShowReloadConsultingResponseModal({
-    onPositive: () => {
-      if (!savedContent) return;
-
-      method.reset(savedContent);
-    },
+    onPositive: () => onSavedContentReload(savedContent),
     onNegative: () => {
       saveContent(null);
     },
   });
 
-  const handleBackClick = useCallback(() => {
-    if (savedContent || isDirty) {
-      showLeaveCreateConsultingResponseModal({
-        onClose: () => {
-          back();
-          saveContent(method.getValues());
-        },
-      });
-      return;
-    }
+  const leaveForm = useCallback(
+    (writingContent: WritingStep<ConsultingResponseFormValues>, isDirty: boolean) => {
+      if (savedContent || isDirty) {
+        showLeaveCreateConsultingResponseModal({
+          onClose: () => {
+            back();
+            saveContent(writingContent);
+          },
+        });
+        return;
+      }
 
-    back();
-  }, [back, method, saveContent, savedContent, showLeaveCreateConsultingResponseModal]);
+      back();
+    },
+    [back, saveContent, savedContent, showLeaveCreateConsultingResponseModal],
+  );
 
   useEffect(() => {
     if (hasSavedContent && !initialize) {
@@ -62,5 +58,5 @@ export default function useConsultingResponseNavigation({
     setInitialize(true);
   }, [hasSavedContent, showReloadConsultingResponseModal, initialize]);
 
-  return { handleBackClick };
+  return { leaveForm };
 }

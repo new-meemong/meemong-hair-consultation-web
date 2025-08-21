@@ -2,17 +2,16 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import Image from 'next/image';
 
-import { FACE_TYPE_OPTIONS, type FACE_TYPE } from '@/features/posts/constants/face-type';
-import type { FaceTypeOption } from '@/features/posts/types/face-type';
+import { FACE_TYPE_OPTIONS, type FACE_SHAPE } from '@/features/posts/constants/face-shape';
+import type { FaceShapeOption } from '@/features/posts/types/face-shape';
 import { cn } from '@/lib/utils';
 import type { ValueOf } from '@/shared/type/types';
 
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
-
 type FaceTypeOptionProps = {
-  option: FaceTypeOption;
+  option: FaceShapeOption;
   selected: boolean;
   onClick: () => void;
 };
@@ -49,16 +48,16 @@ function FaceTypeOption({ option, selected, onClick }: FaceTypeOptionProps) {
   );
 }
 
-export default function ConsultingResponseFormStep1() {
+export default function ConsultingResponseFormStepFaceShape() {
   const { control, setValue } = useFormContext<ConsultingResponseFormValues>();
 
   const selectedFaceType = useWatch({
     control,
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option1,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE,
   });
 
-  const handleSelect = (faceType: ValueOf<typeof FACE_TYPE>) => {
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option1, faceType, { shouldDirty: true });
+  const handleSelect = (faceType: ValueOf<typeof FACE_SHAPE>) => {
+    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE, faceType, { shouldDirty: true });
   };
 
   return (

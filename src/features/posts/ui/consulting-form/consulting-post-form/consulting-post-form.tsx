@@ -64,10 +64,16 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
 ];
 
 type ConsultingPostFormProps = {
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
   onSubmit: (values: ConsultingPostFormValues) => void;
 };
 
-export default function ConsultingPostForm({ onSubmit }: ConsultingPostFormProps) {
+export default function ConsultingPostForm({
+  currentStep,
+  setCurrentStep,
+  onSubmit,
+}: ConsultingPostFormProps) {
   const method = useFormContext<ConsultingPostFormValues>();
 
   const canMoveNext = (name: KeyOf<ConsultingPostFormValues>) => {
@@ -94,6 +100,8 @@ export default function ConsultingPostForm({ onSubmit }: ConsultingPostFormProps
 
   return (
     <MultiStepForm
+      currentStep={currentStep}
+      setCurrentStep={setCurrentStep}
       steps={CONSULTING_POST_FORM_STEPS}
       canMoveNext={canMoveNext}
       onSubmit={onSubmit}

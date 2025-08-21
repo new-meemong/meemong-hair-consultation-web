@@ -10,7 +10,7 @@ import ConsultingFormOptionList from '../consulting-form-option-list';
 
 import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
 
-export default function ConsultingResponseFormStep4() {
+export default function ConsultingResponseFormStepBangsRecommendation() {
   const { postDetail } = usePostDetail();
 
   const isMale = isUserMale(postDetail.hairConsultPostingCreateUserSex);
@@ -21,22 +21,26 @@ export default function ConsultingResponseFormStep4() {
 
   const formValue = useWatch({
     control,
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option4,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION,
   });
 
   const needStoreConsulting = formValue === null;
 
   const handleNeedStoreConsultingChange = () => {
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option4, needStoreConsulting ? undefined : null, {
-      shouldDirty: true,
-    });
+    setValue(
+      CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION,
+      needStoreConsulting ? undefined : null,
+      {
+        shouldDirty: true,
+      },
+    );
   };
 
   return (
     <div className="flex flex-col gap-7">
       <ConsultingFormOptionList
         options={options}
-        name={CONSULTING_RESPONSE_FORM_FIELD_NAME.option4}
+        name={CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION}
       />
       <ConsultingResponseFormOptionNeedConsultation
         value={needStoreConsulting}

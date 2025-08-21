@@ -9,7 +9,6 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
-import { HAIR_CONCERN_OPTION_VALUE } from '../constants/hair-concern-option';
 import {
   consultingPostFormSchema,
   type ConsultingPostFormValues,
@@ -18,10 +17,6 @@ import {
 import { useCreateConsultingPost } from './use-create-consulting-post';
 
 const DEFAULT_FORM_VALUE = {
-  [CONSULTING_POST_FORM_FIELD_NAME.CONCERN]: {
-    value: HAIR_CONCERN_OPTION_VALUE.DESIGN_POSSIBLE,
-    additional: '',
-  },
   [CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS]: [],
   [CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES]: [],
   [CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES]: {

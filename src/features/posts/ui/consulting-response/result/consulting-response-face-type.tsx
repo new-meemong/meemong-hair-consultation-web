@@ -1,12 +1,12 @@
 import Image from 'next/image';
 
-import { FACE_TYPE, FACE_TYPE_OPTION } from '../../../constants/face-type';
+import { FACE_SHAPE, FACE_SHAPE_OPTION } from '../../../constants/face-shape';
 import ConsultingResponseItem from '../consulting-response-item';
 
 export default function ConsultingResponseFaceType() {
-  const currentFaceType = FACE_TYPE.OVAL;
+  const currentFaceType = FACE_SHAPE.OVAL;
 
-  const { label, description, selectedImage } = FACE_TYPE_OPTION[currentFaceType];
+  const { label, description, selectedImage } = FACE_SHAPE_OPTION[currentFaceType];
 
   return (
     <ConsultingResponseItem

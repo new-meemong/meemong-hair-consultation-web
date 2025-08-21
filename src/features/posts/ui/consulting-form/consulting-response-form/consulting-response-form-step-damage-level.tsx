@@ -6,24 +6,24 @@ import ConsultingHairCondition from '../../consulting-hair-condition';
 
 import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
 
-export default function ConsultingResponseFormStep3() {
+export default function ConsultingResponseFormStepDamageLevel() {
   const { control, setValue } = useFormContext<ConsultingResponseFormValues>();
 
   const formValue = useWatch({
     control,
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option3,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL,
   });
 
   const needStoreConsulting = formValue === null;
 
   const handleNeedStoreConsultingChange = () => {
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option3, needStoreConsulting ? 1 : null, {
+    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL, needStoreConsulting ? 1 : null, {
       shouldDirty: true,
     });
   };
 
   const handleProgressChange = (value: number) => {
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option3, value, {
+    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL, value, {
       shouldDirty: true,
     });
   };

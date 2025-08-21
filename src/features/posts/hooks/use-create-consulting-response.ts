@@ -1,0 +1,50 @@
+import type { CreateConsultingResponseRequest } from '@/entities/posts/api/create-consulting-response-request';
+
+import useCreateConsultingResponseMutation from '../api/use-create-consulting-response-mutation';
+import useUploadPostImageMutation from '../api/use-upload-post-image';
+import { BANG_STYLE_LABEL } from '../constants/bang-style';
+import { FACE_SHAPE_LABEL } from '../constants/face-shape';
+import { HAIR_TYPE_LABEL } from '../constants/hair-type';
+import type { ConsultingResponseFormValues } from '../types/consulting-response-form-values';
+
+export default function useCreateConsultingResponse(hairConsultPostingId: string) {
+  const { mutateAsync: uploadImages, isPending: isUploadingImages } = useUploadPostImageMutation();
+  const { mutate: createConsultingResponse, isPending: isCreatingConsultingResponse } =
+    useCreateConsultingResponseMutation(hairConsultPostingId);
+
+  const handleCreateConsultingResponse = async (
+    data: ConsultingResponseFormValues,
+    { onSuccess }: { onSuccess: () => void },
+  ) => {
+    const styleImageUrls = await uploadImages(data.style.images);
+
+    const request: CreateConsultingResponseRequest = {
+      faceShape: FACE_SHAPE_LABEL[data.faceShape],
+      // TODO: 매장상담이 필요해요 옵션 필요
+      hairType: data.hairType ? HAIR_TYPE_LABEL[data.hairType] : undefined,
+      damageLevel: data.damageLevel ?? undefined,
+      bangsRecommendation: data.bangsRecommendation
+        ? BANG_STYLE_LABEL[data.bangsRecommendation]
+        : '모두 다 잘 어울려요',
+      style: {
+        images: styleImageUrls.dataList.map((image) => image.imageURL),
+        description: data.style.description ?? '',
+      },
+      treatments: data.treatments.map((treatment) => ({
+        treatmentName: treatment.operationName,
+        minPrice: treatment.minPrice,
+        maxPrice: treatment.maxPrice,
+      })),
+      comment: data.comment,
+    };
+
+    createConsultingResponse(request, {
+      onSuccess,
+    });
+  };
+
+  return {
+    handleCreateConsultingResponse,
+    isPending: isUploadingImages || isCreatingConsultingResponse,
+  };
+}
