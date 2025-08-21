@@ -5,7 +5,7 @@ import type { ValueOf } from '@/shared/type/types';
 
 import type { CONSULTING_TYPE } from '../constants/consulting-type';
 
-type Treatment = {
+export type Treatment = {
   treatmentName: string;
   treatmentDate: string;
 };

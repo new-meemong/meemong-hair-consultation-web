@@ -64,7 +64,11 @@ export default function CreateConsultingPostPage() {
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
           />
-          <ConsultingResponseSidebar isOpen={showedSidebar} onClose={handleSidebarButtonClick} />
+          <ConsultingResponseSidebar
+            isOpen={showedSidebar}
+            onClose={handleSidebarButtonClick}
+            postId={postId.toString()}
+          />
           <div className="absolute bottom-25.5 right-5">
             <ConsultingResponseSidebarButton onClick={handleSidebarButtonClick} />
           </div>
