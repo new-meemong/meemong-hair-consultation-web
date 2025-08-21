@@ -69,7 +69,7 @@ export default function CreateConsultingPostPage() {
             onClose={handleSidebarButtonClick}
             postId={postId.toString()}
           />
-          <div className="absolute bottom-25.5 right-5">
+          <div className="absolute bottom-26 right-5">
             <ConsultingResponseSidebarButton onClick={handleSidebarButtonClick} />
           </div>
         </FormProvider>

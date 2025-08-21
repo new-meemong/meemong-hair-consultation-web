@@ -1,11 +1,13 @@
 import { createContext, useContext, type ReactNode } from 'react';
 
+import { isConsultingPost } from '@/entities/posts/lib/consulting-type';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 
 import useGetPostDetail from '../api/use-get-post-detail';
 
 type PostDetailContextValue = {
   postDetail: PostDetail;
+  isConsultingPost: boolean;
 };
 
 const PostDetailContext = createContext<PostDetailContextValue | null>(null);
@@ -22,7 +24,13 @@ export function PostDetailProvider({ children, postId }: PostDetailProviderProps
 
   if (!postDetail) return null;
 
-  return <PostDetailContext.Provider value={{ postDetail }}>{children}</PostDetailContext.Provider>;
+  const isConsulting = isConsultingPost(postDetail);
+
+  return (
+    <PostDetailContext.Provider value={{ postDetail, isConsultingPost: isConsulting }}>
+      {children}
+    </PostDetailContext.Provider>
+  );
 }
 
 export function usePostDetail() {

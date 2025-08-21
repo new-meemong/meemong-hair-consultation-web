@@ -1,25 +1,22 @@
 import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
-import { isConsultingPost } from '@/entities/posts/lib/consulting-type';
-import type { PostDetail } from '@/entities/posts/model/post-detail';
 import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
 import { LikeButton } from '@/features/likes/ui/like-button';
 import { Separator } from '@/shared/ui';
 import ActionItem from '@/shared/ui/action-item';
 
+import { usePostDetail } from '../../context/post-detail-context';
+
 import PostDetailConsultingContent from './post-detail-consulting-content';
 import PostDetailContent from './post-detail-content';
 
-type PostDetailItemProps = {
-  postDetail: PostDetail;
-};
-
-function PostDetailItem({ postDetail }: PostDetailItemProps) {
+function PostDetailItem() {
+  const { postDetail, isConsultingPost } = usePostDetail();
   const { id, likeCount, commentCount, isFavorited } = postDetail;
 
   return (
     <>
-      {isConsultingPost(postDetail) ? (
+      {isConsultingPost ? (
         <PostDetailConsultingContent postDetail={postDetail} />
       ) : (
         <PostDetailContent postDetail={postDetail} />
