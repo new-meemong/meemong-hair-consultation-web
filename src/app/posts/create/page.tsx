@@ -1,12 +1,16 @@
 'use client';
 
+import { useState } from 'react';
+
 import { FormProvider } from 'react-hook-form';
 
 import { POST_TABS, POST_TAB_VALUE } from '@/features/posts/constants/post-tabs';
 import useConsultingPostForm from '@/features/posts/hooks/use-consulting-post-form';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
 import usePostFormNavigation from '@/features/posts/hooks/use-post-form-navigation';
+import type { ConsultingPostFormValues } from '@/features/posts/types/consulting-post-form-values';
 import type { PostFormValues } from '@/features/posts/types/post-form-values';
+import type { WritingStep } from '@/features/posts/types/user-writing-content';
 import ConsultingPostForm from '@/features/posts/ui/consulting-form/consulting-post-form/consulting-post-form';
 import PostForm from '@/features/posts/ui/post-form/post-form';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
@@ -23,11 +27,40 @@ export default function CreatePostPage() {
   const { replace } = useRouterWithUser();
   const { showSnackBar } = useOverlayContext();
 
+  const [currentStep, setCurrentStep] = useState(1);
+
   const { method, submit: submitConsultingForm } = useConsultingPostForm();
 
-  const { selectedTab, handleBackClick, handleTabChange } = usePostFormNavigation({
-    method,
+  const { isDirty } = method.formState;
+
+  const handlePageReload = (savedContent: WritingStep<ConsultingPostFormValues>) => {
+    if (!savedContent) return;
+
+    setCurrentStep(savedContent.step);
+    method.reset(savedContent.content);
+  };
+
+  const { selectedTab, leaveForm, changeTab } = usePostFormNavigation({
+    onSavedContentReload: handlePageReload,
   });
+
+  const handleBackClick = () => {
+    const writingContent: WritingStep<ConsultingPostFormValues> = {
+      step: currentStep,
+      content: method.getValues(),
+    };
+
+    leaveForm(writingContent, isDirty);
+  };
+
+  const handleTabChange = (type: ValueOf<typeof POST_TAB_VALUE>) => {
+    const writingContent: WritingStep<ConsultingPostFormValues> = {
+      step: currentStep,
+      content: method.getValues(),
+    };
+
+    changeTab(type, writingContent);
+  };
 
   const { handleCreatePost, isPending } = useCreatePost();
 
@@ -46,7 +79,13 @@ export default function CreatePostPage() {
   const renderForm = (type: ValueOf<typeof POST_TAB_VALUE>) => {
     switch (type) {
       case POST_TAB_VALUE.CONSULTING:
-        return <ConsultingPostForm onSubmit={submitConsultingForm} />;
+        return (
+          <ConsultingPostForm
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            onSubmit={submitConsultingForm}
+          />
+        );
       case POST_TAB_VALUE.GENERAL:
         return <PostForm onSubmit={handleSubmit} isPending={isPending} />;
       default:

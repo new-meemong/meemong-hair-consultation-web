@@ -67,11 +67,15 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
 type ConsultingResponseFormProps = {
   method: UseFormReturn<ConsultingResponseFormValues>;
   hairConsultPostingId: string;
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
 };
 
 export default function ConsultingResponseForm({
   method,
   hairConsultPostingId,
+  currentStep,
+  setCurrentStep,
 }: ConsultingResponseFormProps) {
   const { showSnackBar } = useOverlayContext();
   const { replace } = useRouterWithUser();
@@ -114,6 +118,8 @@ export default function ConsultingResponseForm({
 
   return (
     <MultiStepForm
+      currentStep={currentStep}
+      setCurrentStep={setCurrentStep}
       steps={CONSULTING_RESPONSE_FORM_STEPS}
       canMoveNext={canMoveNext}
       onSubmit={submit}

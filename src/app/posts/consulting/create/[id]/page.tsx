@@ -9,6 +9,8 @@ import { useParams } from 'next/navigation';
 import { PostDetailProvider } from '@/features/posts/context/post-detail-context';
 import useConsultingResponseForm from '@/features/posts/hooks/use-consulting-response-form';
 import useConsultingResponseNavigation from '@/features/posts/hooks/use-consulting-response-navigation';
+import type { ConsultingResponseFormValues } from '@/features/posts/types/consulting-response-form-values';
+import type { WritingStep } from '@/features/posts/types/user-writing-content';
 import ConsultingResponseForm from '@/features/posts/ui/consulting-form/consulting-response-form/consulting-response-form';
 import ConsultingResponseSidebarButton from '@/features/posts/ui/consulting-form/consulting-response-form/consulting-response-sidebar/consulting-response-sidebar-button';
 import { SiteHeader } from '@/widgets/header';
@@ -19,9 +21,29 @@ export default function CreateConsultingPostPage() {
 
   const { method } = useConsultingResponseForm();
 
-  const { handleBackClick } = useConsultingResponseNavigation({
-    method,
+  const [currentStep, setCurrentStep] = useState(1);
+
+  const handlePageReload = (savedContent: WritingStep<ConsultingResponseFormValues>) => {
+    if (!savedContent) return;
+
+    setCurrentStep(savedContent.step);
+    method.reset(savedContent.content);
+  };
+
+  const { isDirty } = method.formState;
+
+  const { leaveForm } = useConsultingResponseNavigation({
+    onSavedContentReload: handlePageReload,
   });
+
+  const handleBackClick = () => {
+    const writingContent: WritingStep<ConsultingResponseFormValues> = {
+      step: currentStep,
+      content: method.getValues(),
+    };
+
+    leaveForm(writingContent, isDirty);
+  };
 
   const [showedSidebar, setShowedSidebar] = useState(false);
 
@@ -36,7 +58,12 @@ export default function CreateConsultingPostPage() {
       <PostDetailProvider postId={postId.toString()}>
         <FormProvider {...method}>
           <SiteHeader title="컨설팅 답변 작성" showBackButton onBackClick={handleBackClick} />
-          <ConsultingResponseForm method={method} hairConsultPostingId={postId.toString()} />
+          <ConsultingResponseForm
+            method={method}
+            hairConsultPostingId={postId.toString()}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+          />
           <ConsultingResponseSidebar isOpen={showedSidebar} onClose={handleSidebarButtonClick} />
           <div className="absolute bottom-25.5 right-5">
             <ConsultingResponseSidebarButton onClick={handleSidebarButtonClick} />
