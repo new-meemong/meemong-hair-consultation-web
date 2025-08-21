@@ -3,10 +3,9 @@ import type { ReactNode } from 'react';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/lib/utils';
-import type { ValueOf } from '@/shared/type/types';
 
 import { HAIR_CONCERN_OPTION } from '../../constants/hair-concern-option';
-import { SKIN_TONE_OPTION_LABEL, SKIN_TONE_OPTION_VALUE } from '../../constants/skin-tone';
+import getSkinToneValue from '../../lib/get-skin-tone-value';
 import ConsultingInputResultListItem from '../consulting-input-result-list-item';
 import SkinColorLabel from '../skin-color-label';
 
@@ -93,9 +92,7 @@ export default function PostDetailConsultingContent({
   const isWriter = authorId === user.id;
   const onlyShowToDesigner = !isWriter || isUserDesigner;
 
-  const skinToneType = Object.entries(SKIN_TONE_OPTION_LABEL).find(
-    ([, label]) => label === skinTone,
-  )?.[0] as ValueOf<typeof SKIN_TONE_OPTION_VALUE>;
+  const skinToneValue = getSkinToneValue(skinTone);
 
   const concern = hairConcern === HAIR_CONCERN_OPTION.etc.label ? hairConcernDetail : hairConcern;
 
@@ -145,9 +142,9 @@ export default function PostDetailConsultingContent({
             )}
           </ContentItem>
         )}
-        {skinToneType && (
+        {skinToneValue && (
           <ContentItem label="피부톤" className="flex flex-row items-center justify-between">
-            <SkinColorLabel type={skinToneType} />
+            <SkinColorLabel type={skinToneValue} />
           </ContentItem>
         )}
         {content && (
