@@ -9,6 +9,7 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
+import { PostDetailProvider } from '@/features/posts/context/post-detail-context';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { Button } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
@@ -60,14 +61,14 @@ export default function PostDetailPage() {
 
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
-      <SiteHeader
-        title="헤어상담"
-        showBackButton
-        rightComponent={isWriter && <PostDetailMoreButton postId={postId.toString()} />}
-      />
-      <div className="flex-1 overflow-y-auto" onClick={handleContainerClick}>
-        {postDetail && (
-          <PostDetailContainer postDetail={postDetail}>
+      <PostDetailProvider postId={postId.toString()}>
+        <SiteHeader
+          title="헤어상담"
+          showBackButton
+          rightComponent={isWriter && <PostDetailMoreButton postId={postId.toString()} />}
+        />
+        <div className="flex-1 overflow-y-auto" onClick={handleContainerClick}>
+          <PostDetailContainer>
             <CommentContainer
               postId={postId.toString()}
               commentFormState={commentFormState}
@@ -77,30 +78,30 @@ export default function PostDetailPage() {
               }}
             />
           </PostDetailContainer>
-        )}
-      </div>
+        </div>
 
-      {canWriteConsultingResponse ? (
-        <div className="bg-white shadow-upper px-5 py-3">
-          {/* TODO: 이어서 작성하기 기능 추가 */}
-          <Button size="lg" className="w-full" onClick={handleWriteConsultingResponseClick}>
-            컨설팅 답글 보내기
-          </Button>
-        </div>
-      ) : (
-        <div className="bg-white shadow-strong">
-          <div className="max-w-[600px] mx-auto">
-            <CommentForm
-              onSubmit={handlers.handleCommentFormSubmit}
-              isReply={isCommentFormReply}
-              commentId={commentFormState.commentId}
-              content={commentFormState.content}
-              isPending={isCommentCreating || isCommentUpdating}
-              textareaRef={textareaRef}
-            />
+        {canWriteConsultingResponse ? (
+          <div className="bg-white shadow-upper px-5 py-3">
+            {/* TODO: 이어서 작성하기 기능 추가 */}
+            <Button size="lg" className="w-full" onClick={handleWriteConsultingResponseClick}>
+              컨설팅 답글 보내기
+            </Button>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="bg-white shadow-strong">
+            <div className="max-w-[600px] mx-auto">
+              <CommentForm
+                onSubmit={handlers.handleCommentFormSubmit}
+                isReply={isCommentFormReply}
+                commentId={commentFormState.commentId}
+                content={commentFormState.content}
+                isPending={isCommentCreating || isCommentUpdating}
+                textareaRef={textareaRef}
+              />
+            </div>
+          </div>
+        )}
+      </PostDetailProvider>
     </div>
   );
 }
