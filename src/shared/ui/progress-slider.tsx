@@ -70,6 +70,7 @@ function SelectedProgressBar({ total, value }: { total: number; value: number })
       <div
         className={cn(
           'absolute left-0 top-0 h-full bg-label-default rounded-12 transition-all duration-300 ease-out',
+          value === 1 && 'hidden',
         )}
         style={{ width: getProgressLeft(value - 1, total) }}
       />
