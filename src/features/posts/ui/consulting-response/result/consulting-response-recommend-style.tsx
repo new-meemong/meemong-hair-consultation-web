@@ -1,21 +1,21 @@
 import Image from 'next/image';
 
+import type { ConsultingResponseStyle } from '@/entities/posts/model/consulting-response';
+
 import ConsultingResponseItem from '../consulting-response-item';
 
 type ConsultingResponseStyleProps = {
-  value: string | null;
-  images: string[] | null;
+  style: ConsultingResponseStyle;
 };
 
-export default function ConsultingResponseRecommendStyle({
-  value,
-  images,
-}: ConsultingResponseStyleProps) {
+export default function ConsultingResponseRecommendStyle({ style }: ConsultingResponseStyleProps) {
+  const { description, images } = style;
+
   return (
     <ConsultingResponseItem title="스타일 추천" content="어울리는 스타일을 디자이너가 추천했어요">
-      {value && (
+      {description && (
         <div className="typo-body-2-long-regular text-label-default whitespace-pre-line">
-          {value}
+          {description}
         </div>
       )}
       {images && (
