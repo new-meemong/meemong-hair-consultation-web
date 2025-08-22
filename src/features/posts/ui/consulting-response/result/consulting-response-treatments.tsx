@@ -1,35 +1,28 @@
+import type { ConsultingResponseTreatment } from '@/entities/posts/model/consulting-response';
+
 import ConsultingInputResultListItem from '../../consulting-input-result-list-item';
 import ConsultingResponseItem from '../consulting-response-item';
 
 type ConsultingResponsePriceProps = {
   designerName: string;
+  treatments: ConsultingResponseTreatment[];
 };
 
-export default function ConsultingResponsePrice({ designerName }: ConsultingResponsePriceProps) {
-  const prices = [
-    {
-      name: '레이어드 컷',
-      minPrice: 100000,
-      maxPrice: 200000,
-    },
-    {
-      name: '염색',
-      minPrice: 100000,
-      maxPrice: 200000,
-    },
-  ];
-
+export default function ConsultingResponseTreatments({
+  designerName,
+  treatments,
+}: ConsultingResponsePriceProps) {
   return (
     <ConsultingResponseItem
       title="시술 가격 견적"
       content={`${designerName} 디자이너님께 시술 받으면 이 정도 견적으로 예상할 수 있어요`}
     >
       <div className="flex flex-col gap-4">
-        {prices.map((price, index) => (
+        {treatments.map(({ treatmentName, minPrice, maxPrice }, index) => (
           <ConsultingInputResultListItem
-            key={`${price.name}-${price.minPrice}-${price.maxPrice}-${index}`}
-            name={price.name}
-            description={`${price.minPrice.toLocaleString()}원~${price.maxPrice.toLocaleString()}원`}
+            key={`${treatmentName}-${minPrice}-${maxPrice}-${index}`}
+            name={treatmentName}
+            description={`${minPrice.toLocaleString()}원~${maxPrice.toLocaleString()}원`}
           />
         ))}
       </div>
