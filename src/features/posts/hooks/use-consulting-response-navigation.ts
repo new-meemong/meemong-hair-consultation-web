@@ -19,12 +19,9 @@ export default function useConsultingResponseNavigation({
 
   const { back } = useRouterWithUser();
 
-  const { getSavedContent, saveContent } = useWritingContent(
+  const { savedContent, saveContent, hasSavedContent } = useWritingContent(
     USER_WRITING_CONTENT_KEYS.consultingResponse,
   );
-
-  const savedContent = getSavedContent();
-  const hasSavedContent = savedContent !== null;
 
   const showLeaveCreateConsultingResponseModal = useShowLeaveCreateConsultingResponseModal();
   const showReloadConsultingResponseModal = useShowReloadConsultingResponseModal({
@@ -61,5 +58,5 @@ export default function useConsultingResponseNavigation({
     setInitialize(true);
   }, [hasSavedContent, showReloadConsultingResponseModal, initialize]);
 
-  return { leaveForm };
+  return { leaveForm, hasSavedContent };
 }
