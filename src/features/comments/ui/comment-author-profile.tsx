@@ -3,12 +3,10 @@ import ProfileIcon from '@/assets/icons/profile.svg';
 import type { CommentUser } from '@/entities/comment/model/comment';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import useSendMessage from '@/features/chat/hook/use-send-message';
 import { useShowInvalidChatRequestSheet } from '@/features/chat/hook/use-show-invalid-chat-request-sheet';
-import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
-import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
+import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 
 type CommentAuthorProfileProps = {
   author: CommentUser;
@@ -26,12 +24,7 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
 
   const isCommentAuthorDesigner = author.role === USER_ROLE.DESIGNER;
 
-  const { findOrCreateChannel } = useHairConsultationChatChannelStore((state) => ({
-    findOrCreateChannel: state.findOrCreateChannel,
-  }));
-
   const showInvalidChatRequestBottomSheet = useShowInvalidChatRequestSheet();
-  const sendMessage = useSendMessage();
 
   const handleClick = async () => {
     if (isUserDesigner) {
@@ -41,33 +34,7 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
 
     if (!isCommentAuthorDesigner || isWriter) return;
 
-    const senderId = user.id.toString();
-    const receiverId = author.userId.toString();
-
-    // TODO: 앱 프로필 페이지로 이동하여 채팅 요청해야함
-    // goDesignerProfilePage(author.userId.toString());
-    try {
-      const { channelId, isCreated } = await findOrCreateChannel({
-        senderId,
-        receiverId,
-      });
-
-      if (!channelId) {
-        console.error('채널 생성 중 오류가 발생했습니다.');
-        return;
-      }
-
-      if (isCreated) {
-        await sendMessage({
-          channelId,
-          message: `헤어상담 채팅이 시작되었습니다.`,
-          messageType: HairConsultationChatMessageTypeEnum.SYSTEM,
-          receiverId,
-        });
-      }
-    } catch (error) {
-      console.error('요청 실패:', error);
-    }
+    goDesignerProfilePage(author.userId.toString());
   };
 
   return (
