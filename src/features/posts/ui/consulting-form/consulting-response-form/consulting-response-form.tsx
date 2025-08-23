@@ -103,7 +103,7 @@ export default function ConsultingResponseForm({
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION) {
       const value = method.getValues(name);
-      return value === null || value !== undefined;
+      return value !== undefined;
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE) {
       const value = method.getValues(name);
