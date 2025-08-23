@@ -16,7 +16,8 @@ export default function useCreateConsultingResponse(hairConsultPostingId: string
     data: ConsultingResponseFormValues,
     { onSuccess }: { onSuccess: () => void },
   ) => {
-    const styleImageUrls = await uploadImages(data.style.images);
+    const styleImageUrls =
+      data.style.images.length > 0 ? await uploadImages(data.style.images) : null;
 
     const request: CreateConsultingResponseRequest = {
       faceShape: FACE_SHAPE_LABEL[data.faceShape],
@@ -27,7 +28,7 @@ export default function useCreateConsultingResponse(hairConsultPostingId: string
         ? BANG_STYLE_LABEL[data.bangsRecommendation]
         : '모두 다 잘 어울려요',
       style: {
-        images: styleImageUrls.dataList.map((image) => image.imageURL),
+        images: styleImageUrls?.dataList.map((image) => image.imageURL) ?? [],
         description: data.style.description ?? '',
       },
       treatments: data.treatments.map((treatment) => ({
