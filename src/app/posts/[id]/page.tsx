@@ -12,9 +12,10 @@ import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { PostDetailProvider } from '@/features/posts/context/post-detail-context';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { Button } from '@/shared';
-import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import { USER_GUIDE_KEYS, USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import useWritingContent from '@/shared/hooks/use-writing-content';
 import { ROUTES } from '@/shared/lib/routes';
 import { CommentContainer } from '@/widgets/comments/ui/comment-container';
 import { SiteHeader } from '@/widgets/header';
@@ -57,6 +58,9 @@ export default function PostDetailPage() {
     [handlers],
   );
 
+  const { hasSavedContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.consultingResponse);
+  const writingResponseButtonText = hasSavedContent ? '이어서 작성하기' : '컨설팅 답글 작성하기';
+
   if (!postId) return null;
 
   return (
@@ -82,9 +86,8 @@ export default function PostDetailPage() {
 
         {canWriteConsultingResponse ? (
           <div className="bg-white shadow-upper px-5 py-3">
-            {/* TODO: 이어서 작성하기 기능 추가 */}
             <Button size="lg" className="w-full" onClick={handleWriteConsultingResponseClick}>
-              컨설팅 답글 보내기
+              {writingResponseButtonText}
             </Button>
           </div>
         ) : (
