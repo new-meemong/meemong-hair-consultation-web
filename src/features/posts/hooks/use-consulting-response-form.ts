@@ -11,9 +11,12 @@ const DEFAULT_FORM_VALUES: Partial<ConsultingResponseFormValues> = {
   },
 };
 
-export default function useConsultingResponseForm() {
+export default function useConsultingResponseForm({ postId }: { postId: string }) {
   const method = useForm<ConsultingResponseFormValues>({
-    defaultValues: DEFAULT_FORM_VALUES,
+    defaultValues: {
+      ...DEFAULT_FORM_VALUES,
+      [CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID]: postId,
+    },
   });
 
   return { method };

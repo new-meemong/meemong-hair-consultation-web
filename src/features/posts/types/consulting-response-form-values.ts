@@ -32,6 +32,7 @@ const BANG_TYLE_VALUES = [
 ] as const;
 
 export const consultingResponseFormSchema = z.object({
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID]: z.string(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE]: z.enum(FACE_SHAPE_VALUES),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE]: z.enum(HAIR_TYPE_VALUES).nullable().optional(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL]: z.number().nullable().optional(),

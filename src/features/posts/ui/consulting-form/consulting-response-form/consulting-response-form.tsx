@@ -66,22 +66,21 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
 
 type ConsultingResponseFormProps = {
   method: UseFormReturn<ConsultingResponseFormValues>;
-  hairConsultPostingId: string;
   currentStep: number;
   setCurrentStep: (step: number) => void;
 };
 
 export default function ConsultingResponseForm({
   method,
-  hairConsultPostingId,
   currentStep,
   setCurrentStep,
 }: ConsultingResponseFormProps) {
   const { showSnackBar } = useOverlayContext();
   const { replace } = useRouterWithUser();
 
-  const { handleCreateConsultingResponse, isPending } =
-    useCreateConsultingResponse(hairConsultPostingId);
+  const postId = method.getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID);
+
+  const { handleCreateConsultingResponse, isPending } = useCreateConsultingResponse(postId);
 
   const submit = (values: ConsultingResponseFormValues) => {
     handleCreateConsultingResponse(values, {
@@ -91,7 +90,7 @@ export default function ConsultingResponseForm({
           message: '컨설팅 답변을 보냈습니다!',
         });
 
-        replace(ROUTES.POSTS_DETAIL(hairConsultPostingId));
+        replace(ROUTES.POSTS_DETAIL(postId));
       },
     });
   };

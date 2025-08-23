@@ -23,9 +23,8 @@ export default function usePostFormNavigation({
 
   const [selectedTab, setSelectedTab] = usePostTab();
 
-  const { savedContent, saveContent, hasSavedContent } = useWritingContent(
-    USER_WRITING_CONTENT_KEYS.consultingPost,
-  );
+  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.consultingPost);
+  const hasSavedContent = savedContent !== null;
 
   const { back } = useRouterWithUser();
 

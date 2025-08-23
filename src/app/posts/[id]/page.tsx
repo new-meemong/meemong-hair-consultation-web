@@ -10,12 +10,12 @@ import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { PostDetailProvider } from '@/features/posts/context/post-detail-context';
+import useWritingConsultingResponse from '@/features/posts/hooks/use-writing-consulting-response';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { Button } from '@/shared';
-import { USER_GUIDE_KEYS, USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
+import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import useWritingContent from '@/shared/hooks/use-writing-content';
 import { ROUTES } from '@/shared/lib/routes';
 import { CommentContainer } from '@/widgets/comments/ui/comment-container';
 import { SiteHeader } from '@/widgets/header';
@@ -58,7 +58,8 @@ export default function PostDetailPage() {
     [handlers],
   );
 
-  const { hasSavedContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.consultingResponse);
+  const { hasSavedContent } = useWritingConsultingResponse(postId?.toString() ?? '');
+
   const writingResponseButtonText = hasSavedContent ? '이어서 작성하기' : '컨설팅 답글 작성하기';
 
   if (!postId) return null;

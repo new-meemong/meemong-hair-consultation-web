@@ -20,7 +20,6 @@ export default function useWritingContent<K extends KeyOf<UserWritingContent>>(k
   );
 
   const savedContent = getSavedContent();
-  const hasSavedContent = savedContent !== null && savedContent.step > 1;
 
-  return { saveContent, hasSavedContent, savedContent };
+  return { saveContent, savedContent };
 }

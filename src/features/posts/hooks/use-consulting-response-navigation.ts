@@ -1,33 +1,34 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import useWritingContent from '@/shared/hooks/use-writing-content';
 
 import type { ConsultingResponseFormValues } from '../types/consulting-response-form-values';
 import type { WritingStep } from '../types/user-writing-content';
 
 import useShowLeaveCreateConsultingResponseModal from './use-show-leave-create-consulting-response-modal';
 import useShowReloadConsultingResponseModal from './use-show-reload-consulting-response-modal';
+import useWritingConsultingResponse from './use-writing-consulting-response';
 
 export default function useConsultingResponseNavigation({
+  postId,
   onSavedContentReload,
 }: {
-  onSavedContentReload: (savedContent: WritingStep<ConsultingResponseFormValues>) => void;
+  postId: string;
+  onSavedContentReload: (savedContent: WritingStep<ConsultingResponseFormValues>[]) => void;
 }) {
   const [initialize, setInitialize] = useState(false);
 
   const { back } = useRouterWithUser();
 
-  const { savedContent, saveContent, hasSavedContent } = useWritingContent(
-    USER_WRITING_CONTENT_KEYS.consultingResponse,
-  );
+  const { savedContent, saveContent, hasSavedContent } = useWritingConsultingResponse(postId);
 
   const showLeaveCreateConsultingResponseModal = useShowLeaveCreateConsultingResponseModal();
   const showReloadConsultingResponseModal = useShowReloadConsultingResponseModal({
     onPositive: () => onSavedContentReload(savedContent),
     onNegative: () => {
-      saveContent(null);
+      const filteredContent = savedContent?.filter((content) => content?.content.postId !== postId);
+
+      saveContent(filteredContent ?? []);
     },
   });
 
@@ -40,7 +41,17 @@ export default function useConsultingResponseNavigation({
         showLeaveCreateConsultingResponseModal({
           onClose: () => {
             back();
-            saveContent(writingContent);
+            const savedItem = savedContent?.find((item) => item?.content.postId === postId);
+
+            if (savedItem) {
+              saveContent(
+                savedContent?.map((item) =>
+                  item?.content.postId === postId ? writingContent : item,
+                ),
+              );
+            } else {
+              saveContent([...(savedContent ?? []), writingContent]);
+            }
           },
         });
         return;
@@ -48,7 +59,7 @@ export default function useConsultingResponseNavigation({
 
       back();
     },
-    [back, saveContent, showLeaveCreateConsultingResponseModal],
+    [back, postId, saveContent, savedContent, showLeaveCreateConsultingResponseModal],
   );
 
   useEffect(() => {

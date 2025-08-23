@@ -19,20 +19,23 @@ import ConsultingResponseSidebar from '@/widgets/post/ui/consulting-response-sid
 export default function CreateConsultingPostPage() {
   const { id: postId } = useParams();
 
-  const { method } = useConsultingResponseForm();
+  const { method } = useConsultingResponseForm({ postId: postId?.toString() ?? '' });
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const handlePageReload = (savedContent: WritingStep<ConsultingResponseFormValues>) => {
-    if (!savedContent) return;
+  const handlePageReload = (savedContent: WritingStep<ConsultingResponseFormValues>[]) => {
+    const savedItem = savedContent.find((item) => item?.content.postId === postId);
 
-    setCurrentStep(savedContent.step);
-    method.reset(savedContent.content);
+    if (!savedItem) return;
+
+    setCurrentStep(savedItem.step);
+    method.reset(savedItem.content);
   };
 
   const { isDirty } = method.formState;
 
   const { leaveForm } = useConsultingResponseNavigation({
+    postId: postId?.toString() ?? '',
     onSavedContentReload: handlePageReload,
   });
 
@@ -62,7 +65,6 @@ export default function CreateConsultingPostPage() {
           <SiteHeader title="컨설팅 답변 작성" showBackButton onBackClick={handleBackClick} />
           <ConsultingResponseForm
             method={method}
-            hairConsultPostingId={postId.toString()}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
           />
