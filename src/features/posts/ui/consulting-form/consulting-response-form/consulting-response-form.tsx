@@ -107,7 +107,7 @@ export default function ConsultingResponseForm({
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE) {
       const value = method.getValues(name);
-      return value && value.images.length > 0 && !!value.description;
+      return value && (value.images.length > 0 || !!value.description);
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS) {
       const value = method.getValues(name);
