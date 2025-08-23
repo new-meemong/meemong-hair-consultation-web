@@ -17,6 +17,7 @@ export type Comment = {
   createdAt: string;
   user: CommentUser;
   answerId: number;
+  isConsultingAnswer: boolean;
 };
 
 export type CommentWithReplies = Comment & {

@@ -41,9 +41,16 @@ export default function CommentListItem({
 }: CommentListItemProps) {
   const { user } = useAuthContext();
   const { push } = useRouterWithUser();
-  const { isConsultingPost, postDetail } = usePostDetail();
+  const { postDetail } = usePostDetail();
 
-  const { isReply, content, isVisibleToModel, createdAt, user: author } = comment;
+  const {
+    isReply,
+    content,
+    isVisibleToModel,
+    createdAt,
+    user: author,
+    isConsultingAnswer,
+  } = comment;
 
   const isPostWriter = postDetail.hairConsultPostingCreateUserId === user.id;
   const isCommentWriter = author.userId === user.id;
@@ -124,7 +131,7 @@ export default function CommentListItem({
               <span className="typo-body-3-regular text-label-info">
                 {format(createdAt, 'MM/dd hh:mm')}
               </span>
-              {isConsultingPost && !isReply && (
+              {isConsultingAnswer && !isReply && (
                 <button
                   type="button"
                   className="w-full mt-1 py-3 px-4 flex items-center justify-between rounded-6 border-1 border-border-default typo-body-1-medium text-label-default"
