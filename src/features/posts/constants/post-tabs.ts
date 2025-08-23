@@ -1,19 +1,15 @@
+import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import type { Option } from '@/shared/type/option';
 import type { ValueOf } from '@/shared/type/types';
 
-export const POST_TAB_VALUE = {
-  CONSULTING: 'consulting',
-  GENERAL: 'general',
-} as const;
-
-const POST_TAB: Record<ValueOf<typeof POST_TAB_VALUE>, Option<ValueOf<typeof POST_TAB_VALUE>>> = {
-  [POST_TAB_VALUE.CONSULTING]: {
+const POST_TAB: Record<ValueOf<typeof CONSULT_TYPE>, Option<ValueOf<typeof CONSULT_TYPE>>> = {
+  [CONSULT_TYPE.CONSULTING]: {
     label: '헤어 컨설팅',
-    value: POST_TAB_VALUE.CONSULTING,
+    value: CONSULT_TYPE.CONSULTING,
   },
-  [POST_TAB_VALUE.GENERAL]: {
+  [CONSULT_TYPE.GENERAL]: {
     label: '일반 상담',
-    value: POST_TAB_VALUE.GENERAL,
+    value: CONSULT_TYPE.GENERAL,
   },
 };
 

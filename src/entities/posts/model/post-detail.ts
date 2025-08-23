@@ -3,7 +3,7 @@ import type { USER_SEX } from '@/entities/user/constants/user-sex';
 import type { SKIN_TONE_OPTION_LABEL } from '@/features/posts/constants/skin-tone';
 import type { ValueOf } from '@/shared/type/types';
 
-import type { CONSULTING_TYPE } from '../constants/consulting-type';
+import type { CONSULT_TYPE } from '../constants/consult-type';
 
 export type Treatment = {
   treatmentName: string;
@@ -32,7 +32,7 @@ export type PostDetail = {
   likeCount: number;
   commentCount: number;
   isPhotoVisibleToDesigner: boolean;
-  consultType: ValueOf<typeof CONSULTING_TYPE>;
+  consultType: ValueOf<typeof CONSULT_TYPE>;
   hairConsultPostingCreateUserName: string;
   hairConsultPostingCreateUserProfileImageUrl: string | null;
   hairConsultPostingCreateUserRegion: string | null;

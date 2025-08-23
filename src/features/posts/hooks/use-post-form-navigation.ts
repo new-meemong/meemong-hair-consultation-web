@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 import type { ValueOf } from '@/shared/type/types';
 
-import { POST_TAB_VALUE } from '../constants/post-tabs';
 import type { ConsultingPostFormValues } from '../types/consulting-post-form-values';
 import type { WritingStep } from '../types/user-writing-content';
 
@@ -33,7 +33,7 @@ export default function usePostFormNavigation({
   const hasSavedConsultingPost = savedContent !== null;
 
   const handleCloseReloadConsultingPostModal = () => {
-    setSelectedTab(POST_TAB_VALUE.GENERAL);
+    setSelectedTab(CONSULT_TYPE.GENERAL);
   };
 
   const showReloadConsultingPostModal = useShowReloadConsultingPostModal({
@@ -55,7 +55,7 @@ export default function usePostFormNavigation({
 
   const leaveForm = useCallback(
     (writingContent: WritingStep<ConsultingPostFormValues>, isDirty: boolean) => {
-      if (selectedTab === POST_TAB_VALUE.CONSULTING) {
+      if (selectedTab === CONSULT_TYPE.CONSULTING) {
         if (savedContent || isDirty) {
           showLeaveCreateConsultingPostModal({
             onClose: () => {
@@ -70,7 +70,7 @@ export default function usePostFormNavigation({
         return;
       }
 
-      if (selectedTab === POST_TAB_VALUE.GENERAL) {
+      if (selectedTab === CONSULT_TYPE.GENERAL) {
         showLeaveCreateGeneralPostModal();
         return;
       }
@@ -88,11 +88,8 @@ export default function usePostFormNavigation({
   );
 
   const changeTab = useCallback(
-    (
-      tab: ValueOf<typeof POST_TAB_VALUE>,
-      writingContent: WritingStep<ConsultingPostFormValues>,
-    ) => {
-      if (tab === POST_TAB_VALUE.GENERAL && hasSavedConsultingPost) {
+    (tab: ValueOf<typeof CONSULT_TYPE>, writingContent: WritingStep<ConsultingPostFormValues>) => {
+      if (tab === CONSULT_TYPE.GENERAL && hasSavedConsultingPost) {
         showLeaveCreateConsultingPostModal({
           onClose: () => {
             setSelectedTab(tab);
@@ -102,7 +99,7 @@ export default function usePostFormNavigation({
         return;
       }
 
-      if (tab === POST_TAB_VALUE.CONSULTING && hasSavedConsultingPost) {
+      if (tab === CONSULT_TYPE.CONSULTING && hasSavedConsultingPost) {
         showReloadConsultingPostModal({ onFinish: () => setSelectedTab(tab) });
         return;
       }
