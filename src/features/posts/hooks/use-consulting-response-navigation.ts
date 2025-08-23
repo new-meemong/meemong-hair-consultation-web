@@ -35,8 +35,11 @@ export default function useConsultingResponseNavigation({
   });
 
   const leaveForm = useCallback(
-    (writingContent: WritingStep<ConsultingResponseFormValues>, isDirty: boolean) => {
-      if (savedContent || isDirty) {
+    (
+      writingContent: WritingStep<ConsultingResponseFormValues>,
+      { askingSave }: { askingSave: boolean },
+    ) => {
+      if (askingSave) {
         showLeaveCreateConsultingResponseModal({
           onClose: () => {
             back();
@@ -48,7 +51,7 @@ export default function useConsultingResponseNavigation({
 
       back();
     },
-    [back, saveContent, savedContent, showLeaveCreateConsultingResponseModal],
+    [back, saveContent, showLeaveCreateConsultingResponseModal],
   );
 
   useEffect(() => {

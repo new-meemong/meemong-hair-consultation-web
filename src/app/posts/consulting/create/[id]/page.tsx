@@ -42,7 +42,9 @@ export default function CreateConsultingPostPage() {
       content: method.getValues(),
     };
 
-    leaveForm(writingContent, isDirty);
+    const askingSave = isDirty && currentStep > 1;
+
+    leaveForm(writingContent, { askingSave });
   };
 
   const [showedSidebar, setShowedSidebar] = useState(false);
