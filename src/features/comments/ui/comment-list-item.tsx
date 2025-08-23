@@ -79,7 +79,7 @@ export default function CommentListItem({
   const isSecret = !isPostWriter && !isCommentWriter && isVisibleToModel;
 
   const handleConsultingResponseClick = () => {
-    push(ROUTES.POSTS_CONSULTING_RESPONSE(postDetail.id.toString()));
+    push(ROUTES.POSTS_CONSULTING_RESPONSE(postDetail.id.toString(), comment.answerId.toString()));
   };
 
   return (

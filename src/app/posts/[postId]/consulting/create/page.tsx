@@ -17,7 +17,7 @@ import { SiteHeader } from '@/widgets/header';
 import ConsultingResponseSidebar from '@/widgets/post/ui/consulting-response-sidebar/consulting-response-sidebar';
 
 export default function CreateConsultingPostPage() {
-  const { id: postId } = useParams();
+  const { postId } = useParams();
 
   const { method } = useConsultingResponseForm({ postId: postId?.toString() ?? '' });
 

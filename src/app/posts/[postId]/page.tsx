@@ -23,7 +23,7 @@ import { PostDetailContainer } from '@/widgets/post/post-detail-container';
 
 export default function PostDetailPage() {
   const { isUserDesigner, user } = useAuthContext();
-  const { id: postId } = useParams();
+  const { postId } = useParams();
   const { push } = useRouterWithUser();
 
   useGuidePopup(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
