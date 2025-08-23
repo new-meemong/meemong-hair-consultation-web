@@ -1,6 +1,6 @@
-import { CONSULTING_TYPE } from '../constants/consulting-type';
+import { CONSULT_TYPE } from '../constants/consult-type';
 import type { PostDetail } from '../model/post-detail';
 
 export function isConsultingPost(post: PostDetail): boolean {
-  return post.consultType === CONSULTING_TYPE.CONSULTING;
+  return post.consultType === CONSULT_TYPE.CONSULTING;
 }

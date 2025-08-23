@@ -4,7 +4,8 @@ import { useState } from 'react';
 
 import { FormProvider } from 'react-hook-form';
 
-import { POST_TABS, POST_TAB_VALUE } from '@/features/posts/constants/post-tabs';
+import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
+import { POST_TABS } from '@/features/posts/constants/post-tabs';
 import useConsultingPostForm from '@/features/posts/hooks/use-consulting-post-form';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
 import usePostFormNavigation from '@/features/posts/hooks/use-post-form-navigation';
@@ -53,7 +54,7 @@ export default function CreatePostPage() {
     leaveForm(writingContent, isDirty);
   };
 
-  const handleTabChange = (type: ValueOf<typeof POST_TAB_VALUE>) => {
+  const handleTabChange = (type: ValueOf<typeof CONSULT_TYPE>) => {
     const writingContent: WritingStep<ConsultingPostFormValues> = {
       step: currentStep,
       content: method.getValues(),
@@ -76,9 +77,9 @@ export default function CreatePostPage() {
     });
   };
 
-  const renderForm = (type: ValueOf<typeof POST_TAB_VALUE>) => {
+  const renderForm = (type: ValueOf<typeof CONSULT_TYPE>) => {
     switch (type) {
-      case POST_TAB_VALUE.CONSULTING:
+      case CONSULT_TYPE.CONSULTING:
         return (
           <ConsultingPostForm
             currentStep={currentStep}
@@ -86,7 +87,7 @@ export default function CreatePostPage() {
             onSubmit={submitConsultingForm}
           />
         );
-      case POST_TAB_VALUE.GENERAL:
+      case CONSULT_TYPE.GENERAL:
         return <PostForm onSubmit={handleSubmit} isPending={isPending} />;
       default:
         return null;

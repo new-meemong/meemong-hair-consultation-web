@@ -28,6 +28,7 @@ export default function PostsPage() {
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
     filter: activeTab,
+    consultType: activePostTab,
   });
 
   const handleFetchNextPage = useCallback(() => {
