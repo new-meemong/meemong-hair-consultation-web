@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { ConsultingResponseAnswer } from '@/entities/posts/model/consulting-response';
+import type { ConsultingResponse } from '@/entities/posts/model/consulting-response';
 import getBangsStyleValue from '@/features/posts/lib/get-bangs-style-value';
 import getFaceShapeValue from '@/features/posts/lib/get-face-shape-value';
 import getHairTypeValue from '@/features/posts/lib/get-hair-type-value';
@@ -16,7 +16,7 @@ import ConsultingResponsePriceAndCommentContainer from './consulting-response-pr
 import ConsultingResponseRecommendStyleContainer from './consulting-response-recommend-style-container';
 
 type ConsultingResponseContainerProps = {
-  consultingResponse: ConsultingResponseAnswer;
+  consultingResponse: ConsultingResponse;
 };
 
 export default function ConsultingResponseContainer({
@@ -43,6 +43,7 @@ export default function ConsultingResponseContainer({
           <ConsultingResponseCurrentStateContainer
             faceShape={faceShape}
             hairType={hairType}
+            isHairTypeStoreConsultNeed={consultingResponse.isHairTypeStoreConsultNeed}
             damageLevel={
               consultingResponse.damageLevel ? Number(consultingResponse.damageLevel) : null
             }

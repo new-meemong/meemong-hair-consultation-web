@@ -10,23 +10,24 @@ import ConsultingResponseHairType from '../../../../features/posts/ui/consulting
 type ConsultingResponseCurrentStateContainerProps = {
   faceShape: ValueOf<typeof FACE_SHAPE> | null;
   hairType: ValueOf<typeof HAIR_TYPE> | null;
+  isHairTypeStoreConsultNeed: boolean;
   damageLevel?: number | null;
 };
 
 export default function ConsultingResponseCurrentStateContainer({
   faceShape,
   hairType,
+  isHairTypeStoreConsultNeed,
   damageLevel,
 }: ConsultingResponseCurrentStateContainerProps) {
   return (
     <div className="flex flex-col gap-8">
       {faceShape && <ConsultingResponseFaceType faceShape={faceShape} />}
-      {hairType && (
-        <>
-          <Separator />
-          <ConsultingResponseHairType value={hairType} />
-        </>
-      )}
+      <Separator />
+      <ConsultingResponseHairType
+        value={hairType}
+        isStoreConsultNeed={isHairTypeStoreConsultNeed}
+      />
       {damageLevel && (
         <>
           <Separator />
