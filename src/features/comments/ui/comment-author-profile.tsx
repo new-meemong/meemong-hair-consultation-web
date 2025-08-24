@@ -27,12 +27,14 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
   const showInvalidChatRequestBottomSheet = useShowInvalidChatRequestSheet();
 
   const handleClick = async () => {
+    if (isWriter) return;
+
     if (isUserDesigner) {
       showInvalidChatRequestBottomSheet();
       return;
     }
 
-    if (!isCommentAuthorDesigner || isWriter) return;
+    if (!isCommentAuthorDesigner) return;
 
     goDesignerProfilePage(author.userId.toString());
   };
