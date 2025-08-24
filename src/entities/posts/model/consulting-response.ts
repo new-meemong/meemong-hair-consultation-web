@@ -21,12 +21,15 @@ type ConsultingResponseDesigner = {
   companyName: string;
 };
 
-export type ConsultingResponseAnswer = {
+export type ConsultingResponse = {
   id: number;
   faceShape: ValueOf<typeof FACE_SHAPE_LABEL>;
-  hairType?: ValueOf<typeof HAIR_TYPE_LABEL>;
-  damageLevel?: string;
+  hairType: ValueOf<typeof HAIR_TYPE_LABEL> | null;
+  isHairTypeStoreConsultNeed: boolean;
+  damageLevel: number | null;
+  isDamageLevelStoreConsultNeed: boolean;
   bangsRecommendation: ValueOf<typeof BANG_STYLE_LABEL>;
+  isBangRecommendationConsultNeed: boolean;
   style: ConsultingResponseStyle;
   treatments: ConsultingResponseTreatment[];
   comment?: string;
@@ -34,9 +37,4 @@ export type ConsultingResponseAnswer = {
   designer: ConsultingResponseDesigner;
   createdAt: string;
   updatedAt: string;
-};
-
-export type ConsultingResponse = {
-  hasAnswer: boolean;
-  answer?: ConsultingResponseAnswer;
 };

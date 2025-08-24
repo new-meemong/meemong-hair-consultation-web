@@ -10,8 +10,11 @@ import ConsultingResponseContainer from '@/widgets/post/ui/consulting-response/c
 export default function ConsultingResponsePage() {
   const { postId, responseId } = useParams();
 
-  const { data } = useGetConsultingResponse(postId?.toString() ?? '', responseId?.toString() ?? '');
-  const consultingResponse = data?.data.answer;
+  const { data: response } = useGetConsultingResponse(
+    postId?.toString() ?? '',
+    responseId?.toString() ?? '',
+  );
+  const consultingResponse = response?.data;
 
   if (!consultingResponse || !postId) return null;
 
