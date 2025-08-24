@@ -3,4 +3,5 @@ export const SEARCH_PARAMS = {
   POST_ID: 'postId',
   REPORT_TARGET_ID: 'reportTargetId',
   POST_TAB: 'postTab',
+  FROM: 'from',
 } as const;

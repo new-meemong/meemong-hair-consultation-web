@@ -10,9 +10,13 @@ import type { UserHairConsultationChatChannelType } from '../type/user-hair-cons
 
 type ChatDetailMoreButtonProps = {
   chatChannel: UserHairConsultationChatChannelType;
+  onLeaveChat?: () => void;
 };
 
-export default function ChatDetailMoreButton({ chatChannel }: ChatDetailMoreButtonProps) {
+export default function ChatDetailMoreButton({
+  chatChannel,
+  onLeaveChat,
+}: ChatDetailMoreButtonProps) {
   const router = useRouterWithUser();
   const showModal = useShowModal();
 
@@ -25,10 +29,10 @@ export default function ChatDetailMoreButton({ chatChannel }: ChatDetailMoreButt
   const handleLeave = useCallback(() => {
     handleLeaveChat(chatChannel, {
       onSuccess: () => {
-        router.back();
+        onLeaveChat?.();
       },
     });
-  }, [handleLeaveChat, router, chatChannel]);
+  }, [chatChannel, handleLeaveChat, onLeaveChat]);
 
   const handleBlock = useCallback(() => {
     showModal({
