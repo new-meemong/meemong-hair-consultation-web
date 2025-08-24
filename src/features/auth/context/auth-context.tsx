@@ -40,6 +40,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(getDefaultUserData(userResponseData));
       }
     },
+    onSettled: () => {
+      setIsInitialized(true);
+    },
   });
 
   const updateUser = (userData: Partial<UserData>) => {
@@ -52,6 +55,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    if (isInitialized) return;
+
     const isSameUser = user?.id === Number(userId);
     if (isSameUser) {
       setIsInitialized(true);
@@ -63,7 +68,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     login({ userId });
-    setIsInitialized(true);
   }, [login, isInitialized, userId, user?.id]);
 
   if (userId === null) return <div>유저아이디가 누락되었습니다</div>;

@@ -60,7 +60,7 @@ export function useCreateConsultingPost() {
 
     const aspirationDescription = data.aspirationImages.description;
 
-    const aspirationImages =
+    const aspirations =
       uploadedAspirationImages || aspirationDescription
         ? {
             images: uploadedAspirationImages?.dataList.map((image) => image.imageURL) ?? [],
@@ -81,7 +81,7 @@ export function useCreateConsultingPost() {
         treatmentDate: format(date, 'yyyy.MM'),
       })),
       myImages,
-      aspirationImages,
+      aspirations,
     };
 
     createConsultingPost(request, {

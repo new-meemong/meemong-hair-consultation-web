@@ -15,7 +15,7 @@ export default function useShowReloadConsultingResponseModal({
       text: '작성중인 답변이 있습니다.\n이어서 작성하시겠습니까?',
       buttons: [
         {
-          label: '처음부터 작성하기',
+          label: '취소',
           onClick: () => {
             onNegative();
           },
@@ -25,6 +25,7 @@ export default function useShowReloadConsultingResponseModal({
           onClick: () => {
             onPositive();
           },
+          textColor: 'text-positive',
         },
       ],
     });

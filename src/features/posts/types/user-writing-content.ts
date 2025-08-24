@@ -10,5 +10,5 @@ export type WritingStep<T extends ConsultingPostFormValues | ConsultingResponseF
 
 export type UserWritingContent = {
   [USER_WRITING_CONTENT_KEYS.consultingPost]: WritingStep<ConsultingPostFormValues>;
-  [USER_WRITING_CONTENT_KEYS.consultingResponse]: WritingStep<ConsultingResponseFormValues>;
+  [USER_WRITING_CONTENT_KEYS.consultingResponse]: WritingStep<ConsultingResponseFormValues>[];
 };

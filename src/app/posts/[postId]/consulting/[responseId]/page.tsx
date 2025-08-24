@@ -8,10 +8,13 @@ import { SiteHeader } from '@/widgets/header';
 import ConsultingResponseContainer from '@/widgets/post/ui/consulting-response/consulting-response-container';
 
 export default function ConsultingResponsePage() {
-  const { id: postId } = useParams();
+  const { postId, responseId } = useParams();
 
-  const { data } = useGetConsultingResponse(postId?.toString() ?? '');
-  const consultingResponse = data?.data.answer;
+  const { data: response } = useGetConsultingResponse(
+    postId?.toString() ?? '',
+    responseId?.toString() ?? '',
+  );
+  const consultingResponse = response?.data;
 
   if (!consultingResponse || !postId) return null;
 

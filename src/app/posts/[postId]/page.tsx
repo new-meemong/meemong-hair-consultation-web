@@ -10,6 +10,7 @@ import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { PostDetailProvider } from '@/features/posts/context/post-detail-context';
+import useWritingConsultingResponse from '@/features/posts/hooks/use-writing-consulting-response';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { Button } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
@@ -22,7 +23,7 @@ import { PostDetailContainer } from '@/widgets/post/post-detail-container';
 
 export default function PostDetailPage() {
   const { isUserDesigner, user } = useAuthContext();
-  const { id: postId } = useParams();
+  const { postId } = useParams();
   const { push } = useRouterWithUser();
 
   useGuidePopup(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
@@ -57,6 +58,10 @@ export default function PostDetailPage() {
     [handlers],
   );
 
+  const { hasSavedContent } = useWritingConsultingResponse(postId?.toString() ?? '');
+
+  const writingResponseButtonText = hasSavedContent ? '이어서 작성하기' : '컨설팅 답글 작성하기';
+
   if (!postId) return null;
 
   return (
@@ -82,9 +87,8 @@ export default function PostDetailPage() {
 
         {canWriteConsultingResponse ? (
           <div className="bg-white shadow-upper px-5 py-3">
-            {/* TODO: 이어서 작성하기 기능 추가 */}
             <Button size="lg" className="w-full" onClick={handleWriteConsultingResponseClick}>
-              컨설팅 답글 보내기
+              {writingResponseButtonText}
             </Button>
           </div>
         ) : (

@@ -31,7 +31,7 @@ const getSidebarTab = (post?: PostDetail) => {
       return post.myImages;
     }
     if (tab.value === CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.DESIRED_STYLE) {
-      return post.aspirationImages;
+      return post.aspirations;
     }
     if (tab.value === CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.ADDITIONAL_INFO) {
       return (
@@ -85,8 +85,8 @@ export default function ConsultingResponseSidebar({
       ]
     : null;
 
-  const aspirationImageUrls = consultingPost.aspirationImages?.images ?? [];
-  const aspirationImagesDescription = consultingPost.aspirationImages?.description;
+  const aspirationImageUrls = consultingPost.aspirations?.aspirationImages ?? [];
+  const aspirationImagesDescription = consultingPost.aspirations?.description ?? null;
 
   const hairConcern =
     consultingPost.hairConcern === HAIR_CONCERN_OPTION_LABEL[HAIR_CONCERN_OPTION_VALUE.ETC]

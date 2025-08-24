@@ -66,22 +66,21 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
 
 type ConsultingResponseFormProps = {
   method: UseFormReturn<ConsultingResponseFormValues>;
-  hairConsultPostingId: string;
   currentStep: number;
   setCurrentStep: (step: number) => void;
 };
 
 export default function ConsultingResponseForm({
   method,
-  hairConsultPostingId,
   currentStep,
   setCurrentStep,
 }: ConsultingResponseFormProps) {
   const { showSnackBar } = useOverlayContext();
   const { replace } = useRouterWithUser();
 
-  const { handleCreateConsultingResponse, isPending } =
-    useCreateConsultingResponse(hairConsultPostingId);
+  const postId = method.getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID);
+
+  const { handleCreateConsultingResponse, isPending } = useCreateConsultingResponse(postId);
 
   const submit = (values: ConsultingResponseFormValues) => {
     handleCreateConsultingResponse(values, {
@@ -91,7 +90,7 @@ export default function ConsultingResponseForm({
           message: '컨설팅 답변을 보냈습니다!',
         });
 
-        replace(ROUTES.POSTS_DETAIL(hairConsultPostingId));
+        replace(ROUTES.POSTS_DETAIL(postId));
       },
     });
   };
@@ -103,11 +102,11 @@ export default function ConsultingResponseForm({
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION) {
       const value = method.getValues(name);
-      return value === null || value !== undefined;
+      return value !== undefined;
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE) {
       const value = method.getValues(name);
-      return value && value.images.length > 0 && !!value.description;
+      return value && (value.images.length > 0 || !!value.description);
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS) {
       const value = method.getValues(name);

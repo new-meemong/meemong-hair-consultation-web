@@ -16,6 +16,8 @@ export type Comment = {
   isVisibleToModel: boolean;
   createdAt: string;
   user: CommentUser;
+  answerId: number;
+  isConsultingAnswer: boolean;
 };
 
 export type CommentWithReplies = Comment & {

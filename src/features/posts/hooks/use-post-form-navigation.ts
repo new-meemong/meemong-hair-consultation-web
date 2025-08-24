@@ -23,14 +23,10 @@ export default function usePostFormNavigation({
 
   const [selectedTab, setSelectedTab] = usePostTab();
 
-  const { getSavedContent, saveContent } = useWritingContent(
-    USER_WRITING_CONTENT_KEYS.consultingPost,
-  );
+  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.consultingPost);
+  const hasSavedContent = savedContent !== null;
 
   const { back } = useRouterWithUser();
-
-  const savedContent = getSavedContent();
-  const hasSavedConsultingPost = savedContent !== null;
 
   const handleCloseReloadConsultingPostModal = () => {
     setSelectedTab(CONSULT_TYPE.GENERAL);
@@ -47,11 +43,11 @@ export default function usePostFormNavigation({
   const showLeaveCreateGeneralPostModal = useShowLeaveCreateGeneralPostModal();
 
   useEffect(() => {
-    if (hasSavedConsultingPost && !initialize) {
+    if (hasSavedContent && !initialize && selectedTab === CONSULT_TYPE.CONSULTING) {
       showReloadConsultingPostModal();
     }
     setInitialize(true);
-  }, [hasSavedConsultingPost, showReloadConsultingPostModal, initialize]);
+  }, [showReloadConsultingPostModal, initialize, hasSavedContent, selectedTab]);
 
   const leaveForm = useCallback(
     (writingContent: WritingStep<ConsultingPostFormValues>, isDirty: boolean) => {
@@ -89,7 +85,7 @@ export default function usePostFormNavigation({
 
   const changeTab = useCallback(
     (tab: ValueOf<typeof CONSULT_TYPE>, writingContent: WritingStep<ConsultingPostFormValues>) => {
-      if (tab === CONSULT_TYPE.GENERAL && hasSavedConsultingPost) {
+      if (tab === CONSULT_TYPE.GENERAL && hasSavedContent) {
         showLeaveCreateConsultingPostModal({
           onClose: () => {
             setSelectedTab(tab);
@@ -99,7 +95,7 @@ export default function usePostFormNavigation({
         return;
       }
 
-      if (tab === CONSULT_TYPE.CONSULTING && hasSavedConsultingPost) {
+      if (tab === CONSULT_TYPE.CONSULTING && hasSavedContent) {
         showReloadConsultingPostModal({ onFinish: () => setSelectedTab(tab) });
         return;
       }
@@ -107,7 +103,7 @@ export default function usePostFormNavigation({
       setSelectedTab(tab);
     },
     [
-      hasSavedConsultingPost,
+      hasSavedContent,
       setSelectedTab,
       showLeaveCreateConsultingPostModal,
       saveContent,

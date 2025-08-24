@@ -16,18 +16,21 @@ export default function useCreateConsultingResponse(hairConsultPostingId: string
     data: ConsultingResponseFormValues,
     { onSuccess }: { onSuccess: () => void },
   ) => {
-    const styleImageUrls = await uploadImages(data.style.images);
+    const styleImageUrls =
+      data.style.images.length > 0 ? await uploadImages(data.style.images) : null;
 
     const request: CreateConsultingResponseRequest = {
       faceShape: FACE_SHAPE_LABEL[data.faceShape],
-      // TODO: 매장상담이 필요해요 옵션 필요
       hairType: data.hairType ? HAIR_TYPE_LABEL[data.hairType] : undefined,
+      isHairTypeStoreConsultNeed: data.hairType === null,
       damageLevel: data.damageLevel ?? undefined,
+      isDamageLevelStoreConsultNeed: data.damageLevel === null,
       bangsRecommendation: data.bangsRecommendation
         ? BANG_STYLE_LABEL[data.bangsRecommendation]
         : '모두 다 잘 어울려요',
+      isBangRecommendationConsultNeed: data.bangsRecommendation === null,
       style: {
-        images: styleImageUrls.dataList.map((image) => image.imageURL),
+        images: styleImageUrls?.dataList.map((image) => image.imageURL) ?? [],
         description: data.style.description ?? '',
       },
       treatments: data.treatments.map((treatment) => ({

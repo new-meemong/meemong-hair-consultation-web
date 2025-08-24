@@ -7,10 +7,11 @@ export const ROUTES = {
   // 게시글
   POSTS: '/posts',
   POSTS_CREATE: '/posts/create',
-  POSTS_CREATE_CONSULTING_POST: (id: string) => `/posts/consulting/create/${id}`,
-  POSTS_DETAIL: (id: string | number) => `/posts/${id}`,
+  POSTS_CREATE_CONSULTING_POST: (postId: string) => `/posts/${postId}/consulting/create`,
+  POSTS_DETAIL: (postId: string | number) => `/posts/${postId}`,
   POSTS_EDIT: (id: string) => `/posts/edit/${id}`,
-  POSTS_CONSULTING_RESPONSE: (id: string) => `/posts/consulting/${id}`,
+  POSTS_CONSULTING_RESPONSE: (postId: string, responseId: string) =>
+    `/posts/${postId}/consulting/${responseId}`,
 
   // 채팅
   CHAT_HAIR_CONSULTATION: '/chat/hair-consultation',
@@ -32,6 +33,6 @@ export const createNavigation = (push: (href: string) => void) => ({
   toHome: () => push(ROUTES.HOME),
   toPosts: () => push(ROUTES.POSTS),
   toPostsCreate: () => push(ROUTES.POSTS_CREATE),
-  toPostsDetail: (id: string | number) => push(ROUTES.POSTS_DETAIL(id)),
+  toPostsDetail: (postId: string | number) => push(ROUTES.POSTS_DETAIL(postId)),
   toTodayConsultant: () => push(ROUTES.TODAY_CONSULTANT),
 });

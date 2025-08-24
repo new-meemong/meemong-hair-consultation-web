@@ -19,5 +19,7 @@ export default function useWritingContent<K extends KeyOf<UserWritingContent>>(k
     [key, updateUser],
   );
 
-  return { getSavedContent, saveContent };
+  const savedContent = getSavedContent();
+
+  return { saveContent, savedContent };
 }

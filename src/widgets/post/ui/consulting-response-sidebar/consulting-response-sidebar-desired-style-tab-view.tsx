@@ -6,7 +6,7 @@ import { Separator } from '@/shared';
 import ConsultingResponseSidebarItem from './consulting-response-sidebar-item';
 
 type ConsultingResponseSidebarDesiredStyleTabViewProps = {
-  description?: string;
+  description: string | null;
   images: string[];
 };
 

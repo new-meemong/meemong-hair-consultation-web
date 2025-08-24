@@ -76,7 +76,7 @@ export default function PostDetailConsultingContent({
     treatments,
     createdAt,
     myImages,
-    aspirationImages,
+    aspirations,
     skinTone,
   } = postDetail;
 
@@ -95,6 +95,9 @@ export default function PostDetailConsultingContent({
   const skinToneValue = getSkinToneValue(skinTone);
 
   const concern = hairConcern === HAIR_CONCERN_OPTION.etc.label ? hairConcernDetail : hairConcern;
+
+  const hasAspirations =
+    aspirations && (aspirations.aspirationImages.length > 0 || aspirations.description);
 
   return (
     <div className="flex flex-col gap-6 py-6">
@@ -119,7 +122,7 @@ export default function PostDetailConsultingContent({
       </div>
       <Separator />
       <div className="flex flex-col gap-8 px-5">
-        {treatments && (
+        {treatments && treatments.length > 0 && (
           <ContentItem label="최근 받은 시술">
             {treatments.map(({ treatmentName, treatmentDate }, index) => (
               <ConsultingInputResultListItem
@@ -130,15 +133,16 @@ export default function PostDetailConsultingContent({
             ))}
           </ContentItem>
         )}
-        {aspirationImages && (
+        {hasAspirations && (
           <ContentItem label="원하는 스타일">
-            {aspirationImages.images.length > 0 && (
-              <ImageList images={aspirationImages.images} onlyShowToDesigner={onlyShowToDesigner} />
+            {aspirations.aspirationImages.length > 0 && (
+              <ImageList
+                images={aspirations.aspirationImages}
+                onlyShowToDesigner={onlyShowToDesigner}
+              />
             )}
-            {aspirationImages.description && (
-              <p className="typo-body-2-long-regular text-label-info">
-                {aspirationImages.description}
-              </p>
+            {aspirations.description && (
+              <p className="typo-body-2-long-regular text-label-info">{aspirations.description}</p>
             )}
           </ContentItem>
         )}
