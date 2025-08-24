@@ -17,9 +17,9 @@ type MyImages = {
   upperBodyImageUrl: string;
 };
 
-type AspirationImage = {
-  images: string[];
-  description?: string;
+type Aspirations = {
+  aspirationImages: string[];
+  description: string | null;
 };
 
 export type PostDetail = {
@@ -45,5 +45,5 @@ export type PostDetail = {
   skinTone?: ValueOf<typeof SKIN_TONE_OPTION_LABEL> | null;
   treatments?: Treatment[];
   myImages?: MyImages;
-  aspirationImages?: AspirationImage | null;
+  aspirations?: Aspirations;
 };
