@@ -43,11 +43,11 @@ export default function usePostFormNavigation({
   const showLeaveCreateGeneralPostModal = useShowLeaveCreateGeneralPostModal();
 
   useEffect(() => {
-    if (hasSavedContent && !initialize) {
+    if (hasSavedContent && !initialize && selectedTab === CONSULT_TYPE.CONSULTING) {
       showReloadConsultingPostModal();
     }
     setInitialize(true);
-  }, [showReloadConsultingPostModal, initialize, hasSavedContent]);
+  }, [showReloadConsultingPostModal, initialize, hasSavedContent, selectedTab]);
 
   const leaveForm = useCallback(
     (writingContent: WritingStep<ConsultingPostFormValues>, isDirty: boolean) => {
