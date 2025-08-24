@@ -11,7 +11,11 @@ type LoginRequest = {
 
 export function useWebviewLogin({
   onSuccess,
-}: { onSuccess?: (response: { data: User }) => void } = {}) {
+  onSettled,
+}: {
+  onSuccess?: (response: { data: User }) => void;
+  onSettled?: () => void;
+} = {}) {
   return useMutation({
     mutationFn: ({ userId }: LoginRequest) =>
       apiClient.post<User>('auth/webview-login', {
@@ -19,5 +23,6 @@ export function useWebviewLogin({
         webviewAPIKey: WEBVIEW_API_KEY,
       }),
     onSuccess,
+    onSettled,
   });
 }
