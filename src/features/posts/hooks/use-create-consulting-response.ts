@@ -21,14 +21,14 @@ export default function useCreateConsultingResponse(hairConsultPostingId: string
 
     const request: CreateConsultingResponseRequest = {
       faceShape: FACE_SHAPE_LABEL[data.faceShape],
-      hairType: data.hairType ? HAIR_TYPE_LABEL[data.hairType] : undefined,
-      isHairTypeStoreConsultNeed: data.hairType === null,
-      damageLevel: data.damageLevel ?? undefined,
-      isDamageLevelStoreConsultNeed: data.damageLevel === null,
-      bangsRecommendation: data.bangsRecommendation
-        ? BANG_STYLE_LABEL[data.bangsRecommendation]
-        : '모두 다 잘 어울려요',
-      isBangRecommendationConsultNeed: data.bangsRecommendation === null,
+      hairType: data.hairType.value ? HAIR_TYPE_LABEL[data.hairType.value] : undefined,
+      isHairTypeStoreConsultNeed: data.hairType.needStoreConsulting,
+      damageLevel: data.damageLevel.value ?? undefined,
+      isDamageLevelStoreConsultNeed: data.damageLevel.needStoreConsulting,
+      bangsRecommendation: data.bangsRecommendation.value
+        ? BANG_STYLE_LABEL[data.bangsRecommendation.value]
+        : undefined,
+      isBangRecommendationConsultNeed: data.bangsRecommendation.needStoreConsulting,
       style: {
         images: styleImageUrls?.dataList.map((image) => image.imageURL) ?? [],
         description: data.style.description ?? '',

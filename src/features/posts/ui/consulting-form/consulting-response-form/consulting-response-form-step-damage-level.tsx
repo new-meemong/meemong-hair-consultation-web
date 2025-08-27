@@ -14,25 +14,36 @@ export default function ConsultingResponseFormStepDamageLevel() {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL,
   });
 
-  const needStoreConsulting = formValue === null;
+  const needStoreConsulting = formValue.needStoreConsulting;
 
   const handleNeedStoreConsultingChange = () => {
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL, needStoreConsulting ? 1 : null, {
-      shouldDirty: true,
-    });
+    setValue(
+      CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL,
+      {
+        value: needStoreConsulting ? 1 : null,
+        needStoreConsulting: !needStoreConsulting,
+      },
+      {
+        shouldDirty: true,
+      },
+    );
   };
 
   const handleProgressChange = (value: number) => {
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL, value, {
-      shouldDirty: true,
-    });
+    setValue(
+      CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL,
+      { value, needStoreConsulting },
+      {
+        shouldDirty: true,
+      },
+    );
   };
 
   if (formValue === undefined) return null;
 
   return (
     <div className="flex flex-col gap-7">
-      <ConsultingHairCondition value={formValue} onChange={handleProgressChange} />
+      <ConsultingHairCondition value={formValue.value} onChange={handleProgressChange} />
       <ConsultingResponseFormOptionNeedConsultation
         value={needStoreConsulting}
         onChange={handleNeedStoreConsultingChange}

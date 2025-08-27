@@ -4,7 +4,18 @@ import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../constants/consulting-res
 import type { ConsultingResponseFormValues } from '../types/consulting-response-form-values';
 
 const DEFAULT_FORM_VALUES: Partial<ConsultingResponseFormValues> = {
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL]: 1,
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE]: {
+    value: null,
+    needStoreConsulting: false,
+  },
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL]: {
+    value: 1,
+    needStoreConsulting: false,
+  },
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION]: {
+    value: null,
+    needStoreConsulting: false,
+  },
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE]: {
     images: [],
     description: '',

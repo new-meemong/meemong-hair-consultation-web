@@ -9,7 +9,7 @@ export type CreateConsultingResponseRequest = {
   isHairTypeStoreConsultNeed: boolean;
   damageLevel?: number;
   isDamageLevelStoreConsultNeed: boolean;
-  bangsRecommendation: ValueOf<typeof BANG_STYLE_LABEL>;
+  bangsRecommendation?: ValueOf<typeof BANG_STYLE_LABEL>;
   isBangRecommendationConsultNeed: boolean;
   style: {
     images: string[];

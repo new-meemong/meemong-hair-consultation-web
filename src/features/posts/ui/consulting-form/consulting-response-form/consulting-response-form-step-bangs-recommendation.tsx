@@ -24,12 +24,12 @@ export default function ConsultingResponseFormStepBangsRecommendation() {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION,
   });
 
-  const needStoreConsulting = formValue === null;
+  const needStoreConsulting = formValue.needStoreConsulting;
 
   const handleNeedStoreConsultingChange = () => {
     setValue(
       CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION,
-      needStoreConsulting ? undefined : null,
+      { value: null, needStoreConsulting: !needStoreConsulting },
       {
         shouldDirty: true,
       },

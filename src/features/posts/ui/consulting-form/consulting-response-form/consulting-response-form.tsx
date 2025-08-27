@@ -101,8 +101,8 @@ export default function ConsultingResponseForm({
       return !!value;
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION) {
-      const value = method.getValues(name);
-      return value !== undefined;
+      const { value, needStoreConsulting } = method.getValues(name);
+      return value !== null || (value === null && needStoreConsulting);
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE) {
       const value = method.getValues(name);

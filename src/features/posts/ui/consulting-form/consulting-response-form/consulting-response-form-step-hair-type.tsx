@@ -16,12 +16,12 @@ export default function ConsultingResponseFormStepHairType() {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE,
   });
 
-  const needStoreConsulting = formValue === null;
+  const needStoreConsulting = formValue.needStoreConsulting;
 
   const handleNeedStoreConsultingChange = () => {
     setValue(
       CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE,
-      needStoreConsulting ? undefined : null,
+      { value: null, needStoreConsulting: !needStoreConsulting },
       {
         shouldDirty: true,
       },
