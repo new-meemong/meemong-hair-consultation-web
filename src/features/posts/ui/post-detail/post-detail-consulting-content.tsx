@@ -3,10 +3,9 @@ import type { ReactNode } from 'react';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/lib/utils';
-import type { ValueOf } from '@/shared/type/types';
 
 import { HAIR_CONCERN_OPTION } from '../../constants/hair-concern-option';
-import { SKIN_TONE_OPTION_LABEL, SKIN_TONE_OPTION_VALUE } from '../../constants/skin-tone';
+import getSkinToneValue from '../../lib/get-skin-tone-value';
 import ConsultingInputResultListItem from '../consulting-input-result-list-item';
 import SkinColorLabel from '../skin-color-label';
 
@@ -77,7 +76,7 @@ export default function PostDetailConsultingContent({
     treatments,
     createdAt,
     myImages,
-    aspirationImages,
+    aspirations,
     skinTone,
   } = postDetail;
 
@@ -93,11 +92,12 @@ export default function PostDetailConsultingContent({
   const isWriter = authorId === user.id;
   const onlyShowToDesigner = !isWriter || isUserDesigner;
 
-  const skinToneType = Object.entries(SKIN_TONE_OPTION_LABEL).find(
-    ([, label]) => label === skinTone,
-  )?.[0] as ValueOf<typeof SKIN_TONE_OPTION_VALUE>;
+  const skinToneValue = getSkinToneValue(skinTone);
 
   const concern = hairConcern === HAIR_CONCERN_OPTION.etc.label ? hairConcernDetail : hairConcern;
+
+  const hasAspirations =
+    aspirations && (aspirations.aspirationImages.length > 0 || aspirations.description);
 
   return (
     <div className="flex flex-col gap-6 py-6">
@@ -122,7 +122,7 @@ export default function PostDetailConsultingContent({
       </div>
       <Separator />
       <div className="flex flex-col gap-8 px-5">
-        {treatments && (
+        {treatments && treatments.length > 0 && (
           <ContentItem label="최근 받은 시술">
             {treatments.map(({ treatmentName, treatmentDate }, index) => (
               <ConsultingInputResultListItem
@@ -133,21 +133,22 @@ export default function PostDetailConsultingContent({
             ))}
           </ContentItem>
         )}
-        {aspirationImages && (
+        {hasAspirations && (
           <ContentItem label="원하는 스타일">
-            {aspirationImages.images.length > 0 && (
-              <ImageList images={aspirationImages.images} onlyShowToDesigner={onlyShowToDesigner} />
+            {aspirations.aspirationImages.length > 0 && (
+              <ImageList
+                images={aspirations.aspirationImages}
+                onlyShowToDesigner={onlyShowToDesigner}
+              />
             )}
-            {aspirationImages.description && (
-              <p className="typo-body-2-long-regular text-label-info">
-                {aspirationImages.description}
-              </p>
+            {aspirations.description && (
+              <p className="typo-body-2-long-regular text-label-info">{aspirations.description}</p>
             )}
           </ContentItem>
         )}
-        {skinToneType && (
+        {skinToneValue && (
           <ContentItem label="피부톤" className="flex flex-row items-center justify-between">
-            <SkinColorLabel type={skinToneType} />
+            <SkinColorLabel type={skinToneValue} />
           </ContentItem>
         )}
         {content && (

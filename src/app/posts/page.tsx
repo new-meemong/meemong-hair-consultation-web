@@ -28,6 +28,7 @@ export default function PostsPage() {
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
     filter: activeTab,
+    consultType: activePostTab,
   });
 
   const handleFetchNextPage = useCallback(() => {
@@ -86,7 +87,7 @@ export default function PostsPage() {
 
       {/* 글쓰기 버튼 */}
       {isUserModel && (
-        <div className="fixed bottom-13.5 right-5">
+        <div className="fixed bottom-5 right-5">
           <WritePostButton onClick={handleWriteButtonClick} />
         </div>
       )}

@@ -3,9 +3,9 @@ import type { USER_SEX } from '@/entities/user/constants/user-sex';
 import type { SKIN_TONE_OPTION_LABEL } from '@/features/posts/constants/skin-tone';
 import type { ValueOf } from '@/shared/type/types';
 
-import type { CONSULTING_TYPE } from '../constants/consulting-type';
+import type { CONSULT_TYPE } from '../constants/consult-type';
 
-type Treatment = {
+export type Treatment = {
   treatmentName: string;
   treatmentDate: string;
 };
@@ -17,9 +17,9 @@ type MyImages = {
   upperBodyImageUrl: string;
 };
 
-type AspirationImage = {
-  images: string[];
-  description?: string;
+type Aspirations = {
+  aspirationImages: string[];
+  description: string | null;
 };
 
 export type PostDetail = {
@@ -32,7 +32,7 @@ export type PostDetail = {
   likeCount: number;
   commentCount: number;
   isPhotoVisibleToDesigner: boolean;
-  consultType: ValueOf<typeof CONSULTING_TYPE>;
+  consultType: ValueOf<typeof CONSULT_TYPE>;
   hairConsultPostingCreateUserName: string;
   hairConsultPostingCreateUserProfileImageUrl: string | null;
   hairConsultPostingCreateUserRegion: string | null;
@@ -45,5 +45,5 @@ export type PostDetail = {
   skinTone?: ValueOf<typeof SKIN_TONE_OPTION_LABEL> | null;
   treatments?: Treatment[];
   myImages?: MyImages;
-  aspirationImages?: AspirationImage | null;
+  aspirations?: Aspirations;
 };

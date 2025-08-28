@@ -19,7 +19,7 @@ export type CreateConsultingPostRequest = {
     sideTiedImageUrl: string;
     upperBodyImageUrl: string;
   };
-  aspirationImages?: {
+  aspirations?: {
     images: string[];
     description?: string;
   };

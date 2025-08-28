@@ -6,19 +6,19 @@ import ConsultingInputResultListItem from '../../consulting-input-result-list-it
 
 import ConsultingResponseFormPriceForm from './consulting-response-form-price-form';
 
-export default function ConsultingResponseFormStep6() {
+export default function ConsultingResponseFormStepTreatments() {
   const { control, setValue } = useFormContext<ConsultingResponseFormValues>();
 
   const prices = useWatch({
     control,
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option6,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
   });
 
   const handleDelete = (index: number) => {
     if (!prices) return;
 
     setValue(
-      CONSULTING_RESPONSE_FORM_FIELD_NAME.option6,
+      CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
       prices.filter((_, i) => i !== index),
       {
         shouldDirty: true,

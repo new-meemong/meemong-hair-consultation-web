@@ -9,11 +9,11 @@ import type { ConsultingResponseFormValues } from '../../../types/consulting-res
 
 const MAX_IMAGE_COUNT = 6;
 
-export default function ConsultingResponseFormStep5() {
+export default function ConsultingResponseFormStepStyle() {
   const { register, setValue, control } = useFormContext<ConsultingResponseFormValues>();
 
   const currentOptionValue = useWatch({
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option5,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
     control,
   });
   const currentImages = currentOptionValue?.images ?? [];
@@ -21,7 +21,7 @@ export default function ConsultingResponseFormStep5() {
   const handleImageUpload = (file: File) => {
     const newImages = [...currentImages, file];
 
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option5, {
+    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE, {
       images: newImages,
       description: currentOptionValue?.description,
     });
@@ -31,10 +31,16 @@ export default function ConsultingResponseFormStep5() {
     const newImages = [...currentImages];
     newImages.splice(index, 1);
 
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option5, {
-      images: newImages,
-      description: currentOptionValue?.description,
-    });
+    setValue(
+      CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
+      {
+        images: newImages,
+        description: currentOptionValue?.description,
+      },
+      {
+        shouldDirty: true,
+      },
+    );
   };
 
   return (
@@ -49,7 +55,7 @@ export default function ConsultingResponseFormStep5() {
       </FormItem>
       <FormItem label="스타일 설명">
         <Textarea
-          {...register(`${CONSULTING_RESPONSE_FORM_FIELD_NAME.option5}.description`)}
+          {...register(`${CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE}.description`)}
           placeholder="추천하는 스타일을 설명해보세요"
           className="min-h-38"
           hasBorder

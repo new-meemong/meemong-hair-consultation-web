@@ -6,13 +6,13 @@ import FormItem from '@/shared/ui/form-item';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
-export default function ConsultingResponseFormStep7() {
+export default function ConsultingResponseFormStepComment() {
   const { register } = useFormContext<ConsultingResponseFormValues>();
 
   return (
     <FormItem label="텍스트 입력" className="h-full flex flex-col">
       <Textarea
-        {...register(CONSULTING_RESPONSE_FORM_FIELD_NAME.option7)}
+        {...register(CONSULTING_RESPONSE_FORM_FIELD_NAME.COMMENT)}
         placeholder="코멘트를 입력하세요"
         hasBorder
         className="flex-1 min-h-0"

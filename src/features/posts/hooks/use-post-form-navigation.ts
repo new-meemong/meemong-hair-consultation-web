@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import type { UseFormReturn } from 'react-hook-form';
-
+import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 import type { ValueOf } from '@/shared/type/types';
 
-import { POST_TAB_VALUE } from '../constants/post-tabs';
 import type { ConsultingPostFormValues } from '../types/consulting-post-form-values';
+import type { WritingStep } from '../types/user-writing-content';
 
 import { usePostTab } from './use-post-tab';
 import useShowLeaveCreateConsultingPostModal from './use-show-leave-create-consulting-post';
@@ -16,34 +15,26 @@ import useShowLeaveCreateGeneralPostModal from './use-show-leave-create-general-
 import useShowReloadConsultingPostModal from './use-show-reload-consulting-post-modal';
 
 export default function usePostFormNavigation({
-  method,
+  onSavedContentReload,
 }: {
-  method: UseFormReturn<ConsultingPostFormValues>;
+  onSavedContentReload: (savedContent: WritingStep<ConsultingPostFormValues>) => void;
 }) {
   const [initialize, setInitialize] = useState(false);
 
   const [selectedTab, setSelectedTab] = usePostTab();
 
-  const { getSavedContent, saveContent } = useWritingContent(
-    USER_WRITING_CONTENT_KEYS.consultingPost,
-  );
+  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.consultingPost);
+  const hasSavedContent = savedContent !== null;
 
   const { back } = useRouterWithUser();
 
-  const savedContent = getSavedContent();
-  const hasSavedConsultingPost = savedContent !== null;
-
   const handleCloseReloadConsultingPostModal = () => {
-    setSelectedTab(POST_TAB_VALUE.GENERAL);
+    setSelectedTab(CONSULT_TYPE.GENERAL);
   };
 
   const showReloadConsultingPostModal = useShowReloadConsultingPostModal({
     onClose: handleCloseReloadConsultingPostModal,
-    onPositive: () => {
-      if (!savedContent) return;
-
-      method.reset(savedContent);
-    },
+    onPositive: () => onSavedContentReload(savedContent),
     onNegative: () => {
       saveContent(null);
     },
@@ -52,57 +43,59 @@ export default function usePostFormNavigation({
   const showLeaveCreateGeneralPostModal = useShowLeaveCreateGeneralPostModal();
 
   useEffect(() => {
-    if (hasSavedConsultingPost && !initialize) {
+    if (hasSavedContent && !initialize && selectedTab === CONSULT_TYPE.CONSULTING) {
       showReloadConsultingPostModal();
     }
     setInitialize(true);
-  }, [hasSavedConsultingPost, showReloadConsultingPostModal, initialize]);
+  }, [showReloadConsultingPostModal, initialize, hasSavedContent, selectedTab]);
 
-  console.log('method.formState.isDirty', method.formState.isDirty);
-  const handleBackClick = useCallback(() => {
-    if (selectedTab === POST_TAB_VALUE.CONSULTING) {
-      if (savedContent || method.formState.isDirty) {
-        showLeaveCreateConsultingPostModal({
-          onClose: () => {
-            back();
-            saveContent(method.getValues());
-          },
-        });
+  const leaveForm = useCallback(
+    (writingContent: WritingStep<ConsultingPostFormValues>, isDirty: boolean) => {
+      if (selectedTab === CONSULT_TYPE.CONSULTING) {
+        if (savedContent || isDirty) {
+          showLeaveCreateConsultingPostModal({
+            onClose: () => {
+              back();
+              saveContent(writingContent);
+            },
+          });
+          return;
+        }
+
+        back();
+        return;
+      }
+
+      if (selectedTab === CONSULT_TYPE.GENERAL) {
+        showLeaveCreateGeneralPostModal();
         return;
       }
 
       back();
-    }
+    },
+    [
+      selectedTab,
+      back,
+      savedContent,
+      showLeaveCreateConsultingPostModal,
+      saveContent,
+      showLeaveCreateGeneralPostModal,
+    ],
+  );
 
-    if (selectedTab === POST_TAB_VALUE.GENERAL) {
-      showLeaveCreateGeneralPostModal();
-      return;
-    }
-
-    back();
-  }, [
-    selectedTab,
-    back,
-    savedContent,
-    method,
-    showLeaveCreateConsultingPostModal,
-    saveContent,
-    showLeaveCreateGeneralPostModal,
-  ]);
-
-  const handleTabChange = useCallback(
-    (tab: ValueOf<typeof POST_TAB_VALUE>) => {
-      if (tab === POST_TAB_VALUE.GENERAL && hasSavedConsultingPost) {
+  const changeTab = useCallback(
+    (tab: ValueOf<typeof CONSULT_TYPE>, writingContent: WritingStep<ConsultingPostFormValues>) => {
+      if (tab === CONSULT_TYPE.GENERAL && hasSavedContent) {
         showLeaveCreateConsultingPostModal({
           onClose: () => {
             setSelectedTab(tab);
-            saveContent(method.getValues());
+            saveContent(writingContent);
           },
         });
         return;
       }
 
-      if (tab === POST_TAB_VALUE.CONSULTING && hasSavedConsultingPost) {
+      if (tab === CONSULT_TYPE.CONSULTING && hasSavedContent) {
         showReloadConsultingPostModal({ onFinish: () => setSelectedTab(tab) });
         return;
       }
@@ -110,14 +103,13 @@ export default function usePostFormNavigation({
       setSelectedTab(tab);
     },
     [
-      hasSavedConsultingPost,
+      hasSavedContent,
       setSelectedTab,
       showLeaveCreateConsultingPostModal,
       saveContent,
-      method,
       showReloadConsultingPostModal,
     ],
   );
 
-  return { selectedTab, handleBackClick, handleTabChange };
+  return { selectedTab, leaveForm, changeTab };
 }

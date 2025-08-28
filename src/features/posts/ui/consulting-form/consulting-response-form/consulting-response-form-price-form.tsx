@@ -61,7 +61,7 @@ export default function ConsultingResponseFormPriceForm() {
 
   const prices = useWatch({
     control,
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option6,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
   });
 
   const [formValue, setFormValue] = useState<FormValue>(INITIAL_FORM_VALUE);
@@ -84,7 +84,7 @@ export default function ConsultingResponseFormPriceForm() {
       return;
 
     setValue(
-      CONSULTING_RESPONSE_FORM_FIELD_NAME.option6,
+      CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
       [
         ...(prices ?? []),
         {

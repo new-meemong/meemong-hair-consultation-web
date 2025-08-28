@@ -56,6 +56,15 @@ export default function RootLayout({
             }
 
             window.goAppRouter = goAppRouter;
+
+            function closeWebview(message) {
+              if(window.GoBack) {
+                window.GoBack.postMessage(JSON.stringify(message));
+              } else {
+               console.log("GoBack channel is not available.");}
+            }
+
+            window.closeWebview = closeWebview;
           `}
         </Script>
       </body>

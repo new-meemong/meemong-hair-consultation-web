@@ -80,7 +80,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
       const channelKey = `${ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS}_${participantIds.join('_')}`;
 
       // 채널 레퍼런스 생성
-      const channelRef = doc(db, ChatChannelTypeEnum.JOB_POSTING_CHAT_CHANNELS, channelKey);
+      const channelRef = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelKey);
 
       // 트랜잭션을 사용하여 채널 생성 및 중복 방지
       const result = await runTransaction(db, async (transaction) => {
@@ -309,7 +309,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
   getChannel: async (channelId: string) => {
     try {
-      const channelRef = doc(db, ChatChannelTypeEnum.JOB_POSTING_CHAT_CHANNELS, channelId);
+      const channelRef = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelId);
       const channelSnap = await getDoc(channelRef);
 
       if (channelSnap.exists()) {

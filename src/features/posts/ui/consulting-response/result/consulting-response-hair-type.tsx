@@ -5,15 +5,19 @@ import ConsultingResponseNeedShopConsulting from '../consulting-response-need-sh
 
 type ConsultingResponseHairTypeProps = {
   value: keyof typeof HAIR_TYPE_OPTION | null;
+  isStoreConsultNeed: boolean;
 };
 
-export default function ConsultingResponseHairType({ value }: ConsultingResponseHairTypeProps) {
+export default function ConsultingResponseHairType({
+  value,
+  isStoreConsultNeed,
+}: ConsultingResponseHairTypeProps) {
   return (
     <ConsultingResponseItem
       title="모발타입 진단"
       content="올려주신 사진을 바탕으로 모발타입을 진단했어요"
     >
-      {value ? (
+      {value && !isStoreConsultNeed ? (
         <ConsultingResponseItemResult label={HAIR_TYPE_OPTION[value].label} />
       ) : (
         <ConsultingResponseNeedShopConsulting />

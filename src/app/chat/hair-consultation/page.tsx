@@ -19,8 +19,6 @@ export default function HairConsultationChatPage() {
       loading: state.loading,
     }));
 
-  console.log('loading', loading);
-
   useEffect(() => {
     if (!userId) return;
 

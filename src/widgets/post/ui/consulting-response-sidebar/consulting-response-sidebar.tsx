@@ -3,7 +3,13 @@ import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import CloseIcon from '@/assets/icons/close.svg';
-import { SKIN_TONE_OPTION_VALUE } from '@/features/posts/constants/skin-tone';
+import type { PostDetail } from '@/entities/posts/model/post-detail';
+import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
+import {
+  HAIR_CONCERN_OPTION_LABEL,
+  HAIR_CONCERN_OPTION_VALUE,
+} from '@/features/posts/constants/hair-concern-option';
+import getSkinToneValue from '@/features/posts/lib/get-skin-tone-value';
 import { cn } from '@/lib/utils';
 import { ToggleChip, ToggleChipGroup } from '@/shared';
 import type { ValueOf } from '@/shared/type/types';
@@ -17,16 +23,46 @@ import ConsultingResponseSidebarAdditionalInfoTabView from './consulting-respons
 import ConsultingResponseSidebarCurrentStateTabView from './consulting-response-sidebar-current-state-tab-view';
 import ConsultingResponseSidebarDesiredStyleTabView from './consulting-response-sidebar-desired-style-tab-view';
 
+const getSidebarTab = (post?: PostDetail) => {
+  if (!post) return [];
+
+  return CONSULTING_RESPONSE_SIDEBAR_TABS.filter((tab) => {
+    if (tab.value === CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.CURRENT_STATE) {
+      return post.myImages;
+    }
+    if (tab.value === CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.DESIRED_STYLE) {
+      return post.aspirations;
+    }
+    if (tab.value === CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.ADDITIONAL_INFO) {
+      return (
+        post.hairConcern ||
+        (post.treatments && post.treatments.length > 0) ||
+        post.skinTone ||
+        post.content
+      );
+    }
+    return false;
+  });
+};
+
 type ConsultingResponseSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
+  postId: string;
 };
 
 export default function ConsultingResponseSidebar({
   isOpen,
   onClose,
+  postId,
 }: ConsultingResponseSidebarProps) {
-  const [activeTab, setActiveTab] = useState(CONSULTING_RESPONSE_SIDEBAR_TABS[0].value);
+  const { data: postDetail } = useGetPostDetail(postId);
+
+  const consultingPost = postDetail?.data;
+
+  const sidebarTabs = getSidebarTab(consultingPost);
+
+  const [activeTab, setActiveTab] = useState(sidebarTabs[0].value);
   const [hasScroll, setHasScroll] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -38,45 +74,44 @@ export default function ConsultingResponseSidebar({
     setHasScroll(e.currentTarget.scrollTop > 0);
   };
 
-  const images = [
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/22/images/7b759976-7139-4f69-8e74-c8e6a4137d7c/7b759976-7139-4f69-8e74-c8e6a4137d7c.png',
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/22/images/7b759976-7139-4f69-8e74-c8e6a4137d7c/7b759976-7139-4f69-8e74-c8e6a4137d7c.png',
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/22/images/7b759976-7139-4f69-8e74-c8e6a4137d7c/7b759976-7139-4f69-8e74-c8e6a4137d7c.png',
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/22/images/7b759976-7139-4f69-8e74-c8e6a4137d7c/7b759976-7139-4f69-8e74-c8e6a4137d7c.png',
-    'https://meemong-job-storage.s3.ap-northeast-2.amazonaws.com/uploads/hair-consult-postings/images/2025/07/22/images/7b759976-7139-4f69-8e74-c8e6a4137d7c/7b759976-7139-4f69-8e74-c8e6a4137d7c.png',
-  ];
+  if (!consultingPost) return null;
 
-  const description =
-    '출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요... \n솔직히 블루클럽 가도 되긴하는데 이왕 자르는거 좀 예쁘게도 자르고 싶기도 하구요... 잘하는데 좀 있나요? 출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요...';
+  const myImages = consultingPost.myImages
+    ? [
+        consultingPost.myImages.frontLooseImageUrl,
+        consultingPost.myImages.frontTiedImageUrl,
+        consultingPost.myImages.sideTiedImageUrl,
+        consultingPost.myImages.upperBodyImageUrl,
+      ]
+    : null;
+
+  const aspirationImageUrls = consultingPost.aspirations?.aspirationImages ?? [];
+  const aspirationImagesDescription = consultingPost.aspirations?.description ?? null;
 
   const hairConcern =
-    '출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요... \n솔직히 블루클럽 가도 되긴하는데 이왕 자르는거 좀 예쁘게도 자르고 싶기도 하구요... 잘하는데 좀 있나요? 출근 전 미팅하는데 구레나룻이 너무 신경쓰여서요...';
-  const skinColorType = SKIN_TONE_OPTION_VALUE.VERY_BRIGHT;
-  const operations = [
-    {
-      name: '헤어 고민 종류',
-      description: '2025.03',
-    },
-    {
-      name: '헤어 고민 종류',
-      description: '2025.03',
-    },
-  ];
+    consultingPost.hairConcern === HAIR_CONCERN_OPTION_LABEL[HAIR_CONCERN_OPTION_VALUE.ETC]
+      ? (consultingPost.hairConcernDetail ?? '')
+      : consultingPost.hairConcern;
+
+  const skinToneValue = getSkinToneValue(consultingPost.skinTone);
 
   const renderTabView = () => {
     switch (activeTab) {
       case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.CURRENT_STATE:
-        return <ConsultingResponseSidebarCurrentStateTabView images={images} />;
+        return myImages ? <ConsultingResponseSidebarCurrentStateTabView images={myImages} /> : null;
       case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.DESIRED_STYLE:
-        return (
-          <ConsultingResponseSidebarDesiredStyleTabView images={images} description={description} />
-        );
+        return aspirationImageUrls || aspirationImagesDescription ? (
+          <ConsultingResponseSidebarDesiredStyleTabView
+            images={aspirationImageUrls}
+            description={aspirationImagesDescription}
+          />
+        ) : null;
       case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.ADDITIONAL_INFO:
         return (
           <ConsultingResponseSidebarAdditionalInfoTabView
             hairConcern={hairConcern}
-            skinToneOption={skinColorType}
-            operations={operations}
+            skinToneValue={skinToneValue}
+            treatments={consultingPost.treatments ?? []}
           />
         );
     }
@@ -101,7 +136,7 @@ export default function ConsultingResponseSidebar({
             <CloseIcon className="size-7 fill-label-info" />
           </button>
           <ToggleChipGroup className="flex overflow-x-auto scrollbar-hide px-5">
-            {CONSULTING_RESPONSE_SIDEBAR_TABS.map(({ value, icon, label }) => (
+            {sidebarTabs.map(({ value, icon, label }) => (
               <ToggleChip
                 key={value}
                 icon={icon}

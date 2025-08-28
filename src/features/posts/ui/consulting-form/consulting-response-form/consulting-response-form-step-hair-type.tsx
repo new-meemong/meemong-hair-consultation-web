@@ -8,27 +8,31 @@ import ConsultingFormOptionList from '../consulting-form-option-list';
 
 import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
 
-export default function ConsultingResponseFormStep2() {
+export default function ConsultingResponseFormStepHairType() {
   const { control, setValue } = useFormContext<ConsultingResponseFormValues>();
 
   const formValue = useWatch({
     control,
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.option2,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE,
   });
 
   const needStoreConsulting = formValue === null;
 
   const handleNeedStoreConsultingChange = () => {
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.option2, needStoreConsulting ? undefined : null, {
-      shouldDirty: true,
-    });
+    setValue(
+      CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE,
+      needStoreConsulting ? undefined : null,
+      {
+        shouldDirty: true,
+      },
+    );
   };
 
   return (
     <div className="flex flex-col gap-7">
       <ConsultingFormOptionList
         options={HAIR_TYPE_OPTIONS}
-        name={CONSULTING_RESPONSE_FORM_FIELD_NAME.option2}
+        name={CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE}
         canReset={true}
       />
       <ConsultingResponseFormOptionNeedConsultation

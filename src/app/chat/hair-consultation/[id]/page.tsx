@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useSendMessage from '@/features/chat/hook/use-send-message';
@@ -13,14 +13,26 @@ import type { UserHairConsultationChatChannelType } from '@/features/chat/type/u
 import ChatDetailMoreButton from '@/features/chat/ui/chat-detail-more-button';
 import ChatMessageForm, { type ChatMessageInputValues } from '@/features/chat/ui/chat-message-form';
 import MessageSection from '@/features/chat/ui/message-section';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useLoadingContext } from '@/shared/context/loading-context';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { SiteHeader } from '@/widgets/header';
 
 export default function HairConsultationChatDetailPage() {
   const params = useParams();
   const chatChannelId = params.id as string;
-  // const searchParams = useSearchParams();
-  // const source = searchParams.get("source") || "web";
+  const searchParams = useSearchParams();
+  const isFromApp = searchParams.get(SEARCH_PARAMS.FROM) === 'app';
+
+  const { back } = useRouterWithUser();
+
+  const handleBackClick = () => {
+    if (isFromApp) {
+      window.closeWebview('close');
+    } else {
+      back();
+    }
+  };
 
   const [userChannel, setUserChannel] = useState<UserHairConsultationChatChannelType | null>(null);
 
@@ -152,6 +164,7 @@ export default function HairConsultationChatDetailPage() {
         showBackButton
         title={userChannel?.otherUser?.DisplayName ?? ''}
         rightComponent={<ChatDetailMoreButton chatChannel={userChannel} />}
+        onBackClick={handleBackClick}
       />
       <div className="flex-1 overflow-hidden">
         <MessageSection userChannel={userChannel} />
