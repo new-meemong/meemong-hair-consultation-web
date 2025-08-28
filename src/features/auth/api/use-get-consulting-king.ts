@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
+import type { GetConsultingKingResponse } from '@/entities/user/model/get-consulting-king-response';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '@/features/posts/constants/api';
 import { apiClient } from '@/shared/api/client';
 
@@ -9,6 +10,6 @@ export const getConsultingKingQueryKeyPrefix = () => GET_CONSULTING_KING_ENDPOIN
 export default function useGetConsultingKing() {
   return useQuery({
     queryKey: [getConsultingKingQueryKeyPrefix()],
-    queryFn: () => apiClient.get<ConsultingKing>(GET_CONSULTING_KING_ENDPOINT),
+    queryFn: () => apiClient.get<GetConsultingKingResponse>(GET_CONSULTING_KING_ENDPOINT),
   });
 }
