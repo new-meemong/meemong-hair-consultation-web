@@ -1,6 +1,5 @@
 import { format } from 'date-fns';
 
-import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
 import MoreIcon from '@/assets/icons/more-vertical.svg';
 import ReplyIcon from '@/assets/icons/reply.svg';
@@ -13,6 +12,7 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 import CommentAuthorProfile from './comment-author-profile';
 import CommentListItemSecret from './comment-list-item-secret';
+import ConsultingResponseButton from './consulting-response-button';
 
 const MORE_ACTION = {
   EDIT: 'edit',
@@ -42,6 +42,10 @@ export default function CommentListItem({
   const { user } = useAuthContext();
   const { push } = useRouterWithUser();
   const { postDetail } = usePostDetail();
+
+  const handleConsultingResponseClick = () => {
+    push(ROUTES.POSTS_CONSULTING_RESPONSE(postDetail.id.toString(), comment.answerId.toString()));
+  };
 
   const {
     isReply,
@@ -83,11 +87,8 @@ export default function CommentListItem({
     return [moreOption[MORE_ACTION.REPORT]];
   };
 
-  const isSecret = !isPostWriter && !isCommentWriter && isVisibleToModel;
-
-  const handleConsultingResponseClick = () => {
-    push(ROUTES.POSTS_CONSULTING_RESPONSE(postDetail.id.toString(), comment.answerId.toString()));
-  };
+  const isSecret = !isPostWriter && !isCommentWriter && !isConsultingAnswer && isVisibleToModel;
+  const lockIconShown = !isConsultingAnswer && isVisibleToModel;
 
   return (
     <div
@@ -106,7 +107,7 @@ export default function CommentListItem({
           <div className="flex flex-col gap-3 flex-1">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <CommentAuthorProfile author={comment.user} isSecret={isVisibleToModel} />
+                <CommentAuthorProfile author={comment.user} lockIconShown={lockIconShown} />
               </div>
               <div className="flex items-center gap-2">
                 {!isReply && (
@@ -132,14 +133,11 @@ export default function CommentListItem({
                 {format(createdAt, 'MM/dd hh:mm')}
               </span>
               {isConsultingAnswer && !isReply && (
-                <button
-                  type="button"
-                  className="w-full mt-1 py-3 px-4 flex items-center justify-between rounded-6 border-1 border-border-default typo-body-1-medium text-label-default"
+                <ConsultingResponseButton
+                  isCommentWriter={isCommentWriter}
+                  isPostWriter={isPostWriter}
                   onClick={handleConsultingResponseClick}
-                >
-                  컨설팅 결과 보러가기
-                  <ChevronRightIcon className="size-5 fill-label-info" />
-                </button>
+                />
               )}
             </div>
           </div>
