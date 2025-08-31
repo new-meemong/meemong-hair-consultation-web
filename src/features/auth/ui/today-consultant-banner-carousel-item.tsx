@@ -22,7 +22,7 @@ export default function TodayConsultantBannerCarouselItem({
       <div className="bg-alternative py-3 pl-3 pr-2.5 flex gap-4 items-center">
         <div className="flex gap-3 flex-1">
           <Image
-            src={profileImageUrl ?? '/today-consultant-default-profile.png'}
+            src={profileImageUrl ? profileImageUrl : '/today-consultant-default-profile.png'}
             alt={name}
             width={65}
             height={65}
