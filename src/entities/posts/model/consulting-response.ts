@@ -5,7 +5,7 @@ import type { ValueOf } from '@/shared/type/types';
 
 export type ConsultingResponseStyle = {
   images: string[];
-  description: string;
+  description: string | null;
 };
 
 export type ConsultingResponseTreatment = {
@@ -28,11 +28,11 @@ export type ConsultingResponse = {
   isHairTypeStoreConsultNeed: boolean;
   damageLevel: number | null;
   isDamageLevelStoreConsultNeed: boolean;
-  bangsRecommendation: ValueOf<typeof BANG_STYLE_LABEL>;
+  bangsRecommendation: ValueOf<typeof BANG_STYLE_LABEL> | null;
   isBangRecommendationConsultNeed: boolean;
   style: ConsultingResponseStyle;
   treatments: ConsultingResponseTreatment[];
-  comment?: string;
+  comment: string;
   isStoreConsultNeed: boolean;
   designer: ConsultingResponseDesigner;
   createdAt: string;

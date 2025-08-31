@@ -31,14 +31,14 @@ export default function useCreateConsultingResponse(hairConsultPostingId: string
       isBangRecommendationConsultNeed: data.bangsRecommendation.needStoreConsulting,
       style: {
         images: styleImageUrls?.dataList.map((image) => image.imageURL) ?? [],
-        description: data.style.description ?? '',
+        description: data.style.description ? data.style.description : undefined,
       },
       treatments: data.treatments.map((treatment) => ({
         treatmentName: treatment.operationName,
         minPrice: treatment.minPrice,
         maxPrice: treatment.maxPrice,
       })),
-      comment: data.comment,
+      comment: data.comment ? data.comment : undefined,
     };
 
     createConsultingResponse(request, {

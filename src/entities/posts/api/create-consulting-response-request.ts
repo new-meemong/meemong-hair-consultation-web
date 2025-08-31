@@ -13,7 +13,7 @@ export type CreateConsultingResponseRequest = {
   isBangRecommendationConsultNeed: boolean;
   style: {
     images: string[];
-    description: string;
+    description?: string;
   };
   treatments: {
     treatmentName: string;
