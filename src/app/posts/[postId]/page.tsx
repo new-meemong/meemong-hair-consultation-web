@@ -45,7 +45,11 @@ export default function PostDetailPage() {
   const isCommentFormReply = commentFormState.state === 'reply';
 
   const canWriteConsultingResponse =
-    postDetail && isConsultingPost(postDetail) && isUserDesigner && !isCommentFormReply;
+    postDetail &&
+    isConsultingPost(postDetail) &&
+    isUserDesigner &&
+    !isCommentFormReply &&
+    !postDetail.isAnsweredByDesigner;
 
   const handleContainerClick = useCallback(() => {
     handlers.resetCommentState();
