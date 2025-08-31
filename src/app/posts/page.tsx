@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
+import TodayConsultantBannerCarousel from '@/features/auth/ui/today-consultant-banner-carousel';
 import useGetPosts from '@/features/posts/api/use-get-posts';
 import { POST_TABS } from '@/features/posts/constants/post-tabs';
 import { usePostTab } from '@/features/posts/hooks/use-post-tab';
@@ -65,7 +65,7 @@ export default function PostsPage() {
 
       <div className="flex flex-col gap-5 flex-1 min-h-0">
         <Tab options={POST_TABS} value={activePostTab} onChange={setActivePostTab} />
-        <TodayConsultantBanner />
+        <TodayConsultantBannerCarousel />
         <div className="flex-1 flex flex-col min-h-0 gap-2">
           <div className="flex-shrink-0">
             <ToggleChipGroup className="flex overflow-x-auto scrollbar-hide px-5">

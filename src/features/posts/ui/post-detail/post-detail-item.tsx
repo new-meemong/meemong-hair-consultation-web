@@ -1,6 +1,6 @@
 import CommentIcon from '@/assets/icons/comment.svg';
 import ShareIcon from '@/assets/icons/share.svg';
-import TodayConsultantBanner from '@/features/auth/ui/today-consultant-banner';
+import TodayConsultantBannerCarousel from '@/features/auth/ui/today-consultant-banner-carousel';
 import { LikeButton } from '@/features/likes/ui/like-button';
 import { Separator } from '@/shared/ui';
 import ActionItem from '@/shared/ui/action-item';
@@ -35,7 +35,7 @@ function PostDetailItem() {
       </div>
       <Separator />
       <div className="py-3">
-        <TodayConsultantBanner />
+        <TodayConsultantBannerCarousel />
       </div>
     </>
   );
