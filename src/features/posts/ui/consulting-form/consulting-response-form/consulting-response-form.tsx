@@ -35,7 +35,7 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL,
     question: '고객님의 손상도를 골라주세요',
-    required: false,
+    required: true,
     children: <ConsultingResponseFormStepDamageLevel />,
   },
   {
