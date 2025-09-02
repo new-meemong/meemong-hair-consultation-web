@@ -14,7 +14,9 @@ import type { PostFormValues } from '@/features/posts/types/post-form-values';
 import type { WritingStep } from '@/features/posts/types/user-writing-content';
 import ConsultingPostForm from '@/features/posts/ui/consulting-form/consulting-post-form/consulting-post-form';
 import PostForm from '@/features/posts/ui/post-form/post-form';
+import { ROUTES } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -72,7 +74,9 @@ export default function CreatePostPage() {
           type: 'success',
           message: '업로드가 완료되었습니다!',
         });
-        replace('/posts');
+        replace(ROUTES.POSTS, {
+          [SEARCH_PARAMS.POST_TAB]: selectedTab,
+        });
       },
     });
   };
