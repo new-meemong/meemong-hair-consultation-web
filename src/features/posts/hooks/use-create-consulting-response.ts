@@ -24,7 +24,7 @@ export default function useCreateConsultingResponse(hairConsultPostingId: string
       hairType: data.hairType.value ? HAIR_TYPE_LABEL[data.hairType.value] : undefined,
       isHairTypeStoreConsultNeed: data.hairType.needStoreConsulting,
       damageLevel: data.damageLevel.value ?? undefined,
-      isDamageLevelStoreConsultNeed: data.damageLevel.needStoreConsulting,
+      isDamageLevelConsultNeed: data.damageLevel.needStoreConsulting,
       bangsRecommendation: data.bangsRecommendation.value
         ? BANG_STYLE_LABEL[data.bangsRecommendation.value]
         : undefined,

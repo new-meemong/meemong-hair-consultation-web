@@ -8,7 +8,7 @@ export type CreateConsultingResponseRequest = {
   hairType?: ValueOf<typeof HAIR_TYPE_LABEL>;
   isHairTypeStoreConsultNeed: boolean;
   damageLevel?: number;
-  isDamageLevelStoreConsultNeed: boolean;
+  isDamageLevelConsultNeed: boolean;
   bangsRecommendation?: ValueOf<typeof BANG_STYLE_LABEL>;
   isBangRecommendationConsultNeed: boolean;
   style: {

@@ -11,7 +11,8 @@ type ConsultingResponseCurrentStateContainerProps = {
   faceShape: ValueOf<typeof FACE_SHAPE> | null;
   hairType: ValueOf<typeof HAIR_TYPE> | null;
   isHairTypeStoreConsultNeed: boolean;
-  damageLevel?: number | null;
+  damageLevel: number | null;
+  isDamageLevelStoreConsultNeed: boolean;
 };
 
 export default function ConsultingResponseCurrentStateContainer({
@@ -19,6 +20,7 @@ export default function ConsultingResponseCurrentStateContainer({
   hairType,
   isHairTypeStoreConsultNeed,
   damageLevel,
+  isDamageLevelStoreConsultNeed,
 }: ConsultingResponseCurrentStateContainerProps) {
   return (
     <div className="flex flex-col gap-8">
@@ -28,12 +30,11 @@ export default function ConsultingResponseCurrentStateContainer({
         value={hairType}
         isStoreConsultNeed={isHairTypeStoreConsultNeed}
       />
-      {damageLevel && (
-        <>
-          <Separator />
-          <ConsultingResponseHairCondition damageLevel={damageLevel} />
-        </>
-      )}
+      <Separator />
+      <ConsultingResponseHairCondition
+        damageLevel={damageLevel}
+        isStoreConsultNeed={isDamageLevelStoreConsultNeed}
+      />
     </div>
   );
 }

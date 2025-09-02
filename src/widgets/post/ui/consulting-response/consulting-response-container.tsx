@@ -44,9 +44,8 @@ export default function ConsultingResponseContainer({
             faceShape={faceShape}
             hairType={hairType}
             isHairTypeStoreConsultNeed={consultingResponse.isHairTypeStoreConsultNeed}
-            damageLevel={
-              consultingResponse.damageLevel ? Number(consultingResponse.damageLevel) : null
-            }
+            damageLevel={consultingResponse.damageLevel}
+            isDamageLevelStoreConsultNeed={consultingResponse.isDamageLevelConsultNeed}
           />
         );
       case CONSULTING_RESPONSE_TAB.RECOMMEND_STYLE:

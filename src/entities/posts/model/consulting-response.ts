@@ -27,13 +27,12 @@ export type ConsultingResponse = {
   hairType: ValueOf<typeof HAIR_TYPE_LABEL> | null;
   isHairTypeStoreConsultNeed: boolean;
   damageLevel: number | null;
-  isDamageLevelStoreConsultNeed: boolean;
+  isDamageLevelConsultNeed: boolean;
   bangsRecommendation: ValueOf<typeof BANG_STYLE_LABEL> | null;
   isBangRecommendationConsultNeed: boolean;
   style: ConsultingResponseStyle;
   treatments: ConsultingResponseTreatment[];
   comment: string;
-  isStoreConsultNeed: boolean;
   designer: ConsultingResponseDesigner;
   createdAt: string;
   updatedAt: string;
