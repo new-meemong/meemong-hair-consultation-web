@@ -14,10 +14,10 @@ interface LikeButtonProps {
 export function LikeButton({ postId, liked, likeCount }: LikeButtonProps) {
   const toggleFavoriteMutation = usePostFavoriteMutation();
 
-  const handleToggle = (pressed: boolean) => {
+  const handleToggle = (liked: boolean) => {
     toggleFavoriteMutation.mutate({
       hairConsultPostingId: postId,
-      liked: !pressed,
+      liked,
     });
   };
 
