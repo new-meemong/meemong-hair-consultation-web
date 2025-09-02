@@ -171,3 +171,124 @@ export class ApiClient {
 
 // 기본 인스턴스는 토큰 없이 생성
 export const apiClient = new ApiClient();
+
+// 토큰 없이 요청하는 클라이언트 (웹뷰 로그인 등에 사용)
+const createApiInstanceWithoutAuth = () => {
+  return ky.create({
+    prefixUrl: `${API_BASE_URL}/api/v1`,
+    hooks: {
+      beforeRequest: [
+        // Request 로깅
+        (request) => {
+          console.group('🚀 API Request (No Auth)');
+          console.log('URL:', request.url);
+          console.log('Method:', request.method);
+          console.log('Headers:', Object.fromEntries(request.headers.entries()));
+
+          // Query parameters 로깅
+          const url = new URL(request.url);
+          if (url.searchParams.toString()) {
+            console.log('Query Params:', Object.fromEntries(url.searchParams.entries()));
+          }
+
+          // Body 로깅 (POST, PUT, PATCH 요청의 경우)
+          if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+            request
+              .clone()
+              .text()
+              .then((body) => {
+                if (body) {
+                  try {
+                    const parsedBody = JSON.parse(body);
+                    console.log('Request Body:', parsedBody);
+                  } catch {
+                    console.log('Request Body (raw):', body);
+                  }
+                }
+              })
+              .catch(() => {
+                console.log('Request Body: [Unable to read]');
+              });
+          }
+          console.groupEnd();
+        },
+      ],
+      afterResponse: [
+        // Response 로깅
+        async (request, options, response) => {
+          console.group('✅ API Response (No Auth)');
+          console.log('URL:', request.url);
+          console.log('Method:', request.method);
+          console.log('Status:', response.status, response.statusText);
+          console.log('Response Headers:', Object.fromEntries(response.headers.entries()));
+
+          // Response body 로깅
+          try {
+            const responseClone = response.clone();
+            const body = await responseClone.text();
+            if (body) {
+              try {
+                const parsedBody = JSON.parse(body);
+                console.log('Response Body:', parsedBody);
+              } catch {
+                console.log('Response Body (raw):', body);
+              }
+            }
+          } catch (error) {
+            console.log('Response Body: [Unable to read]', error);
+          }
+          console.groupEnd();
+
+          return response;
+        },
+      ],
+      beforeError: [
+        async (error: HTTPError) => {
+          const { response } = error;
+
+          // Error 로깅
+          console.group('❌ API Error (No Auth)');
+          console.log('URL:', error.request?.url);
+          console.log('Method:', error.request?.method);
+          console.log('Status:', response?.status, response?.statusText);
+          console.log('Error Message:', error.message);
+
+          if (response && response.body) {
+            try {
+              const errorData = (await response.json()) as { error: ApiError };
+              console.log('Error Response Body:', errorData);
+              error.message = errorData.error.message;
+
+              Object.defineProperty(error, 'response', {
+                value: Object.assign(response, {
+                  data: errorData,
+                }),
+                enumerable: true,
+                configurable: true,
+              });
+
+              return error;
+            } catch (parseError) {
+              console.error('Error parsing API error response:', parseError);
+              return error;
+            }
+          }
+          console.groupEnd();
+          return error;
+        },
+      ],
+    },
+    timeout: 30000,
+  });
+};
+
+export class ApiClientWithoutAuth {
+  private api = createApiInstanceWithoutAuth();
+
+  async post<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
+    return this.api.post(endpoint, { json: data }).json<ApiResponse<T>>();
+  }
+}
+
+// 토큰 없이 요청하는 클라이언트 인스턴스
+export const apiClientWithoutAuth = new ApiClientWithoutAuth();
