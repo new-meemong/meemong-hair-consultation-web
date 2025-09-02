@@ -8,12 +8,12 @@ export type CreateConsultingResponseRequest = {
   hairType?: ValueOf<typeof HAIR_TYPE_LABEL>;
   isHairTypeStoreConsultNeed: boolean;
   damageLevel?: number;
-  isDamageLevelStoreConsultNeed: boolean;
-  bangsRecommendation: ValueOf<typeof BANG_STYLE_LABEL>;
+  isDamageLevelConsultNeed: boolean;
+  bangsRecommendation?: ValueOf<typeof BANG_STYLE_LABEL>;
   isBangRecommendationConsultNeed: boolean;
   style: {
     images: string[];
-    description: string;
+    description?: string;
   };
   treatments: {
     treatmentName: string;

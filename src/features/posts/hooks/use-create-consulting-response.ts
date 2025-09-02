@@ -21,24 +21,24 @@ export default function useCreateConsultingResponse(hairConsultPostingId: string
 
     const request: CreateConsultingResponseRequest = {
       faceShape: FACE_SHAPE_LABEL[data.faceShape],
-      hairType: data.hairType ? HAIR_TYPE_LABEL[data.hairType] : undefined,
-      isHairTypeStoreConsultNeed: data.hairType === null,
-      damageLevel: data.damageLevel ?? undefined,
-      isDamageLevelStoreConsultNeed: data.damageLevel === null,
-      bangsRecommendation: data.bangsRecommendation
-        ? BANG_STYLE_LABEL[data.bangsRecommendation]
-        : '모두 다 잘 어울려요',
-      isBangRecommendationConsultNeed: data.bangsRecommendation === null,
+      hairType: data.hairType.value ? HAIR_TYPE_LABEL[data.hairType.value] : undefined,
+      isHairTypeStoreConsultNeed: data.hairType.needStoreConsulting,
+      damageLevel: data.damageLevel.value ?? undefined,
+      isDamageLevelConsultNeed: data.damageLevel.needStoreConsulting,
+      bangsRecommendation: data.bangsRecommendation.value
+        ? BANG_STYLE_LABEL[data.bangsRecommendation.value]
+        : undefined,
+      isBangRecommendationConsultNeed: data.bangsRecommendation.needStoreConsulting,
       style: {
         images: styleImageUrls?.dataList.map((image) => image.imageURL) ?? [],
-        description: data.style.description ?? '',
+        description: data.style.description ? data.style.description : undefined,
       },
       treatments: data.treatments.map((treatment) => ({
         treatmentName: treatment.operationName,
         minPrice: treatment.minPrice,
         maxPrice: treatment.maxPrice,
       })),
-      comment: data.comment,
+      comment: data.comment ? data.comment : undefined,
     };
 
     createConsultingResponse(request, {

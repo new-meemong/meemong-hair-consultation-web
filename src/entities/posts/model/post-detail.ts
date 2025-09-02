@@ -46,4 +46,5 @@ export type PostDetail = {
   treatments?: Treatment[];
   myImages?: MyImages;
   aspirations?: Aspirations;
+  isAnsweredByDesigner?: boolean;
 };

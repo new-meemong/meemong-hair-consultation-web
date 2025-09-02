@@ -10,10 +10,10 @@ import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 
 type CommentAuthorProfileProps = {
   author: CommentUser;
-  isSecret: boolean;
+  lockIconShown: boolean;
 };
 
-export default function CommentAuthorProfile({ author, isSecret }: CommentAuthorProfileProps) {
+export default function CommentAuthorProfile({ author, lockIconShown }: CommentAuthorProfileProps) {
   const { user, isUserDesigner } = useAuthContext();
 
   const isWriter = user.id === author.userId;
@@ -62,7 +62,7 @@ export default function CommentAuthorProfile({ author, isSecret }: CommentAuthor
         >
           {displayedName}
         </p>
-        {isSecret && <LockIcon className="size-3.5 fill-label-placeholder" />}
+        {lockIconShown && <LockIcon className="size-3.5 fill-label-placeholder" />}
       </div>
     </div>
   );

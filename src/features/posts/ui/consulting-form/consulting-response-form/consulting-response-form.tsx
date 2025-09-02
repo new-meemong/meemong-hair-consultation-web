@@ -29,13 +29,13 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE,
     question: '고객님의 모발 타입을 골라주세요',
-    required: false,
+    required: true,
     children: <ConsultingResponseFormStepHairType />,
   },
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL,
     question: '고객님의 손상도를 골라주세요',
-    required: false,
+    required: true,
     children: <ConsultingResponseFormStepDamageLevel />,
   },
   {
@@ -100,9 +100,13 @@ export default function ConsultingResponseForm({
       const value = method.getValues(name);
       return !!value;
     }
-    if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION) {
-      const value = method.getValues(name);
-      return value !== undefined;
+    if (
+      name === CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE ||
+      name === CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL ||
+      name === CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION
+    ) {
+      const { value, needStoreConsulting } = method.getValues(name);
+      return value !== null || (value === null && needStoreConsulting);
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE) {
       const value = method.getValues(name);

@@ -34,12 +34,18 @@ const BANG_TYLE_VALUES = [
 export const consultingResponseFormSchema = z.object({
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID]: z.string(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE]: z.enum(FACE_SHAPE_VALUES),
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE]: z.enum(HAIR_TYPE_VALUES).nullable().optional(),
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL]: z.number().nullable().optional(),
-  [CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION]: z
-    .enum(BANG_TYLE_VALUES)
-    .nullable()
-    .optional(),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE]: z.object({
+    value: z.enum(HAIR_TYPE_VALUES).nullable(),
+    needStoreConsulting: z.boolean(),
+  }),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL]: z.object({
+    value: z.number().nullable(),
+    needStoreConsulting: z.boolean(),
+  }),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION]: z.object({
+    value: z.enum(BANG_TYLE_VALUES).nullable(),
+    needStoreConsulting: z.boolean(),
+  }),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE]: z.object({
     images: z.array(z.instanceof(File)),
     description: z.string().optional(),
