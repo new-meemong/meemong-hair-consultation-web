@@ -2,7 +2,7 @@ import '../styles/globals.css';
 
 import { Suspense } from 'react';
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import Script from 'next/script';
 
@@ -20,6 +20,15 @@ const pretendard = localFont({
   weight: '45 920',
   variable: '--font-pretendard',
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  viewportFit: 'cover',
+  initialScale: 1,
+  userScalable: false,
+  maximumScale: 1.0,
+  minimumScale: 1.0,
+};
 
 export const metadata: Metadata = {
   title: 'Meemong',
