@@ -16,8 +16,6 @@ import { Button } from '@/shared/ui/button';
 import ControlledCheckbox from '@/shared/ui/controlled-checkbox';
 import { Textarea } from '@/shared/ui/textarea';
 
-
-
 export const COMMENT_FORM_FIELD_NAME = {
   content: 'content',
   isVisibleToModel: 'isVisibleToModel',
@@ -128,23 +126,16 @@ export function CommentForm({
               </Button>
             </div>
           </div>
-          {isUserDesigner && (
-            <>
-              <Separator />
-              <div className="flex items-center px-5 py-3 gap-2">
-                <ControlledCheckbox
-                  name={COMMENT_FORM_FIELD_NAME.isVisibleToModel}
-                  shape="square"
-                />
-                <Label
-                  htmlFor={COMMENT_FORM_FIELD_NAME.isVisibleToModel}
-                  className="typo-body-3-regular"
-                >
-                  모델에게만 공개할게요
-                </Label>
-              </div>
-            </>
-          )}
+          <Separator />
+          <div className={cn('flex items-center px-5 py-3 gap-2', !isUserDesigner && 'hidden')}>
+            <ControlledCheckbox name={COMMENT_FORM_FIELD_NAME.isVisibleToModel} shape="square" />
+            <Label
+              htmlFor={COMMENT_FORM_FIELD_NAME.isVisibleToModel}
+              className="typo-body-3-regular"
+            >
+              모델에게만 공개할게요
+            </Label>
+          </div>
         </form>
       </FormProvider>
     </div>
