@@ -49,9 +49,15 @@ export default function HairConsultationChatPage() {
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto pb-20">
-      {chatChannelUserMetas.map((chatChannel) => (
-        <ChatChannelListItem key={chatChannel.channelId} chatChannel={chatChannel} />
-      ))}
+      {chatChannelUserMetas.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-full">
+          <p className="typo-body-1-medium text-label-placeholder">아직 받은 채팅이 없습니다</p>
+        </div>
+      ) : (
+        chatChannelUserMetas.map((chatChannel) => (
+          <ChatChannelListItem key={chatChannel.channelId} chatChannel={chatChannel} />
+        ))
+      )}
     </div>
   );
 }
