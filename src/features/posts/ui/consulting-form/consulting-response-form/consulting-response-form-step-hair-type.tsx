@@ -32,7 +32,7 @@ export default function ConsultingResponseFormStepHairType() {
     <div className="flex flex-col gap-7">
       <ConsultingFormOptionList
         options={HAIR_TYPE_OPTIONS}
-        name={CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE}
+        name={`${CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE}.value`}
       />
       <ConsultingResponseFormOptionNeedConsultation
         value={needStoreConsulting}

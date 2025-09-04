@@ -10,7 +10,6 @@ export type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {
 };
 
 export default function Checkbox({ className, shape = 'square', id, ...props }: CheckboxProps) {
-  console.log('props.checked', props.checked);
   return (
     <label htmlFor={id} className="size-6 flex items-center justify-center relative cursor-pointer">
       <input type="checkbox" id={id} className={cn('sr-only', className)} {...props} />
