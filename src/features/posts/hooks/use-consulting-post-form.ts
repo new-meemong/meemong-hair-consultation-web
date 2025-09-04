@@ -23,6 +23,7 @@ const DEFAULT_FORM_VALUE = {
     images: [],
     description: '',
   },
+  [CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE]: null,
   [CONSULTING_POST_FORM_FIELD_NAME.CONTENT]: '',
   [CONSULTING_POST_FORM_FIELD_NAME.TITLE]: '',
 };
