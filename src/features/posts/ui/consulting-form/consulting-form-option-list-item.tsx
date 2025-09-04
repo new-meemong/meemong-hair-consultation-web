@@ -1,4 +1,5 @@
-import { Checkbox, Label } from '@/shared';
+import { Label } from '@/shared';
+import Checkbox from '@/shared/ui/checkbox';
 
 import type { ConsultingFormOption } from '../../types/consulting-form-option';
 
@@ -19,7 +20,12 @@ export default function ConsultingFormOptionListItem({
     <div className="flex flex-col gap-7">
       <div className="rounded-4 bg-alternative">
         <div className="flex gap-4 items-center px-4 py-3">
-          <Checkbox id={value} shape="round" checked={checked} onCheckedChange={onCheckedChange} />
+          <Checkbox
+            id={value}
+            shape="round"
+            checked={checked}
+            onChange={() => onCheckedChange(!checked)}
+          />
           <Label htmlFor={value} className="flex-1 typo-body-2-long-regular text-label-sub">
             {label}
           </Label>

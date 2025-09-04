@@ -5,7 +5,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { format } from 'date-fns';
 
 import { cn } from '@/lib/utils';
-import { Button, Checkbox, Input, Label } from '@/shared';
+import { Button, Input, Label } from '@/shared';
+import Checkbox from '@/shared/ui/checkbox';
 import FormItem from '@/shared/ui/form-item';
 import useYearMonthPicker from '@/shared/ui/hooks/use-year-month-picker';
 
@@ -134,7 +135,7 @@ export default function ConsultingPostFormOperationForm() {
           id="no-operation"
           shape="round"
           checked={noOperation}
-          onCheckedChange={handleNoOperationChange}
+          onChange={handleNoOperationChange}
         />
       </div>
     </div>

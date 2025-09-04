@@ -33,7 +33,6 @@ export default function ConsultingResponseFormStepHairType() {
       <ConsultingFormOptionList
         options={HAIR_TYPE_OPTIONS}
         name={CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE}
-        canReset={true}
       />
       <ConsultingResponseFormOptionNeedConsultation
         value={needStoreConsulting}

@@ -12,7 +12,6 @@ export { BottomSheet } from './bottom-sheet';
 export { Button } from './button';
 export { Carousel } from './carousel';
 export { ChatInput } from './chat-input';
-export { Checkbox } from './checkbox';
 export { Chip } from './chip';
 export { Drawer, DrawerClose } from './drawer';
 export { Avatar, AvatarImage, AvatarFallback } from './avatar';
