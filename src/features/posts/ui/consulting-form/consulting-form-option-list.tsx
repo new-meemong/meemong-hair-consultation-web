@@ -22,7 +22,7 @@ export default function ConsultingFormOptionList({
     if (canReset) {
       const currentValue = getValues(name);
       if (currentValue === value) {
-        setValue(name, undefined, { shouldDirty: true });
+        setValue(name, null, { shouldDirty: true });
         return;
       }
     }

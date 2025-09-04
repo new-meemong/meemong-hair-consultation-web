@@ -40,7 +40,7 @@ export default function ConsultingResponseFormStepBangsRecommendation() {
     <div className="flex flex-col gap-7">
       <ConsultingFormOptionList
         options={options}
-        name={CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION}
+        name={`${CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION}.value`}
       />
       <ConsultingResponseFormOptionNeedConsultation
         value={needStoreConsulting}

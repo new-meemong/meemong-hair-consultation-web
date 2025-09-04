@@ -49,7 +49,7 @@ export const consultingPostFormSchema = z.object({
     images: z.array(z.instanceof(File)).optional(),
     description: z.string(),
   }),
-  [CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE]: z.enum(SKIN_TONE_OPTION).optional(),
+  [CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE]: z.enum(SKIN_TONE_OPTION).nullable(),
   [CONSULTING_POST_FORM_FIELD_NAME.CONTENT]: z.string().optional(),
   [CONSULTING_POST_FORM_FIELD_NAME.TITLE]: z.string().optional(),
 });
