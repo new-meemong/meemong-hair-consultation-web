@@ -1,5 +1,3 @@
-import { useCallback } from 'react';
-
 import ProfileIcon from '@/assets/icons/profile.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
@@ -20,15 +18,6 @@ export default function PostDetailAuthorProfile({
   const { isUserDesigner } = useAuthContext();
 
   const shouldShowRegion = isUserDesigner && region;
-
-  const handleClick = useCallback(
-    () => {},
-    [
-      //TODO: 작성자가 모델일 때 '채팅은 모델만 요청할 수 있어요' 바텀시트 추가
-    ],
-  );
-
-  console.log(handleClick);
 
   return (
     <div className="flex items-center gap-2">
