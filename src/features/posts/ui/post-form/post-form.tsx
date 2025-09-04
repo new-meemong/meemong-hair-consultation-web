@@ -59,7 +59,6 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
   };
 
   const addImageFiles = (newImageFiles: File[]) => {
-    console.log('newImageFiles', newImageFiles);
     const updatedImageFiles = [...imageFiles, ...newImageFiles];
 
     method.setValue(POST_FORM_FIELD_NAME.imageFiles, updatedImageFiles, { shouldDirty: true });

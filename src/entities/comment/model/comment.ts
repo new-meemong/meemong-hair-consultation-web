@@ -4,7 +4,7 @@ import type { ValueOf } from '@/shared/type/types';
 export type CommentUser = {
   userId: number;
   name: string;
-  profileImageUrl: string | null;
+  profilePictureURL: string | null;
   address?: string;
   companyName: string | null;
   role: ValueOf<typeof USER_ROLE>;

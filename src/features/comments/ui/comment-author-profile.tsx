@@ -18,7 +18,7 @@ export default function CommentAuthorProfile({ author, lockIconShown }: CommentA
 
   const isWriter = user.id === author.userId;
 
-  const { profileImageUrl, name } = author;
+  const { profilePictureURL, name } = author;
 
   const displayedName = isWriter ? `${name}(글쓴이)` : name;
 
@@ -45,8 +45,8 @@ export default function CommentAuthorProfile({ author, lockIconShown }: CommentA
       onClick={handleClick}
     >
       <Avatar className="size-8">
-        {profileImageUrl ? (
-          <AvatarImage src={profileImageUrl} className="size-8 rounded-6" />
+        {profilePictureURL ? (
+          <AvatarImage src={profilePictureURL} className="size-8 rounded-6" />
         ) : (
           <AvatarFallback>
             <ProfileIcon className="size-8 bg-label-info" />
