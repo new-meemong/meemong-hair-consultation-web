@@ -6,13 +6,15 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 import useDeletePost from '../../hooks/use-delete-post';
 
-
-
 type PostDetailMoreButtonProps = {
   postId: string;
+  isConsultingPost: boolean;
 };
 
-export default function PostDetailMoreButton({ postId }: PostDetailMoreButtonProps) {
+export default function PostDetailMoreButton({
+  postId,
+  isConsultingPost,
+}: PostDetailMoreButtonProps) {
   const { push } = useRouterWithUser();
 
   const handleEdit = useCallback(() => {
@@ -23,20 +25,27 @@ export default function PostDetailMoreButton({ postId }: PostDetailMoreButtonPro
 
   const { handleDeletePost } = useDeletePost(postId);
 
-  const moreOptions = useMemo(
-    () => [
-      {
-        label: '수정하기',
-        onClick: handleEdit,
-      },
+  const moreOptions = useMemo(() => {
+    const baseOptions = [
       {
         label: '삭제하기',
         onClick: handleDeletePost,
         className: 'text-negative',
       },
-    ],
-    [handleEdit, handleDeletePost],
-  );
+    ];
+
+    if (!isConsultingPost) {
+      return [
+        {
+          label: '수정하기',
+          onClick: handleEdit,
+        },
+        ...baseOptions,
+      ];
+    }
+
+    return baseOptions;
+  }, [isConsultingPost, handleEdit, handleDeletePost]);
 
   return (
     <MoreOptionsMenu

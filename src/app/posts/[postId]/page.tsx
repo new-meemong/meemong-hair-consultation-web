@@ -44,9 +44,11 @@ export default function PostDetailPage() {
 
   const isCommentFormReply = commentFormState.state === 'reply';
 
+  const isConsulting = postDetail ? isConsultingPost(postDetail) : false;
+
   const canWriteConsultingResponse =
     postDetail &&
-    isConsultingPost(postDetail) &&
+    isConsulting &&
     isUserDesigner &&
     !isCommentFormReply &&
     !postDetail.isAnsweredByDesigner;
@@ -74,7 +76,11 @@ export default function PostDetailPage() {
         <SiteHeader
           title="헤어상담"
           showBackButton
-          rightComponent={isWriter && <PostDetailMoreButton postId={postId.toString()} />}
+          rightComponent={
+            isWriter && (
+              <PostDetailMoreButton postId={postId.toString()} isConsultingPost={isConsulting} />
+            )
+          }
         />
         <div className="flex-1 overflow-y-auto" onClick={handleContainerClick}>
           <PostDetailContainer>
