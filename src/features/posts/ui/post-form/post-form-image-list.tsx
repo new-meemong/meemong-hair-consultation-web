@@ -1,4 +1,5 @@
 import { IMAGE_TYPE } from '@/shared/constants/image-type';
+import { getImages } from '@/shared/lib/get-images';
 import type { Image } from '@/shared/ui/image-form-item';
 import ImageFormItem from '@/shared/ui/image-form-item';
 
@@ -7,22 +8,6 @@ type ImageListProps = {
   imageUrls: string[];
   setImageFiles: (newImageFiles: File[]) => void;
   setImageUrls: (newImageUrls: string[]) => void;
-};
-
-const getImages = (imageFiles: File[], imageUrls: string[]): Image[] => {
-  const convertedImageFiles = imageFiles.map((file) => ({
-    type: IMAGE_TYPE.FILE,
-    name: file.name,
-    src: URL.createObjectURL(file),
-  }));
-
-  const convertedImageUrls = imageUrls.map((url) => ({
-    type: IMAGE_TYPE.URL,
-    name: url,
-    src: url,
-  }));
-
-  return [...convertedImageUrls, ...convertedImageFiles];
 };
 
 export default function PostFormImageList({

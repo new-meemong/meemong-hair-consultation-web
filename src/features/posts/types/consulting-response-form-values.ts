@@ -47,12 +47,13 @@ export const consultingResponseFormSchema = z.object({
     needStoreConsulting: z.boolean(),
   }),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE]: z.object({
-    images: z.array(z.instanceof(File)),
+    imageFiles: z.array(z.instanceof(File)),
+    imageUrls: z.array(z.string()),
     description: z.string().optional(),
   }),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS]: z.array(
     z.object({
-      operationName: z.string(),
+      treatmentName: z.string(),
       minPrice: z.number(),
       maxPrice: z.number(),
     }),

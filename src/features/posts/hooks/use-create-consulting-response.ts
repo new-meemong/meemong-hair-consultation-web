@@ -17,7 +17,7 @@ export default function useCreateConsultingResponse(hairConsultPostingId: string
     { onSuccess }: { onSuccess: () => void },
   ) => {
     const styleImageUrls =
-      data.style.images.length > 0 ? await uploadImages(data.style.images) : null;
+      data.style.imageFiles.length > 0 ? await uploadImages(data.style.imageFiles) : null;
 
     const request: CreateConsultingResponseRequest = {
       faceShape: FACE_SHAPE_LABEL[data.faceShape],
@@ -34,7 +34,7 @@ export default function useCreateConsultingResponse(hairConsultPostingId: string
         description: data.style.description ? data.style.description : undefined,
       },
       treatments: data.treatments.map((treatment) => ({
-        treatmentName: treatment.operationName,
+        treatmentName: treatment.treatmentName,
         minPrice: treatment.minPrice,
         maxPrice: treatment.maxPrice,
       })),

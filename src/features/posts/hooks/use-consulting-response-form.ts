@@ -17,7 +17,8 @@ const DEFAULT_FORM_VALUES: Partial<ConsultingResponseFormValues> = {
     needStoreConsulting: false,
   },
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE]: {
-    images: [],
+    imageFiles: [],
+    imageUrls: [],
     description: '',
   },
 };

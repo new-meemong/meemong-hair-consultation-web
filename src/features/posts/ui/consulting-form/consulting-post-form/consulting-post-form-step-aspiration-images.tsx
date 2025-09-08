@@ -27,12 +27,9 @@ export default function ConsultingPostFormStepAspirationImages() {
     });
   };
 
-  const handleImageDelete = (index: number) => {
-    const newImages = [...currentImages];
-    newImages.splice(index, 1);
-
+  const setImageFiles = (newImageFiles: File[]) => {
     setValue(CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
-      images: newImages,
+      images: newImageFiles,
       description: currentOptionValue?.description,
     });
   };
@@ -41,9 +38,9 @@ export default function ConsultingPostFormStepAspirationImages() {
     <div className="flex flex-col gap-7">
       <FormItem label="이미지 첨부" description={`${MAX_IMAGE_COUNT}개까지 업로드 할 수 있어요`}>
         <ImageUploaderList
-          images={currentImages}
+          imageFiles={currentImages}
           onUpload={handleImageUpload}
-          onDelete={handleImageDelete}
+          setImageFiles={setImageFiles}
           maxImageCount={MAX_IMAGE_COUNT}
         />
       </FormItem>
