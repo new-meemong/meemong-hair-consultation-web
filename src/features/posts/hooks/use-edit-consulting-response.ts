@@ -32,24 +32,24 @@ export default function useEditConsultingResponse({
 
       const request: CreateConsultingResponseRequest = {
         faceShape: FACE_SHAPE_LABEL[data.faceShape],
-        hairType: data.hairType.value ? HAIR_TYPE_LABEL[data.hairType.value] : undefined,
+        hairType: data.hairType.value ? HAIR_TYPE_LABEL[data.hairType.value] : null,
         isHairTypeStoreConsultNeed: data.hairType.needStoreConsulting,
-        damageLevel: data.damageLevel.value ?? undefined,
+        damageLevel: data.damageLevel.value ?? null,
         isDamageLevelConsultNeed: data.damageLevel.needStoreConsulting,
         bangsRecommendation: data.bangsRecommendation.value
           ? BANG_STYLE_LABEL[data.bangsRecommendation.value]
-          : undefined,
+          : null,
         isBangRecommendationConsultNeed: data.bangsRecommendation.needStoreConsulting,
         style: {
           images: [...data.style.imageUrls, ...newImageUrls],
-          description: data.style.description ? data.style.description : undefined,
+          description: data.style.description ? data.style.description : '',
         },
         treatments: data.treatments.map((treatment) => ({
           treatmentName: treatment.treatmentName,
           minPrice: treatment.minPrice,
           maxPrice: treatment.maxPrice,
         })),
-        comment: data.comment ? data.comment : undefined,
+        comment: data.comment ? data.comment : '',
       };
 
       editConsultingResponseMutate(request, { onSuccess });
