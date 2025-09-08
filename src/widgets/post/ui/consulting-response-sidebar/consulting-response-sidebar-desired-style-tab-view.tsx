@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
 import { Separator } from '@/shared';
+import { isValidUrl } from '@/shared/lib/is-valid-url';
 
 import ConsultingResponseSidebarItem from './consulting-response-sidebar-item';
 
@@ -26,16 +27,18 @@ export default function ConsultingResponseSidebarDesiredStyleTabView({
           <Separator />
         </div>
       )}
-      {images.map((image, index) => (
-        <Image
-          key={`${image}-${index}`}
-          src={image}
-          alt="추구미 이미지"
-          className="size-62 object-cover"
-          width={248}
-          height={248}
-        />
-      ))}
+      {images.map((image, index) =>
+        isValidUrl(image) ? (
+          <Image
+            key={`${image}-${index}`}
+            src={image}
+            alt="추구미 이미지"
+            className="size-62 object-cover"
+            width={248}
+            height={248}
+          />
+        ) : null,
+      )}
     </div>
   );
 }
