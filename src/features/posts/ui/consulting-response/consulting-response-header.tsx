@@ -9,6 +9,7 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 
 type ConsultingResponseHeaderProps = {
+  isPostWriter: boolean;
   postId: string;
   author: ConsultingResponseDesigner;
   createdAt: string;
@@ -16,6 +17,7 @@ type ConsultingResponseHeaderProps = {
 };
 
 export default function ConsultingResponseHeader({
+  isPostWriter,
   postId,
   author,
   createdAt,
@@ -25,7 +27,7 @@ export default function ConsultingResponseHeader({
   const { user } = useAuthContext();
   const { id, name, profileImageUrl } = author;
 
-  const isWriter = user.id === id;
+  const isResponseWriter = user.id === id;
 
   const handleEditClick = () => {
     push(ROUTES.POSTS_CONSULTING_RESPONSE_EDIT(postId, responseId));
@@ -58,12 +60,13 @@ export default function ConsultingResponseHeader({
           <p className="typo-body-3-regular text-label-placeholder">{`${format(createdAt, 'MM/dd hh:mm')} 작성`}</p>
         </div>
       </div>
+
       <div className="flex flex-col gap-3">
-        {isWriter ? (
+        {isResponseWriter ? (
           <Button theme="whiteBorder" onClick={handleEditClick}>
             수정하기
           </Button>
-        ) : (
+        ) : isPostWriter ? (
           <>
             <Button
               theme="whiteBorder"
@@ -77,7 +80,7 @@ export default function ConsultingResponseHeader({
               원글 보기
             </Button>
           </>
-        )}
+        ) : null}
       </div>
     </div>
   );
