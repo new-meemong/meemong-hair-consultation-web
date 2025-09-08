@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import ProfileIcon from '@/assets/icons/profile.svg';
 import type { ConsultingResponseDesigner } from '@/entities/posts/model/consulting-response';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
@@ -11,19 +12,29 @@ type ConsultingResponseHeaderProps = {
   postId: string;
   author: ConsultingResponseDesigner;
   createdAt: string;
+  responseId: string;
 };
 
 export default function ConsultingResponseHeader({
   postId,
   author,
   createdAt,
+  responseId,
 }: ConsultingResponseHeaderProps) {
   const { push } = useRouterWithUser();
+  const { user } = useAuthContext();
   const { id, name, profileImageUrl } = author;
+
+  const isWriter = user.id === id;
+
+  const handleEditClick = () => {
+    push(ROUTES.POSTS_CONSULTING_RESPONSE_EDIT(postId, responseId));
+  };
 
   const handleDesignerProfileClick = () => {
     goDesignerProfilePage(id.toString());
   };
+
   const handleOriginalPostClick = () => {
     push(ROUTES.POSTS_DETAIL(postId));
   };
@@ -48,17 +59,25 @@ export default function ConsultingResponseHeader({
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        <Button
-          theme="whiteBorder"
-          className="flex gap-2 items-center"
-          onClick={handleDesignerProfileClick}
-        >
-          디자이너 프로필 보기
-          <ChevronRightIcon className="size-5 fill-white" />
-        </Button>
-        <Button theme="whiteBorder" onClick={handleOriginalPostClick}>
-          원글 보기
-        </Button>
+        {isWriter ? (
+          <Button theme="whiteBorder" onClick={handleEditClick}>
+            수정하기
+          </Button>
+        ) : (
+          <>
+            <Button
+              theme="whiteBorder"
+              className="flex gap-2 items-center"
+              onClick={handleDesignerProfileClick}
+            >
+              디자이너 프로필 보기
+              <ChevronRightIcon className="size-5 fill-white" />
+            </Button>
+            <Button theme="whiteBorder" onClick={handleOriginalPostClick}>
+              원글 보기
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );

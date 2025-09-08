@@ -16,7 +16,7 @@ export default function ConsultingResponsePage() {
   );
   const consultingResponse = response?.data;
 
-  if (!consultingResponse || !postId) return null;
+  if (!consultingResponse || !postId || !responseId) return null;
 
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
@@ -26,6 +26,7 @@ export default function ConsultingResponsePage() {
           postId={postId.toString()}
           author={consultingResponse.designer}
           createdAt={consultingResponse.createdAt}
+          responseId={responseId.toString()}
         />
         <ConsultingResponseContainer consultingResponse={consultingResponse} />
       </div>
