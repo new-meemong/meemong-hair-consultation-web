@@ -22,7 +22,11 @@ export default function ConsultingResponsePage() {
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
       <SiteHeader title="컨설팅 답변" showBackButton />
       <div className="overflow-y-auto scrollbar-hide">
-        <ConsultingResponseHeader postId={postId.toString()} />
+        <ConsultingResponseHeader
+          postId={postId.toString()}
+          author={consultingResponse.designer}
+          createdAt={consultingResponse.createdAt}
+        />
         <ConsultingResponseContainer consultingResponse={consultingResponse} />
       </div>
     </div>

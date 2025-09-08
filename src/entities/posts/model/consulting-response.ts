@@ -14,7 +14,7 @@ export type ConsultingResponseTreatment = {
   maxPrice: number;
 };
 
-type ConsultingResponseDesigner = {
+export type ConsultingResponseDesigner = {
   id: number;
   name: string;
   profileImageUrl: string;
