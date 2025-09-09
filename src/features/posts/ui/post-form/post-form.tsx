@@ -90,7 +90,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
               placeholder="내 헤어 고민을 자유롭게 작성해보세요"
               className={cn(
                 'w-full flex-1 typo-body-1-long-regular',
-                isKeyboardVisible && 'min-h-80',
+                isKeyboardVisible && 'min-h-100',
               )}
             />
             {method.formState.errors[POST_FORM_FIELD_NAME.content] && (
@@ -114,7 +114,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
           </>
         )}
         <Separator />
-        <div className="flex items-center px-5 py-3">
+        <div className={cn('flex items-center px-5 py-3', isKeyboardVisible && 'hidden')}>
           <div className="flex flex-1 items-center">
             <ControlledCheckbox
               name={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner}
