@@ -99,7 +99,7 @@ export default function CreatePostPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="h-screen bg-white flex flex-col min-h-0">
       <FormProvider {...method}>
         <SiteHeader title="게시글 작성" showBackButton onBackClick={handleBackClick} />
         <Tab options={POST_TABS} value={selectedTab} onChange={handleTabChange} />
