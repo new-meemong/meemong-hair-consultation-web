@@ -26,8 +26,6 @@ export default function ConsultingResponseContainer({
     CONSULTING_RESPONSE_TAB_OPTIONS[0].value,
   );
 
-  console.log('consultingResponse', consultingResponse);
-
   const handleTabChange = (tab: ValueOf<typeof CONSULTING_RESPONSE_TAB>) => {
     setActiveTab(tab);
   };

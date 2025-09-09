@@ -16,30 +16,40 @@ export default function ConsultingResponseFormStepStyle() {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
     control,
   });
-  const currentImages = currentOptionValue?.images ?? [];
+  const currentImageFiles = currentOptionValue.imageFiles ?? [];
 
   const handleImageUpload = (file: File) => {
-    const newImages = [...currentImages, file];
-
-    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE, {
-      images: newImages,
-      description: currentOptionValue?.description,
-    });
-  };
-
-  const handleImageDelete = (index: number) => {
-    const newImages = [...currentImages];
-    newImages.splice(index, 1);
+    const newImages = [...currentImageFiles, file];
 
     setValue(
       CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
       {
-        images: newImages,
-        description: currentOptionValue?.description,
+        ...currentOptionValue,
+        imageFiles: newImages,
       },
+      { shouldDirty: true },
+    );
+  };
+
+  const setImageFiles = (newImageFiles: File[]) => {
+    setValue(
+      CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
       {
-        shouldDirty: true,
+        ...currentOptionValue,
+        imageFiles: newImageFiles,
       },
+      { shouldDirty: true },
+    );
+  };
+
+  const setImageUrls = (newImageUrls: string[]) => {
+    setValue(
+      CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
+      {
+        ...currentOptionValue,
+        imageUrls: newImageUrls,
+      },
+      { shouldDirty: true },
     );
   };
 
@@ -47,9 +57,11 @@ export default function ConsultingResponseFormStepStyle() {
     <div className="flex flex-col gap-7">
       <FormItem label="이미지 첨부" description={`${MAX_IMAGE_COUNT}개까지 업로드 할 수 있어요`}>
         <ImageUploaderList
-          images={currentImages}
+          imageFiles={currentImageFiles}
+          imageUrls={currentOptionValue.imageUrls}
           onUpload={handleImageUpload}
-          onDelete={handleImageDelete}
+          setImageFiles={setImageFiles}
+          setImageUrls={setImageUrls}
           maxImageCount={MAX_IMAGE_COUNT}
         />
       </FormItem>

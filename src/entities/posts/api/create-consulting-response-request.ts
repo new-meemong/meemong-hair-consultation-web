@@ -5,11 +5,11 @@ import type { ValueOf } from '@/shared/type/types';
 
 export type CreateConsultingResponseRequest = {
   faceShape: ValueOf<typeof FACE_SHAPE_LABEL>;
-  hairType?: ValueOf<typeof HAIR_TYPE_LABEL>;
+  hairType?: ValueOf<typeof HAIR_TYPE_LABEL> | null;
   isHairTypeStoreConsultNeed: boolean;
-  damageLevel?: number;
+  damageLevel?: number | null;
   isDamageLevelConsultNeed: boolean;
-  bangsRecommendation?: ValueOf<typeof BANG_STYLE_LABEL>;
+  bangsRecommendation?: ValueOf<typeof BANG_STYLE_LABEL> | null;
   isBangRecommendationConsultNeed: boolean;
   style: {
     images: string[];

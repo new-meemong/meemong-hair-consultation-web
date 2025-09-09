@@ -1,11 +1,13 @@
 import { type UseFormReturn } from 'react-hook-form';
 
 import useCreateConsultingResponse from '@/features/posts/hooks/use-create-consulting-response';
+import useEditConsultingResponse from '@/features/posts/hooks/use-edit-consulting-response';
 import { ROUTES } from '@/shared';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { FormStep } from '@/shared/type/form-step';
 import type { KeyOf } from '@/shared/type/types';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import MultiStepForm from '@/shared/ui/multi-step-form';
 
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
@@ -68,21 +70,47 @@ type ConsultingResponseFormProps = {
   method: UseFormReturn<ConsultingResponseFormValues>;
   currentStep: number;
   setCurrentStep: (step: number) => void;
+  responseId?: string;
 };
 
 export default function ConsultingResponseForm({
   method,
   currentStep,
   setCurrentStep,
+  responseId,
 }: ConsultingResponseFormProps) {
   const { showSnackBar } = useOverlayContext();
   const { replace } = useRouterWithUser();
 
   const postId = method.getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID);
 
-  const { handleCreateConsultingResponse, isPending } = useCreateConsultingResponse(postId);
+  const { handleCreateConsultingResponse, isPending: isCreatingConsultingResponse } =
+    useCreateConsultingResponse(postId);
+  const { editConsultingResponse, isPending: isEditingConsultingResponse } =
+    useEditConsultingResponse({ postId, responseId: responseId ?? '' });
+
+  const showModal = useShowModal();
 
   const submit = (values: ConsultingResponseFormValues) => {
+    if (responseId) {
+      editConsultingResponse(values, {
+        onSuccess: () => {
+          showModal({
+            id: 'edit-consulting-response-confirm-modal',
+            text: '수정이 완료되었습니다',
+            buttons: [
+              {
+                label: '확인',
+                onClick: () => {
+                  replace(ROUTES.POSTS_CONSULTING_RESPONSE(postId, responseId));
+                },
+              },
+            ],
+          });
+        },
+      });
+      return;
+    }
     handleCreateConsultingResponse(values, {
       onSuccess: () => {
         showSnackBar({
@@ -110,13 +138,15 @@ export default function ConsultingResponseForm({
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE) {
       const value = method.getValues(name);
-      return value && (value.images.length > 0 || !!value.description);
+      return (
+        value && (value.imageFiles.length > 0 || value.imageUrls.length > 0 || !!value.description)
+      );
     }
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS) {
       const value = method.getValues(name);
       return value && value.length > 0;
     }
-    return !isPending;
+    return !isCreatingConsultingResponse && !isEditingConsultingResponse;
   };
 
   return (

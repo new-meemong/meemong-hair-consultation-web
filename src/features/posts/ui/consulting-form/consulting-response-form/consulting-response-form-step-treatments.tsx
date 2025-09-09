@@ -33,8 +33,8 @@ export default function ConsultingResponseFormStepTreatments() {
         <div className="flex flex-col gap-2">
           {prices.map((price, index) => (
             <ConsultingInputResultListItem
-              key={`${price.operationName}-${price.minPrice}-${price.maxPrice}-${index}`}
-              name={price.operationName}
+              key={`${price.treatmentName}-${price.minPrice}-${price.maxPrice}-${index}`}
+              name={price.treatmentName}
               description={`${price.minPrice.toLocaleString()}원~${price.maxPrice.toLocaleString()}원`}
               onDelete={() => {
                 handleDelete(index);

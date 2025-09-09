@@ -1,30 +1,38 @@
 import { IMAGE_TYPE } from '../constants/image-type';
+import { getImages } from '../lib/get-images';
 
-import type { Image } from './image-form-item';
-import ImageFormItem from './image-form-item';
+import ImageFormItem, { type Image } from './image-form-item';
 import ImageUploaderItem from './image-uploader-item';
 
 type ImageUploaderListProps = {
-  images: File[];
+  imageFiles: File[];
+  imageUrls?: string[];
   onUpload: (file: File) => void;
-  onDelete: (index: number) => void;
+  setImageUrls?: (newImageUrls: string[]) => void;
+  setImageFiles: (newImageFiles: File[]) => void;
   maxImageCount: number;
 };
 
 export default function ImageUploaderList({
-  images,
+  imageFiles,
+  imageUrls = [],
   onUpload,
-  onDelete,
+  setImageUrls,
+  setImageFiles,
   maxImageCount,
 }: ImageUploaderListProps) {
+  const images = getImages(imageFiles, imageUrls);
+
   const canUpload = images.length < maxImageCount;
 
-  const getCurrentImage = (image: File): Image => {
-    return {
-      type: IMAGE_TYPE.FILE,
-      name: image.name,
-      src: URL.createObjectURL(image),
-    };
+  const handleImageDelete = (image: Image) => {
+    if (image.type === IMAGE_TYPE.URL) {
+      const newImageUrls = imageUrls.filter((url) => url !== image.src);
+      setImageUrls?.(newImageUrls);
+    } else {
+      const newImageFiles = imageFiles.filter((file) => file.name !== image.name);
+      setImageFiles(newImageFiles);
+    }
   };
 
   return (
@@ -33,8 +41,8 @@ export default function ImageUploaderList({
       {images.map((image, index) => (
         <ImageFormItem
           key={`${image.name}-${index}`}
-          image={getCurrentImage(image)}
-          handleImageDelete={() => onDelete(index)}
+          image={image}
+          handleImageDelete={handleImageDelete}
         />
       ))}
     </div>

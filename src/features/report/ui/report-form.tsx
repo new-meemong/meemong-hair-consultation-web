@@ -62,10 +62,8 @@ export default function ReportForm({ targetUserId }: ReportFormProps) {
     methods.setValue(REPORT_FORM_FIELD_NAME.images, newImages);
   };
 
-  const handleImageDelete = (index: number) => {
-    const newImages = [...currentImages];
-    newImages.splice(index, 1);
-    methods.setValue(REPORT_FORM_FIELD_NAME.images, newImages);
+  const setImageFiles = (newImageFiles: File[]) => {
+    methods.setValue(REPORT_FORM_FIELD_NAME.images, newImageFiles, { shouldDirty: true });
   };
 
   const handleCancel = () => {
@@ -118,9 +116,9 @@ export default function ReportForm({ targetUserId }: ReportFormProps) {
               description="신고 내용을 설명할 이미지(채팅 캡쳐 등) 업로드"
             >
               <ImageUploaderList
-                images={currentImages}
+                imageFiles={currentImages}
                 onUpload={handleImageUpload}
-                onDelete={handleImageDelete}
+                setImageFiles={setImageFiles}
                 maxImageCount={MAX_IMAGE_COUNT}
               />
             </ReportFormItem>
