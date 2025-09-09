@@ -7,7 +7,6 @@ import GalleryIcon from '@/assets/icons/gallery.svg';
 import { CREATE_POST_FORM_MAX_COUNT } from '@/features/posts/constants/create-post-form';
 import { cn } from '@/lib/utils';
 import { Button, Input, Label, Separator, Textarea } from '@/shared';
-import useIOSKeyboardVisible from '@/shared/hooks/use-ios-keyboard-visible';
 import ControlledCheckbox from '@/shared/ui/controlled-checkbox';
 import ImageUploader from '@/shared/ui/image-uploader';
 
@@ -26,7 +25,6 @@ type PostFormProps = {
 
 export default function PostForm({ initialData, onSubmit, isPending }: PostFormProps) {
   const method = usePostForm(initialData);
-  const isKeyboardVisible = useIOSKeyboardVisible();
 
   const [imageFiles, imageUrls] = useWatch({
     control: method.control,
@@ -88,10 +86,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             <Textarea
               {...method.register(POST_FORM_FIELD_NAME.content)}
               placeholder="내 헤어 고민을 자유롭게 작성해보세요"
-              className={cn(
-                'w-full flex-1 typo-body-1-long-regular',
-                isKeyboardVisible && 'min-h-100',
-              )}
+              className={cn('w-full flex-1 typo-body-1-long-regular min-h-60')}
             />
             {method.formState.errors[POST_FORM_FIELD_NAME.content] && (
               <p className="text-negative typo-body-3-regular mt-1">
@@ -114,7 +109,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
           </>
         )}
         <Separator />
-        <div className={cn('flex items-center px-5 py-3', isKeyboardVisible && 'hidden')}>
+        <div className={cn('flex items-center px-5 py-3')}>
           <div className="flex flex-1 items-center">
             <ControlledCheckbox
               name={POST_FORM_FIELD_NAME.isPhotoVisibleToDesigner}
