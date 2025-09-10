@@ -101,6 +101,9 @@ export default function ConsultingResponseFormPriceForm() {
     setFormValue(INITIAL_FORM_VALUE);
   };
 
+  const canSubmit =
+    formValue.operationName !== '' && formValue.minPrice !== null && formValue.maxPrice !== null;
+
   return (
     <div className="flex flex-col gap-5">
       <FormItem hasUnderline label="시술명">
@@ -129,7 +132,7 @@ export default function ConsultingResponseFormPriceForm() {
           />
         </div>
       </FormItem>
-      <Button theme="white" onClick={handleSubmit}>
+      <Button theme="white" onClick={handleSubmit} disabled={!canSubmit}>
         시술 입력
       </Button>
     </div>

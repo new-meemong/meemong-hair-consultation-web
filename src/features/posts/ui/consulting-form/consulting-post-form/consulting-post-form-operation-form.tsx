@@ -26,6 +26,8 @@ export default function ConsultingPostFormOperationForm() {
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [noOperation, setNoOperation] = useState(optionValue === null);
 
+  const canSubmit = name !== '' && date !== undefined;
+
   const { showYearMonthPicker } = useYearMonthPicker();
 
   const handleDateClick = () => {
@@ -124,7 +126,7 @@ export default function ConsultingPostFormOperationForm() {
           </span>
         </div>
       </FormItem>
-      <Button theme="white" onClick={handleSubmit}>
+      <Button theme="white" onClick={handleSubmit} disabled={!canSubmit}>
         시술 저장
       </Button>
       <div className="flex gap-2 items-center justify-end">

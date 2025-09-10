@@ -1,5 +1,5 @@
 import CommentIcon from '@/assets/icons/comment.svg';
-import ShareIcon from '@/assets/icons/share.svg';
+import EyeIcon from '@/assets/icons/eye.svg';
 import TodayConsultantBannerCarousel from '@/features/auth/ui/today-consultant-banner-carousel';
 import { LikeButton } from '@/features/likes/ui/like-button';
 import { Separator } from '@/shared/ui';
@@ -12,7 +12,7 @@ import PostDetailContent from './post-detail-content';
 
 function PostDetailItem() {
   const { postDetail, isConsultingPost } = usePostDetail();
-  const { id, likeCount, commentCount, isFavorited } = postDetail;
+  const { id, likeCount, commentCount, isFavorited, viewCount } = postDetail;
 
   return (
     <>
@@ -28,10 +28,13 @@ function PostDetailItem() {
           <LikeButton postId={id} liked={isFavorited} likeCount={likeCount} />
         </div>
         <ActionItem
-          icon={<CommentIcon className="w-5 h-5 fill-label-placeholder" />}
+          icon={<CommentIcon className="size-5 fill-label-placeholder" />}
           label={commentCount.toString()}
         />
-        <ActionItem icon={<ShareIcon className="w-5 h-5 fill-label-placeholder" />} label="공유" />
+        <ActionItem
+          icon={<EyeIcon className="w-5 h-5 fill-label-placeholder" />}
+          label={viewCount.toString()}
+        />
       </div>
       <Separator />
       <div className="py-3">

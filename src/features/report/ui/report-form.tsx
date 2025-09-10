@@ -57,8 +57,8 @@ export default function ReportForm({ targetUserId }: ReportFormProps) {
       control: methods.control,
     }) ?? [];
 
-  const handleImageUpload = (file: File) => {
-    const newImages = [...currentImages, file];
+  const handleImageUpload = (file: File[]) => {
+    const newImages = [...currentImages, ...file];
     methods.setValue(REPORT_FORM_FIELD_NAME.images, newImages);
   };
 

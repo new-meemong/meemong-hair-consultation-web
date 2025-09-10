@@ -57,6 +57,7 @@ const ImageUploader = forwardRef<ImageUploaderRef, ImageUploaderProps>(
           className="hidden"
           ref={fileInputRef}
           onChange={handleImageChange}
+          lang="ko"
         />
         {children && (
           <div className="cursor-pointer" onClick={handleImageUploadClick}>

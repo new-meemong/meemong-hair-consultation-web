@@ -9,19 +9,19 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 
 type ConsultingResponseHeaderProps = {
-  isPostWriter: boolean;
   postId: string;
   author: ConsultingResponseDesigner;
   createdAt: string;
   responseId: string;
+  hairConsultPostingCreateUserId: number;
 };
 
 export default function ConsultingResponseHeader({
-  isPostWriter,
   postId,
   author,
   createdAt,
   responseId,
+  hairConsultPostingCreateUserId,
 }: ConsultingResponseHeaderProps) {
   const { push } = useRouterWithUser();
   const { user } = useAuthContext();
@@ -40,6 +40,8 @@ export default function ConsultingResponseHeader({
   const handleOriginalPostClick = () => {
     push(ROUTES.POSTS_DETAIL(postId));
   };
+
+  const isPostWriter = hairConsultPostingCreateUserId === user.id;
 
   return (
     <div className="flex flex-col px-5 py-8 bg-label-default gap-8">
