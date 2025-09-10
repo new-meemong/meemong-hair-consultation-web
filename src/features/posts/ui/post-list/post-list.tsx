@@ -40,8 +40,8 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex-1 overflow-y-auto">
+    <div className="flex flex-col h-full">
+      <div className="flex-1">
         <div className="[&>*:last-child]:border-b-0">
           {posts.map((post) => (
             <PostListItem key={post.id} post={post} onClick={() => handlePostClick(post.id)} />
