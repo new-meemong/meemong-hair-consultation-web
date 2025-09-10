@@ -21,7 +21,6 @@ export default function TodayConsultantBannerCarouselItem({
 
   const { profileImageUrl, name, companyName, userId } = user;
 
-  console.log('user', user);
   const handleCarouselClick = () => {
     if (isUserDesigner) return;
 
