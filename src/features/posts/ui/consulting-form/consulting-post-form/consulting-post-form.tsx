@@ -80,9 +80,10 @@ export default function ConsultingPostForm({
   const canMoveNext = (name: KeyOf<ConsultingPostFormValues>) => {
     if (name === CONSULTING_POST_FORM_FIELD_NAME.CONCERN) {
       const formValue = method.getValues(name);
+      console.log('formValue', formValue);
       return (
         (formValue?.value && formValue.value !== HAIR_CONCERN_OPTION_VALUE.ETC) ||
-        (formValue?.value === HAIR_CONCERN_OPTION_VALUE.ETC && formValue?.additional !== '')
+        (formValue?.value === HAIR_CONCERN_OPTION_VALUE.ETC && !!formValue?.additional)
       );
     }
 

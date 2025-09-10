@@ -8,7 +8,7 @@ import type { ImageUploaderRef } from './image-uploader';
 import ImageUploader from './image-uploader';
 
 type ImageUploaderProps = {
-  onUpload: (file: File[]) => void;
+  onUpload: ((images: File[]) => void) | ((image: File) => void);
   label?: string;
   currentImage: Image | null;
   onDelete?: (image: Image) => void;
@@ -28,8 +28,12 @@ export default function ImageUploaderItem({
     imageUploaderRef.current?.triggerFileSelect();
   };
 
-  const handleImageUpload = (files: File[]) => {
-    onUpload(files);
+  const handleImageUpload = (files: File[] | File) => {
+    if (multiple) {
+      (onUpload as (images: File[]) => void)(files as File[]);
+    } else {
+      (onUpload as (image: File) => void)(files as File);
+    }
   };
 
   return (
