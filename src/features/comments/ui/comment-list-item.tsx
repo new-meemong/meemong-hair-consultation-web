@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+
 import { format } from 'date-fns';
 
 import CommentIcon from '@/assets/icons/comment.svg';
@@ -59,9 +61,14 @@ export default function CommentListItem({
   const isPostWriter = postDetail.hairConsultPostingCreateUserId === user.id;
   const isCommentWriter = author.userId === user.id;
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const replyCommentRef = useRef<HTMLDivElement>(null);
+
+  const handleReplyClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     onReplyClick(comment.id);
+    if (replyCommentRef.current) {
+      replyCommentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const moreOption = {
@@ -98,6 +105,7 @@ export default function CommentListItem({
         isFocused && 'bg-focused',
         isSecret && 'py-4',
       )}
+      ref={replyCommentRef}
     >
       <>
         {isReply && <ReplyIcon className="size-4.5 fill-label-strong" />}
@@ -111,7 +119,7 @@ export default function CommentListItem({
               </div>
               <div className="flex items-center gap-2">
                 {!isReply && (
-                  <button onClick={(e) => handleClick(e)}>
+                  <button onClick={(e) => handleReplyClick(e)}>
                     <CommentIcon className="size-5 fill-label-info" />
                   </button>
                 )}

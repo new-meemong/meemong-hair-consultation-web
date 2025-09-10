@@ -71,6 +71,12 @@ export function CommentForm({
     method.setValue(COMMENT_FORM_FIELD_NAME.parentCommentId, commentId?.toString() ?? null);
   }, [method, commentId]);
 
+  useEffect(() => {
+    if (isReply && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [isReply, textareaRef]);
+
   const isVisibleToModel = useWatch({
     control: method.control,
     name: COMMENT_FORM_FIELD_NAME.isVisibleToModel,
