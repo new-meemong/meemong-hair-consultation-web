@@ -2,7 +2,10 @@ import Image from 'next/image';
 
 import CrownIcon from '@/assets/icons/crown.svg';
 import { type ConsultingKing } from '@/entities/user/model/consulting-king';
+import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 import { CarouselItem } from '@/shared/ui/carousel';
+
+import { useAuthContext } from '../context/auth-context';
 
 import RankBadge from './rank-badge';
 
@@ -13,12 +16,20 @@ type TodayConsultantBannerCarouselItemProps = {
 export default function TodayConsultantBannerCarouselItem({
   consultingKing,
 }: TodayConsultantBannerCarouselItemProps) {
+  const { isUserDesigner } = useAuthContext();
   const { user, rank } = consultingKing;
 
-  const { profileImageUrl, name, companyName } = user;
+  const { profileImageUrl, name, companyName, userId } = user;
+
+  console.log('user', user);
+  const handleCarouselClick = () => {
+    if (isUserDesigner) return;
+
+    goDesignerProfilePage(userId.toString());
+  };
 
   return (
-    <CarouselItem className="px-1 basis-[85%]">
+    <CarouselItem className="px-1 basis-[85%]" onClick={handleCarouselClick}>
       <div className="bg-alternative py-3 pl-3 pr-2.5 flex gap-4 items-center">
         <div className="flex gap-3 flex-1">
           <Image
