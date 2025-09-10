@@ -8,10 +8,11 @@ import type { ImageUploaderRef } from './image-uploader';
 import ImageUploader from './image-uploader';
 
 type ImageUploaderProps = {
-  onUpload: (file: File) => void;
+  onUpload: (file: File[]) => void;
   label?: string;
   currentImage: Image | null;
   onDelete?: (image: Image) => void;
+  multiple?: boolean;
 };
 
 export default function ImageUploaderItem({
@@ -19,6 +20,7 @@ export default function ImageUploaderItem({
   label,
   currentImage,
   onDelete,
+  multiple = false,
 }: ImageUploaderProps) {
   const imageUploaderRef = useRef<ImageUploaderRef>(null);
 
@@ -26,8 +28,8 @@ export default function ImageUploaderItem({
     imageUploaderRef.current?.triggerFileSelect();
   };
 
-  const handleImageUpload = (file: File) => {
-    onUpload(file);
+  const handleImageUpload = (files: File[]) => {
+    onUpload(files);
   };
 
   return (
@@ -44,7 +46,7 @@ export default function ImageUploaderItem({
         </button>
       )}
       {label && <p className="typo-body-2-regular text-label-info text-center">{label}</p>}
-      <ImageUploader ref={imageUploaderRef} setImages={handleImageUpload} multiple={false} />
+      <ImageUploader ref={imageUploaderRef} setImages={handleImageUpload} multiple={multiple} />
     </div>
   );
 }

@@ -18,8 +18,8 @@ export default function ConsultingResponseFormStepStyle() {
   });
   const currentImageFiles = currentOptionValue.imageFiles ?? [];
 
-  const handleImageUpload = (file: File) => {
-    const newImages = [...currentImageFiles, file];
+  const handleImageUpload = (file: File[]) => {
+    const newImages = [...currentImageFiles, ...file];
 
     setValue(
       CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,

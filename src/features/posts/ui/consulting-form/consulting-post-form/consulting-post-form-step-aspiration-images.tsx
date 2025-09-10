@@ -18,8 +18,8 @@ export default function ConsultingPostFormStepAspirationImages() {
   });
   const currentImages = currentOptionValue?.images ?? [];
 
-  const handleImageUpload = (file: File) => {
-    const newImages = [...currentImages, file];
+  const handleImageUpload = (file: File[]) => {
+    const newImages = [...currentImages, ...file];
 
     setValue(CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
       images: newImages,

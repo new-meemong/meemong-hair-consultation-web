@@ -7,7 +7,7 @@ import ImageUploaderItem from './image-uploader-item';
 type ImageUploaderListProps = {
   imageFiles: File[];
   imageUrls?: string[];
-  onUpload: (file: File) => void;
+  onUpload: (file: File[]) => void;
   setImageUrls?: (newImageUrls: string[]) => void;
   setImageFiles: (newImageFiles: File[]) => void;
   maxImageCount: number;
@@ -37,7 +37,7 @@ export default function ImageUploaderList({
 
   return (
     <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-      {canUpload && <ImageUploaderItem onUpload={onUpload} currentImage={null} />}
+      {canUpload && <ImageUploaderItem onUpload={onUpload} currentImage={null} multiple={true} />}
       {images.map((image, index) => (
         <ImageFormItem
           key={`${image.name}-${index}`}
