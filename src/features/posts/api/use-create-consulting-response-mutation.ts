@@ -7,6 +7,9 @@ import { apiClient } from '@/shared/api/client';
 
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
 
+import { getPostDetailQueryKeyPrefix } from './use-get-post-detail';
+import { getPostsQueryKeyPrefix } from './use-get-posts';
+
 export default function useCreateConsultingResponseMutation(hairConsultPostingId: string) {
   const queryClient = useQueryClient();
 
@@ -18,8 +21,12 @@ export default function useCreateConsultingResponseMutation(hairConsultPostingId
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({
+        queryKey: [getPostDetailQueryKeyPrefix(hairConsultPostingId)],
+      });
+      queryClient.invalidateQueries({
         queryKey: [getGetPostCommentsQueryKeyPrefix(hairConsultPostingId)],
       });
+      queryClient.invalidateQueries({ queryKey: [getPostsQueryKeyPrefix()] });
     },
   });
 
