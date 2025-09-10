@@ -31,6 +31,7 @@ export type PostDetail = {
   isFavorited: boolean;
   likeCount: number;
   commentCount: number;
+  viewCount: number;
   isPhotoVisibleToDesigner: boolean;
   consultType: ValueOf<typeof CONSULT_TYPE>;
   hairConsultPostingCreateUserName: string;
