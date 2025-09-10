@@ -64,7 +64,7 @@ export default function ConsultingPostFormStepMyImages() {
         <div className="grid grid-cols-2 gap-6">
           <ImageUploaderItem
             currentImage={getCurrentImage(HAIR_IMAGE_POSITION.FRONT_LOOSE)}
-            onUpload={(file) =>
+            onUpload={(file: File) =>
               handleImageUpload({ file, position: HAIR_IMAGE_POSITION.FRONT_LOOSE })
             }
             onDelete={() => handleImageDelete({ position: HAIR_IMAGE_POSITION.FRONT_LOOSE })}
@@ -72,7 +72,7 @@ export default function ConsultingPostFormStepMyImages() {
           />
           <ImageUploaderItem
             currentImage={getCurrentImage(HAIR_IMAGE_POSITION.FRONT_TIED)}
-            onUpload={(file) =>
+            onUpload={(file: File) =>
               handleImageUpload({
                 file,
                 position: HAIR_IMAGE_POSITION.FRONT_TIED,
@@ -85,7 +85,7 @@ export default function ConsultingPostFormStepMyImages() {
         <div className="grid grid-cols-2 gap-6">
           <ImageUploaderItem
             currentImage={getCurrentImage(HAIR_IMAGE_POSITION.SIDE_TIED)}
-            onUpload={(file) =>
+            onUpload={(file: File) =>
               handleImageUpload({
                 file,
                 position: HAIR_IMAGE_POSITION.SIDE_TIED,
@@ -96,7 +96,7 @@ export default function ConsultingPostFormStepMyImages() {
           />
           <ImageUploaderItem
             currentImage={getCurrentImage(HAIR_IMAGE_POSITION.UPPER_BODY) || null}
-            onUpload={(file) =>
+            onUpload={(file: File) =>
               handleImageUpload({ file, position: HAIR_IMAGE_POSITION.UPPER_BODY })
             }
             onDelete={() => handleImageDelete({ position: HAIR_IMAGE_POSITION.UPPER_BODY })}
