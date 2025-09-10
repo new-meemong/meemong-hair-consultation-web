@@ -36,4 +36,5 @@ export type ConsultingResponse = {
   designer: ConsultingResponseDesigner;
   createdAt: string;
   updatedAt: string;
+  hairConsultPostingCreateUserId: number;
 };
