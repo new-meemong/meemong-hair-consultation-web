@@ -89,7 +89,9 @@ export default function CommentListItem({
 
   const getMoreOptions = () => {
     if (isCommentWriter) {
-      return [moreOption[MORE_ACTION.EDIT], moreOption[MORE_ACTION.DELETE]];
+      return isConsultingAnswer
+        ? [moreOption[MORE_ACTION.DELETE]]
+        : [moreOption[MORE_ACTION.EDIT], moreOption[MORE_ACTION.DELETE]];
     }
     return [moreOption[MORE_ACTION.REPORT]];
   };
