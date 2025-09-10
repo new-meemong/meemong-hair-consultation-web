@@ -38,7 +38,7 @@ export default function ConsultingResponseFormContainer({
   const postId = method.getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID);
 
   return (
-    <div className="h-screen bg-white flex flex-col min-h-0 overflow-x-hidden">
+    <div className="h-screen bg-white flex flex-col min-h-150 overflow-x-hidden">
       <PostDetailProvider postId={postId}>
         <FormProvider {...method}>
           <SiteHeader title={title} showBackButton onBackClick={onBackClick} />
