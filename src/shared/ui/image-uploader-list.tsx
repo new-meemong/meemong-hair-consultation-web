@@ -1,8 +1,12 @@
+import useShowImageUploadLimitSheet from '@/features/posts/hooks/use-show-image-upload-limit-sheet';
+
 import { IMAGE_TYPE } from '../constants/image-type';
 import { getImages } from '../lib/get-images';
 
 import ImageFormItem, { type Image } from './image-form-item';
 import ImageUploaderItem from './image-uploader-item';
+
+const IMAGE_UPLOADER_LIST_MAX_COUNT = 6;
 
 type ImageUploaderListProps = {
   imageFiles: File[];
@@ -35,9 +39,31 @@ export default function ImageUploaderList({
     }
   };
 
+  const showImageUploadLimitSheet = useShowImageUploadLimitSheet();
+
+  const validateImageCount = (newImageLength?: number) => {
+    const currentImageCount = imageFiles.length + imageUrls.length;
+    const newImageCount = newImageLength ? newImageLength - 1 : 0;
+
+    const count = currentImageCount + newImageCount;
+
+    if (count >= IMAGE_UPLOADER_LIST_MAX_COUNT) {
+      showImageUploadLimitSheet(IMAGE_UPLOADER_LIST_MAX_COUNT);
+      return false;
+    }
+    return true;
+  };
+
   return (
     <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-      {canUpload && <ImageUploaderItem onUpload={onUpload} currentImage={null} multiple={true} />}
+      {canUpload && (
+        <ImageUploaderItem
+          onUpload={onUpload}
+          currentImage={null}
+          multiple={true}
+          validateImageCount={validateImageCount}
+        />
+      )}
       {images.map((image, index) => (
         <ImageFormItem
           key={`${image.name}-${index}`}

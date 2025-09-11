@@ -13,6 +13,7 @@ type ImageUploaderProps = {
   currentImage: Image | null;
   onDelete?: (image: Image) => void;
   multiple?: boolean;
+  validateImageCount?: (newImageLength?: number) => boolean;
 };
 
 export default function ImageUploaderItem({
@@ -21,6 +22,7 @@ export default function ImageUploaderItem({
   currentImage,
   onDelete,
   multiple = false,
+  validateImageCount,
 }: ImageUploaderProps) {
   const imageUploaderRef = useRef<ImageUploaderRef>(null);
 
@@ -50,7 +52,12 @@ export default function ImageUploaderItem({
         </button>
       )}
       {label && <p className="typo-body-2-regular text-label-info text-center">{label}</p>}
-      <ImageUploader ref={imageUploaderRef} setImages={handleImageUpload} multiple={multiple} />
+      <ImageUploader
+        ref={imageUploaderRef}
+        setImages={handleImageUpload}
+        multiple={multiple}
+        validate={validateImageCount}
+      />
     </div>
   );
 }
