@@ -53,7 +53,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
     const count = currentImageCount + newImageCount;
 
     if (count >= CREATE_POST_FORM_MAX_COUNT.IMAGE) {
-      showImageUploadLimitSheet();
+      showImageUploadLimitSheet(CREATE_POST_FORM_MAX_COUNT.IMAGE);
       return false;
     }
     return true;

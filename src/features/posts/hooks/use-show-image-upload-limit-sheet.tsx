@@ -11,15 +11,15 @@ import {
 function useShowImageUploadLimitSheet() {
   const { showBottomSheet } = useOverlayContext();
 
-  const showImageUploadLimitSheet = () => {
+  const showImageUploadLimitSheet = (maxImageCount: number) => {
     showBottomSheet({
       id: 'image-upload-limit-sheet',
       children: (
         <>
           <DrawerHeader>
-            <DrawerTitle>이미지는 최대 10장 업로드 가능합니다</DrawerTitle>
+            <DrawerTitle>이미지는 최대 {maxImageCount}장 업로드 가능합니다</DrawerTitle>
             <DrawerDescription>
-              이미지는 최대 10개 업로드 가능합니다.
+              이미지는 최대 {maxImageCount}개 업로드 가능합니다.
               <br />
               기존 이미지를 삭제해주세요
             </DrawerDescription>
