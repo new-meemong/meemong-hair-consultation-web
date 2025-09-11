@@ -163,7 +163,9 @@ export default function HairConsultationChatDetailPage() {
       <SiteHeader
         showBackButton
         title={userChannel?.otherUser?.DisplayName ?? ''}
-        rightComponent={<ChatDetailMoreButton chatChannel={userChannel} />}
+        rightComponent={
+          <ChatDetailMoreButton chatChannel={userChannel} onLeaveChat={handleBackClick} />
+        }
         onBackClick={handleBackClick}
       />
       <div className="flex-1 overflow-hidden">
