@@ -40,7 +40,10 @@ export default function PostDetailPage() {
   };
 
   const { commentFormState, textareaRef, isCommentCreating, isCommentUpdating, handlers } =
-    useCommentFormState(postId?.toString() ?? '');
+    useCommentFormState({
+      postId: postId?.toString() ?? '',
+      receiverId: postDetail?.hairConsultPostingCreateUserId.toString() ?? '',
+    });
 
   const isCommentFormReply = commentFormState.state === 'reply';
 
