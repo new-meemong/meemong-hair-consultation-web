@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       'k.kakaocdn.net',
       'lh3.googleusercontent.com',
       'example.com',
+      'https://storage.meemong.com',
     ],
   },
   devIndicators: false,
