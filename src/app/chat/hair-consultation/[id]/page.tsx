@@ -162,7 +162,7 @@ export default function HairConsultationChatDetailPage() {
     <div className="h-screen flex flex-col">
       <SiteHeader
         showBackButton
-        title={userChannel?.otherUser?.DisplayName ?? ''}
+        title={userChannel?.otherUser?.displayName ?? ''}
         rightComponent={
           <ChatDetailMoreButton chatChannel={userChannel} onLeaveChat={handleBackClick} />
         }

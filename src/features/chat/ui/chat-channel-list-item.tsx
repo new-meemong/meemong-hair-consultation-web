@@ -113,7 +113,7 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
   };
 
   const { lastMessage, otherUser } = chatChannel;
-  const userImage = otherUser?.ProfilePictureURL || '/profile.svg';
+  const userImage = otherUser?.profilePictureURL || '/profile.svg';
 
   return (
     <div className="relative w-full overflow-hidden z-1 flex items-center">
@@ -138,7 +138,7 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
           <div className="flex items-center gap-0.5">
             {chatChannel.isPinned && <PinIcon className="size-4 fill-label-info" />}
             <p className="typo-headline-bold text-label-strong">
-              {otherUser?.DisplayName || '알수없음'}
+              {otherUser?.displayName || '알수없음'}
             </p>
           </div>
           <p className="typo-body-2-long-regular text-label-info  overflow-hidden text-ellipsis line-clamp-2 break-words whitespace-pre-wrap">
