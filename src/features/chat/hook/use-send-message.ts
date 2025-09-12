@@ -1,7 +1,7 @@
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { removeQueryParams } from '@/shared/lib/remove-query-params';
 
-import useSendPushNotification from '../api/useSendPushNotification';
+import useSendPushNotification from '../api/use-send-push-notification';
 import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
 import type { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
 
