@@ -49,7 +49,7 @@ export default function ReportForm({ targetUserId }: ReportFormProps) {
   });
 
   const { data } = useGetUser(targetUserId);
-  const targetUserName = data?.data.DisplayName;
+  const targetUserName = data?.data.displayName;
 
   const currentImages =
     useWatch({

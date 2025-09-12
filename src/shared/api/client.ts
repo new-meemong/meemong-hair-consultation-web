@@ -28,6 +28,8 @@ const createApiInstance = () => {
           if (!token) return;
 
           request.headers.set('Authorization', `${token}`);
+          request.headers.set('platform', 'HAIR_CONSULTING_WEB');
+          request.headers.set('web-version', '1.1.1');
         },
         // Request 로깅
         (request) => {
@@ -178,6 +180,10 @@ const createApiInstanceWithoutAuth = () => {
     prefixUrl: `${API_BASE_URL}/api/v1`,
     hooks: {
       beforeRequest: [
+        (request) => {
+          request.headers.set('platform', 'HAIR_CONSULTING_WEB');
+          request.headers.set('web-version', '1.1.1');
+        },
         // Request 로깅
         (request) => {
           console.group('🚀 API Request (No Auth)');

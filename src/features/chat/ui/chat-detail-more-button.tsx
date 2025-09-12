@@ -37,7 +37,7 @@ export default function ChatDetailMoreButton({
   const handleBlock = useCallback(() => {
     showModal({
       id: 'block-chat-channel-modal',
-      text: `정말 ${chatChannel.otherUser.DisplayName}님을 차단하시겠습니까?\n차단 해제는 불가합니다.`,
+      text: `정말 ${chatChannel.otherUser.displayName}님을 차단하시겠습니까?\n차단 해제는 불가합니다.`,
       buttons: [
         {
           label: '차단하기',
@@ -59,7 +59,7 @@ export default function ChatDetailMoreButton({
         },
       ],
     });
-  }, [chatChannel.otherUser.DisplayName, showModal]);
+  }, [chatChannel.otherUser.displayName, showModal]);
 
   const moreOptions = useMemo(
     () => [

@@ -22,7 +22,7 @@ export default function useLeaveChat() {
     const { success } = await leaveChannel(
       chatChannel.channelId,
       userId.toString(),
-      user.DisplayName,
+      user.displayName,
     );
     if (success) {
       onSuccess();
