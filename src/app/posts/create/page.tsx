@@ -27,6 +27,8 @@ import { SiteHeader } from '@/widgets/header';
 export default function CreatePostPage() {
   useGuidePopup(USER_GUIDE_KEYS.hasSeenCreatePostGuide);
 
+  const [initialHeight] = useState(() => window.innerHeight);
+
   const { replace } = useRouterWithUser();
   const { showSnackBar } = useOverlayContext();
 
@@ -99,7 +101,7 @@ export default function CreatePostPage() {
   };
 
   return (
-    <div className="h-screen bg-white flex flex-col min-h-0">
+    <div className="h-screen bg-white flex flex-col min-h-0" style={{ minHeight: initialHeight }}>
       <FormProvider {...method}>
         <SiteHeader title="게시글 작성" showBackButton onBackClick={handleBackClick} />
         <Tab options={POST_TABS} value={selectedTab} onChange={handleTabChange} />
