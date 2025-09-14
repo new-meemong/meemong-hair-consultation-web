@@ -1,17 +1,22 @@
 import { useCallback } from 'react';
 
 import { ROUTES } from '@/shared';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 import useDeletePostMutation from '../api/use-delete-post-mutation';
-
+import { usePostDetail } from '../context/post-detail-context';
 
 export default function useDeletePost(postId: string) {
   const showModal = useShowModal();
   const { push } = useRouterWithUser();
 
+  const { postDetail } = usePostDetail();
+
   const { mutate: deletePost } = useDeletePostMutation();
+
+  const activePostTab = postDetail.consultType;
 
   const handleDeleteConfirm = useCallback(
     () =>
@@ -24,14 +29,16 @@ export default function useDeletePost(postId: string) {
               {
                 label: '확인',
                 onClick: () => {
-                  push(ROUTES.POSTS);
+                  push(ROUTES.POSTS, {
+                    [SEARCH_PARAMS.POST_TAB]: activePostTab,
+                  });
                 },
               },
             ],
           });
         },
       }),
-    [deletePost, postId, showModal, push],
+    [deletePost, postId, showModal, push, activePostTab],
   );
 
   const handleDeletePost = useCallback(() => {
