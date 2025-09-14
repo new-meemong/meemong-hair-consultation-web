@@ -7,6 +7,7 @@ import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import { type Post } from '@/entities/posts';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import formatAddress from '@/features/auth/lib/format-address';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
 
 type PostItemProps = {
@@ -74,9 +75,9 @@ export default function PostListItem({ post, onClick }: PostItemProps) {
               <span className="typo-body-2-medium text-positive">{commentCount}</span>
             </div>
           </div>
-          {isUserDesigner && (
+          {isUserDesigner && hairConsultPostingCreateUserRegion && (
             <span className=" typo-body-3-medium text-label-placeholder">
-              {hairConsultPostingCreateUserRegion}
+              {formatAddress(hairConsultPostingCreateUserRegion)}
             </span>
           )}
         </div>

@@ -56,7 +56,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
           </div>
           {description && <p className="typo-body-3-regular text-label-info">{description}</p>}
         </div>
-        <div className="flex-1 overflow-y-auto scrollbar-hide pb-7 min-h-0">{children}</div>
+        <div className="flex-1 overflow-y-auto scrollbar-hide pb-7">{children}</div>
         <div id={MULTI_STEP_FORM_PORTAL_ID} />
       </form>
       <div className="px-5 py-3 border-t border-1 border-border-default">

@@ -1,5 +1,6 @@
 import ProfileIcon from '@/assets/icons/profile.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import formatAddress from '@/features/auth/lib/format-address';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
 
 type PostDetailAuthorProfileProps = {
@@ -33,7 +34,7 @@ export default function PostDetailAuthorProfile({
       <div className="flex flex-col">
         <p className="typo-body-1-semibold text-label-default">{name}</p>
         <p className="typo-body-3-regular text-label-info">
-          {shouldShowRegion ? `${region} | ` : ''}
+          {shouldShowRegion ? `${formatAddress(region)} | ` : ''}
           {createdAt}
         </p>
       </div>
