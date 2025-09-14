@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import { useParams } from 'next/navigation';
 
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
@@ -13,6 +15,8 @@ import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { SiteHeader } from '@/widgets/header';
 
 export default function EditPostPage() {
+  const [initialHeight] = useState(() => window.innerHeight);
+
   const { replace } = useRouterWithUser();
 
   const { id: postId } = useParams();
@@ -70,7 +74,7 @@ export default function EditPostPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="h-screen min-h-0 bg-white flex flex-col" style={{ minHeight: initialHeight }}>
       <SiteHeader title="게시글 수정" showBackButton />
       <PostForm initialData={initialData} onSubmit={handleSubmit} isPending={isPending} />
     </div>
