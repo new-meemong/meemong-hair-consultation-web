@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import { FormProvider, useWatch } from 'react-hook-form';
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
@@ -24,6 +26,8 @@ type PostFormProps = {
 };
 
 export default function PostForm({ initialData, onSubmit, isPending }: PostFormProps) {
+  const [initialHeight] = useState(() => window.innerHeight);
+
   const method = usePostForm(initialData);
 
   const [imageFiles, imageUrls] = useWatch({
@@ -67,7 +71,11 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
 
   return (
     <FormProvider {...method}>
-      <form onSubmit={method.handleSubmit(onSubmit)} className="flex flex-col flex-1">
+      <form
+        onSubmit={method.handleSubmit(onSubmit)}
+        className="flex flex-col flex-1"
+        style={{ minHeight: initialHeight }}
+      >
         <div className="flex flex-col flex-1 gap-5 py-6 px-5">
           <div>
             <Input
@@ -86,7 +94,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
             <Textarea
               {...method.register(POST_FORM_FIELD_NAME.content)}
               placeholder="내 헤어 고민을 자유롭게 작성해보세요"
-              className={cn('w-full flex-1 typo-body-1-long-regular min-h-60')}
+              className={cn('w-full flex-1 typo-body-1-long-regular')}
             />
             {method.formState.errors[POST_FORM_FIELD_NAME.content] && (
               <p className="text-negative typo-body-3-regular mt-1">

@@ -26,6 +26,8 @@ export default function ConsultingResponseFormContainer({
   currentStep,
   setCurrentStep,
 }: ConsultingResponseFormContainerProps) {
+  const [initialHeight] = useState(() => window.innerHeight);
+
   const isEdit = !!responseId;
   const title = `컨설팅 답변 ${isEdit ? '수정' : '작성'}`;
 
@@ -38,7 +40,10 @@ export default function ConsultingResponseFormContainer({
   const postId = method.getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID);
 
   return (
-    <div className="h-screen bg-white flex flex-col min-h-150 overflow-x-hidden">
+    <div
+      className="h-screen bg-white flex flex-col overflow-x-hidden"
+      style={{ minHeight: initialHeight }}
+    >
       <PostDetailProvider postId={postId}>
         <FormProvider {...method}>
           <SiteHeader title={title} showBackButton onBackClick={onBackClick} />
