@@ -60,7 +60,7 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
   },
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.COMMENT,
-    question: '컨설팅에 대한 코멘트를 작성하세요',
+    question: '추가로 전달하고픈 내용이 있나요?',
     required: false,
     children: <ConsultingResponseFormStepComment />,
   },

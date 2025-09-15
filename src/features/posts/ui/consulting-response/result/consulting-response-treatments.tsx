@@ -15,7 +15,7 @@ export default function ConsultingResponseTreatments({
   return (
     <ConsultingResponseItem
       title="시술 가격 견적"
-      content={`${designerName} 디자이너님께 시술 받으면 이 정도 견적으로 예상할 수 있어요`}
+      content={`${designerName}님이 제안한 시술 가격이에요`}
     >
       <div className="flex flex-col gap-4">
         {treatments.map(({ treatmentName, minPrice, maxPrice }, index) => (

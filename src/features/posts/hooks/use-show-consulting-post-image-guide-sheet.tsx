@@ -9,17 +9,17 @@ import { DrawerClose, DrawerFooter, DrawerHeader, DrawerTitle } from '@/shared/u
 
 const guideContents = [
   <div key="1">
-    <span className="typo-body-2-long-semibold">원하는 스타일</span>의 사진
+    <span className="typo-body-2-long-semibold">귀</span>가 보이는 사진 (얼굴형을 파악할 수 있어요)
   </div>,
   <div key="2">
-    긴 이마, 광대 등 스스로 생각하는
-    <span className="typo-body-2-long-semibold">외모 컴플렉스</span>
+    <span className="typo-body-2-long-semibold">머리 기장</span>이 보이는 사진
   </div>,
   <div key="3">
-    머리 기장이 보이는 <span className="typo-body-2-long-semibold">정면, 묶은 정면, 측면</span> 사진
+    <span className="typo-body-2-long-semibold">염색</span> 고민은 야외 자연광에서 찍은 사진
   </div>,
   <div key="4">
-    <span className="typo-body-2-long-semibold">염색</span> 고민은 야외 자연광에서 찍은 사진
+    머리가 짧은
+    <span className="typo-body-2-long-semibold"> 남성</span>은 귀가 보이는 정면/측면으로 충분해요
   </div>,
 ];
 
@@ -33,7 +33,7 @@ export default function useShowConsultingPostImageGuideSheet() {
         <>
           <DrawerHeader className="gap-2">
             <DrawerTitle>인생머리 찾는 컨설팅 Tip!</DrawerTitle>
-            <p className="typo-body-1-semibold text-label-strong">아래 내용을 준비하면 좋아요</p>
+            <p className="typo-body-1-semibold text-label-strong">아래 사진이 포함되면 좋아요</p>
             <div className="pt-1 flex flex-col gap-1">
               {guideContents.map((content, index) => (
                 <div

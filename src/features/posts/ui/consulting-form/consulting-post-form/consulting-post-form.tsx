@@ -26,7 +26,7 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
     question: '최근 받은 헤어시술을 알려주세요',
-    description: '탈색, 블랙염색 등 중요 시술은 2~3년 전 이력도 작성해주세요',
+    description: '탈색, 블랙염색 등 중요 시술은 2년전 이력도 필요해요',
     required: true,
     children: <ConsultingPostFormStepTreatments />,
   },
@@ -39,7 +39,7 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES,
-    question: '평소 추구미를 알려주세요',
+    question: '원하는 스타일을 알려주세요',
     required: false,
     children: <ConsultingPostFormStepAspirationImages />,
   },
@@ -51,7 +51,7 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.CONTENT,
-    question: '전달하고 싶은 내용을 적어주세요',
+    question: '기타 요청사항을 적어주세요',
     required: false,
     children: <ConsultingPostFormStepContent />,
   },
