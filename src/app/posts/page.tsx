@@ -16,7 +16,7 @@ import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import Tab from '@/shared/ui/tab';
-import { BellButton, SiteHeader } from '@/widgets/header';
+import { SiteHeader } from '@/widgets/header';
 
 export default function PostsPage() {
   const { user, isUserModel } = useAuthContext();
@@ -44,10 +44,6 @@ export default function PostsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleBellClick = () => {
-    console.log('알림 버튼 클릭');
-  };
-
   const listTabs = getPostListTabs(user.role);
 
   const handleWriteButtonClick = () => {
@@ -61,8 +57,7 @@ export default function PostsPage() {
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">
       {/* 헤더 */}
-      <SiteHeader title="헤어상담" rightComponent={<BellButton onClick={handleBellClick} />} />
-
+      <SiteHeader title="헤어상담" />
       <div className="flex flex-col gap-5 flex-1 min-h-0">
         <Tab options={POST_TABS} value={activePostTab} onChange={setActivePostTab} />
         <div className="flex flex-col gap-5 flex-1 overflow-y-auto">
