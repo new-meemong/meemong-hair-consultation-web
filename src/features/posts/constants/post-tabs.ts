@@ -8,7 +8,7 @@ const POST_TAB: Record<ValueOf<typeof CONSULT_TYPE>, Option<ValueOf<typeof CONSU
     value: CONSULT_TYPE.CONSULTING,
   },
   [CONSULT_TYPE.GENERAL]: {
-    label: '일반 상담',
+    label: '자유 상담',
     value: CONSULT_TYPE.GENERAL,
   },
 };

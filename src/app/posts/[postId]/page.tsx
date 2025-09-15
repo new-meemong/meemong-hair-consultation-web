@@ -69,7 +69,7 @@ export default function PostDetailPage() {
 
   const { hasSavedContent } = useWritingConsultingResponse(postId?.toString() ?? '');
 
-  const writingResponseButtonText = hasSavedContent ? '이어서 작성하기' : '컨설팅 답글 작성하기';
+  const writingResponseButtonText = hasSavedContent ? '이어서 작성하기' : '답변 작성하기';
 
   if (!postId) return null;
 

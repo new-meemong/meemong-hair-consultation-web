@@ -21,7 +21,7 @@ export default function ConsultingResponseSidebarAdditionalInfoTabView({
   return (
     <div className="flex flex-col py-8 gap-5">
       {hairConcern && (
-        <ConsultingResponseSidebarItem label="헤어 고민 종류">
+        <ConsultingResponseSidebarItem label="고민 내용">
           <p className="typo-body-2-long-regular text-label-info whitespace-pre-line">
             {hairConcern}
           </p>

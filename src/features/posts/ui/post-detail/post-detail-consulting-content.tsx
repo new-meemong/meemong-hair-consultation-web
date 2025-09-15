@@ -110,7 +110,7 @@ export default function PostDetailConsultingContent({
         />
         <p className="typo-title-3-semibold text-label-default">{title}</p>
         {concern && (
-          <ContentItem label="헤어 고민">
+          <ContentItem label="고민 내용">
             <p className="typo-body-2-long-regular text-label-info">{concern}</p>
           </ContentItem>
         )}
@@ -152,7 +152,7 @@ export default function PostDetailConsultingContent({
           </ContentItem>
         )}
         {content && (
-          <ContentItem label="코멘트">
+          <ContentItem label="기타의견">
             <p className="typo-body-2-long-regular text-label-info">{content}</p>
           </ContentItem>
         )}
