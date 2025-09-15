@@ -1,7 +1,7 @@
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { removeQueryParams } from '@/shared/lib/remove-query-params';
 
-import useSendPushNotification from '../api/use-send-push-notification';
+import useSendChatPushNotification from '../api/use-send-chat-push-notification';
 import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
 import type { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
 
@@ -11,7 +11,7 @@ export default function useSendMessage() {
   const { sendMessage } = useHairConsultationChatMessageStore((state) => ({
     sendMessage: state.sendMessage,
   }));
-  const { mutate: sendNotification } = useSendPushNotification();
+  const { mutate: sendNotification } = useSendChatPushNotification();
 
   const handleSendMessage = async ({
     channelId,

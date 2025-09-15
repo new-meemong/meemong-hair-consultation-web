@@ -7,7 +7,7 @@ type SendNotificationRequest = {
   message: string;
 };
 
-export default function useSendPushNotification() {
+export default function useSendChatPushNotification() {
   const mutation = useMutation({
     mutationFn: async (data: SendNotificationRequest) => {
       try {
