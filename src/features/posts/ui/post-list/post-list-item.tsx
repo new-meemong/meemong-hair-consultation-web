@@ -17,7 +17,6 @@ type PostItemProps = {
 
 export default function PostListItem({ post, onClick }: PostItemProps) {
   const {
-    hairConsultPostingCreateUserName,
     createdAt,
     title,
     content,
@@ -37,13 +36,7 @@ export default function PostListItem({ post, onClick }: PostItemProps) {
       <div className="flex flex-col gap-2 h-full">
         <div className="flex justify-between items-stretch gap-7 flex-1">
           <div className="flex flex-col min-w-0 flex-1 gap-1">
-            <div className="flex items-center gap-2">
-              <p className="typo-body-3-regular text-label-info">
-                {hairConsultPostingCreateUserName}
-              </p>
-              <div className="w-1 h-1 bg-label-placeholder rounded-full" />
-              <p className="typo-body-3-regular text-label-info">{createdAt}</p>
-            </div>
+            <p className="typo-body-3-regular text-label-info">{createdAt}</p>
             <div className="flex flex-col gap-2 flex-1">
               <h2 className="typo-headline-bold text-label-strong overflow-hidden text-ellipsis line-clamp-1">
                 {title}

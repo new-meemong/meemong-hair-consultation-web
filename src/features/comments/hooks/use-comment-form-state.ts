@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Comment } from '@/entities/comment/model/comment';
-import useSendPushNotification from '@/features/chat/api/use-send-push-notification';
+import useSendCommentPushNotification from '@/features/chat/api/use-send-comment-push-notification';
 
 import type { CommentFormState } from '../types/comment-form-state';
 import type { CommentFormValues } from '../ui/comment-form';
@@ -78,7 +78,7 @@ export const useCommentFormState = ({
     }
   }, [commentFormState]);
 
-  const { mutate: sendNotification } = useSendPushNotification();
+  const { mutate: sendNotification } = useSendCommentPushNotification();
 
   const handleCommentFormSubmit = useCallback(
     (data: CommentFormValues, options: { onSuccess: () => void }) => {
