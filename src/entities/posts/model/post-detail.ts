@@ -19,7 +19,7 @@ type MyImages = {
 
 type Aspirations = {
   aspirationImages: string[];
-  description: string | null;
+  aspirationDescription: string | null;
 };
 
 export type PostDetail = {

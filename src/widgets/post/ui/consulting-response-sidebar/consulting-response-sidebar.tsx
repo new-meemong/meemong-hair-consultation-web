@@ -86,7 +86,7 @@ export default function ConsultingResponseSidebar({
     : null;
 
   const aspirationImageUrls = consultingPost.aspirations?.aspirationImages ?? [];
-  const aspirationImagesDescription = consultingPost.aspirations?.description ?? null;
+  const aspirationImagesDescription = consultingPost.aspirations?.aspirationDescription ?? null;
 
   const hairConcern =
     consultingPost.hairConcern === HAIR_CONCERN_OPTION_LABEL[HAIR_CONCERN_OPTION_VALUE.ETC]

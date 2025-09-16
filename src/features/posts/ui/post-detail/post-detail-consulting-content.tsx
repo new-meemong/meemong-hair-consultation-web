@@ -97,7 +97,7 @@ export default function PostDetailConsultingContent({
   const concern = hairConcern === HAIR_CONCERN_OPTION.etc.label ? hairConcernDetail : hairConcern;
 
   const hasAspirations =
-    aspirations && (aspirations.aspirationImages.length > 0 || aspirations.description);
+    aspirations && (aspirations.aspirationImages.length > 0 || aspirations.aspirationDescription);
 
   return (
     <div className="flex flex-col gap-6 py-6">
@@ -141,8 +141,10 @@ export default function PostDetailConsultingContent({
                 onlyShowToDesigner={onlyShowToDesigner}
               />
             )}
-            {aspirations.description && (
-              <p className="typo-body-2-long-regular text-label-info">{aspirations.description}</p>
+            {aspirations.aspirationDescription && (
+              <p className="typo-body-2-long-regular text-label-info whitespace-pre-wrap">
+                {aspirations.aspirationDescription}
+              </p>
             )}
           </ContentItem>
         )}
