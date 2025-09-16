@@ -12,25 +12,30 @@ const MAX_IMAGE_COUNT = 6;
 export default function ConsultingPostFormStepAspirationImages() {
   const { setValue, control, register } = useFormContext<ConsultingPostFormValues>();
 
-  const currentOptionValue = useWatch({
-    name: CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES,
+  const currentImages =
+    useWatch({
+      name: `${CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES}.images`,
+      control,
+    }) ?? [];
+
+  const currentDescription = useWatch({
+    name: `${CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`,
     control,
   });
-  const currentImages = currentOptionValue?.images ?? [];
 
   const handleImageUpload = (file: File[]) => {
     const newImages = [...currentImages, ...file];
 
     setValue(CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
       images: newImages,
-      description: currentOptionValue?.description,
+      description: currentDescription,
     });
   };
 
   const setImageFiles = (newImageFiles: File[]) => {
     setValue(CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
       images: newImageFiles,
-      description: currentOptionValue?.description,
+      description: currentDescription,
     });
   };
 
