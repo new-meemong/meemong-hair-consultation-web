@@ -42,7 +42,7 @@ interface FirestoreUser {
 
 interface ChatChannelState {
   userHairConsultationChatChannels: UserHairConsultationChatChannelType[];
-  otherUserHairConsultationChatChannel: UserHairConsultationChatChannelType | null;
+  otherUserHairConsultationChatChannels: UserHairConsultationChatChannelType | null;
   loading: boolean;
   error: string | null;
 
@@ -87,7 +87,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
   userHairConsultationChatChannels: [],
   loading: false,
   error: null,
-  otherUserHairConsultationChatChannel: null,
+  otherUserHairConsultationChatChannels: null,
 
   findOrCreateChannel: async ({ senderId, receiverId }) => {
     try {
@@ -357,7 +357,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           const data = snapshot.data();
 
           set({
-            otherUserHairConsultationChatChannel: {
+            otherUserHairConsultationChatChannels: {
               channelId: snapshot.id,
               ...data,
             } as UserHairConsultationChatChannelType,

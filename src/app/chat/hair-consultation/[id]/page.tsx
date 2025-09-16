@@ -35,10 +35,8 @@ export default function HairConsultationChatDetailPage() {
   };
 
   const [userChannel, setUserChannel] = useState<UserHairConsultationChatChannelType | null>(null);
-
   const [error, setError] = useState<string | null>(null);
-
-  console.log('error', error);
+  const [isInitializing, setIsInitializing] = useState(true);
 
   const { user } = useAuthContext();
   const userId = user.id.toString();
@@ -71,19 +69,18 @@ export default function HairConsultationChatDetailPage() {
     if (userChannel) return;
 
     const initializeChannel = async () => {
-      //   if (source === 'app') {
-      //     return;
-      //   }
-
       const foundUserChannel = userHairConsultationChatChannels.find(
         (channel) => channel.channelId === params.id,
       );
 
       if (foundUserChannel) {
         setUserChannel(foundUserChannel);
+        setError(null);
       } else if (userHairConsultationChatChannels.length > 0) {
         setError('사용자 채널 정보를 찾을 수 없습니다.');
       }
+
+      setIsInitializing(false);
     };
 
     initializeChannel();
@@ -116,12 +113,12 @@ export default function HairConsultationChatDetailPage() {
   }, [chatChannelId, params.id, subscribeToMessages]);
 
   useEffect(() => {
-    if (!userId || !chatChannelId) return;
+    if (!userId || !chatChannelId || !userChannel) return;
 
     // 채팅방 입장 시 상대방 정보 업데이트
     updateChannelUserInfo(chatChannelId, userId);
     resetUnreadCount(chatChannelId, userId);
-  }, [userId, chatChannelId, updateChannelUserInfo, resetUnreadCount]);
+  }, [userId, chatChannelId, userChannel, updateChannelUserInfo, resetUnreadCount]);
 
   const sendMessage = useSendMessage();
 
@@ -156,7 +153,51 @@ export default function HairConsultationChatDetailPage() {
   //     return <CenterSpinner />;
   //   }
 
-  if (!userChannel) return null;
+  // 로딩 중이거나 초기화 중인 경우
+  if (isInitializing) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-600">채팅방을 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러가 있는 경우
+  if (error) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <button
+            onClick={handleBackClick}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // 채널 정보가 없는 경우
+  if (!userChannel) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">채팅방을 찾을 수 없습니다.</p>
+          <button
+            onClick={handleBackClick}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col">

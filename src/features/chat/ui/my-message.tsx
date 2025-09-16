@@ -28,12 +28,14 @@ type MyMessageProps = {
 };
 
 export default function MyMessage({ message }: MyMessageProps) {
-  const { otherUserHairConsultationChatChannel } = useHairConsultationChatChannelStore((state) => ({
-    otherUserHairConsultationChatChannel: state.otherUserHairConsultationChatChannel,
-  }));
+  const { otherUserHairConsultationChatChannels } = useHairConsultationChatChannelStore(
+    (state) => ({
+      otherUserHairConsultationChatChannels: state.otherUserHairConsultationChatChannels,
+    }),
+  );
 
   const isRead = () => {
-    const otherLastReadAt = otherUserHairConsultationChatChannel?.lastReadAt as Timestamp | null;
+    const otherLastReadAt = otherUserHairConsultationChatChannels?.lastReadAt as Timestamp | null;
     return otherLastReadAt
       ? (message.createdAt as Timestamp)?.toMillis() <= otherLastReadAt?.toMillis()
       : false;
