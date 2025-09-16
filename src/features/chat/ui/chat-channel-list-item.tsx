@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ROUTES } from '@/shared/lib/routes';
 
+import useIsFromApp from '../hook/use-is-from-app';
 import useLeaveChat from '../hook/use-leave-chat';
 
 function ActionButton({
@@ -41,6 +42,7 @@ type ChatChannelListItemProps = {
 
 export default function ChatChannelListItem({ chatChannel }: ChatChannelListItemProps) {
   const router = useRouterWithUser();
+  const isFromApp = useIsFromApp();
 
   const [offset, setOffset] = useState(0);
   const [startX, setStartX] = useState(0);
@@ -88,14 +90,15 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
   const handleChannelClick = () => {
     // const source = searchParams.get('source');
 
-    // if (!UserID) return;
+    // if (!userId) return;
 
-    // if (source === SourceType.APP && window.openChatChannel) {
-    //   window.openChatChannel({
-    //     userId: UserID,
-    //     chatChannelId: chatChannel.channelId,
-    //   });
-    // }
+    if (window.openChatChannel && isFromApp) {
+      window.openChatChannel({
+        userId: userId.toString(),
+        chatChannelId: chatChannel.channelId,
+      });
+      return;
+    }
 
     // if (!source || source === SourceType.WEB) {
     router.push(ROUTES.CHAT_HAIR_CONSULTATION_DETAIL(chatChannel.channelId));
