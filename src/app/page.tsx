@@ -3,11 +3,12 @@ import { redirect } from 'next/navigation';
 import { ROUTES } from '@/shared';
 
 type HomePageProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default function Home({ searchParams }: HomePageProps) {
-  const userId = searchParams.userId;
+export default async function Home({ searchParams }: HomePageProps) {
+  const params = await searchParams;
+  const userId = params.userId;
 
   // userId가 있으면 쿼리 파라미터를 유지하면서 리디렉션
   if (userId) {
