@@ -13,7 +13,7 @@ export default function ScrollSelector<T extends string | number>({
   selectedOption,
   onSelect,
 }: ScrollSelectorProps<T>) {
-  const { containerRef, setButtonRef } = useScrollSelector({
+  const { containerRef, setButtonRef, handleButtonClick } = useScrollSelector({
     options,
     selectedOption,
     onSelect,
@@ -22,7 +22,7 @@ export default function ScrollSelector<T extends string | number>({
   return (
     <div className="relative h-50">
       <div
-        className="h-50 overflow-y-scroll scrollbar-hide snap-y snap-mandatory"
+        className="h-50 overflow-y-scroll scrollbar-hide"
         ref={containerRef}
       >
         {/* 상단 여백 - 첫번째 옵션을 가운데로 스크롤할 수 있도록 */}
@@ -36,9 +36,9 @@ export default function ScrollSelector<T extends string | number>({
             <button
               key={`${option}-${index}`}
               ref={setButtonRef(index)}
-              disabled
+              onClick={() => handleButtonClick(index)}
               className={cn(
-                'w-full h-10 flex items-center justify-center transition-colors snap-center',
+                'w-full h-10 flex items-center justify-center transition-colors cursor-pointer hover:bg-alternative/50',
                 selected && 'typo-headline-bold text-label-default rounded-4 bg-alternative',
                 Math.abs(selectedIndex - index) === 1 && 'typo-body-2-regular text-label-info',
                 Math.abs(selectedIndex - index) === 2 && 'typo-body-3-regular text-label-sub',

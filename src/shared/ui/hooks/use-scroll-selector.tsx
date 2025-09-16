@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 type UseScrollSelectorProps<T> = {
   options: T[];
@@ -37,7 +37,7 @@ export function useScrollSelector<T extends string | number>({
     }
     scrollTimeoutRef.current = setTimeout(() => {
       isScrollingRef.current = false;
-    }, 300);
+    }, 500);
   }, []);
 
   // 선택된 옵션이 항상 중앙으로 오도록 스크롤 처리
@@ -56,51 +56,71 @@ export function useScrollSelector<T extends string | number>({
     };
   }, []);
 
-  // 스크롤할 때 중앙에 선택된 옵션이 onSelect 되도록 함
-  useEffect(() => {
-    if (!containerRef.current) return;
+  // 가장 중앙에 가까운 옵션을 찾는 함수
+  const findCenterOption = useCallback(() => {
+    if (!containerRef.current) return -1;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (isScrollingRef.current) return;
+    const container = containerRef.current;
+    const containerRect = container.getBoundingClientRect();
+    const containerCenter = containerRect.top + containerRect.height / 2;
 
-        let maxRatio = 0;
-        let mostVisibleButton: HTMLButtonElement | null = null;
+    let closestIndex = -1;
+    let minDistance = Infinity;
 
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-            maxRatio = entry.intersectionRatio;
-            mostVisibleButton = entry.target as HTMLButtonElement;
-          }
-        });
+    buttonRefs.current.forEach((button, index) => {
+      if (!button) return;
 
-        if (mostVisibleButton && maxRatio > 0.5) {
-          const optionIndex = buttonRefs.current.findIndex((btn) => btn === mostVisibleButton);
-          if (optionIndex !== -1 && optionIndex < options.length) {
-            const currentSelected = options[optionIndex];
-            if (currentSelected !== selectedOption) {
-              onSelect(currentSelected);
-            }
-          }
-        }
-      },
-      {
-        root: containerRef.current,
-        rootMargin: '-40% 0px -40% 0px',
-        threshold: [0, 0.3, 0.5, 0.7, 1.0],
-      },
-    );
+      const buttonRect = button.getBoundingClientRect();
+      const buttonCenter = buttonRect.top + buttonRect.height / 2;
+      const distance = Math.abs(buttonCenter - containerCenter);
 
-    buttonRefs.current.forEach((button) => {
-      if (button) {
-        observer.observe(button);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = index;
       }
     });
 
-    return () => {
-      observer.disconnect();
+    return closestIndex;
+  }, []);
+
+  // 스크롤 종료 후 중앙 정렬
+  const handleScrollEnd = useCallback(() => {
+    if (isScrollingRef.current) return;
+
+    const centerIndex = findCenterOption();
+    if (centerIndex !== -1 && centerIndex < options.length) {
+      const centerOption = options[centerIndex];
+      if (centerOption !== selectedOption) {
+        onSelect(centerOption);
+        scrollToCenter(centerIndex);
+      }
+    }
+  }, [findCenterOption, options, selectedOption, onSelect, scrollToCenter]);
+
+  // 스크롤 이벤트 처리 - 부드러운 디바운싱
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const container = containerRef.current;
+    let scrollEndTimer: NodeJS.Timeout;
+
+    const handleScroll = () => {
+      if (isScrollingRef.current) return;
+
+      // 스크롤 종료를 감지하기 위한 디바운싱
+      clearTimeout(scrollEndTimer);
+      scrollEndTimer = setTimeout(() => {
+        handleScrollEnd();
+      }, 200); // 200ms 후 스크롤이 끝났다고 가정
     };
-  }, [options, onSelect, selectedOption]);
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollEndTimer);
+    };
+  }, [handleScrollEnd]);
 
   const setButtonRef = useCallback(
     (index: number) => (el: HTMLButtonElement | null) => {
@@ -110,8 +130,17 @@ export function useScrollSelector<T extends string | number>({
     [],
   );
 
+  const handleButtonClick = useCallback((index: number) => {
+    if (index < 0 || index >= options.length) return;
+    
+    const clickedOption = options[index];
+    onSelect(clickedOption);
+    scrollToCenter(index);
+  }, [options, onSelect, scrollToCenter]);
+
   return {
     containerRef,
     setButtonRef,
+    handleButtonClick,
   };
 }
