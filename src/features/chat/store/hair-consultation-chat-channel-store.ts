@@ -24,9 +24,25 @@ import {
 } from '../type/hair-consultation-chat-message-type';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 
+// Firestore에 저장된 실제 데이터 구조에 맞는 타입
+interface FirestoreUser {
+  DisplayName?: string;
+  Email?: string;
+  FcmToken?: string;
+  Korean?: string;
+  Role?: number;
+  Sex?: string;
+  profileUrl?: string;
+  UserID?: string | null;
+  id?: number;
+  // 기존 User 타입의 필드들도 포함
+  displayName?: string;
+  profilePictureURL?: string;
+}
+
 interface ChatChannelState {
   userHairConsultationChatChannels: UserHairConsultationChatChannelType[];
-  otherUserHairConsultationChatChannel: UserHairConsultationChatChannelType | null;
+  otherUserHairConsultationChatChannels: UserHairConsultationChatChannelType | null;
   loading: boolean;
   error: string | null;
 
@@ -71,7 +87,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
   userHairConsultationChatChannels: [],
   loading: false,
   error: null,
-  otherUserHairConsultationChatChannel: null,
+  otherUserHairConsultationChatChannels: null,
 
   findOrCreateChannel: async ({ senderId, receiverId }) => {
     try {
@@ -181,10 +197,13 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
               const data = doc.data();
               return !data.deletedAt; // null이거나 undefined인 경우 true
             })
-            .map((doc) => ({
-              channelId: doc.id,
-              ...doc.data(),
-            })) as UserHairConsultationChatChannelType[];
+            .map((doc) => {
+              const data = doc.data();
+              return {
+                channelId: doc.id,
+                ...data,
+              };
+            }) as UserHairConsultationChatChannelType[];
 
           const sortedChannels = sortChannels(channels);
 
@@ -338,7 +357,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           const data = snapshot.data();
 
           set({
-            otherUserHairConsultationChatChannel: {
+            otherUserHairConsultationChatChannels: {
               channelId: snapshot.id,
               ...data,
             } as UserHairConsultationChatChannelType,
@@ -396,7 +415,10 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
       const ref = doc(db, getDbPath(userId), channelId);
 
       const snap = await getDoc(ref);
-      if (!snap.exists()) return;
+      if (!snap.exists()) {
+        console.warn('채널 메타데이터가 존재하지 않습니다:', { channelId, userId });
+        return;
+      }
 
       const userHairConsultationChatChannel = snap.data();
 
@@ -411,14 +433,23 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           });
         }
       }
+      // otherUser 정보가 없거나 불완전한 경우에만 업데이트
+      if (
+        !userHairConsultationChatChannel.otherUser ||
+        !(userHairConsultationChatChannel.otherUser as FirestoreUser)?.DisplayName
+      ) {
+        const userData = await getUser(userHairConsultationChatChannel.otherUserId);
 
-      const userData = await getUser(userHairConsultationChatChannel.otherUserId);
-
-      if (userData.success) {
-        await updateDoc(ref, {
-          otherUser: userData.data,
-          updatedAt: serverTimestamp(),
-        });
+        if (userData.success) {
+          await updateDoc(ref, {
+            otherUser: userData.data,
+            updatedAt: serverTimestamp(),
+          });
+        } else {
+          console.error('사용자 정보 가져오기 실패:', {
+            otherUserId: userHairConsultationChatChannel.otherUserId,
+          });
+        }
       }
     } catch (error) {
       console.error('사용자 정보 업데이트 중 오류 발생:', error);

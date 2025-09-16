@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 
 import Image from 'next/image';
 
@@ -16,6 +16,22 @@ import { ROUTES } from '@/shared/lib/routes';
 
 import useIsFromApp from '../hook/use-is-from-app';
 import useLeaveChat from '../hook/use-leave-chat';
+
+// Firestore에 저장된 실제 데이터 구조에 맞는 타입
+interface FirestoreUser {
+  DisplayName?: string;
+  Email?: string;
+  FcmToken?: string;
+  Korean?: string;
+  Role?: number;
+  Sex?: string;
+  profileUrl?: string;
+  UserID?: string | null;
+  id?: number;
+  // 기존 User 타입의 필드들도 포함
+  displayName?: string;
+  profilePictureURL?: string;
+}
 
 function ActionButton({
   children,
@@ -46,14 +62,30 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
 
   const [offset, setOffset] = useState(0);
   const [startX, setStartX] = useState(0);
+  const hasTriedUpdate = useRef(false);
 
   const { user } = useAuthContext();
   const userId = user.id;
 
-  const { pinChannel, unpinChannel } = useHairConsultationChatChannelStore((state) => ({
-    pinChannel: state.pinChannel,
-    unpinChannel: state.unpinChannel,
-  }));
+  const { pinChannel, unpinChannel, updateChannelUserInfo } = useHairConsultationChatChannelStore(
+    (state) => ({
+      pinChannel: state.pinChannel,
+      unpinChannel: state.unpinChannel,
+      updateChannelUserInfo: state.updateChannelUserInfo,
+    }),
+  );
+
+  // 사용자 정보가 없거나 불완전한 경우 업데이트 (한 번만 실행)
+  useEffect(() => {
+    if (
+      !hasTriedUpdate.current &&
+      (!chatChannel.otherUser || !(chatChannel.otherUser as FirestoreUser)?.DisplayName)
+    ) {
+      hasTriedUpdate.current = true;
+      updateChannelUserInfo(chatChannel.channelId, userId.toString());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatChannel.channelId, chatChannel.otherUserId, userId]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setStartX(e.touches[0].clientX);
@@ -116,7 +148,8 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
   };
 
   const { lastMessage, otherUser } = chatChannel;
-  const userImage = otherUser?.profilePictureURL || '/profile.svg';
+  const userImage =
+    (otherUser as FirestoreUser)?.profileUrl || otherUser?.profilePictureURL || '/profile.svg';
 
   return (
     <div className="relative w-full overflow-hidden z-1 flex items-center">
@@ -141,7 +174,7 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
           <div className="flex items-center gap-0.5">
             {chatChannel.isPinned && <PinIcon className="size-4 fill-label-info" />}
             <p className="typo-headline-bold text-label-strong">
-              {otherUser?.displayName || '알수없음'}
+              {(otherUser as FirestoreUser)?.DisplayName || otherUser?.displayName || '알수없음'}
             </p>
           </div>
           <p className="typo-body-2-long-regular text-label-info  overflow-hidden text-ellipsis line-clamp-2 break-words whitespace-pre-wrap">
