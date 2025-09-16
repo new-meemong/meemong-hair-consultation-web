@@ -12,6 +12,11 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
         'outline-none border-none typo-body-2-long-regular',
         className,
       )}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          (e.target as HTMLInputElement).blur();
+        }
+      }}
       {...props}
     />
   );
