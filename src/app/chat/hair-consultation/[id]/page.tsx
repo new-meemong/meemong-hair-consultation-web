@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import useIsFromApp from '@/features/chat/hook/use-is-from-app';
 import useSendMessage from '@/features/chat/hook/use-send-message';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import { useHairConsultationChatMessageStore } from '@/features/chat/store/hair-consultation-chat-message-store';
@@ -13,7 +14,6 @@ import type { UserHairConsultationChatChannelType } from '@/features/chat/type/u
 import ChatDetailMoreButton from '@/features/chat/ui/chat-detail-more-button';
 import ChatMessageForm, { type ChatMessageInputValues } from '@/features/chat/ui/chat-message-form';
 import MessageSection from '@/features/chat/ui/message-section';
-import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useLoadingContext } from '@/shared/context/loading-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { SiteHeader } from '@/widgets/header';
@@ -21,8 +21,7 @@ import { SiteHeader } from '@/widgets/header';
 export default function HairConsultationChatDetailPage() {
   const params = useParams();
   const chatChannelId = params.id as string;
-  const searchParams = useSearchParams();
-  const isFromApp = searchParams.get(SEARCH_PARAMS.FROM) === 'app';
+  const isFromApp = useIsFromApp();
 
   const { back } = useRouterWithUser();
 

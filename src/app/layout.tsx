@@ -74,6 +74,16 @@ export default function RootLayout({
             }
 
             window.closeWebview = closeWebview;
+
+            function openChatChannel(message) {
+              if(window.OpenChatChannel) {
+                window.OpenChatChannel.postMessage(JSON.stringify(message));
+              } else {
+                console.log("OpenChatChannel channel is not available.");
+              }
+            }
+
+            window.openChatChannel = openChatChannel;
           `}
         </Script>
       </body>
