@@ -9,8 +9,12 @@
 @import './viewport.css';
 
 @layer base {
+  html {
+    background-color: #ffffff;
+  }
+  
   body {
-    background-color: var(--color-bg-white);
+    background-color: #ffffff;
     overflow: hidden;
   }
 }

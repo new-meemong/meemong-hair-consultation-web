@@ -33,6 +33,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'Meemong',
   description: 'Meemong project',
+  themeColor: '#ffffff',
 };
 
 export default function RootLayout({
@@ -41,8 +42,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body className={`${pretendard.variable} antialiased max-w-2xl mx-auto`}>
+    <html lang="ko" style={{ backgroundColor: '#ffffff' }}>
+      <body
+        className={`${pretendard.variable} antialiased max-w-2xl mx-auto`}
+        style={{ backgroundColor: '#ffffff' }}
+      >
         <OverlayProvider>
           <QueryProvider>
             <ErrorBoundary>
