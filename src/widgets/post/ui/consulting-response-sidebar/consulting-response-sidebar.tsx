@@ -1,7 +1,5 @@
 import { useRef, useState } from 'react';
 
-import { createPortal } from 'react-dom';
-
 import CloseIcon from '@/assets/icons/close.svg';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
@@ -10,14 +8,19 @@ import {
   HAIR_CONCERN_OPTION_VALUE,
 } from '@/features/posts/constants/hair-concern-option';
 import getSkinToneValue from '@/features/posts/lib/get-skin-tone-value';
+import ConsultingResponseSidebarButton from '@/features/posts/ui/consulting-form/consulting-response-form/consulting-response-sidebar/consulting-response-sidebar-button';
 import { cn } from '@/lib/utils';
-import { ToggleChip, ToggleChipGroup } from '@/shared';
+import { Drawer, ToggleChip, ToggleChipGroup } from '@/shared';
+import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import useShowGuide from '@/shared/hooks/use-show-guide';
 import type { ValueOf } from '@/shared/type/types';
-import { MULTI_STEP_FORM_PORTAL_ID } from '@/shared/ui/multi-step-form';
+import { DrawerClose, DrawerContent, DrawerTitle, DrawerTrigger } from '@/shared/ui/drawer';
 import {
   CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE,
   CONSULTING_RESPONSE_SIDEBAR_TABS,
 } from '@/widgets/post/constants/consulting-response-sidebar-tab';
+
+import ConsultingResponseSidebarGuideTooltip from '../consulting-response/consulting-response-sidebar-guide-tooltip';
 
 import ConsultingResponseSidebarAdditionalInfoTabView from './consulting-response-sidebar-additional-info-tab-view';
 import ConsultingResponseSidebarCurrentStateTabView from './consulting-response-sidebar-current-state-tab-view';
@@ -46,16 +49,10 @@ const getSidebarTab = (post?: PostDetail) => {
 };
 
 type ConsultingResponseSidebarProps = {
-  isOpen: boolean;
-  onClose: () => void;
   postId: string;
 };
 
-export default function ConsultingResponseSidebar({
-  isOpen,
-  onClose,
-  postId,
-}: ConsultingResponseSidebarProps) {
+export default function ConsultingResponseSidebar({ postId }: ConsultingResponseSidebarProps) {
   const { data: postDetail } = useGetPostDetail(postId);
 
   const consultingPost = postDetail?.data;
@@ -73,6 +70,10 @@ export default function ConsultingResponseSidebar({
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     setHasScroll(e.currentTarget.scrollTop > 0);
   };
+
+  const { shouldShowGuide, closeGuide } = useShowGuide(
+    USER_GUIDE_KEYS.hasSeenConsultingResponseSidebarGuide,
+  );
 
   if (!consultingPost) return null;
 
@@ -117,24 +118,31 @@ export default function ConsultingResponseSidebar({
     }
   };
 
-  return createPortal(
-    <div className={`fixed inset-0 z-50 ${!isOpen ? 'pointer-events-none' : ''}`}>
-      <div
-        className={`absolute inset-0 bg-dimmer transition-opacity duration-500 ${
-          isOpen ? 'opacity-100' : 'opacity-0'
-        }`}
-      />
-      <div
-        className={`
-          absolute right-0 top-0 h-full w-72 flex flex-col
-          bg-white transform transition-all duration-500 ease-in-out
-          ${isOpen ? 'translate-x-0' : 'translate-x-full'}
-        `}
-      >
+  return (
+    <Drawer
+      direction="right"
+      onOpenChange={() => {
+        if (shouldShowGuide) {
+          closeGuide();
+        }
+      }}
+    >
+      <DrawerTitle />
+      <DrawerTrigger asChild>
+        <div className="absolute bottom-26 right-5">
+          <div className="flex flex-col items-end gap-4.25">
+            {shouldShowGuide && <ConsultingResponseSidebarGuideTooltip />}
+            <ConsultingResponseSidebarButton />
+          </div>
+        </div>
+      </DrawerTrigger>
+      <DrawerContent className={cn('h-full w-72 flex flex-col bg-white ')}>
         <div className={cn('flex flex-col gap-3 py-5', hasScroll && 'shadow-emphasize')}>
-          <button type="button" className="self-end pr-5" onClick={onClose}>
-            <CloseIcon className="size-7 fill-label-info" />
-          </button>
+          <DrawerClose asChild key="close">
+            <button type="button" className="self-end pr-5">
+              <CloseIcon className="size-7 fill-label-info" />
+            </button>
+          </DrawerClose>
           <ToggleChipGroup className="flex overflow-x-auto scrollbar-hide px-5">
             {sidebarTabs.map(({ value, icon, label }) => (
               <ToggleChip
@@ -151,14 +159,13 @@ export default function ConsultingResponseSidebar({
         <div
           ref={contentRef}
           className={`
-             px-5 overflow-y-auto scrollbar-hide
-           `}
+               px-5 overflow-y-auto scrollbar-hide
+             `}
           onScroll={handleScroll}
         >
           {renderTabView()}
         </div>
-      </div>
-    </div>,
-    document.getElementById(MULTI_STEP_FORM_PORTAL_ID) || document.body,
+      </DrawerContent>
+    </Drawer>
   );
 }

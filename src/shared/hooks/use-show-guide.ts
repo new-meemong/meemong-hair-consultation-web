@@ -29,7 +29,7 @@ function useShowGuide(
 
   const showGuide = showGuideMapper[key];
 
-  const shouldShowGuide = !user[key] && shouldShow;
+  const shouldShowGuide = !user[key] && !!shouldShow;
 
   const closeGuide = useCallback(() => {
     updateUser({ [key]: true });
