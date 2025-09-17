@@ -20,7 +20,7 @@ import { SiteHeader } from '@/widgets/header';
 
 export default function HairConsultationChatDetailPage() {
   const params = useParams();
-  const chatChannelId = params.id as string;
+  const chatChannelId = params?.id?.toString();
   const isFromApp = useIsFromApp();
 
   const { back } = useRouterWithUser();
@@ -88,14 +88,12 @@ export default function HairConsultationChatDetailPage() {
   // 앱에서 접근한 경우 내 채널 구독
   // => 앱에서는 리스트와 상관없이 해당 채널 방을 바로 웹뷰로 띄우기 때문에 새로운 구독 필요
   useEffect(() => {
-    // if (source !== 'app' || !params.id || !userId) {
-    //   return;
-    // }
+    if (!isFromApp || !chatChannelId) return;
 
     const unsubscribe = subscribeToMine(chatChannelId, userId);
 
     return () => unsubscribe();
-  }, [chatChannelId, userId, subscribeToMine, userChannel]);
+  }, [chatChannelId, userId, subscribeToMine, userChannel, isFromApp]);
   // 앱에서 접근한 경우 내채널 구독후 해당 채널 userChannel로 등록
 
   //   useEffect(() => {
@@ -123,7 +121,7 @@ export default function HairConsultationChatDetailPage() {
 
   async function handleSendMessage(data: ChatMessageInputValues) {
     const message = data.content;
-    if (!message.trim() || !userChannel?.otherUser?.id || !userId) {
+    if (!message.trim() || !userChannel?.otherUser?.id || !userId || !chatChannelId) {
       return { success: false };
     }
 
@@ -198,11 +196,13 @@ export default function HairConsultationChatDetailPage() {
     );
   }
 
+  console.log('userChannel', userChannel);
+
   return (
     <div className="h-screen flex flex-col">
       <SiteHeader
         showBackButton
-        title={userChannel?.otherUser?.displayName ?? ''}
+        title={userChannel?.otherUser?.DisplayName ?? ''}
         rightComponent={
           <ChatDetailMoreButton chatChannel={userChannel} onLeaveChat={handleBackClick} />
         }

@@ -28,4 +28,5 @@ export interface User {
   isExistPassword: boolean;
   appIdentifierId: string | null;
   token: string;
+  DisplayName?: string;
 }
