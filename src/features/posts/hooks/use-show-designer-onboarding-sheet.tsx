@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useOverlayContext } from '@/shared/context/overlay-context';
-import type { UseGuidePopupProps } from '@/shared/hooks/use-guide-popup';
+import type { UseGuidePopupProps } from '@/shared/hooks/use-show-guide';
 
 import DesignerOnboardingSheetContent from '../ui/designer-onboarding-sheet-content';
 

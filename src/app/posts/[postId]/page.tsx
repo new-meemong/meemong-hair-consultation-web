@@ -14,8 +14,8 @@ import useWritingConsultingResponse from '@/features/posts/hooks/use-writing-con
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { Button } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
-import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import useShowGuide from '@/shared/hooks/use-show-guide';
 import { ROUTES } from '@/shared/lib/routes';
 import { CommentContainer } from '@/widgets/comments/ui/comment-container';
 import { SiteHeader } from '@/widgets/header';
@@ -26,7 +26,7 @@ export default function PostDetailPage() {
   const { postId } = useParams();
   const { push } = useRouterWithUser();
 
-  useGuidePopup(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
+  useShowGuide(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
 
   const { data: response } = useGetPostDetail(postId?.toString() ?? '');
   const postDetail = response?.data;

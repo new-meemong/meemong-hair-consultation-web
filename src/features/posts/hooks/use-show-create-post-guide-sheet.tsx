@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { Button } from '@/shared';
 import { useOverlayContext } from '@/shared/context/overlay-context';
-import type { UseGuidePopupProps } from '@/shared/hooks/use-guide-popup';
+import type { UseGuidePopupProps } from '@/shared/hooks/use-show-guide';
 import {
   DrawerClose,
   DrawerDescription,

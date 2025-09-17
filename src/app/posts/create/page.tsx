@@ -18,14 +18,14 @@ import { ROUTES } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useOverlayContext } from '@/shared/context/overlay-context';
-import useGuidePopup from '@/shared/hooks/use-guide-popup';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import useShowGuide from '@/shared/hooks/use-show-guide';
 import type { ValueOf } from '@/shared/type/types';
 import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
 
 export default function CreatePostPage() {
-  useGuidePopup(USER_GUIDE_KEYS.hasSeenCreatePostGuide);
+  useShowGuide(USER_GUIDE_KEYS.hasSeenCreatePostGuide);
 
   const [initialHeight] = useState(() => window.innerHeight);
 
