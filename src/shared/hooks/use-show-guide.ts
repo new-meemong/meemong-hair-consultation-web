@@ -8,12 +8,11 @@ import { useAuthContext } from '../../features/auth/context/auth-context';
 import type { UserGuideState } from '../lib';
 import type { KeyOf } from '../type/types';
 
-
 export interface UseGuidePopupProps {
   onClose: () => void;
 }
 
-function useGuidePopup(
+function useShowGuide(
   key: KeyOf<UserGuideState>,
   { shouldShow }: { shouldShow?: boolean } = { shouldShow: true },
 ) {
@@ -25,19 +24,28 @@ function useGuidePopup(
   const showGuideMapper = {
     [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: showCreatePostGuideSheet,
     [USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide]: showDesignerOnboardingSheet,
+    [USER_GUIDE_KEYS.hasSeenConsultingResponseSidebarGuide]: null,
   };
 
   const showGuide = showGuideMapper[key];
 
-  const handleClose = useCallback(() => {
+  const shouldShowGuide = !user[key] && shouldShow;
+
+  const closeGuide = useCallback(() => {
     updateUser({ [key]: true });
-  }, [key, updateUser]);
+  }, [updateUser, key]);
+
+  const handleClose = useCallback(() => {
+    closeGuide();
+  }, [closeGuide]);
 
   useEffect(() => {
-    if (!user[key] && shouldShow) {
+    if (shouldShowGuide && showGuide) {
       showGuide({ onClose: handleClose });
     }
-  }, [user, key, showGuide, handleClose, shouldShow]);
+  }, [user, key, showGuide, handleClose, shouldShow, shouldShowGuide]);
+
+  return { shouldShowGuide, closeGuide };
 }
 
-export default useGuidePopup;
+export default useShowGuide;
