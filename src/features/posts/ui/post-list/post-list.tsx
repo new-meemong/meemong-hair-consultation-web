@@ -43,11 +43,15 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
     <div className="flex flex-col h-full">
       <div className="flex-1">
         <div className="[&>*:last-child]:border-b-0">
-          {posts.map((post) => (
-            <PostListItem key={post.id} post={post} onClick={() => handlePostClick(post.id)} />
+          {posts.map((post, index) => (
+            <PostListItem
+              key={post.id}
+              post={post}
+              onClick={() => handlePostClick(post.id)}
+              ref={index === posts.length - 2 ? observerRef : undefined}
+            />
           ))}
         </div>
-        <div ref={observerRef} />
       </div>
     </div>
   );
