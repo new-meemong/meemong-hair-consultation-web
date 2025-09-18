@@ -11,13 +11,6 @@ type ConsultingHairConditionProps = {
 export default function ConsultingHairCondition({ value, onChange }: ConsultingHairConditionProps) {
   return (
     <div className="flex flex-col gap-7">
-      <ProgressSlider
-        total={HAIR_CONDITION_OPTION_VALUES.length}
-        value={value}
-        leftLabel="매우 건강"
-        rightLabel="매우 손상"
-        onChange={onChange}
-      />
       <div
         className={cn(
           'flex items-center justify-center bg-alternative rounded-4 h-11.25 typo-body-1-regular',
@@ -26,6 +19,13 @@ export default function ConsultingHairCondition({ value, onChange }: ConsultingH
       >
         {value ? HAIR_CONDITION_OPTION[value].label : ''}
       </div>
+      <ProgressSlider
+        total={HAIR_CONDITION_OPTION_VALUES.length}
+        value={value}
+        leftLabel="매우 건강"
+        rightLabel="매우 손상"
+        onChange={onChange}
+      />
     </div>
   );
 }
