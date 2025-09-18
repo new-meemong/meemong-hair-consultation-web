@@ -1,5 +1,7 @@
 'use client';
 
+import type { RefObject } from 'react';
+
 import Image from 'next/image';
 
 import CommentIcon from '@/assets/icons/comment.svg';
@@ -13,9 +15,10 @@ import { isValidUrl } from '@/shared/lib/is-valid-url';
 type PostItemProps = {
   post: Post;
   onClick?: () => void;
+  ref?: RefObject<HTMLDivElement | null>;
 };
 
-export default function PostListItem({ post, onClick }: PostItemProps) {
+export default function PostListItem({ post, onClick, ref }: PostItemProps) {
   const {
     createdAt,
     title,
@@ -32,7 +35,11 @@ export default function PostListItem({ post, onClick }: PostItemProps) {
   const { isUserDesigner } = useAuthContext();
 
   return (
-    <div className="border-b border-gray-200 p-5 w-full h-40 cursor-pointer" onClick={onClick}>
+    <div
+      className="border-b border-gray-200 p-5 w-full h-40 cursor-pointer"
+      onClick={onClick}
+      ref={ref}
+    >
       <div className="flex flex-col gap-2 h-full">
         <div className="flex justify-between items-stretch gap-7 flex-1">
           <div className="flex flex-col min-w-0 flex-1 gap-1">

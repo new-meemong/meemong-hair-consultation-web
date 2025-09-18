@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       'lh3.googleusercontent.com',
       'example.com',
       'https://storage.meemong.com',
+      'img1.kakaocdn.net',
     ],
   },
   devIndicators: false,
