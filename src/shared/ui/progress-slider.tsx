@@ -88,21 +88,28 @@ function ProgressPointer({
   onChange: (value: number) => void;
 }) {
   return (
-    <div className="relative w-full h-full">
+    <div className="absolute  h-8 py-2.5 w-full flex justify-center">
       {Array.from({ length: total }).map((_, index) => {
         return (
           <button
             type="button"
             key={index}
             className={cn(
-              'absolute size-1.5 rounded-full bg-label-placeholder z-10 top-0.75 -translate-x-1/2',
-              index < value && 'bg-label-sub',
+              'absolute py-3.25 px-1.5 -translate-y-2.5 z-10 -translate-x-1/2 ',
+              index === 0 && 'pl-4.5',
             )}
             style={{
               left: getProgressLeft(index, total),
             }}
             onClick={() => onChange(index + 1)}
-          />
+          >
+            <div
+              className={cn(
+                'size-1.5 rounded-full bg-label-placeholder -translate-x-1/2',
+                index < value && 'bg-label-sub',
+              )}
+            />
+          </button>
         );
       })}
     </div>
@@ -130,17 +137,19 @@ export default function ProgressSlider({
 
   return (
     <div className="flex flex-col gap-3">
-      <div
-        className="bg-alternative h-3 rounded-12 relative my-2.5"
-        style={{ paddingLeft: PROGRESS_BAR_PADDING, paddingRight: PROGRESS_BAR_PADDING }}
-      >
+      <div className="relative">
         <ProgressPointer total={total} value={value ?? 0} onChange={handleChange} />
-        {value && (
-          <>
-            <SelectedProgressBar total={total} value={value} />
-            <SelectedProgressPointer value={value} total={total} onChange={handleChange} />
-          </>
-        )}
+        <div
+          className="bg-alternative h-3 rounded-12 relative my-2.5"
+          style={{ paddingLeft: PROGRESS_BAR_PADDING, paddingRight: PROGRESS_BAR_PADDING }}
+        >
+          {value && (
+            <div>
+              <SelectedProgressBar total={total} value={value} />
+              <SelectedProgressPointer value={value} total={total} onChange={handleChange} />
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex items-center justify-between">
         {leftLabel && <ProgressSliderLabel label={leftLabel} />}
