@@ -1,3 +1,5 @@
+import { useCallback, useMemo } from 'react';
+
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { Textarea } from '@/shared';
@@ -10,34 +12,43 @@ import type { ConsultingPostFormValues } from '../../../types/consulting-post-fo
 const MAX_IMAGE_COUNT = 6;
 
 export default function ConsultingPostFormStepAspirationImages() {
-  const { setValue, control, register } = useFormContext<ConsultingPostFormValues>();
+  const { setValue, control, register, getValues } = useFormContext<ConsultingPostFormValues>();
 
-  const currentImages =
-    useWatch({
-      name: `${CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES}.images`,
-      control,
-    }) ?? [];
-
-  const currentDescription = useWatch({
-    name: `${CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`,
+  const watchedImages = useWatch({
+    name: `${CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES}.images`,
     control,
   });
 
-  const handleImageUpload = (file: File[]) => {
-    const newImages = [...currentImages, ...file];
+  const currentImages = useMemo(() => watchedImages ?? [], [watchedImages]);
 
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
-      images: newImages,
-      description: currentDescription,
-    });
-  };
+  const handleImageUpload = useCallback(
+    (file: File[]) => {
+      const currentDescription = getValues(
+        `${CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`,
+      );
+      const newImages = [...currentImages, ...file];
 
-  const setImageFiles = (newImageFiles: File[]) => {
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
-      images: newImageFiles,
-      description: currentDescription,
-    });
-  };
+      setValue(CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
+        images: newImages,
+        description: currentDescription,
+      });
+    },
+    [currentImages, setValue, getValues],
+  );
+
+  const setImageFiles = useCallback(
+    (newImageFiles: File[]) => {
+      const currentDescription = getValues(
+        `${CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`,
+      );
+
+      setValue(CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
+        images: newImageFiles,
+        description: currentDescription,
+      });
+    },
+    [setValue, getValues],
+  );
 
   return (
     <div className="flex flex-col gap-7">
