@@ -7,6 +7,7 @@ export interface User {
   id: number;
   email: string;
   profilePictureURL: string | null;
+  profileUrl?: string;
   accessToken: string | null;
   socialCode: string;
   displayName: string;
@@ -14,6 +15,7 @@ export interface User {
   updatedAt: string;
   loginSession: string;
   role: ValueOf<typeof USER_ROLE>;
+  Role?: ValueOf<typeof USER_ROLE>;
   loginType: string;
   fcmToken: string | null;
   sex: string;

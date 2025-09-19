@@ -4,13 +4,13 @@ import type { Timestamp } from 'firebase/firestore';
 
 import OtherChatMessageTip from '@/assets/icons/other-chat-message-tip.svg';
 import { isDesigner } from '@/entities/user/lib/user-role';
+import type { User } from '@/entities/user/model/user';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 
 import {
   HairConsultationChatMessageTypeEnum,
   type HairConsultationChatMessageType,
 } from '../type/hair-consultation-chat-message-type';
-import type { UserHairConsultationChatChannelTypeOtherUser } from '../type/user-hair-consultation-chat-channel-type';
 
 import ImageMessage from './image-message';
 import MessageDate from './message-date';
@@ -28,7 +28,7 @@ function OtherChatMessageBox({ message }: { message: string }) {
 
 type OtherMessageProps = {
   message: HairConsultationChatMessageType;
-  otherUser: UserHairConsultationChatChannelTypeOtherUser;
+  otherUser: User;
 };
 
 export default function OtherMessage({ message, otherUser }: OtherMessageProps) {
