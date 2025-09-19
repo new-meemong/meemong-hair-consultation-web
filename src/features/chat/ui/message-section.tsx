@@ -120,7 +120,7 @@ export default function MessageSection({ userChannel }: MessageSectionProps) {
             ) : (
               <OtherMessage
                 message={message}
-                authorProfileImageUrl={userChannel.otherUser.ProfilePictureURL}
+                authorProfileImageUrl={userChannel.otherUser.profileUrl}
               />
             )}
           </div>
