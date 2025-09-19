@@ -25,7 +25,7 @@ function OtherChatMessageBox({ message }: { message: string }) {
 
 type OtherMessageProps = {
   message: HairConsultationChatMessageType;
-  authorProfileImageUrl: string | null;
+  authorProfileImageUrl?: string | null;
 };
 
 export default function OtherMessage({ message, authorProfileImageUrl }: OtherMessageProps) {

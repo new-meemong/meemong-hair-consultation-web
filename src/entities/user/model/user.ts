@@ -6,6 +6,7 @@ import { USER_ROLE } from '../constants/user-role';
 export interface User {
   id: number;
   email: string;
+  ProfilePictureURL?: string | null;
   profilePictureURL: string | null;
   accessToken: string | null;
   socialCode: string;
