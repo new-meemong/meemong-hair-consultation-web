@@ -32,8 +32,9 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES,
-    question: '최근 내 모습을 보여주세요',
-    description: '올리신 사진은 디자이너들에게만 공개되며, 모델은 볼 수 없습니다.',
+    question: '내 사진을 업로드 해주세요',
+    description:
+      '올린 사진은 디자이너만 볼 수 있습니다\n정면, 측면 사진은 귀가 나온 사진(묶은머리)을 권장합니다',
     required: true,
     children: <ConsultingPostFormStepMyImages />,
   },
