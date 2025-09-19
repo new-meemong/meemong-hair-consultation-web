@@ -13,6 +13,7 @@ export interface Post {
   likeCount: number;
   commentCount: number;
   createdAt: string;
+  updatedAt: string;
   isFavorited: boolean;
   hairConsultPostingCreateUserName: string;
   hairConsultPostingCreateUserRegion: string;

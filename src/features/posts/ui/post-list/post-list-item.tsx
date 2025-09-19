@@ -20,7 +20,7 @@ type PostItemProps = {
 
 export default function PostListItem({ post, onClick, ref }: PostItemProps) {
   const {
-    createdAt,
+    updatedAt,
     title,
     content,
     repImageUrl,
@@ -43,7 +43,7 @@ export default function PostListItem({ post, onClick, ref }: PostItemProps) {
       <div className="flex flex-col gap-2 h-full">
         <div className="flex justify-between items-stretch gap-7 flex-1">
           <div className="flex flex-col min-w-0 flex-1 gap-1">
-            <p className="typo-body-3-regular text-label-info">{createdAt}</p>
+            <p className="typo-body-3-regular text-label-info">{updatedAt}</p>
             <div className="flex flex-col gap-2 flex-1">
               <h2 className="typo-headline-bold text-label-strong overflow-hidden text-ellipsis line-clamp-1">
                 {title}
