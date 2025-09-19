@@ -118,10 +118,7 @@ export default function MessageSection({ userChannel }: MessageSectionProps) {
             ) : message.senderId === userId ? (
               <MyMessage message={message} />
             ) : (
-              <OtherMessage
-                message={message}
-                authorProfileImageUrl={userChannel.otherUser.profileUrl}
-              />
+              <OtherMessage message={message} otherUser={userChannel.otherUser} />
             )}
           </div>
         );
