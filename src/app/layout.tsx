@@ -33,7 +33,6 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'Meemong',
   description: 'Meemong project',
-  themeColor: '#ffffff',
 };
 
 export default function RootLayout({
