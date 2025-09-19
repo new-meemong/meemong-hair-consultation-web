@@ -3,6 +3,9 @@ import Image from 'next/image';
 import type { Timestamp } from 'firebase/firestore';
 
 import OtherChatMessageTip from '@/assets/icons/other-chat-message-tip.svg';
+import { isDesigner } from '@/entities/user/lib/user-role';
+import type { User } from '@/entities/user/model/user';
+import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 
 import {
   HairConsultationChatMessageTypeEnum,
@@ -25,19 +28,28 @@ function OtherChatMessageBox({ message }: { message: string }) {
 
 type OtherMessageProps = {
   message: HairConsultationChatMessageType;
-  authorProfileImageUrl: string | null;
+  otherUser: User;
 };
 
-export default function OtherMessage({ message, authorProfileImageUrl }: OtherMessageProps) {
+export default function OtherMessage({ message, otherUser }: OtherMessageProps) {
+  const { profileUrl } = otherUser;
+
+  const handleImageClick = () => {
+    if (isDesigner(otherUser)) {
+      goDesignerProfilePage(otherUser.id.toString());
+    }
+  };
+
   return (
     <div className="flex flex-1 justify-start">
       <div className="flex gap-2 items-end">
         <Image
-          src={authorProfileImageUrl || '/profile.svg'}
+          src={profileUrl ?? '/profile.svg'}
           alt="User profile"
           width={24}
           height={24}
           className="size-6 rounded-full object-cover"
+          onClick={handleImageClick}
         />
         {message.messageType === HairConsultationChatMessageTypeEnum.IMAGE ? (
           <ImageMessage message={message.message} />

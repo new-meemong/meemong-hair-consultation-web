@@ -54,7 +54,9 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
               </span>
             }
           </div>
-          {description && <p className="typo-body-3-regular text-label-info">{description}</p>}
+          {description && (
+            <p className="typo-body-3-regular text-label-info whitespace-pre-wrap">{description}</p>
+          )}
         </div>
         <div className="flex-1 overflow-y-auto scrollbar-hide pb-7">{children}</div>
         <div id={MULTI_STEP_FORM_PORTAL_ID} />

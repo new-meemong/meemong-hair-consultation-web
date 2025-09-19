@@ -116,16 +116,9 @@ export default function MessageSection({ userChannel }: MessageSectionProps) {
             {message.messageType === HairConsultationChatMessageTypeEnum.SYSTEM ? (
               <SystemMessage message={message} />
             ) : message.senderId === userId ? (
-              <MyMessage
-                message={message}
-                //   source={source}
-              />
+              <MyMessage message={message} />
             ) : (
-              <OtherMessage
-                message={message}
-                authorProfileImageUrl={userChannel.otherUser.profilePictureURL}
-                //   source={source}
-              />
+              <OtherMessage message={message} otherUser={userChannel.otherUser} />
             )}
           </div>
         );

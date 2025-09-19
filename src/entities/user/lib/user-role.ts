@@ -1,10 +1,11 @@
-import { USER_ROLE } from '../constants/user-role';
-import type { User } from '../model/user';
+import type { User } from '@/entities/user/model/user';
 
-export function isModel(user: Pick<User, 'role'>): boolean {
-  return user.role === USER_ROLE.MODEL;
+import { USER_ROLE } from '../constants/user-role';
+
+export function isModel(user: User): boolean {
+  return user.role === USER_ROLE.MODEL || user.Role === USER_ROLE.MODEL;
 }
 
-export function isDesigner(user: Pick<User, 'role'>): boolean {
-  return user.role === USER_ROLE.DESIGNER;
+export function isDesigner(user: User): boolean {
+  return user.role === USER_ROLE.DESIGNER || user.Role === USER_ROLE.DESIGNER;
 }
