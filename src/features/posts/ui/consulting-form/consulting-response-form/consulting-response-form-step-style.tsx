@@ -1,3 +1,5 @@
+import { useCallback, useMemo } from 'react';
+
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { Textarea } from '@/shared';
@@ -10,55 +12,81 @@ import type { ConsultingResponseFormValues } from '../../../types/consulting-res
 const MAX_IMAGE_COUNT = 6;
 
 export default function ConsultingResponseFormStepStyle() {
-  const { register, setValue, control } = useFormContext<ConsultingResponseFormValues>();
+  const { register, setValue, control, getValues } = useFormContext<ConsultingResponseFormValues>();
 
-  const currentOptionValue = useWatch({
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
+  const currentWatchedImageFiles = useWatch({
+    name: `${CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE}.imageFiles`,
     control,
   });
-  const currentImageFiles = currentOptionValue.imageFiles ?? [];
 
-  const handleImageUpload = (file: File[]) => {
-    const newImages = [...currentImageFiles, ...file];
+  const currentWatchedImageUrls = useWatch({
+    name: `${CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE}.imageUrls`,
+    control,
+  });
 
-    setValue(
-      CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
-      {
-        ...currentOptionValue,
-        imageFiles: newImages,
-      },
-      { shouldDirty: true },
-    );
-  };
+  const currentImageFiles = useMemo(() => {
+    return currentWatchedImageFiles ?? [];
+  }, [currentWatchedImageFiles]);
 
-  const setImageFiles = (newImageFiles: File[]) => {
-    setValue(
-      CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
-      {
-        ...currentOptionValue,
-        imageFiles: newImageFiles,
-      },
-      { shouldDirty: true },
-    );
-  };
+  const currentImageUrls = useMemo(() => {
+    return currentWatchedImageUrls ?? [];
+  }, [currentWatchedImageUrls]);
 
-  const setImageUrls = (newImageUrls: string[]) => {
-    setValue(
-      CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
-      {
-        ...currentOptionValue,
-        imageUrls: newImageUrls,
-      },
-      { shouldDirty: true },
-    );
-  };
+  const handleImageUpload = useCallback(
+    (file: File[]) => {
+      const newImages = [...currentImageFiles, ...file];
+      const currentStyleValue = getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE);
+
+      setValue(
+        CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
+        {
+          ...currentStyleValue,
+          imageFiles: newImages,
+        },
+        { shouldDirty: true },
+      );
+    },
+    [currentImageFiles, getValues, setValue],
+  );
+
+  const setImageFiles = useCallback(
+    (newImageFiles: File[]) => {
+      const currentStyleValue = getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE);
+
+      setValue(
+        CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
+        {
+          ...currentStyleValue,
+          imageFiles: newImageFiles,
+        },
+        { shouldDirty: true },
+      );
+    },
+    [getValues, setValue],
+  );
+
+  const setImageUrls = useCallback(
+    (newImageUrls: string[]) => {
+      const currentStyleValue = getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE);
+
+      setValue(
+        CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
+        {
+          ...currentStyleValue,
+          imageUrls: newImageUrls,
+        },
+        { shouldDirty: true },
+      );
+    },
+    [getValues, setValue],
+  );
 
   return (
     <div className="flex flex-col gap-7">
       <FormItem label="이미지 첨부" description={`${MAX_IMAGE_COUNT}개까지 업로드 할 수 있어요`}>
         <ImageUploaderList
           imageFiles={currentImageFiles}
-          imageUrls={currentOptionValue.imageUrls}
+          imageUrls={currentImageUrls}
           onUpload={handleImageUpload}
           setImageFiles={setImageFiles}
           setImageUrls={setImageUrls}
