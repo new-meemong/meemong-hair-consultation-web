@@ -6,6 +6,7 @@ import OtherChatMessageTip from '@/assets/icons/other-chat-message-tip.svg';
 import { isDesigner } from '@/entities/user/lib/user-role';
 import type { User } from '@/entities/user/model/user';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
+import goModelProfilePage from '@/shared/lib/go-model-profile-page';
 
 import {
   HairConsultationChatMessageTypeEnum,
@@ -38,6 +39,7 @@ export default function OtherMessage({ message, otherUser }: OtherMessageProps) 
     if (isDesigner(otherUser)) {
       goDesignerProfilePage(otherUser.id.toString());
     }
+    goModelProfilePage(otherUser.id.toString());
   };
 
   return (
