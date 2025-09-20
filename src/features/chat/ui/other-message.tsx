@@ -38,6 +38,7 @@ export default function OtherMessage({ message, otherUser }: OtherMessageProps) 
   const handleImageClick = () => {
     if (isDesigner(otherUser)) {
       goDesignerProfilePage(otherUser.id.toString());
+      return;
     }
     goModelProfilePage(otherUser.id.toString());
   };
