@@ -68,46 +68,48 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
   return (
     <FormProvider {...method}>
       <form onSubmit={method.handleSubmit(onSubmit)} className="flex flex-col flex-1">
-        <div className="flex flex-col flex-1 gap-5 py-6 px-5">
-          <div>
-            <Input
-              {...method.register(POST_FORM_FIELD_NAME.title)}
-              placeholder="제목을 입력하세요"
-              className="w-full px-0 py-3 typo-title-3-semibold"
-            />
-            {method.formState.errors[POST_FORM_FIELD_NAME.title] && (
-              <p className="text-negative typo-body-3-regular mt-1">
-                {String(method.formState.errors[POST_FORM_FIELD_NAME.title]?.message)}
-              </p>
-            )}
-            <Separator />
-          </div>
-          <div className="flex-1 flex flex-col">
-            <Textarea
-              {...method.register(POST_FORM_FIELD_NAME.content)}
-              placeholder="내 헤어 고민을 자유롭게 작성해보세요"
-              className={cn('w-full flex-1 typo-body-1-long-regular min-h-60')}
-            />
-            {method.formState.errors[POST_FORM_FIELD_NAME.content] && (
-              <p className="text-negative typo-body-3-regular mt-1">
-                {String(method.formState.errors[POST_FORM_FIELD_NAME.content]?.message)}
-              </p>
-            )}
-          </div>
-        </div>
-        {hasImages && (
-          <>
-            <Separator />
-            <div className="overflow-x-auto py-4">
-              <PostFormImageList
-                imageFiles={imageFiles}
-                imageUrls={imageUrls}
-                setImageFiles={setImageFiles}
-                setImageUrls={setImageUrls}
+        <div className="flex flex-col flex-1 overflow-y-auto scrollbar-hide">
+          <div className="flex flex-col flex-1 gap-5 py-6 px-5">
+            <div>
+              <Input
+                {...method.register(POST_FORM_FIELD_NAME.title)}
+                placeholder="제목을 입력하세요"
+                className="w-full px-0 py-3 typo-title-3-semibold"
               />
+              {method.formState.errors[POST_FORM_FIELD_NAME.title] && (
+                <p className="text-negative typo-body-3-regular mt-1">
+                  {String(method.formState.errors[POST_FORM_FIELD_NAME.title]?.message)}
+                </p>
+              )}
+              <Separator />
             </div>
-          </>
-        )}
+            <div className="flex-1 flex flex-col">
+              <Textarea
+                {...method.register(POST_FORM_FIELD_NAME.content)}
+                placeholder="내 헤어 고민을 자유롭게 작성해보세요"
+                className={cn('w-full flex-1 typo-body-1-long-regular resize-none')}
+              />
+              {method.formState.errors[POST_FORM_FIELD_NAME.content] && (
+                <p className="text-negative typo-body-3-regular mt-1">
+                  {String(method.formState.errors[POST_FORM_FIELD_NAME.content]?.message)}
+                </p>
+              )}
+            </div>
+          </div>
+          {hasImages && (
+            <>
+              <Separator />
+              <div className="overflow-x-auto py-4">
+                <PostFormImageList
+                  imageFiles={imageFiles}
+                  imageUrls={imageUrls}
+                  setImageFiles={setImageFiles}
+                  setImageUrls={setImageUrls}
+                />
+              </div>
+            </>
+          )}
+        </div>
         <Separator />
         <div className={cn('flex items-center px-5 py-3')}>
           <div className="flex flex-1 items-center">
