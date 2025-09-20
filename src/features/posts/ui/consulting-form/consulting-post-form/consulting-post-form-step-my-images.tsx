@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { HAIR_IMAGE_POSITION } from '@/features/posts/constants/hair-image-position';
@@ -23,40 +25,43 @@ export default function ConsultingPostFormStepMyImages() {
     name: CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES,
   });
 
-  const getCurrentImage = (position: string) => {
-    const currentImage = currentImages?.find(
-      (img: { position: string; image: File }) => img.position === position,
-    );
+  const getCurrentImage = useCallback(
+    (position: string) => {
+      const currentImage = currentImages?.find(
+        (img: { position: string; image: File }) => img.position === position,
+      );
 
-    return currentImage
-      ? {
-          type: IMAGE_TYPE.FILE,
-          name: currentImage.image.name,
-          src: URL.createObjectURL(currentImage.image),
-        }
-      : null;
-  };
+      return currentImage
+        ? {
+            type: IMAGE_TYPE.FILE,
+            name: currentImage.image.name,
+            src: URL.createObjectURL(currentImage.image),
+          }
+        : null;
+    },
+    [currentImages],
+  );
 
-  const handleImageUpload = ({
-    file,
-    position,
-  }: {
-    file: File;
-    position: ValueOf<typeof HAIR_IMAGE_POSITION>;
-  }) => {
-    const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES) || [];
-    const newImage = { position, image: file };
+  const handleImageUpload = useCallback(
+    ({ file, position }: { file: File; position: ValueOf<typeof HAIR_IMAGE_POSITION> }) => {
+      const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES) || [];
+      const newImage = { position, image: file };
 
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES, [...currentImages, newImage]);
-  };
+      setValue(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES, [...currentImages, newImage]);
+    },
+    [getValues, setValue],
+  );
 
-  const handleImageDelete = ({ position }: { position: ValueOf<typeof HAIR_IMAGE_POSITION> }) => {
-    const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES) || [];
-    const newImages = currentImages.filter(
-      (img: { position: string; image: File }) => img.position !== position,
-    );
-    setValue(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES, newImages);
-  };
+  const handleImageDelete = useCallback(
+    ({ position }: { position: ValueOf<typeof HAIR_IMAGE_POSITION> }) => {
+      const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES) || [];
+      const newImages = currentImages.filter(
+        (img: { position: string; image: File }) => img.position !== position,
+      );
+      setValue(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES, newImages);
+    },
+    [getValues, setValue],
+  );
 
   return (
     <div className="flex flex-col gap-7">
