@@ -2,6 +2,8 @@
 
 import { useRef, type ReactNode, forwardRef, useImperativeHandle } from 'react';
 
+import convertFilesWithUniqueName from '../lib/convert-files-with-unique-name';
+
 type ImageUploaderProps = {
   setImages: ((images: File[]) => void) | ((image: File) => void);
   validate?: (newImageLength?: number) => boolean;
@@ -36,13 +38,14 @@ const ImageUploader = forwardRef<ImageUploaderRef, ImageUploaderProps>(
       if (!e.target.files || e.target.files.length === 0) return;
 
       const newFiles = Array.from(e.target.files);
+      const newFilesWithUniqueName = convertFilesWithUniqueName(newFiles);
 
       if (!validate(newFiles.length)) return;
 
       if (multiple) {
-        (setImages as (images: File[]) => void)(newFiles);
+        (setImages as (images: File[]) => void)(newFilesWithUniqueName);
       } else {
-        (setImages as (image: File) => void)(newFiles[0]);
+        (setImages as (image: File) => void)(newFilesWithUniqueName[0]);
       }
 
       e.target.value = '';
