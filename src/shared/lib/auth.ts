@@ -1,21 +1,22 @@
 import type { User } from '@/entities/user/model/user';
 import type { UserWritingContent } from '@/features/posts/types/user-writing-content';
-import { USER_WRITING_CONTENT_KEYS, type USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import { USER_WRITING_CONTENT_KEYS, USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 
 export interface JWTPayload {
   userId: number;
   exp: number;
 }
 
-export interface UserGuideState {
+export interface UserGuideData {
   [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: boolean;
   [USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide]: boolean;
   [USER_GUIDE_KEYS.hasSeenConsultingResponseSidebarGuide]: boolean;
 }
 
-export type UserData = User & UserGuideState & UserWritingContent;
+export type UserData = User & UserWritingContent;
 
 const USER_DATA_KEY = 'user_data';
+const USER_GUIDE_DATA_KEY_PREFIX = 'user_guide_data_';
 
 export const decodeJWTPayload = (token: string): JWTPayload | null => {
   try {
@@ -37,9 +38,6 @@ export const decodeJWTPayload = (token: string): JWTPayload | null => {
 export const getDefaultUserData = (user: User): UserData => {
   return {
     ...user,
-    hasSeenCreatePostGuide: false,
-    hasSeenDesignerOnboardingGuide: false,
-    hasSeenConsultingResponseSidebarGuide: false,
     [USER_WRITING_CONTENT_KEYS.consultingPost]: null,
     [USER_WRITING_CONTENT_KEYS.consultingResponse]: [],
   };
@@ -74,6 +72,41 @@ export const updateUserData = (userData: Partial<UserData>): void => {
 
   const updatedUser = { ...currentUser, ...userData };
   localStorage.setItem(USER_DATA_KEY, JSON.stringify(updatedUser));
+};
+
+const getUserGuideDataKey = (): string => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return '';
+
+  return `${USER_GUIDE_DATA_KEY_PREFIX}${currentUser.id}`;
+};
+
+const getDefaultUserGuideData = (): UserGuideData => {
+  return {
+    [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: false,
+    [USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide]: false,
+    [USER_GUIDE_KEYS.hasSeenConsultingResponseSidebarGuide]: false,
+  };
+};
+
+export const getUserGuideData = (): UserGuideData => {
+  if (typeof window === 'undefined') return getDefaultUserGuideData();
+
+  const userGuideDataKey = getUserGuideDataKey();
+
+  const userGuideData = localStorage.getItem(userGuideDataKey);
+  if (!userGuideData) return getDefaultUserGuideData();
+  return JSON.parse(userGuideData);
+};
+
+export const updateUserGuideData = (userGuideData: Partial<UserGuideData>): void => {
+  const userGuideDataKey = getUserGuideDataKey();
+
+  const currentUserGuideData = getUserGuideData() ?? getDefaultUserGuideData();
+
+  const updatedUserGuideData = { ...currentUserGuideData, ...userGuideData };
+
+  localStorage.setItem(userGuideDataKey, JSON.stringify(updatedUserGuideData));
 };
 
 export const getToken = (): string | null => {

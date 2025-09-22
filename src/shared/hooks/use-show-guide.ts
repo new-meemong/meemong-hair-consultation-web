@@ -4,8 +4,7 @@ import useShowCreatePostGuideSheet from '@/features/posts/hooks/use-show-create-
 import useShowDesignerOnboardingSheet from '@/features/posts/hooks/use-show-designer-onboarding-sheet';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 
-import { useAuthContext } from '../../features/auth/context/auth-context';
-import type { UserGuideState } from '../lib';
+import { getUserGuideData, updateUserGuideData, type UserGuideData } from '../lib';
 import type { KeyOf } from '../type/types';
 
 export interface UseGuidePopupProps {
@@ -13,10 +12,10 @@ export interface UseGuidePopupProps {
 }
 
 function useShowGuide(
-  key: KeyOf<UserGuideState>,
+  key: KeyOf<UserGuideData>,
   { shouldShow }: { shouldShow?: boolean } = { shouldShow: true },
 ) {
-  const { user, updateUser } = useAuthContext();
+  const userGuideData = getUserGuideData();
 
   const showCreatePostGuideSheet = useShowCreatePostGuideSheet();
   const showDesignerOnboardingSheet = useShowDesignerOnboardingSheet();
@@ -29,11 +28,11 @@ function useShowGuide(
 
   const showGuide = showGuideMapper[key];
 
-  const shouldShowGuide = !user[key] && !!shouldShow;
+  const shouldShowGuide = !userGuideData[key] && !!shouldShow;
 
   const closeGuide = useCallback(() => {
-    updateUser({ [key]: true });
-  }, [updateUser, key]);
+    updateUserGuideData({ [key]: true });
+  }, [key]);
 
   const handleClose = useCallback(() => {
     closeGuide();
@@ -43,7 +42,7 @@ function useShowGuide(
     if (shouldShowGuide && showGuide) {
       showGuide({ onClose: handleClose });
     }
-  }, [user, key, showGuide, handleClose, shouldShow, shouldShowGuide]);
+  }, [showGuide, handleClose, shouldShow, shouldShowGuide]);
 
   return { shouldShowGuide, closeGuide };
 }
