@@ -48,7 +48,7 @@ export default function MyMessage({ message }: MyMessageProps) {
           <MessageDate messageCreatedAt={message.createdAt as Timestamp} />
           {isRead() && (
             <>
-              <Dot size="xs" />
+              <Dot size="0.5" />
               <span className="typo-caption-1-regular text-label-info">읽음</span>
             </>
           )}
