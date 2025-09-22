@@ -11,6 +11,9 @@ import { type Post } from '@/entities/posts';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import formatAddress from '@/features/auth/lib/format-address';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
+import Dot from '@/shared/ui/dot';
+
+import useReadingPostHistory from '../../hooks/use-reading-post-history';
 
 type PostItemProps = {
   post: Post;
@@ -20,6 +23,7 @@ type PostItemProps = {
 
 export default function PostListItem({ post, onClick, ref }: PostItemProps) {
   const {
+    id,
     updatedAt,
     title,
     content,
@@ -34,16 +38,33 @@ export default function PostListItem({ post, onClick, ref }: PostItemProps) {
 
   const { isUserDesigner } = useAuthContext();
 
+  const { isReadingPost, addReadingPostHistory } = useReadingPostHistory(id);
+
+  const handleClick = () => {
+    if (isUserDesigner) {
+      addReadingPostHistory();
+    }
+    onClick?.();
+  };
+
   return (
     <div
       className="border-b border-gray-200 p-5 w-full h-40 cursor-pointer"
-      onClick={onClick}
+      onClick={handleClick}
       ref={ref}
     >
       <div className="flex flex-col gap-2 h-full">
         <div className="flex justify-between items-stretch gap-7 flex-1">
           <div className="flex flex-col min-w-0 flex-1 gap-1">
-            <p className="typo-body-3-regular text-label-info">{updatedAt}</p>
+            <div className="flex gap-[6.5px] items-center">
+              {isReadingPost && (
+                <>
+                  <p className="typo-body-3-regular text-label-info">읽음</p>
+                  <Dot size="1" />
+                </>
+              )}
+              <p className="typo-body-3-regular text-label-info">{updatedAt}</p>
+            </div>
             <div className="flex flex-col gap-2 flex-1">
               <h2 className="typo-headline-bold text-label-strong overflow-hidden text-ellipsis line-clamp-1">
                 {title}
