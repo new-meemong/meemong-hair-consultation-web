@@ -41,7 +41,7 @@ export default function CommentListItem({
   onReport,
   onTriggerClick,
 }: CommentListItemProps) {
-  const { user } = useAuthContext();
+  const { user, isUserDesigner } = useAuthContext();
   const { push } = useRouterWithUser();
   const { postDetail } = usePostDetail();
 
@@ -96,8 +96,9 @@ export default function CommentListItem({
     return [moreOption[MORE_ACTION.REPORT]];
   };
 
-  const isSecret = !isPostWriter && !isCommentWriter && !isConsultingAnswer && isVisibleToModel;
-  const lockIconShown = !isConsultingAnswer && isVisibleToModel;
+  const isSecret =
+    isUserDesigner && !isPostWriter && !isCommentWriter && !isConsultingAnswer && isVisibleToModel;
+  const lockIconShown = isUserDesigner && !isConsultingAnswer && isVisibleToModel;
 
   return (
     <div
