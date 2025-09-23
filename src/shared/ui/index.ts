@@ -11,7 +11,6 @@ export { Separator } from './separator';
 export { BottomSheet } from './bottom-sheet';
 export { Button } from './button';
 export { Carousel } from './carousel';
-export { ChatInput } from './chat-input';
 export { Chip } from './chip';
 export { Drawer, DrawerClose } from './drawer';
 export { Avatar, AvatarImage, AvatarFallback } from './avatar';

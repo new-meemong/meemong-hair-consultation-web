@@ -51,6 +51,10 @@ export default function ChatMessageForm({ onSubmit, userChannel }: ChatMessageFo
     }
   };
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+  };
+
   const handleShowActionBox = () => {
     setShowedActionBox((prev) => !prev);
   };
@@ -86,7 +90,11 @@ export default function ChatMessageForm({ onSubmit, userChannel }: ChatMessageFo
               }}
             />
           </div>
-          <button type="submit" className="typo-body-2-medium rounded-4 self-end">
+          <button
+            type="submit"
+            className="typo-body-2-medium rounded-4 self-end"
+            onMouseDown={handleMouseDown}
+          >
             <SendIcon className="size-7 fill-label-sub" />
           </button>
         </div>
