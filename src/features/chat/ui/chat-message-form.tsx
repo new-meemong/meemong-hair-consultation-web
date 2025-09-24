@@ -41,13 +41,11 @@ export default function ChatMessageForm({ onSubmit, userChannel }: ChatMessageFo
   });
 
   const handleSubmit = async (data: ChatMessageInputValues) => {
-    const { success } = await onSubmit(data);
+    await onSubmit(data);
 
-    if (success) {
-      method.reset();
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto';
-      }
+    method.reset();
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
     }
   };
 
