@@ -32,7 +32,7 @@ export default function ConsultingPostFormOperationForm() {
 
   const handleDateClick = () => {
     const now = new Date();
-    const minDate = new Date(now.getFullYear() - 2, now.getMonth(), now.getDate());
+    const minDate = new Date(now.getFullYear() - 4, now.getMonth(), now.getDate());
     const maxDate = now;
 
     showYearMonthPicker({
