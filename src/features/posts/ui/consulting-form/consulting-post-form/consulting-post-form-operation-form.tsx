@@ -32,7 +32,7 @@ export default function ConsultingPostFormOperationForm() {
 
   const handleDateClick = () => {
     const now = new Date();
-    const minDate = new Date(now.getFullYear() - 2, now.getMonth(), now.getDate());
+    const minDate = new Date(now.getFullYear() - 4, now.getMonth(), now.getDate());
     const maxDate = now;
 
     showYearMonthPicker({
@@ -107,11 +107,11 @@ export default function ConsultingPostFormOperationForm() {
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="예) 전체탈색, 블랙염색 등"
+          placeholder="탈색, 블랙계열 염색, 신데렐라 등 특수시술은 필수"
           className="typo-body-2-regular h-9"
         />
       </FormItem>
-      <FormItem hasUnderline label="시술 시점">
+      <FormItem hasUnderline label="시술 시기">
         <div
           onClick={handleDateClick}
           className="flex items-center justify-between cursor-pointer h-9"
@@ -122,7 +122,7 @@ export default function ConsultingPostFormOperationForm() {
               date ? 'text-label-default' : 'text-label-placeholder',
             )}
           >
-            {date ? format(date, 'yyyy/MM') : '시술 시점을 선택해주세요'}
+            {date ? format(date, 'yyyy/MM') : '정확한 날짜가 아니어도 괜찮아요'}
           </span>
         </div>
       </FormItem>

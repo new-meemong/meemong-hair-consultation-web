@@ -17,7 +17,7 @@ export default function ConsultingResponseButton({
   const getButtonText = () => {
     if (isCommentWriter) return '내가 쓴 답글 보러가기';
     if (isUserModel) return '컨설팅 결과 보러가기';
-    return '글 작성자만 볼 수 있는 답변입니다';
+    return '컨설팅 답변은 고객만 볼 수 있습니다';
   };
 
   const hidden = !isUserModel && !isCommentWriter;

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+
 import Image from 'next/image';
 
 import { XIcon } from 'lucide-react';
@@ -97,7 +99,6 @@ function ImageViewerModalContent({
         rightComponent={renderRightComponent()}
       />
 
-      {/* 이미지 */}
       <div className="flex-1 w-full">
         <Carousel
           opts={{
@@ -111,15 +112,19 @@ function ImageViewerModalContent({
           <CarouselContent>
             {images.map((image, index) => (
               <CarouselItem key={`${index}-${image}`} className="basis-full">
-                <div className="relative h-[calc(100vh-68px)]">
-                  <Image
-                    src={image}
-                    alt={`이미지`}
-                    fill
-                    className="object-contain"
-                    sizes="100vw"
-                    priority
-                  />
+                <div className="relative  h-[calc(100vh-68px)]">
+                  <TransformWrapper initialScale={1} minScale={1} maxScale={4} centerOnInit={true}>
+                    <TransformComponent>
+                      <Image
+                        src={image}
+                        alt={`이미지`}
+                        fill
+                        className="object-contain"
+                        sizes="100vw"
+                        priority
+                      />
+                    </TransformComponent>
+                  </TransformWrapper>
                 </div>
               </CarouselItem>
             ))}
