@@ -11,6 +11,11 @@ export interface ApiResponse<T = unknown> {
   success: boolean;
 }
 
+export interface ApiListResponse<T extends Record<string, unknown>> {
+  dataList: T[];
+  dataCount: number;
+}
+
 export interface ApiError {
   code: string;
   message: string;
@@ -143,6 +148,13 @@ export class ApiClient {
     { searchParams }: { searchParams?: SearchParamsOption } = {},
   ): Promise<ApiResponse<T>> {
     return this.api.get(endpoint, { searchParams }).json<ApiResponse<T>>();
+  }
+
+  async getList<T extends Record<string, unknown>>(
+    endpoint: string,
+    { searchParams }: { searchParams?: SearchParamsOption } = {},
+  ): Promise<ApiListResponse<T>> {
+    return this.api.get(endpoint, { searchParams }).json<ApiListResponse<T>>();
   }
 
   async post<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
