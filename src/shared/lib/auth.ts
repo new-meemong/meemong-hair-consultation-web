@@ -128,11 +128,11 @@ export const getUserReadingHistoryData = (): number[] => {
   return JSON.parse(userReadingHistoryData);
 };
 
-export const updateUserReadingHistoryData = (readingPostKeys: number[]): void => {
+export const updateUserReadingHistoryData = (readingPostKey: number): void => {
   const userReadingHistoryDataKey = getUserReadingHistoryDataKey();
   const currentUserReadingHistoryData = getUserReadingHistoryData() ?? [];
 
-  const updatedUserReadingHistoryData = [...currentUserReadingHistoryData, ...readingPostKeys];
+  const updatedUserReadingHistoryData = [...currentUserReadingHistoryData, readingPostKey];
   localStorage.setItem(userReadingHistoryDataKey, JSON.stringify(updatedUserReadingHistoryData));
 };
 
