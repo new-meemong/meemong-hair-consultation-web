@@ -113,18 +113,18 @@ function ImageViewerModalContent({
             {images.map((image, index) => (
               <CarouselItem key={`${index}-${image}`} className="basis-full">
                 <div className="relative  h-[calc(100vh-68px)]">
-                  <TransformWrapper initialScale={1} minScale={1} maxScale={4} centerOnInit={true}>
-                    <TransformComponent>
-                      <Image
-                        src={image}
-                        alt={`이미지`}
-                        fill
-                        className="object-contain"
-                        sizes="100vw"
-                        priority
-                      />
-                    </TransformComponent>
-                  </TransformWrapper>
+                  {/* <TransformWrapper initialScale={1} minScale={1} maxScale={4} centerOnInit={true}>
+                    <TransformComponent> */}
+                  <Image
+                    src={image}
+                    alt={`이미지`}
+                    fill
+                    className="object-contain"
+                    sizes="100vw"
+                    priority
+                  />
+                  {/* </TransformComponent>
+                  </TransformWrapper> */}
                 </div>
               </CarouselItem>
             ))}
