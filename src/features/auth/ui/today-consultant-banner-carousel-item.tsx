@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import CrownIcon from '@/assets/icons/crown.svg';
-import { type ConsultingKing } from '@/entities/user/model/consulting-king';
+import { type TopAdvisor } from '@/entities/user/model/top-advisor';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 import { CarouselItem } from '@/shared/ui/carousel';
 
@@ -10,16 +10,17 @@ import { useAuthContext } from '../context/auth-context';
 import RankBadge from './rank-badge';
 
 type TodayConsultantBannerCarouselItemProps = {
-  consultingKing: ConsultingKing;
+  topAdvisor: TopAdvisor;
+  rank: number;
 };
 
 export default function TodayConsultantBannerCarouselItem({
-  consultingKing,
+  topAdvisor,
+  rank,
 }: TodayConsultantBannerCarouselItemProps) {
   const { isUserDesigner } = useAuthContext();
-  const { user, rank } = consultingKing;
 
-  const { profileImageUrl, name, companyName, userId } = user;
+  const { profilePictureURL, displayName, companyName, userId } = topAdvisor;
 
   const handleCarouselClick = () => {
     if (isUserDesigner) return;
@@ -32,8 +33,8 @@ export default function TodayConsultantBannerCarouselItem({
       <div className="bg-alternative py-3 pl-3 pr-2.5 flex gap-4 items-center">
         <div className="flex gap-3 flex-1">
           <Image
-            src={profileImageUrl ? profileImageUrl : '/today-consultant-default-profile.png'}
-            alt={name}
+            src={profilePictureURL ? profilePictureURL : '/today-consultant-default-profile.png'}
+            alt={displayName}
             width={65}
             height={65}
             className="object-cover rounded-4 w-[65px] h-[65px]"
@@ -43,7 +44,7 @@ export default function TodayConsultantBannerCarouselItem({
               <CrownIcon />
               <p className="typo-body-3-medium text-cautionary">오늘의 상담왕</p>
             </div>
-            <p className="typo-headline-bold text-label-sub">{name}</p>
+            <p className="typo-headline-bold text-label-sub">{displayName}</p>
             <p className="typo-body-3-medium text-label-info">{companyName}</p>
           </div>
         </div>
