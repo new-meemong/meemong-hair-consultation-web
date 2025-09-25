@@ -4,7 +4,7 @@ import CrownIcon from '@/assets/icons/crown.svg';
 import { Carousel } from '@/shared';
 import { CarouselContent, CarouselItem } from '@/shared/ui/carousel';
 
-import useGetConsultingKing from '../api/use-get-consulting-king';
+import useGetTopAdvisors from '../api/use-get-top-advisors';
 
 import RankBadge from './rank-badge';
 import TodayConsultantBannerCarouselItem from './today-consultant-banner-carousel-item';
@@ -37,29 +37,26 @@ function TodayConsultantBannerCarouselExample() {
   );
 }
 export default function TodayConsultantBannerCarousel() {
-  const { data: response } = useGetConsultingKing();
+  const { data: response } = useGetTopAdvisors();
 
-  const todayConsultants = response?.data.consultationKings;
+  const topAdvisors = response?.dataList ?? [];
 
-  const hasTodayConsultants = !!(todayConsultants?.length ?? 0);
+  const hasTopAdvisors = !!(topAdvisors.length ?? 0);
 
   return (
     <Carousel
       opts={{
-        loop: hasTodayConsultants,
+        loop: hasTopAdvisors,
         align: 'center',
         containScroll: false,
-        watchDrag: hasTodayConsultants,
+        watchDrag: hasTopAdvisors,
       }}
       className="w-full"
     >
       <CarouselContent className="-mx-4">
-        {hasTodayConsultants ? (
-          todayConsultants?.map((consultingKing) => (
-            <TodayConsultantBannerCarouselItem
-              key={consultingKing.rank}
-              consultingKing={consultingKing}
-            />
+        {hasTopAdvisors ? (
+          topAdvisors.map(({ rank, designer }) => (
+            <TodayConsultantBannerCarouselItem key={rank} topAdvisor={designer} rank={rank} />
           ))
         ) : (
           <CarouselItem className="px-1 basis-[85%]">
