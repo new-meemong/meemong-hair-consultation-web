@@ -9,7 +9,7 @@ export default function useReadingPostHistory(postId: number) {
   const isReadingPost = isUserDesigner ? userReadingHistoryData.includes(postId) : false;
 
   const addReadingPostHistory = () => {
-    updateUserReadingHistoryData([...userReadingHistoryData, postId]);
+    updateUserReadingHistoryData(postId);
   };
 
   return { addReadingPostHistory, isReadingPost };
