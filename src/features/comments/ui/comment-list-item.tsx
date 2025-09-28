@@ -139,7 +139,7 @@ export default function CommentListItem({
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <div className="typo-body-1-long-regular">{content}</div>
+              {!isConsultingAnswer && <div className="typo-body-1-long-regular">{content}</div>}
               <span className="typo-body-3-regular text-label-info">
                 {format(createdAt, 'MM/dd hh:mm')}
               </span>
