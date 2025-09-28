@@ -4,7 +4,7 @@ export interface Author {
   avatarUrl?: string;
 }
 
-export interface Post {
+export type Post = {
   id: number;
   title: string;
   content: string;
@@ -17,7 +17,7 @@ export interface Post {
   isFavorited: boolean;
   hairConsultPostingCreateUserName: string;
   hairConsultPostingCreateUserRegion: string;
-}
+};
 
 export interface Banner {
   id: string;

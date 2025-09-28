@@ -1,16 +1,12 @@
 import { Query, useInfiniteQuery, type QueryKey } from '@tanstack/react-query';
 
-import type { ApiResponse } from '@/shared/api/client';
+import type { ApiListResponse, ApiResponse } from '@/shared/api/client';
 import { filterUndefined } from '@/shared/lib/filter-undefined';
 
 import { apiClient } from '../client';
 import { DEFAULT_LIMIT } from '../constants/default-limit';
 import type { GetInfiniteData } from '../types/get-infinite-data';
 import type { PagingQueryParams } from '../types/paging-query-params';
-import type { PagingResponse } from '../types/paging-response';
-
-
-
 
 type UseCursorInfiniteQueryParams = PagingQueryParams & {
   endpoint: string;
@@ -18,13 +14,13 @@ type UseCursorInfiniteQueryParams = PagingQueryParams & {
   additionalParams?: Record<string, unknown>;
 };
 
-export default function useCursorInfiniteQuery<TData extends PagingResponse>({
+export default function useCursorInfiniteQuery<TData extends Record<string, unknown>>({
   __limit = DEFAULT_LIMIT,
   endpoint,
   queryKey,
   additionalParams,
 }: UseCursorInfiniteQueryParams) {
-  return useInfiniteQuery<ApiResponse<TData>, Error>({
+  return useInfiniteQuery<ApiListResponse<TData>, Error>({
     queryKey,
     queryFn: async ({ pageParam }) => {
       const searchParams = filterUndefined({
@@ -33,12 +29,12 @@ export default function useCursorInfiniteQuery<TData extends PagingResponse>({
         ...additionalParams,
       });
 
-      return apiClient.get<TData>(endpoint, {
+      return apiClient.getList<TData>(endpoint, {
         searchParams,
       });
     },
-    getNextPageParam: (lastPage: ApiResponse<TData>) => {
-      return lastPage.data.nextCursor || undefined;
+    getNextPageParam: (lastPage: ApiListResponse<TData>) => {
+      return lastPage.nextCursor;
     },
     initialPageParam: undefined as string | undefined,
     meta: {
