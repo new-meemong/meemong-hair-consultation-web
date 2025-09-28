@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import type { Banner } from '@/entities/banner/model/banner';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
-import { apiClient } from '@/shared/api/client';
+import { apiClientWithoutAuth } from '@/shared/api/client';
 import type { ValueOf } from '@/shared/type/types';
 
 const getGetBannerEndpoint = () => 'banners';
@@ -23,7 +23,7 @@ export default function useGetBanner(params: GetBannersQueryParams) {
   return useQuery({
     queryKey: [getGetBannerQueryKeyPrefix(), params],
     queryFn: () =>
-      apiClient.getList<Banner>(getGetBannerEndpoint(), {
+      apiClientWithoutAuth.getList<Banner>(getGetBannerEndpoint(), {
         searchParams: {
           userType: getUserType(userType),
           bannerType,

@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
       'example.com',
       'https://storage.meemong.com',
       'img1.kakaocdn.net',
+      'job-storage.meemong.com',
     ],
   },
   devIndicators: false,
