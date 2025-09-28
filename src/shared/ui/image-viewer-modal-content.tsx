@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+
 import Image from 'next/image';
 
 import { XIcon } from 'lucide-react';
@@ -96,7 +98,6 @@ function ImageViewerModalContent({
         leftComponent={showBackButton && <BackButton />}
         rightComponent={renderRightComponent()}
       />
-
       <div className="flex-1 w-full">
         <Carousel
           opts={{
@@ -110,19 +111,28 @@ function ImageViewerModalContent({
           <CarouselContent>
             {images.map((image, index) => (
               <CarouselItem key={`${index}-${image}`} className="basis-full">
-                <div className="relative  h-[calc(100vh-68px)]">
-                  {/* <TransformWrapper initialScale={1} minScale={1} maxScale={4} centerOnInit={true}>
-                    <TransformComponent> */}
-                  <Image
-                    src={image}
-                    alt={`이미지`}
-                    fill
-                    className="object-contain"
-                    sizes="100vw"
-                    priority
-                  />
-                  {/* </TransformComponent>
-                  </TransformWrapper> */}
+                <div className="h-[calc(100vh-68px)]">
+                  <TransformWrapper
+                    initialScale={1}
+                    minScale={1}
+                    maxScale={6}
+                    centerOnInit={true}
+                    panning={{ disabled: true }}
+                  >
+                    <TransformComponent
+                      wrapperStyle={{ width: '100%', height: '100%' }}
+                      contentStyle={{ width: '100%', height: '100%' }}
+                    >
+                      <Image
+                        src={image}
+                        alt={`이미지`}
+                        fill
+                        className="object-contain"
+                        sizes="100vw"
+                        priority
+                      />
+                    </TransformComponent>
+                  </TransformWrapper>
                 </div>
               </CarouselItem>
             ))}
