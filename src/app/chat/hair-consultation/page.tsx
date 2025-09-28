@@ -3,6 +3,8 @@
 import { useEffect } from 'react';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import useGetBanner from '@/features/banner/api/use-get-banner';
+import Banner from '@/features/banner/ui/banner';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import ChatChannelListItem from '@/features/chat/ui/chat-channel-list-item';
 import ChatChannelListItemSkeleton from '@/features/chat/ui/chat-channel-list-item-skeleton';
@@ -11,6 +13,13 @@ import { useDynamicSkeletonCount } from '@/shared/hooks/use-dynamic-skeleton-cou
 export default function HairConsultationChatPage() {
   const { user } = useAuthContext();
   const userId = user?.id;
+
+  const { data } = useGetBanner({
+    userType: user?.role,
+    bannerType: '채팅배너',
+  });
+
+  const banner = data?.dataList.length && data.dataList.length > 0 ? data.dataList[0] : null;
 
   const { chatChannelUserMetas, subscribeToChannels, loading } =
     useHairConsultationChatChannelStore((state) => ({
@@ -54,9 +63,14 @@ export default function HairConsultationChatPage() {
           <p className="typo-body-1-medium text-label-placeholder">아직 받은 채팅이 없습니다</p>
         </div>
       ) : (
-        chatChannelUserMetas.map((chatChannel) => (
-          <ChatChannelListItem key={chatChannel.channelId} chatChannel={chatChannel} />
-        ))
+        <div className="flex flex-col gap-2.5">
+          {banner && <Banner banner={banner} />}
+          <div>
+            {chatChannelUserMetas.map((chatChannel) => (
+              <ChatChannelListItem key={chatChannel.channelId} chatChannel={chatChannel} />
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
