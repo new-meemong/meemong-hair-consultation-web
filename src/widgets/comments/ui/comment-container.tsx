@@ -34,7 +34,7 @@ export const CommentContainer = ({ postId, commentFormState, handlers }: Comment
 
   const comments: CommentWithReplyStatus[] =
     data?.pages.flatMap((page) =>
-      page.data.comments.flatMap((comment) => [
+      page.dataList.flatMap((comment) => [
         { ...comment, isReply: false },
         ...(comment.replies ?? []).map((reply) => ({ ...reply, isReply: true })),
       ]),

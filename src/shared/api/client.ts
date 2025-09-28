@@ -14,6 +14,7 @@ export interface ApiResponse<T = unknown> {
 export interface ApiListResponse<T extends Record<string, unknown>> {
   dataList: T[];
   dataCount: number;
+  nextCursor?: string;
 }
 
 export interface ApiError {

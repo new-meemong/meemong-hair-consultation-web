@@ -3,7 +3,6 @@ import type { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import { DEFAULT_LIMIT } from '@/shared/api/constants/default-limit';
 import useCursorInfiniteQuery from '@/shared/api/hooks/use-cursor-infinite-query';
 import type { PagingQueryParams } from '@/shared/api/types/paging-query-params';
-import type { PagingResponse } from '@/shared/api/types/paging-response';
 import type { ValueOf } from '@/shared/type/types';
 
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
@@ -17,14 +16,10 @@ type GetPostsQueryParams = PagingQueryParams & {
   consultType: ValueOf<typeof CONSULT_TYPE>;
 };
 
-type GetPostsResponse = PagingResponse & {
-  hairConsultPostingList: Post[];
-};
-
 export default function useGetPosts(params: GetPostsQueryParams) {
   const { __limit = DEFAULT_LIMIT, filter, consultType } = params;
 
-  return useCursorInfiniteQuery<GetPostsResponse>({
+  return useCursorInfiniteQuery<Post>({
     endpoint: GET_POSTS_QUERY_ENDPOINT,
     queryKey: [getPostsQueryKeyPrefix(), params],
     __limit,
