@@ -3,5 +3,5 @@
 <circle cx="61" cy="58" r="4" fill="#B6B6B6"/>
 <circle cx="31" cy="58" r="4" fill="#B6B6B6"/>
 <path opacity="0.3" d="M46 54L55 76H37L46 54Z" fill="#898886"/>
-<circle cx="46" cy="62" r="40" fill="white" fill-opacity="0.4" stroke="#D0D0D0" stroke-width="2" stroke-miterlimit="3.99393" stroke-dasharray="3 3"/>
+<circle cx="46" cy="62" r="40" fill="white" fill-opacity="0.4" stroke="#D0D0D0" stroke-width="2" stroke-miterlimit="3.99393"/>
 </svg>
