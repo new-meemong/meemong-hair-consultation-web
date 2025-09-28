@@ -52,7 +52,7 @@ export default function PostsPage() {
     });
   };
 
-  const posts = data?.pages.flatMap((page) => page.data.hairConsultPostingList);
+  const posts = data?.pages.flatMap((page) => page.dataList);
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">
