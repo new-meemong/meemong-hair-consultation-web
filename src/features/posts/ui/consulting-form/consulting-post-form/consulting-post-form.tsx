@@ -25,8 +25,9 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
-    question: '최근 받은 헤어시술을 알려주세요',
-    description: '탈색, 블랙염색 등 중요 시술은 2년전 이력도 필요해요',
+    question: '시술 이력을 알려주세요',
+    description:
+      ' • 자세히 작성할수록 답변받을 확률이 높아요\n • 기장이 길수록 자세한 이력이 필요해요\n   (가슴선 이상: 최소 3년 / 단발: 2년 / 숏컷 : 1년)',
     required: true,
     children: <ConsultingPostFormStepTreatments />,
   },

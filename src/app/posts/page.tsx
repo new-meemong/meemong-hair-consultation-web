@@ -14,6 +14,7 @@ import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { POSTS_PAGE_KEY, useScrollRestoration } from '@/shared/hooks/use-scroll-restoration';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
@@ -25,6 +26,8 @@ export default function PostsPage() {
 
   const [activeTab, setActiveTab] = useState<PostListTab>('latest');
   const [activePostTab, setActivePostTab] = usePostTab();
+
+  const { containerRef } = useScrollRestoration(POSTS_PAGE_KEY);
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
     filter: activeTab,
@@ -60,7 +63,7 @@ export default function PostsPage() {
       <SiteHeader title="헤어상담" />
       <div className="flex flex-col gap-5 flex-1 min-h-0">
         <Tab options={POST_TABS} value={activePostTab} onChange={setActivePostTab} />
-        <div className="flex flex-col gap-5 flex-1 overflow-y-auto">
+        <div ref={containerRef} className="flex flex-col gap-5 flex-1 overflow-y-auto">
           <TodayConsultantBannerCarousel />
           <div className="flex-1 flex flex-col min-h-0 gap-2">
             <div className="flex-shrink-0">
