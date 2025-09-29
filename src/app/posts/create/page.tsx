@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-import { POST_TABS } from '@/features/posts/constants/post-tabs';
 import useConsultingPostForm from '@/features/posts/hooks/use-consulting-post-form';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
 import usePostFormNavigation from '@/features/posts/hooks/use-post-form-navigation';
@@ -21,7 +20,6 @@ import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 import type { ValueOf } from '@/shared/type/types';
-import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
 
 export default function CreatePostPage() {
