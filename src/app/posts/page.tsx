@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import TodayConsultantBannerCarousel from '@/features/auth/ui/today-consultant-banner-carousel';
 import useGetPosts from '@/features/posts/api/use-get-posts';
 import { POST_TABS } from '@/features/posts/constants/post-tabs';
+import usePostListTab from '@/features/posts/hooks/use-post-list-tab';
 import { usePostTab } from '@/features/posts/hooks/use-post-tab';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
@@ -24,13 +25,13 @@ export default function PostsPage() {
 
   const router = useRouterWithUser();
 
-  const [activeTab, setActiveTab] = useState<PostListTab>('latest');
   const [activePostTab, setActivePostTab] = usePostTab();
+  const [activePostListTab, setActivePostListTab] = usePostListTab();
 
   const { containerRef } = useScrollRestoration(POSTS_PAGE_KEY);
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
-    filter: activeTab,
+    filter: activePostListTab,
     consultType: activePostTab,
   });
 
@@ -41,9 +42,9 @@ export default function PostsPage() {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleTabChange = (tab: PostListTab) => {
-    if (activeTab === tab) return;
+    if (activePostListTab === tab) return;
 
-    setActiveTab(tab);
+    setActivePostListTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -72,7 +73,7 @@ export default function PostsPage() {
                   <ToggleChip
                     key={id}
                     icon={icon}
-                    pressed={activeTab === id}
+                    pressed={activePostListTab === id}
                     onPressedChange={() => handleTabChange(id)}
                   >
                     {label}
@@ -81,7 +82,7 @@ export default function PostsPage() {
               </ToggleChipGroup>
             </div>
             {posts && (
-              <PostList posts={posts} tab={activeTab} fetchNextPage={handleFetchNextPage} />
+              <PostList posts={posts} tab={activePostListTab} fetchNextPage={handleFetchNextPage} />
             )}
           </div>
         </div>
