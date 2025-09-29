@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
 import type { ConsultingResponseStyle } from '@/entities/posts/model/consulting-response';
+import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
 
 import ConsultingResponseItem from '../consulting-response-item';
 
@@ -10,6 +11,15 @@ type ConsultingResponseStyleProps = {
 
 export default function ConsultingResponseRecommendStyle({ style }: ConsultingResponseStyleProps) {
   const { description, images } = style;
+
+  const showImageViewerModal = useShowImageViewerModal();
+
+  const handleImageClick = (index: number) => {
+    showImageViewerModal({
+      images,
+      initialIndex: index,
+    });
+  };
 
   return (
     <ConsultingResponseItem title="스타일 추천" content="어울리는 스타일을 디자이너가 추천했어요">
@@ -28,6 +38,7 @@ export default function ConsultingResponseRecommendStyle({ style }: ConsultingRe
               width={160}
               height={160}
               className="object-cover size-40 rounded-6"
+              onClick={() => handleImageClick(index)}
             />
           ))}
         </div>
