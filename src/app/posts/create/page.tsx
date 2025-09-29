@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-import { POST_TABS } from '@/features/posts/constants/post-tabs';
 import useConsultingPostForm from '@/features/posts/hooks/use-consulting-post-form';
 import { useCreatePost } from '@/features/posts/hooks/use-create-post';
 import usePostFormNavigation from '@/features/posts/hooks/use-post-form-navigation';
@@ -21,7 +20,6 @@ import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 import type { ValueOf } from '@/shared/type/types';
-import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
 
 export default function CreatePostPage() {
@@ -45,7 +43,7 @@ export default function CreatePostPage() {
     method.reset(savedContent.content);
   };
 
-  const { selectedTab, leaveForm, changeTab } = usePostFormNavigation({
+  const { selectedTab, leaveForm } = usePostFormNavigation({
     onSavedContentReload: handlePageReload,
   });
 
@@ -58,14 +56,14 @@ export default function CreatePostPage() {
     leaveForm(writingContent, isDirty);
   };
 
-  const handleTabChange = (type: ValueOf<typeof CONSULT_TYPE>) => {
-    const writingContent: WritingStep<ConsultingPostFormValues> = {
-      step: currentStep,
-      content: method.getValues(),
-    };
+  // const handleTabChange = (type: ValueOf<typeof CONSULT_TYPE>) => {
+  //   const writingContent: WritingStep<ConsultingPostFormValues> = {
+  //     step: currentStep,
+  //     content: method.getValues(),
+  //   };
 
-    changeTab(type, writingContent);
-  };
+  //   changeTab(type, writingContent);
+  // };
 
   const { handleCreatePost, isPending } = useCreatePost();
 
@@ -103,8 +101,8 @@ export default function CreatePostPage() {
   return (
     <div className="h-screen bg-white flex flex-col min-h-0" style={{ minHeight: initialHeight }}>
       <FormProvider {...method}>
-        <SiteHeader title="게시글 작성" showBackButton onBackClick={handleBackClick} />
-        <Tab options={POST_TABS} value={selectedTab} onChange={handleTabChange} />
+        <SiteHeader title="상담지 작성" showBackButton onBackClick={handleBackClick} />
+        {/* <Tab options={POST_TABS} value={selectedTab} onChange={handleTabChange} /> */}
         {renderForm(selectedTab)}
       </FormProvider>
     </div>

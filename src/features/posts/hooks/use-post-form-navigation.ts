@@ -29,7 +29,7 @@ export default function usePostFormNavigation({
   const { back } = useRouterWithUser();
 
   const handleCloseReloadConsultingPostModal = () => {
-    setSelectedTab(CONSULT_TYPE.GENERAL);
+    back();
   };
 
   const showReloadConsultingPostModal = useShowReloadConsultingPostModal({
