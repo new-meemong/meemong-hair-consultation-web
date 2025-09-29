@@ -5,6 +5,7 @@ import { type Post } from '@/entities/posts';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { POST_LIST_TAB } from '@/features/posts/constants/post-list-tabs';
 import { type PostListTab } from '@/features/posts/types/post-list-tab';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
@@ -21,7 +22,9 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
   const { user } = useAuthContext();
 
   const handlePostClick = (postId: number) => {
-    router.push(`/posts/${postId}`);
+    router.push(`/posts/${postId}`, {
+      [SEARCH_PARAMS.POST_LIST_TAB]: tab,
+    });
   };
 
   const observerRef = useIntersectionObserver({
