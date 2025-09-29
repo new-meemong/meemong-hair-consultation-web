@@ -87,6 +87,16 @@ export default function RootLayout({
             }
 
             window.openChatChannel = openChatChannel;
+
+            function externalLink(url){
+              if(window.ExternalLink) {
+                window.ExternalLink.postMessage(JSON.stringify(url));
+              } else {
+                console.log("ExternalLink channel is not available.");
+              }
+            }
+
+            window.externalLink = externalLink;
           `}
         </Script>
       </body>
