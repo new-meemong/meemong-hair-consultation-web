@@ -45,7 +45,7 @@ export default function CreatePostPage() {
     method.reset(savedContent.content);
   };
 
-  const { selectedTab, leaveForm, changeTab } = usePostFormNavigation({
+  const { selectedTab, leaveForm } = usePostFormNavigation({
     onSavedContentReload: handlePageReload,
   });
 
@@ -58,14 +58,14 @@ export default function CreatePostPage() {
     leaveForm(writingContent, isDirty);
   };
 
-  const handleTabChange = (type: ValueOf<typeof CONSULT_TYPE>) => {
-    const writingContent: WritingStep<ConsultingPostFormValues> = {
-      step: currentStep,
-      content: method.getValues(),
-    };
+  // const handleTabChange = (type: ValueOf<typeof CONSULT_TYPE>) => {
+  //   const writingContent: WritingStep<ConsultingPostFormValues> = {
+  //     step: currentStep,
+  //     content: method.getValues(),
+  //   };
 
-    changeTab(type, writingContent);
-  };
+  //   changeTab(type, writingContent);
+  // };
 
   const { handleCreatePost, isPending } = useCreatePost();
 
@@ -103,8 +103,8 @@ export default function CreatePostPage() {
   return (
     <div className="h-screen bg-white flex flex-col min-h-0" style={{ minHeight: initialHeight }}>
       <FormProvider {...method}>
-        <SiteHeader title="게시글 작성" showBackButton onBackClick={handleBackClick} />
-        <Tab options={POST_TABS} value={selectedTab} onChange={handleTabChange} />
+        <SiteHeader title="상담지 작성" showBackButton onBackClick={handleBackClick} />
+        {/* <Tab options={POST_TABS} value={selectedTab} onChange={handleTabChange} /> */}
         {renderForm(selectedTab)}
       </FormProvider>
     </div>
