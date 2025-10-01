@@ -90,7 +90,7 @@ export default function ProgressPagination({
         />
       </div>
       <div className="w-full flex items-center justify-between">
-        <div className="bg-alternative rounded-99 px-6 py-[9.5px] typo-body-1-medium text-label-info">
+        <div className="bg-alternative rounded-99 px-6 py-[9.5px] typo-body-2-medium text-label-info">
           {current}/{total}
         </div>
         <div className="flex gap-3">
