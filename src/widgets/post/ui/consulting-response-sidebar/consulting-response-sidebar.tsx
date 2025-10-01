@@ -50,9 +50,15 @@ const getSidebarTab = (post?: PostDetail) => {
 
 type ConsultingResponseSidebarProps = {
   postId: string;
+  isOpen: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-export default function ConsultingResponseSidebar({ postId }: ConsultingResponseSidebarProps) {
+export default function ConsultingResponseSidebar({
+  postId,
+  isOpen,
+  onOpenChange,
+}: ConsultingResponseSidebarProps) {
   const { data: postDetail } = useGetPostDetail(postId);
 
   const consultingPost = postDetail?.data;
@@ -118,15 +124,15 @@ export default function ConsultingResponseSidebar({ postId }: ConsultingResponse
     }
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (shouldShowGuide) {
+      closeGuide();
+    }
+    onOpenChange?.(open);
+  };
+
   return (
-    <Drawer
-      direction="right"
-      onOpenChange={() => {
-        if (shouldShowGuide) {
-          closeGuide();
-        }
-      }}
-    >
+    <Drawer direction="right" open={isOpen} onOpenChange={handleOpenChange}>
       <DrawerTitle />
       <DrawerTrigger asChild>
         <div className="absolute bottom-26 right-5">

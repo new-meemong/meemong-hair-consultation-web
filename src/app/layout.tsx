@@ -97,6 +97,20 @@ export default function RootLayout({
             }
 
             window.externalLink = externalLink;
+
+            function setCustomBackAction(hasAction) {
+              if(window.BackAction) {
+                window.BackAction.postMessage(JSON.stringify({
+                  hasCustomAction: hasAction
+                }));
+              } else {
+                console.log("BackAction channel is not available.");
+              }
+            }
+
+            window.setCustomBackAction = setCustomBackAction;
+
+            window.customBackAction = null;
           `}
         </Script>
       </body>
