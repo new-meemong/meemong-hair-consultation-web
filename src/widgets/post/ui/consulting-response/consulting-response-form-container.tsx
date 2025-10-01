@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { FormProvider, type UseFormReturn } from 'react-hook-form';
 
@@ -26,11 +26,44 @@ export default function ConsultingResponseFormContainer({
   setCurrentStep,
 }: ConsultingResponseFormContainerProps) {
   const [initialHeight] = useState(() => window.innerHeight);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const isEdit = !!responseId;
   const title = `컨설팅 답변 ${isEdit ? '수정' : '작성'}`;
 
   const postId = method.getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID);
+
+  const handleCustomBackAction = useCallback(() => {
+    if (isSidebarOpen) {
+      setIsSidebarOpen(false);
+      return;
+    }
+
+    if (currentStep !== 1) {
+      setCurrentStep(currentStep - 1);
+      return;
+    }
+
+    onBackClick();
+  }, [currentStep, isSidebarOpen, onBackClick, setCurrentStep]);
+
+  useEffect(() => {
+    const isAndroid = /Android/i.test(navigator.userAgent);
+
+    if (isAndroid) {
+      window.customBackAction = function () {
+        handleCustomBackAction();
+      };
+      window.setCustomBackAction(true);
+    }
+
+    return () => {
+      if (isAndroid) {
+        window.setCustomBackAction(false);
+        window.customBackAction = null;
+      }
+    };
+  }, [handleCustomBackAction]);
 
   return (
     <div
@@ -46,7 +79,11 @@ export default function ConsultingResponseFormContainer({
             setCurrentStep={setCurrentStep}
             responseId={responseId}
           />
-          <ConsultingResponseSidebar postId={postId} />
+          <ConsultingResponseSidebar
+            postId={postId}
+            isOpen={isSidebarOpen}
+            onOpenChange={setIsSidebarOpen}
+          />
         </FormProvider>
       </PostDetailProvider>
     </div>
