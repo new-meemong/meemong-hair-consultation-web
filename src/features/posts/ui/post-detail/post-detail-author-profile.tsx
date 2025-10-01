@@ -24,10 +24,10 @@ export default function PostDetailAuthorProfile({
     <div className="flex items-center gap-2">
       <Avatar>
         {imageUrl ? (
-          <AvatarImage src={imageUrl} className="w-12 h-12 rounded-6" />
+          <AvatarImage src={imageUrl} className="size-10 rounded-6" />
         ) : (
           <AvatarFallback>
-            <ProfileIcon className="size-12 bg-label-default" />
+            <ProfileIcon className="size-10 bg-label-default" />
           </AvatarFallback>
         )}
       </Avatar>
