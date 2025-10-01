@@ -26,7 +26,7 @@ function ContentItem({
   className?: string;
 }) {
   return (
-    <div className={cn('flex flex-col gap-4', className)}>
+    <div className={cn('flex flex-col gap-2', className)}>
       <p className="typo-body-1-semibold text-label-default">{label}</p>
       {children}
     </div>
