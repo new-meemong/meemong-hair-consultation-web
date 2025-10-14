@@ -17,7 +17,7 @@ export default function ConsultingInputResultListItem({
       <div className="flex items-center gap-2">
         <span className="typo-body-2-semibold text-label-sub">{name}</span>
         <Dot size="0.75" className="bg-label-disable" />
-        <span className="typo-body-3-regular text-label-info">{description}</span>
+        <span className="typo-body-2-regular text-label-info">{description}</span>
       </div>
       {onDelete && (
         <button onClick={onDelete}>

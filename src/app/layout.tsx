@@ -87,6 +87,30 @@ export default function RootLayout({
             }
 
             window.openChatChannel = openChatChannel;
+
+            function externalLink(url){
+              if(window.ExternalLink) {
+                window.ExternalLink.postMessage(JSON.stringify(url));
+              } else {
+                console.log("ExternalLink channel is not available.");
+              }
+            }
+
+            window.externalLink = externalLink;
+
+            function setCustomBackAction(hasAction) {
+              if(window.BackAction) {
+                window.BackAction.postMessage(JSON.stringify({
+                  hasCustomAction: hasAction
+                }));
+              } else {
+                console.log("BackAction channel is not available.");
+              }
+            }
+
+            window.setCustomBackAction = setCustomBackAction;
+
+            window.customBackAction = null;
           `}
         </Script>
       </body>
