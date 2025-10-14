@@ -9,6 +9,12 @@ import { useAuthContext } from '../context/auth-context';
 
 import RankBadge from './rank-badge';
 
+const formatCompanyName = (companyName: string) => {
+  if (companyName.length <= 15) return companyName;
+
+  return companyName.slice(0, 14) + '...';
+};
+
 type TodayConsultantBannerCarouselItemProps = {
   topAdvisor: TopAdvisor;
   rank: number;
@@ -45,7 +51,7 @@ export default function TodayConsultantBannerCarouselItem({
               <p className="typo-body-3-medium text-cautionary">오늘의 상담왕</p>
             </div>
             <p className="typo-headline-bold text-label-sub">{displayName}</p>
-            <p className="typo-body-3-medium text-label-info">{companyName}</p>
+            <p className="typo-body-3-medium text-label-info">{formatCompanyName(companyName)}</p>
           </div>
         </div>
         <RankBadge rank={rank} />
