@@ -5,23 +5,16 @@ import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-import { POST_TABS } from '@/features/posts/constants/post-tabs';
 import useConsultingPostForm from '@/features/posts/hooks/use-consulting-post-form';
-import { useCreatePost } from '@/features/posts/hooks/use-create-post';
 import usePostFormNavigation from '@/features/posts/hooks/use-post-form-navigation';
+import { usePostTab } from '@/features/posts/hooks/use-post-tab';
 import type { ConsultingPostFormValues } from '@/features/posts/types/consulting-post-form-values';
-import type { PostFormValues } from '@/features/posts/types/post-form-values';
 import type { WritingStep } from '@/features/posts/types/user-writing-content';
 import ConsultingPostForm from '@/features/posts/ui/consulting-form/consulting-post-form/consulting-post-form';
 import PostForm from '@/features/posts/ui/post-form/post-form';
-import { ROUTES } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
-import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-import { useOverlayContext } from '@/shared/context/overlay-context';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 import type { ValueOf } from '@/shared/type/types';
-import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
 
 export default function CreatePostPage() {
@@ -29,8 +22,7 @@ export default function CreatePostPage() {
 
   const [initialHeight] = useState(() => window.innerHeight);
 
-  const { replace } = useRouterWithUser();
-  const { showSnackBar } = useOverlayContext();
+  const [selectedTab] = usePostTab();
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -45,7 +37,7 @@ export default function CreatePostPage() {
     method.reset(savedContent.content);
   };
 
-  const { selectedTab, leaveForm, changeTab } = usePostFormNavigation({
+  const { leaveForm } = usePostFormNavigation({
     onSavedContentReload: handlePageReload,
   });
 
@@ -56,31 +48,6 @@ export default function CreatePostPage() {
     };
 
     leaveForm(writingContent, isDirty);
-  };
-
-  const handleTabChange = (type: ValueOf<typeof CONSULT_TYPE>) => {
-    const writingContent: WritingStep<ConsultingPostFormValues> = {
-      step: currentStep,
-      content: method.getValues(),
-    };
-
-    changeTab(type, writingContent);
-  };
-
-  const { handleCreatePost, isPending } = useCreatePost();
-
-  const handleSubmit = (data: PostFormValues) => {
-    handleCreatePost(data, {
-      onSuccess: () => {
-        showSnackBar({
-          type: 'success',
-          message: '업로드가 완료되었습니다!',
-        });
-        replace(ROUTES.POSTS, {
-          [SEARCH_PARAMS.POST_TAB]: selectedTab,
-        });
-      },
-    });
   };
 
   const renderForm = (type: ValueOf<typeof CONSULT_TYPE>) => {
@@ -94,17 +61,27 @@ export default function CreatePostPage() {
           />
         );
       case CONSULT_TYPE.GENERAL:
-        return <PostForm onSubmit={handleSubmit} isPending={isPending} />;
+        return <PostForm />;
       default:
         return null;
+    }
+  };
+
+  const getTitle = (type: ValueOf<typeof CONSULT_TYPE>) => {
+    switch (type) {
+      case CONSULT_TYPE.CONSULTING:
+        return '상담지 작성';
+      case CONSULT_TYPE.GENERAL:
+        return '일반글 작성';
+      default:
+        return '';
     }
   };
 
   return (
     <div className="h-screen bg-white flex flex-col min-h-0" style={{ minHeight: initialHeight }}>
       <FormProvider {...method}>
-        <SiteHeader title="게시글 작성" showBackButton onBackClick={handleBackClick} />
-        <Tab options={POST_TABS} value={selectedTab} onChange={handleTabChange} />
+        <SiteHeader title={getTitle(selectedTab)} showBackButton onBackClick={handleBackClick} />
         {renderForm(selectedTab)}
       </FormProvider>
     </div>

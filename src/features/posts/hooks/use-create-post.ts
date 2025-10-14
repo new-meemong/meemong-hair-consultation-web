@@ -6,10 +6,7 @@ export function useCreatePost() {
   const { mutateAsync: uploadImages, isPending: isUploadingImages } = useUploadPostImageMutation();
   const { mutate: createPostMutate, isPending: isCreatingPost } = useCreatePostMutation();
 
-  const handleCreatePost = async (
-    data: PostFormValues,
-    { onSuccess }: { onSuccess: () => void },
-  ) => {
+  const createPost = async (data: PostFormValues, { onSuccess }: { onSuccess: () => void }) => {
     let imageUrls: string[] = [];
 
     if (data.imageFiles.length > 0) {
@@ -31,7 +28,7 @@ export function useCreatePost() {
   };
 
   return {
-    handleCreatePost,
+    createPost,
     isPending: isUploadingImages || isCreatingPost,
   };
 }
