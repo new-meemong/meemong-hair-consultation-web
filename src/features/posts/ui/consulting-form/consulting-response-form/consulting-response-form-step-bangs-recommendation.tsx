@@ -45,6 +45,7 @@ export default function ConsultingResponseFormStepBangsRecommendation() {
       <ConsultingResponseFormOptionNeedConsultation
         value={needStoreConsulting}
         onChange={handleNeedStoreConsultingChange}
+        id={CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION}
       />
     </div>
   );
