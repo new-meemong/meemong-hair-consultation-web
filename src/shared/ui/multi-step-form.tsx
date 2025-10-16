@@ -47,7 +47,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
       <form className="flex flex-col flex-1 min-h-0 px-5 pt-10 gap-7 relative">
         <div className="flex flex-col gap-3 flex-shrink-0">
           <div className="flex items-center justify-between">
-            <p className="typo-headline-medium text-label-default">{question}</p>
+            <p className="typo-title-3-semibold text-label-default title">{question}</p>
             {
               <span className="typo-body-2-semibold text-cautionary">
                 {required ? '필수' : '선택'}
