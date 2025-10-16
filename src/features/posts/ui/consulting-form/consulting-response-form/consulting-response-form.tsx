@@ -21,7 +21,10 @@ import ConsultingResponseFormStepHairType from './consulting-response-form-step-
 import ConsultingResponseFormStepStyle from './consulting-response-form-step-style';
 import ConsultingResponseFormStepTreatments from './consulting-response-form-step-treatments';
 
-const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
+const CONSULTING_RESPONSE_FORM_STEPS: (
+  | FormStep<ConsultingResponseFormValues>
+  | FormStep<ConsultingResponseFormValues>[]
+)[] = [
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
     question: '추천하는 시술과 가격을 입력해주세요',
@@ -34,24 +37,26 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     required: true,
     children: <ConsultingResponseFormStepFaceShape />,
   },
-  {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE,
-    question: '고객님의 모발 타입을 골라주세요',
-    required: true,
-    children: <ConsultingResponseFormStepHairType />,
-  },
-  {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL,
-    question: '고객님의 손상도를 골라주세요',
-    required: true,
-    children: <ConsultingResponseFormStepDamageLevel />,
-  },
-  {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION,
-    question: '앞머리 추천 여부를 골라주세요',
-    required: true,
-    children: <ConsultingResponseFormStepBangsRecommendation />,
-  },
+  [
+    {
+      name: CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION,
+      question: '앞머리 추천 여부를 골라주세요',
+      required: true,
+      children: <ConsultingResponseFormStepBangsRecommendation />,
+    },
+    {
+      name: CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE,
+      question: '고객님의 모발 타입을 골라주세요',
+      required: true,
+      children: <ConsultingResponseFormStepHairType />,
+    },
+    {
+      name: CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL,
+      question: '고객님의 손상도를 골라주세요',
+      required: true,
+      children: <ConsultingResponseFormStepDamageLevel />,
+    },
+  ],
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
     question: '어울리는 스타일을 추천해주세요',
