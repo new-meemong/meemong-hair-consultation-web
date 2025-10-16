@@ -28,7 +28,7 @@ export default function FormItem({
       )}
     >
       <div className="flex gap-1 items-center">
-        {label && <p className="typo-body-3-medium text-label-default">{label}</p>}
+        {label && <p className="typo-body-2-long-medium text-label-default">{label}</p>}
         {required && <span className="w-1 h-1 bg-negative-light rounded-full" />}
       </div>
       {description && <p className="typo-body-3-regular text-label-info">{description}</p>}
