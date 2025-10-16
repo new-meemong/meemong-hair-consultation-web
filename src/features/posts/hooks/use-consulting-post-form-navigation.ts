@@ -22,12 +22,8 @@ export default function usePostFormNavigation({
 
   const { back } = useRouterWithUser();
 
-  const handleCloseReloadConsultingPostModal = () => {
-
-  };
-
   const showReloadConsultingPostModal = useShowReloadConsultingPostModal({
-    onClose: handleCloseReloadConsultingPostModal,
+    onClose: back,
     onPositive: () => onSavedContentReload(savedContent),
     onNegative: () => {
       saveContent(null);
