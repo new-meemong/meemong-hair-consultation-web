@@ -23,6 +23,12 @@ import ConsultingResponseFormStepTreatments from './consulting-response-form-ste
 
 const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
   {
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
+    question: '추천하는 시술과 가격을 입력해주세요',
+    required: true,
+    children: <ConsultingResponseFormStepTreatments />,
+  },
+  {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE,
     question: '고객님의 얼굴형을 골라주세요',
     required: true,
@@ -51,12 +57,6 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     question: '어울리는 스타일을 추천해주세요',
     required: true,
     children: <ConsultingResponseFormStepStyle />,
-  },
-  {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
-    question: '예상 시술 가격 견적을 작성해주세요',
-    required: true,
-    children: <ConsultingResponseFormStepTreatments />,
   },
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.COMMENT,
