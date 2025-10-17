@@ -37,6 +37,7 @@ export default function ConsultingResponseFormStepHairType() {
       <ConsultingResponseFormOptionNeedConsultation
         value={needStoreConsulting}
         onChange={handleNeedStoreConsultingChange}
+        id={CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE}
       />
     </div>
   );

@@ -14,55 +14,55 @@ import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulti
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
 import ConsultingResponseFormStepBangsRecommendation from './consulting-response-form-step-bangs-recommendation';
-import ConsultingResponseFormStepComment from './consulting-response-form-step-comment';
 import ConsultingResponseFormStepDamageLevel from './consulting-response-form-step-damage-level';
 import ConsultingResponseFormStepFaceShape from './consulting-response-form-step-face-shape';
 import ConsultingResponseFormStepHairType from './consulting-response-form-step-hair-type';
 import ConsultingResponseFormStepStyle from './consulting-response-form-step-style';
 import ConsultingResponseFormStepTreatments from './consulting-response-form-step-treatments';
 
-const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] = [
+const CONSULTING_RESPONSE_FORM_STEPS: (
+  | FormStep<ConsultingResponseFormValues>
+  | FormStep<ConsultingResponseFormValues>[]
+)[] = [
+  {
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
+    question: '추천하는 시술과 가격을 입력해주세요',
+    required: true,
+    children: <ConsultingResponseFormStepTreatments />,
+  },
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE,
     question: '고객님의 얼굴형을 골라주세요',
     required: true,
     children: <ConsultingResponseFormStepFaceShape />,
   },
-  {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE,
-    question: '고객님의 모발 타입을 골라주세요',
-    required: true,
-    children: <ConsultingResponseFormStepHairType />,
-  },
-  {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL,
-    question: '고객님의 손상도를 골라주세요',
-    required: true,
-    children: <ConsultingResponseFormStepDamageLevel />,
-  },
-  {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION,
-    question: '앞머리 추천 여부를 골라주세요',
-    required: true,
-    children: <ConsultingResponseFormStepBangsRecommendation />,
-  },
+  [
+    {
+      name: CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION,
+      question: '앞머리 추천 여부를 골라주세요',
+      required: true,
+      children: <ConsultingResponseFormStepBangsRecommendation />,
+    },
+    {
+      name: CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE,
+      question: '고객님의 모발 타입을 골라주세요',
+      required: true,
+      children: <ConsultingResponseFormStepHairType />,
+    },
+    {
+      name: CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL,
+      question: '고객님의 손상도를 골라주세요',
+      required: true,
+      children: <ConsultingResponseFormStepDamageLevel />,
+    },
+  ],
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
     question: '어울리는 스타일을 추천해주세요',
+    description:
+      ' • 업로드한 사진은 디자이너만 볼 수 있습니다.\n • 정면, 측면 사진은 귀가 나온 사진(묶은머리)을 권장합니다.',
     required: true,
     children: <ConsultingResponseFormStepStyle />,
-  },
-  {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
-    question: '예상 시술 가격 견적을 작성해주세요',
-    required: true,
-    children: <ConsultingResponseFormStepTreatments />,
-  },
-  {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.COMMENT,
-    question: '추가로 전달하고픈 내용이 있나요?',
-    required: false,
-    children: <ConsultingResponseFormStepComment />,
   },
 ];
 
@@ -156,7 +156,7 @@ export default function ConsultingResponseForm({
       steps={CONSULTING_RESPONSE_FORM_STEPS}
       canMoveNext={canMoveNext}
       onSubmit={submit}
-      lastStepButtonLabel="보내기"
+      lastStepButtonLabel="저장"
     />
   );
 }
