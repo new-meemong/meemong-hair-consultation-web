@@ -14,7 +14,6 @@ import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulti
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
 import ConsultingResponseFormStepBangsRecommendation from './consulting-response-form-step-bangs-recommendation';
-import ConsultingResponseFormStepComment from './consulting-response-form-step-comment';
 import ConsultingResponseFormStepDamageLevel from './consulting-response-form-step-damage-level';
 import ConsultingResponseFormStepFaceShape from './consulting-response-form-step-face-shape';
 import ConsultingResponseFormStepHairType from './consulting-response-form-step-hair-type';
@@ -64,12 +63,6 @@ const CONSULTING_RESPONSE_FORM_STEPS: (
       ' • 업로드한 사진은 디자이너만 볼 수 있습니다.\n • 정면, 측면 사진은 귀가 나온 사진(묶은머리)을 권장합니다.',
     required: true,
     children: <ConsultingResponseFormStepStyle />,
-  },
-  {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.COMMENT,
-    question: '추가로 전달하고픈 내용이 있나요?',
-    required: false,
-    children: <ConsultingResponseFormStepComment />,
   },
 ];
 
@@ -163,7 +156,7 @@ export default function ConsultingResponseForm({
       steps={CONSULTING_RESPONSE_FORM_STEPS}
       canMoveNext={canMoveNext}
       onSubmit={submit}
-      lastStepButtonLabel="보내기"
+      lastStepButtonLabel="저장"
     />
   );
 }
