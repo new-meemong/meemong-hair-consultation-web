@@ -5,11 +5,11 @@ import getBangsStyleValue from '@/features/posts/lib/get-bangs-style-value';
 import getFaceShapeValue from '@/features/posts/lib/get-face-shape-value';
 import getHairTypeValue from '@/features/posts/lib/get-hair-type-value';
 import type { ValueOf } from '@/shared/type/types';
+import Tab from '@/shared/ui/tab';
 import {
   CONSULTING_RESPONSE_TAB,
   CONSULTING_RESPONSE_TAB_OPTIONS,
 } from '@/widgets/post/constants/consulting-response-tab';
-import ConsultingResponseTab from '@/widgets/post/ui/consulting-response/consulting-response-tab';
 
 import ConsultingResponseCurrentStateContainer from './consulting-response-current-state-container';
 import ConsultingResponsePriceAndCommentContainer from './consulting-response-price-and-comment-container';
@@ -65,9 +65,9 @@ export default function ConsultingResponseContainer({
   };
 
   return (
-    <div className="flex flex-col px-5 py-8 gap-8 ">
-      <ConsultingResponseTab activeTab={activeTab} handleTabChange={handleTabChange} />
-      {renderContent()}
+    <div>
+      <Tab options={CONSULTING_RESPONSE_TAB_OPTIONS} value={activeTab} onChange={handleTabChange} />
+      <div className="flex flex-col px-5 py-8 gap-8 ">{renderContent()}</div>
     </div>
   );
 }
