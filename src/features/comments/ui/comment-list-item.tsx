@@ -2,14 +2,13 @@ import { useRef } from 'react';
 
 import { format } from 'date-fns';
 
-import CommentIcon from '@/assets/icons/comment.svg';
 import MoreIcon from '@/assets/icons/more-vertical.svg';
 import ReplyIcon from '@/assets/icons/reply.svg';
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import { cn } from '@/lib/utils';
-import { MoreOptionsMenu, ROUTES } from '@/shared';
+import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 import CommentAuthorProfile from './comment-author-profile';
@@ -120,10 +119,12 @@ export default function CommentListItem({
               <div className="flex-1">
                 <CommentAuthorProfile author={comment.user} lockIconShown={lockIconShown} />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 {!isReply && (
                   <button onClick={(e) => handleReplyClick(e)}>
-                    <CommentIcon className="size-5 fill-label-info" />
+                    <Button variant="text" theme="text" size="text">
+                      답글달기
+                    </Button>
                   </button>
                 )}
                 <MoreOptionsMenu
