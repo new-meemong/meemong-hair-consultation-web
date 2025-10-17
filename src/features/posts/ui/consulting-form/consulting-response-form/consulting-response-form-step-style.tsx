@@ -93,10 +93,10 @@ export default function ConsultingResponseFormStepStyle() {
           maxImageCount={MAX_IMAGE_COUNT}
         />
       </FormItem>
-      <FormItem label="설명">
+      <FormItem label="스타일 설명">
         <Textarea
           {...register(`${CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE}.description`)}
-          placeholder="어떤 머리가 어울리는지, 왜 어울리는지 설명해주세요"
+          placeholder="어울리는 스타일을 설명해주세요"
           className="min-h-38"
           hasBorder
         />

@@ -60,6 +60,8 @@ const CONSULTING_RESPONSE_FORM_STEPS: (
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE,
     question: '어울리는 스타일을 추천해주세요',
+    description:
+      ' • 업로드한 사진은 디자이너만 볼 수 있습니다.\n • 정면, 측면 사진은 귀가 나온 사진(묶은머리)을 권장합니다.',
     required: true,
     children: <ConsultingResponseFormStepStyle />,
   },
