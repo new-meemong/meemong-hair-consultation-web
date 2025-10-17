@@ -4,7 +4,6 @@ import CommentIcon from '@/assets/icons/comment.svg';
 import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
-import PopularIcon from '@/assets/icons/recent.svg';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
 import type { ValueOf } from '@/shared/type/types';
 
@@ -22,12 +21,6 @@ export const POST_LIST_TAB: Record<PostListTab, TabInfo> = {
     id: 'latest',
     label: '최신글',
     icon: <RecentIcon className="size-5 fill-label-sub group-data-[state=on]:fill-white" />,
-    getEmptyText: () => '아직 게시글이 없습니다',
-  },
-  popular: {
-    id: 'popular',
-    label: '인기글',
-    icon: <PopularIcon className="size-5 fill-label-sub group-data-[state=on]:fill-white" />,
     getEmptyText: () => '아직 게시글이 없습니다',
   },
   my: {
