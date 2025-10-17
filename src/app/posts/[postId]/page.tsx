@@ -1,9 +1,10 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useParams } from 'next/navigation';
 
+import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { isConsultingPost } from '@/entities/posts/lib/consulting-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
@@ -56,6 +57,14 @@ export default function PostDetailPage() {
     !isCommentFormReply &&
     !postDetail.isAnsweredByDesigner;
 
+  const [commentMode, setCommentMode] = useState<'consulting' | 'normal'>(
+    canWriteConsultingResponse ? 'consulting' : 'normal',
+  );
+
+  const handleNormalCommentClick = useCallback(() => {
+    setCommentMode('normal');
+  }, []);
+
   const handleContainerClick = useCallback(() => {
     handlers.resetCommentState();
   }, [handlers]);
@@ -69,7 +78,7 @@ export default function PostDetailPage() {
 
   const { hasSavedContent } = useWritingConsultingResponse(postId?.toString() ?? '');
 
-  const writingResponseButtonText = hasSavedContent ? '이어서 작성하기' : '답변 작성하기';
+  const writingResponseButtonText = hasSavedContent ? '이어서 작성하기' : '컨설팅 답변하기';
 
   if (!postId) return null;
 
@@ -98,26 +107,42 @@ export default function PostDetailPage() {
           </PostDetailContainer>
         </div>
 
-        {canWriteConsultingResponse ? (
-          <div className="bg-white shadow-upper px-5 py-3">
-            <Button size="lg" className="w-full" onClick={handleWriteConsultingResponseClick}>
-              {writingResponseButtonText}
+        <div className="relative">
+          {canWriteConsultingResponse && commentMode === 'normal' && (
+            <Button
+              className="absolute -top-14 left-1/2 transform -translate-x-1/2 rounded-4 bg-label-default py-[9.5px] px-3 shadow-strong typo-body-2-medium"
+              onClick={handleWriteConsultingResponseClick}
+            >
+              <div className="flex items-center gap-1 text-white">
+                컨설팅 답변 작성
+                <ChevronRightIcon className="size-4 fill-white" />
+              </div>
             </Button>
-          </div>
-        ) : (
-          <div className="bg-white shadow-strong">
-            <div className="max-w-[600px] mx-auto">
-              <CommentForm
-                onSubmit={handlers.handleCommentFormSubmit}
-                isReply={isCommentFormReply}
-                commentId={commentFormState.commentId}
-                content={commentFormState.content}
-                isPending={isCommentCreating || isCommentUpdating}
-                textareaRef={textareaRef}
-              />
+          )}
+          {canWriteConsultingResponse && commentMode === 'consulting' ? (
+            <div className="bg-white shadow-upper px-5 py-3 flex gap-3 justify-evenly">
+              <Button size="md" theme="white" className="flex-1" onClick={handleNormalCommentClick}>
+                일반 댓글 달기
+              </Button>
+              <Button size="md" className="flex-1" onClick={handleWriteConsultingResponseClick}>
+                {writingResponseButtonText}
+              </Button>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="bg-white shadow-strong">
+              <div className="max-w-[600px] mx-auto">
+                <CommentForm
+                  onSubmit={handlers.handleCommentFormSubmit}
+                  isReply={isCommentFormReply}
+                  commentId={commentFormState.commentId}
+                  content={commentFormState.content}
+                  isPending={isCommentCreating || isCommentUpdating}
+                  textareaRef={textareaRef}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </PostDetailProvider>
     </div>
   );
