@@ -112,16 +112,9 @@ export default function PostDetailConsultingContent({
           createdAt={createdAt}
         />
         <p className="typo-title-3-semibold text-label-default">{title}</p>
-        {concern && (
-          <ContentItem label="고민 내용">
-            <p className="typo-body-2-long-regular text-label-info">{concern}</p>
-          </ContentItem>
-        )}
-        {myImageUrls && (
-          <ContentItem label="최근 내 사진">
-            {hiddenImages ? <HiddenImageAlertBox /> : <ImageList images={myImageUrls} />}
-          </ContentItem>
-        )}
+        {concern && <p className="typo-body-1-long-regular text-label-default">{concern}</p>}
+        {myImageUrls &&
+          (hiddenImages ? <HiddenImageAlertBox /> : <ImageList images={myImageUrls} />)}
       </div>
       <Separator />
       <div className="flex flex-col gap-8 px-5">
@@ -137,7 +130,7 @@ export default function PostDetailConsultingContent({
           </ContentItem>
         )}
         {hasAspirations && (
-          <ContentItem label="원하는 스타일">
+          <ContentItem label="추구미">
             {aspirations.aspirationImages.length > 0 &&
               (hiddenImages ? (
                 <HiddenImageAlertBox />
