@@ -13,6 +13,7 @@ const buttonVariants = cva(
         default: 'rounded-2',
         icon: 'rounded-6',
         textWithIcon: 'typo-body-1-medium flex gap-2 rounded-4',
+        text: 'typo-body-2-medium text-label-info',
       },
       size: {
         default: 'h-10 px-4 py-2',
@@ -21,12 +22,14 @@ const buttonVariants = cva(
         icon: 'size-7',
         iconLg: 'size-10',
         textWithIcon: 'h-10 px-3 py-2.5',
+        text: 'px-0.5 py-1',
       },
       theme: {
         black: 'typo-body-1-semibold bg-label-default hover:bg-label-sub text-white',
         white:
           'typo-body-2-medium bg-white hover:bg-label-sub text-label-sub border border-border-default disabled:text-label-disable disabled:bg-white',
         whiteBorder: 'rounded-4 border-1 border-white bg-transparent text-white typo-body-2-medium',
+        text: '',
       },
     },
     defaultVariants: {
