@@ -24,12 +24,6 @@ export const POST_LIST_TAB: Record<PostListTab, TabInfo> = {
     icon: <RecentIcon className="size-5 fill-label-sub group-data-[state=on]:fill-white" />,
     getEmptyText: () => '아직 게시글이 없습니다',
   },
-  popular: {
-    id: 'popular',
-    label: '인기글',
-    icon: <PopularIcon className="size-5 fill-label-sub group-data-[state=on]:fill-white" />,
-    getEmptyText: () => '아직 게시글이 없습니다',
-  },
   my: {
     id: 'my',
     label: '내 상담글',
