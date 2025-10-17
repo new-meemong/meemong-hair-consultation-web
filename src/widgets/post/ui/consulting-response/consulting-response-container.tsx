@@ -4,6 +4,8 @@ import type { ConsultingResponse } from '@/entities/posts/model/consulting-respo
 import getBangsStyleValue from '@/features/posts/lib/get-bangs-style-value';
 import getFaceShapeValue from '@/features/posts/lib/get-face-shape-value';
 import getHairTypeValue from '@/features/posts/lib/get-hair-type-value';
+import { Separator } from '@/shared';
+import useIntersectionObserverTab from '@/shared/hooks/use-intersection-observer-tab';
 import type { ValueOf } from '@/shared/type/types';
 import Tab from '@/shared/ui/tab';
 import {
@@ -12,7 +14,7 @@ import {
 } from '@/widgets/post/constants/consulting-response-tab';
 
 import ConsultingResponseCurrentStateContainer from './consulting-response-current-state-container';
-import ConsultingResponsePriceAndCommentContainer from './consulting-response-price-and-comment-container';
+import ConsultingResponsePriceContainer from './consulting-response-price-container';
 import ConsultingResponseRecommendStyleContainer from './consulting-response-recommend-style-container';
 
 type ConsultingResponseContainerProps = {
@@ -26,18 +28,43 @@ export default function ConsultingResponseContainer({
     CONSULTING_RESPONSE_TAB_OPTIONS[0].value,
   );
 
+  const tabValues = CONSULTING_RESPONSE_TAB_OPTIONS.map((option) => option.value);
+  const refs = useIntersectionObserverTab({
+    tabValues,
+    onTabChange: setActiveTab,
+  });
+
   const handleTabChange = (tab: ValueOf<typeof CONSULTING_RESPONSE_TAB>) => {
     setActiveTab(tab);
+
+    const targetRef = refs[tab];
+    if (targetRef?.current) {
+      targetRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
   };
 
   const faceShape = getFaceShapeValue(consultingResponse.faceShape);
   const hairType = getHairTypeValue(consultingResponse.hairType);
   const bangStyle = getBangsStyleValue(consultingResponse.bangsRecommendation);
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case CONSULTING_RESPONSE_TAB.CURRENT_STATE:
-        return (
+  return (
+    <div>
+      <div className="sticky top-0 z-10 bg-white">
+        <Tab
+          options={CONSULTING_RESPONSE_TAB_OPTIONS}
+          value={activeTab}
+          onChange={handleTabChange}
+        />
+      </div>
+      <div className="flex flex-col px-5 py-8 gap-8 ">
+        <div
+          ref={refs[CONSULTING_RESPONSE_TAB.CURRENT_STATE]}
+          data-section={CONSULTING_RESPONSE_TAB.CURRENT_STATE}
+          className="scroll-mt-20"
+        >
           <ConsultingResponseCurrentStateContainer
             faceShape={faceShape}
             hairType={hairType}
@@ -45,29 +72,31 @@ export default function ConsultingResponseContainer({
             damageLevel={consultingResponse.damageLevel}
             isDamageLevelStoreConsultNeed={consultingResponse.isDamageLevelConsultNeed}
           />
-        );
-      case CONSULTING_RESPONSE_TAB.RECOMMEND_STYLE:
-        return (
+        </div>
+        <Separator />
+        <div
+          ref={refs[CONSULTING_RESPONSE_TAB.RECOMMEND_STYLE]}
+          data-section={CONSULTING_RESPONSE_TAB.RECOMMEND_STYLE}
+          className="scroll-mt-20"
+        >
           <ConsultingResponseRecommendStyleContainer
             bangStyle={bangStyle}
             style={consultingResponse.style}
           />
-        );
-      case CONSULTING_RESPONSE_TAB.PRICE_AND_COMMENT:
-        return (
-          <ConsultingResponsePriceAndCommentContainer
+        </div>
+        <Separator />
+        <div
+          ref={refs[CONSULTING_RESPONSE_TAB.PRICE_AND_COMMENT]}
+          data-section={CONSULTING_RESPONSE_TAB.PRICE_AND_COMMENT}
+          className="scroll-mt-20"
+        >
+          <ConsultingResponsePriceContainer
             treatments={consultingResponse.treatments}
             designerName={consultingResponse.designer.name}
             comment={consultingResponse.comment}
           />
-        );
-    }
-  };
-
-  return (
-    <div>
-      <Tab options={CONSULTING_RESPONSE_TAB_OPTIONS} value={activeTab} onChange={handleTabChange} />
-      <div className="flex flex-col px-5 py-8 gap-8 ">{renderContent()}</div>
+        </div>
+      </div>
     </div>
   );
 }
