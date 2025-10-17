@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import LockIcon from '@/assets/icons/lock.svg';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/lib/utils';
@@ -33,13 +34,16 @@ function ContentItem({
   );
 }
 
-function ImageList({
-  images,
-  onlyShowToDesigner,
-}: {
-  images: string[];
-  onlyShowToDesigner: boolean;
-}) {
+function HiddenImageAlertBox() {
+  return (
+    <div className="bg-alternative rounded-4 px-4 py-3 flex gap-2 items-center">
+      <LockIcon className="size-4 fill-label-placeholder" />
+      <p className="typo-body-2-regular text-label-info">이미지는 디자이너에게만 공개됩니다</p>
+    </div>
+  );
+}
+
+function ImageList({ images }: { images: string[] }) {
   return (
     <div className="flex gap-2 overflow-x-auto scrollbar-hide">
       {images.map((image, index) => (
@@ -47,7 +51,6 @@ function ImageList({
           key={`${index}-${image}`}
           images={images}
           currentIndex={index}
-          onlyShowToDesigner={onlyShowToDesigner}
           size="small"
         />
       ))}
@@ -90,7 +93,7 @@ export default function PostDetailConsultingContent({
     : null;
 
   const isWriter = authorId === user.id;
-  const onlyShowToDesigner = !isWriter || isUserDesigner;
+  const hiddenImages = !isWriter && !isUserDesigner;
 
   const skinToneValue = getSkinToneValue(skinTone);
 
@@ -116,7 +119,7 @@ export default function PostDetailConsultingContent({
         )}
         {myImageUrls && (
           <ContentItem label="최근 내 사진">
-            <ImageList images={myImageUrls} onlyShowToDesigner={onlyShowToDesigner} />
+            {hiddenImages ? <HiddenImageAlertBox /> : <ImageList images={myImageUrls} />}
           </ContentItem>
         )}
       </div>
@@ -135,12 +138,12 @@ export default function PostDetailConsultingContent({
         )}
         {hasAspirations && (
           <ContentItem label="원하는 스타일">
-            {aspirations.aspirationImages.length > 0 && (
-              <ImageList
-                images={aspirations.aspirationImages}
-                onlyShowToDesigner={onlyShowToDesigner}
-              />
-            )}
+            {aspirations.aspirationImages.length > 0 &&
+              (hiddenImages ? (
+                <HiddenImageAlertBox />
+              ) : (
+                <ImageList images={aspirations.aspirationImages} />
+              ))}
             {aspirations.aspirationDescription && (
               <p className="typo-body-2-long-regular text-label-info whitespace-pre-wrap">
                 {aspirations.aspirationDescription}
