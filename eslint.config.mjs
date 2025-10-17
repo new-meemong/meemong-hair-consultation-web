@@ -68,6 +68,15 @@ const eslintConfig = [
       'import/no-duplicates': 'error',
       // import 문과 첫 번째 코드 사이에 빈 줄 추가
       'import/newline-after-import': 'error',
+      // TypeScript 사용하지 않는 변수 규칙 - 언더스코어로 시작하는 변수는 허용
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
     },
   },
 ];
