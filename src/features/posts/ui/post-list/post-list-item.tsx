@@ -56,14 +56,20 @@ export default function PostListItem({ post, onClick, ref }: PostItemProps) {
       <div className="flex flex-col gap-2 h-full">
         <div className="flex justify-between items-stretch gap-7 flex-1">
           <div className="flex flex-col min-w-0 flex-1 gap-1">
-            <div className="flex gap-[6.5px] items-center">
+            <div className="flex gap-[6.5px] items-center typo-body-3-regular text-label-info">
               {isReadingPost && (
                 <>
-                  <p className="typo-body-3-regular text-label-info">읽음</p>
+                  <p>읽음</p>
                   <Dot size="1" />
                 </>
               )}
-              <p className="typo-body-3-regular text-label-info">{updatedAt}</p>
+              <p>{updatedAt}</p>
+              {isUserDesigner && hairConsultPostingCreateUserRegion && (
+                <>
+                  <Dot size="1" />
+                  <p>{formatAddress(hairConsultPostingCreateUserRegion)}</p>
+                </>
+              )}
             </div>
             <div className="flex flex-col gap-2 flex-1">
               <h2 className="typo-headline-bold text-label-strong overflow-hidden text-ellipsis line-clamp-1">
@@ -96,11 +102,6 @@ export default function PostListItem({ post, onClick, ref }: PostItemProps) {
               <span className="typo-body-2-medium text-positive">{commentCount}</span>
             </div>
           </div>
-          {isUserDesigner && hairConsultPostingCreateUserRegion && (
-            <span className=" typo-body-3-medium text-label-placeholder">
-              {formatAddress(hairConsultPostingCreateUserRegion)}
-            </span>
-          )}
         </div>
       </div>
     </div>
