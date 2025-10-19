@@ -32,7 +32,11 @@ function TopAdvisorExample() {
           </p>
         </div>
       </div>
-      <RankBadge rank={1} />
+      <RankBadge
+        rank={1}
+        badgeOuterBackground="bg-[#FFCA75]"
+        badgeInnerBackground="bg-[linear-gradient(150deg,#FFB742,#EF7B00)]"
+      />
     </div>
   );
 }
