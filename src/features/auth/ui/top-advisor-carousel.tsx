@@ -7,9 +7,9 @@ import { CarouselContent, CarouselItem } from '@/shared/ui/carousel';
 import useGetTopAdvisors from '../api/use-get-top-advisors';
 
 import RankBadge from './rank-badge';
-import TodayConsultantBannerCarouselItem from './today-consultant-banner-carousel-item';
+import TopAdvisorCarouselItem from './top-advisor-carousel-item';
 
-function TodayConsultantBannerCarouselExample() {
+function TopAdvisorExample() {
   return (
     <div className="bg-alternative py-3 pl-3 pr-2.5 flex gap-4 items-center">
       <div className="flex gap-3 flex-1">
@@ -32,11 +32,15 @@ function TodayConsultantBannerCarouselExample() {
           </p>
         </div>
       </div>
-      <RankBadge rank={1} />
+      <RankBadge
+        rank={1}
+        badgeOuterBackground="bg-[#FFCA75]"
+        badgeInnerBackground="bg-[linear-gradient(150deg,#FFB742,#EF7B00)]"
+      />
     </div>
   );
 }
-export default function TodayConsultantBannerCarousel() {
+export default function TopAdvisorCarousel() {
   const { data: response } = useGetTopAdvisors();
 
   const topAdvisors = response?.dataList ?? [];
@@ -56,11 +60,11 @@ export default function TodayConsultantBannerCarousel() {
       <CarouselContent className="-mx-4">
         {hasTopAdvisors ? (
           topAdvisors.map(({ rank, designer }) => (
-            <TodayConsultantBannerCarouselItem key={rank} topAdvisor={designer} rank={rank} />
+            <TopAdvisorCarouselItem key={rank} topAdvisor={designer} rank={rank} />
           ))
         ) : (
           <CarouselItem className="px-1 basis-[85%]">
-            <TodayConsultantBannerCarouselExample />
+            <TopAdvisorExample />
           </CarouselItem>
         )}
       </CarouselContent>
