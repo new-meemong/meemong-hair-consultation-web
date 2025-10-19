@@ -15,15 +15,12 @@ const formatCompanyName = (companyName: string) => {
   return companyName.slice(0, 14) + '...';
 };
 
-type TodayConsultantBannerCarouselItemProps = {
+type TopAdvisorCarouselItemProps = {
   topAdvisor: TopAdvisor;
   rank: number;
 };
 
-export default function TodayConsultantBannerCarouselItem({
-  topAdvisor,
-  rank,
-}: TodayConsultantBannerCarouselItemProps) {
+export default function TopAdvisorCarouselItem({ topAdvisor, rank }: TopAdvisorCarouselItemProps) {
   const { isUserDesigner } = useAuthContext();
 
   const { profilePictureURL, displayName, companyName, userId } = topAdvisor;
