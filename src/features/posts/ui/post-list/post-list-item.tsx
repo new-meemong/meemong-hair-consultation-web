@@ -15,6 +15,9 @@ import Dot from '@/shared/ui/dot';
 
 import useReadingPostHistory from '../../hooks/use-reading-post-history';
 
+import PostListItemDesignerContent from './post-list-item-designer-content';
+import PostListItemModelContent from './post-list-item-model-content';
+
 type PostItemProps = {
   post: Post;
   onClick?: () => void;
@@ -32,6 +35,8 @@ export default function PostListItem({ post, onClick, ref }: PostItemProps) {
     likeCount,
     commentCount,
     hairConsultPostingCreateUserRegion,
+    minPaymentPrice,
+    maxPaymentPrice,
   } = post;
 
   const isValidImageUrl = repImageUrl && isValidUrl(repImageUrl);
@@ -71,14 +76,11 @@ export default function PostListItem({ post, onClick, ref }: PostItemProps) {
                 </>
               )}
             </div>
-            <div className="flex flex-col gap-2 flex-1">
-              <h2 className="typo-headline-bold text-label-strong overflow-hidden text-ellipsis line-clamp-1">
-                {title}
-              </h2>
-              <p className="typo-body-2-regular text-label-default overflow-hidden text-ellipsis line-clamp-2 break-words whitespace-pre-wrap">
-                {content}
-              </p>
-            </div>
+            {isUserDesigner ? (
+              <PostListItemDesignerContent content={content} maxPaymentPrice={maxPaymentPrice} />
+            ) : (
+              <PostListItemModelContent title={title} content={content} />
+            )}
           </div>
 
           {isValidImageUrl && (
