@@ -8,12 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 
 import ArrowUpIcon from '@/assets/icons/arrow-up.svg';
-import LockIcon from '@/assets/icons/lock.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import { Label, Separator } from '@/shared';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
-import ControlledCheckbox from '@/shared/ui/controlled-checkbox';
 import { Textarea } from '@/shared/ui/textarea';
 
 export const COMMENT_FORM_FIELD_NAME = {
@@ -48,14 +45,13 @@ export function CommentForm({
   textareaRef,
 }: CommentFormProps) {
   const { isUserDesigner } = useAuthContext();
-
   const placeholder = isReply ? '대댓글을 입력하세요' : '댓글을 입력하세요';
 
   const method = useForm<CommentFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       [COMMENT_FORM_FIELD_NAME.content]: content ?? '',
-      [COMMENT_FORM_FIELD_NAME.isVisibleToModel]: false,
+      [COMMENT_FORM_FIELD_NAME.isVisibleToModel]: isUserDesigner,
       [COMMENT_FORM_FIELD_NAME.parentCommentId]: null,
     },
   });
@@ -77,11 +73,6 @@ export function CommentForm({
     }
   }, [isReply, textareaRef]);
 
-  const isVisibleToModel = useWatch({
-    control: method.control,
-    name: COMMENT_FORM_FIELD_NAME.isVisibleToModel,
-  });
-
   const handleSubmit = (data: CommentFormValues) => {
     onSubmit(data, {
       onSuccess: () => {
@@ -101,26 +92,18 @@ export function CommentForm({
             <div
               className={`flex w-full py-2 px-3 rounded-6 bg-alternative items-center gap-3 outline-none`}
             >
-              <LockIcon
-                className={cn(
-                  `size-3.5`,
-                  isVisibleToModel ? 'fill-negative' : 'fill-label-placeholder',
-                )}
+              <Textarea
+                {...method.register(COMMENT_FORM_FIELD_NAME.content)}
+                placeholder={placeholder}
+                className="w-full flex-1 typo-body-2-long-regular placeholder:text-label-placeholder text-label-strong"
+                ref={(e) => {
+                  const { ref } = method.register(COMMENT_FORM_FIELD_NAME.content);
+                  ref(e);
+                  if (textareaRef && e) {
+                    textareaRef.current = e;
+                  }
+                }}
               />
-              <div className="flex-1">
-                <Textarea
-                  {...method.register(COMMENT_FORM_FIELD_NAME.content)}
-                  placeholder={placeholder}
-                  className="w-full flex-1 typo-body-2-long-regular placeholder:text-label-placeholder text-label-strong"
-                  ref={(e) => {
-                    const { ref } = method.register(COMMENT_FORM_FIELD_NAME.content);
-                    ref(e);
-                    if (textareaRef && e) {
-                      textareaRef.current = e;
-                    }
-                  }}
-                />
-              </div>
               <Button
                 type="submit"
                 size="icon"
@@ -131,16 +114,6 @@ export function CommentForm({
                 <ArrowUpIcon className="fill-white" />
               </Button>
             </div>
-          </div>
-          <Separator />
-          <div className={cn('flex items-center px-5 py-3 gap-2', !isUserDesigner && 'hidden')}>
-            <ControlledCheckbox name={COMMENT_FORM_FIELD_NAME.isVisibleToModel} shape="square" />
-            <Label
-              htmlFor={COMMENT_FORM_FIELD_NAME.isVisibleToModel}
-              className="typo-body-3-regular"
-            >
-              모델에게만 공개할게요
-            </Label>
           </div>
         </form>
       </FormProvider>
