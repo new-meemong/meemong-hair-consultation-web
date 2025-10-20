@@ -121,11 +121,9 @@ export default function CommentListItem({
               </div>
               <div className="flex items-center gap-1.5">
                 {!isReply && (
-                  <button onClick={(e) => handleReplyClick(e)}>
-                    <Button variant="text" theme="text" size="text">
-                      답글달기
-                    </Button>
-                  </button>
+                  <Button variant="text" theme="text" size="text" onClick={handleReplyClick}>
+                    답글달기
+                  </Button>
                 )}
                 <MoreOptionsMenu
                   trigger={<MoreIcon className="size-6" />}
