@@ -1,17 +1,28 @@
 import { cn } from '@/shared/lib/utils';
 
-const RANK_COLOR: Record<number, string> = {
-  1: 'bg-rank-first',
-  2: 'bg-rank-second',
-  3: 'bg-rank-third',
-} as const;
+type RankBadgeProps = {
+  rank: number;
+  badgeOuterBackground: string;
+  badgeInnerBackground: string;
+};
 
-export default function RankBadge({ rank }: { rank: number }) {
-  const rankColor = RANK_COLOR[rank] ?? 'bg-rank-etc';
-
+export default function RankBadge({
+  rank,
+  badgeOuterBackground,
+  badgeInnerBackground,
+}: RankBadgeProps) {
   return (
-    <div className={cn('text-white px-1.5 py-0.5 rounded-99', rankColor)}>
-      <p className="typo-body-3-medium text-white px-3 py-0.5">{rank}위</p>
+    <div
+      className={cn(
+        badgeOuterBackground,
+        'rounded-99 size-11 flex items-center justify-center shadow-heavy',
+      )}
+    >
+      <div
+        className={cn(badgeInnerBackground, 'rounded-99 size-9.5 flex items-center justify-center')}
+      >
+        <p className="typo-body-3-semibold text-white">{rank}위</p>
+      </div>
     </div>
   );
 }

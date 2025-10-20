@@ -47,6 +47,7 @@ export default function ConsultingResponseFormStepDamageLevel() {
       <ConsultingResponseFormOptionNeedConsultation
         value={needStoreConsulting}
         onChange={handleNeedStoreConsultingChange}
+        id={CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL}
       />
     </div>
   );

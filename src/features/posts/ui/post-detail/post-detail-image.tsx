@@ -22,7 +22,7 @@ function HiddenImage() {
 type PostDetailImageProps = {
   images: string[];
   currentIndex: number;
-  onlyShowToDesigner: boolean;
+  onlyShowToDesigner?: boolean;
   size: 'small' | 'large';
 };
 
@@ -42,7 +42,7 @@ const SIZE = {
 export default function PostDetailImage({
   images,
   currentIndex,
-  onlyShowToDesigner,
+  onlyShowToDesigner = false,
   size,
 }: PostDetailImageProps) {
   const { isUserDesigner } = useAuthContext();

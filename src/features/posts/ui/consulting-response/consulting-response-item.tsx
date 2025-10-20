@@ -15,7 +15,7 @@ export default function ConsultingResponseItem({
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
         <p className="typo-body-1-medium text-label-default">{title}</p>
-        <p className="typo-body-3-regular text-label-info">{content}</p>
+        <p className="typo-body-3-regular text-label-info whitespace-pre-line">{content}</p>
       </div>
       {children}
     </div>
