@@ -1,6 +1,6 @@
 type PostListItemDesignerContentProps = {
   content: string;
-  maxPaymentPrice: number | null;
+  maxPaymentPrice: number;
 };
 
 export default function PostListItemDesignerContent({
@@ -12,6 +12,15 @@ export default function PostListItemDesignerContent({
       <p className="typo-body-1-medium text-label-strong overflow-hidden text-ellipsis line-clamp-1">
         {content}
       </p>
+      <div className="flex gap-1 items-center">
+        <span className="typo-body-2-regular text-label-info">최대</span>
+        <div className="flex items-center gap-0.5">
+          <span className="typo-headline-semibold text-label-default">
+            {maxPaymentPrice.toLocaleString()}
+          </span>
+          <span className="typo-body-2-regular text-label-info">원</span>
+        </div>
+      </div>
     </div>
   );
 }

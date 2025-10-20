@@ -22,9 +22,10 @@ type PostItemProps = {
   post: Post;
   onClick?: () => void;
   ref?: RefObject<HTMLDivElement | null>;
+  isConsultingPost: boolean;
 };
 
-export default function PostListItem({ post, onClick, ref }: PostItemProps) {
+export default function PostListItem({ post, onClick, ref, isConsultingPost }: PostItemProps) {
   const {
     id,
     updatedAt,
@@ -35,7 +36,6 @@ export default function PostListItem({ post, onClick, ref }: PostItemProps) {
     likeCount,
     commentCount,
     hairConsultPostingCreateUserRegion,
-    minPaymentPrice,
     maxPaymentPrice,
   } = post;
 
@@ -54,11 +54,11 @@ export default function PostListItem({ post, onClick, ref }: PostItemProps) {
 
   return (
     <div
-      className="border-b border-gray-200 p-5 w-full h-40 cursor-pointer"
+      className="border-b border-gray-200 p-5 w-full cursor-pointer"
       onClick={handleClick}
       ref={ref}
     >
-      <div className="flex flex-col gap-2 h-full">
+      <div className="flex flex-col gap-4.5 h-full">
         <div className="flex justify-between items-stretch gap-7 flex-1">
           <div className="flex flex-col min-w-0 flex-1 gap-1">
             <div className="flex gap-[6.5px] items-center typo-body-3-regular text-label-info">
@@ -76,7 +76,7 @@ export default function PostListItem({ post, onClick, ref }: PostItemProps) {
                 </>
               )}
             </div>
-            {isUserDesigner ? (
+            {isUserDesigner && maxPaymentPrice && isConsultingPost ? (
               <PostListItemDesignerContent content={content} maxPaymentPrice={maxPaymentPrice} />
             ) : (
               <PostListItemModelContent title={title} content={content} />
