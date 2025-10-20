@@ -5,7 +5,6 @@ import { useCallback } from 'react';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import useGetPosts from '@/features/posts/api/use-get-posts';
-import { POST_TABS } from '@/features/posts/constants/post-tabs';
 import usePostListTab from '@/features/posts/hooks/use-post-list-tab';
 import { usePostTab } from '@/features/posts/hooks/use-post-tab';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
@@ -17,7 +16,6 @@ import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { POSTS_PAGE_KEY, useScrollRestoration } from '@/shared/hooks/use-scroll-restoration';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
-import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
 
 export default function PostsPage() {
@@ -25,7 +23,7 @@ export default function PostsPage() {
 
   const router = useRouterWithUser();
 
-  const [activePostTab, setActivePostTab] = usePostTab();
+  const [activePostTab] = usePostTab();
   const [activePostListTab, setActivePostListTab] = usePostListTab();
 
   const { containerRef } = useScrollRestoration(POSTS_PAGE_KEY);
@@ -63,7 +61,7 @@ export default function PostsPage() {
       {/* 헤더 */}
       <SiteHeader title="헤어상담" />
       <div className="flex flex-col gap-5 flex-1 min-h-0">
-        <Tab options={POST_TABS} value={activePostTab} onChange={setActivePostTab} />
+        {/* <Tab options={POST_TABS} value={activePostTab} onChange={setActivePostTab} /> */}
         <div ref={containerRef} className="flex flex-col gap-5 flex-1 overflow-y-auto">
           <TopAdvisorCarousel />
           <div className="flex-1 flex flex-col min-h-0 gap-2">
