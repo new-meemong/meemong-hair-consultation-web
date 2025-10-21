@@ -119,6 +119,8 @@ export default function ConsultingResponseSidebar({
             hairConcern={hairConcern}
             skinToneValue={skinToneValue}
             treatments={consultingPost.treatments ?? []}
+            minPaymentPrice={consultingPost.minPaymentPrice}
+            maxPaymentPrice={consultingPost.maxPaymentPrice}
           />
         );
     }
