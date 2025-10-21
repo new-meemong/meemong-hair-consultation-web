@@ -63,7 +63,7 @@ export default function ConsultingPostFormStepAspirationImages() {
       <FormItem label="추구미 설명">
         <Textarea
           {...register(`${CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`)}
-          placeholder="선호하는 스타일/느낌, 컴플렉스 등 헤어 관련 고민을 작성해주세요"
+          placeholder="원하는 느낌, 추구미 등 디자이너가 추천에 참고할 내용을 입력해주세요."
           className="min-h-38"
           hasBorder
         />

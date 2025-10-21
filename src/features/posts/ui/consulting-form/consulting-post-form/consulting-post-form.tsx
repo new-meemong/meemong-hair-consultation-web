@@ -9,8 +9,8 @@ import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-p
 import { type ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 
 import ConsultingPostFormStepAspirationImages from './consulting-post-form-step-aspiration-images';
-import ConsultingPostFormStepContent from './consulting-post-form-step-content';
 import ConsultingPostFormStepMyImages from './consulting-post-form-step-my-images';
+import ConsultingPostFormStepPrice from './consulting-post-form-step-price';
 import ConsultingPostFormStepSkinTone from './consulting-post-form-step-skin-tone';
 import ConsultingPostFormStepTitleAndConcern from './consulting-post-form-step-title-and-concern';
 import ConsultingPostFormStepTreatments from './consulting-post-form-step-treatments';
@@ -22,12 +22,16 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
     children: <ConsultingPostFormStepTitleAndConcern />,
   },
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
-    question: '시술 이력을 알려주세요',
-    description:
-      ' • 자세히 작성할수록 답변받을 확률이 높아요\n • 기장이 길수록 자세한 이력이 필요해요\n   (가슴선 이상: 최소 3년 / 단발: 2년 / 숏컷 : 1년)',
-    required: true,
-    children: <ConsultingPostFormStepTreatments />,
+    name: CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE,
+    question: '피부톤을 알려주세요',
+    required: false,
+    children: <ConsultingPostFormStepSkinTone />,
+  },
+  {
+    name: CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES,
+    question: '선호하는 스타일을 알려주세요',
+    required: false,
+    children: <ConsultingPostFormStepAspirationImages />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES,
@@ -37,22 +41,12 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
     children: <ConsultingPostFormStepMyImages />,
   },
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES,
-    question: '원하는 스타일을 알려주세요',
-    required: false,
-    children: <ConsultingPostFormStepAspirationImages />,
-  },
-  {
-    name: CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE,
-    question: '피부톤을 알려주세요',
-    required: false,
-    children: <ConsultingPostFormStepSkinTone />,
-  },
-  {
-    name: CONSULTING_POST_FORM_FIELD_NAME.CONTENT,
-    question: '기타 요청사항을 적어주세요',
-    required: false,
-    children: <ConsultingPostFormStepContent />,
+    name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
+    question: '최근 받은 헤어시술을 알려주세요',
+    description:
+      ' • 필수작성: 탈색, 블랙계열 염색, 신데렐라 등 특수시술\n • 요구이력: 기장이 어깨선보다 긴 경우 3년 이상, 숏컷은 약 1년치 이력이 필요합니다.',
+    required: true,
+    children: <ConsultingPostFormStepTreatments />,
   },
 ];
 
