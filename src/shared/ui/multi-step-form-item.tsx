@@ -29,9 +29,9 @@ export default function MultiStepFormItem<T extends Record<string, unknown>>({
               )}
             </div>
             {description && (
-              <p className="typo-body-2-long-regular text-label-sub whitespace-pre-wrap">
+              <div className="typo-body-2-long-regular text-label-sub whitespace-pre-wrap">
                 {description}
-              </p>
+              </div>
             )}
           </div>
         )}
