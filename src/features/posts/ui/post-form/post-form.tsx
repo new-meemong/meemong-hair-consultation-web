@@ -13,17 +13,17 @@ import ImageUploader from '@/shared/ui/image-uploader';
 import { POST_FORM_FIELD_NAME } from '../../constants/post-form-field-name';
 import usePostForm from '../../hooks/use-post-form';
 import useShowImageUploadLimitSheet from '../../hooks/use-show-image-upload-limit-sheet';
+import useSubmitPostForm from '../../hooks/use-submit-post-form';
 import type { PostFormValues } from '../../types/post-form-values';
 
 import PostFormImageList from './post-form-image-list';
 
 type PostFormProps = {
   initialData?: PostFormValues;
-  onSubmit: (data: PostFormValues) => void;
-  isPending?: boolean;
+  postId?: number;
 };
 
-export default function PostForm({ initialData, onSubmit, isPending }: PostFormProps) {
+export default function PostForm({ initialData, postId }: PostFormProps) {
   const method = usePostForm(initialData);
 
   const [imageFiles, imageUrls] = useWatch({
@@ -32,6 +32,9 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
   });
 
   const { isValid, isDirty, isSubmitting } = method.formState;
+
+  const { submit, isPending } = useSubmitPostForm(postId);
+
   const isLoading = isSubmitting || isPending;
 
   const hasImages = imageFiles.length > 0 || imageUrls.length > 0;
@@ -67,7 +70,7 @@ export default function PostForm({ initialData, onSubmit, isPending }: PostFormP
 
   return (
     <FormProvider {...method}>
-      <form onSubmit={method.handleSubmit(onSubmit)} className="flex flex-col flex-1">
+      <form onSubmit={method.handleSubmit(submit)} className="flex flex-col flex-1">
         <div className="flex flex-col flex-1 overflow-y-auto scrollbar-hide">
           <div className="flex flex-col flex-1 gap-5 py-6 px-5">
             <div>

@@ -11,12 +11,16 @@ type ConsultingResponseSidebarAdditionalInfoTabViewProps = {
   hairConcern?: string;
   skinToneValue: ValueOf<typeof SKIN_TONE_OPTION_VALUE> | null;
   treatments: Treatment[];
+  minPaymentPrice: number | null;
+  maxPaymentPrice: number | null;
 };
 
 export default function ConsultingResponseSidebarAdditionalInfoTabView({
   hairConcern,
   skinToneValue,
   treatments,
+  minPaymentPrice,
+  maxPaymentPrice,
 }: ConsultingResponseSidebarAdditionalInfoTabViewProps) {
   return (
     <div className="flex flex-col py-8 gap-5">
@@ -49,6 +53,16 @@ export default function ConsultingResponseSidebarAdditionalInfoTabView({
             className="flex flex-row items-center justify-between"
           >
             <SkinColorLabel type={skinToneValue} />
+          </ConsultingResponseSidebarItem>
+        </>
+      )}
+      {minPaymentPrice && maxPaymentPrice && (
+        <>
+          <Separator />
+          <ConsultingResponseSidebarItem label="원하는 시술 가격대">
+            <p className="typo-body-2-long-regular text-label-sub">
+              {minPaymentPrice.toLocaleString()}원~{maxPaymentPrice.toLocaleString()}원
+            </p>
           </ConsultingResponseSidebarItem>
         </>
       )}

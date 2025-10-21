@@ -8,6 +8,7 @@ import { Input } from '@/shared/ui/input';
 
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
+import ConsultingFormPriceInput from '../consulting-form-price-input';
 
 type FormValue = {
   operationName: string;
@@ -20,41 +21,6 @@ const INITIAL_FORM_VALUE: FormValue = {
   minPrice: null,
   maxPrice: null,
 } as const;
-
-function PriceInput({
-  name,
-  value,
-  onChange,
-  placeholder,
-}: {
-  name: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-}) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, '');
-    e.target.value = value;
-    onChange(e);
-  };
-
-  const displayValue = value ? Number(value).toLocaleString() : '';
-
-  return (
-    <div className="flex items-center gap-2 flex-1">
-      <div className="border-b-1 border-border-strong flex-1">
-        <Input
-          name={name}
-          value={displayValue}
-          onChange={handleChange}
-          placeholder={placeholder}
-          className="typo-body-2-regular h-9 w-full"
-        />
-      </div>
-      <span className="typo-body-3-medium text-label-default whitespace-nowrap">만원</span>
-    </div>
-  );
-}
 
 export default function ConsultingResponseFormPriceForm() {
   const { setValue, control } = useFormContext<ConsultingResponseFormValues>();
@@ -89,8 +55,8 @@ export default function ConsultingResponseFormPriceForm() {
         ...(prices ?? []),
         {
           treatmentName: formValue.operationName,
-          minPrice: Number(formValue.minPrice) * 10000,
-          maxPrice: Number(formValue.maxPrice) * 10000,
+          minPrice: Number(formValue.minPrice),
+          maxPrice: Number(formValue.maxPrice),
         },
       ],
       {
@@ -105,7 +71,7 @@ export default function ConsultingResponseFormPriceForm() {
     formValue.operationName !== '' && formValue.minPrice !== null && formValue.maxPrice !== null;
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <FormItem hasUnderline label="시술명">
         <Input
           name="operationName"
@@ -115,23 +81,18 @@ export default function ConsultingResponseFormPriceForm() {
           className="typo-body-2-regular h-9"
         />
       </FormItem>
-      <FormItem label="시술 가격">
-        <div className="flex items-center gap-4">
-          <PriceInput
-            name="minPrice"
-            value={formValue.minPrice?.toString() ?? ''}
-            onChange={handleChange}
-            placeholder="최소 가격"
-          />
-          <span className="typo-body-3-medium text-label-default">~</span>
-          <PriceInput
-            name="maxPrice"
-            value={formValue.maxPrice?.toString() ?? ''}
-            onChange={handleChange}
-            placeholder="최대 가격"
-          />
-        </div>
-      </FormItem>
+      <ConsultingFormPriceInput
+        name="minPrice"
+        value={formValue.minPrice?.toString() ?? ''}
+        onChange={handleChange}
+        label="최소"
+      />
+      <ConsultingFormPriceInput
+        name="maxPrice"
+        value={formValue.maxPrice?.toString() ?? ''}
+        onChange={handleChange}
+        label="최대"
+      />
       <Button theme="white" onClick={handleSubmit} disabled={!canSubmit}>
         시술 입력
       </Button>

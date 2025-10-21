@@ -15,9 +15,10 @@ type PostListProps = {
   posts: Post[];
   tab: PostListTab;
   fetchNextPage: () => void;
+  isConsultingPost: boolean;
 };
 
-export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
+export default function PostList({ posts, tab, fetchNextPage, isConsultingPost }: PostListProps) {
   const router = useRouterWithUser();
   const { user } = useAuthContext();
 
@@ -52,6 +53,7 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
               post={post}
               onClick={() => handlePostClick(post.id)}
               ref={index === posts.length - 2 ? observerRef : undefined}
+              isConsultingPost={isConsultingPost}
             />
           ))}
         </div>

@@ -1,5 +1,4 @@
 import type { FACE_SHAPE } from '@/features/posts/constants/face-shape';
-import { Separator } from '@/shared';
 import type { ValueOf } from '@/shared/type/types';
 
 import { HAIR_TYPE } from '../../../../features/posts/constants/hair-type';
@@ -25,12 +24,10 @@ export default function ConsultingResponseCurrentStateContainer({
   return (
     <div className="flex flex-col gap-8">
       {faceShape && <ConsultingResponseFaceType faceShape={faceShape} />}
-      <Separator />
       <ConsultingResponseHairType
         value={hairType}
         isStoreConsultNeed={isHairTypeStoreConsultNeed}
       />
-      <Separator />
       <ConsultingResponseHairCondition
         damageLevel={damageLevel}
         isStoreConsultNeed={isDamageLevelStoreConsultNeed}

@@ -60,7 +60,11 @@ export default function TopAdvisorCarousel() {
       <CarouselContent className="-mx-4">
         {hasTopAdvisors ? (
           topAdvisors.map(({ rank, designer }) => (
-            <TopAdvisorCarouselItem key={rank} topAdvisor={designer} rank={rank} />
+            <TopAdvisorCarouselItem
+              key={`${designer.userId}-${rank}`}
+              topAdvisor={designer}
+              rank={rank}
+            />
           ))
         ) : (
           <CarouselItem className="px-1 basis-[85%]">

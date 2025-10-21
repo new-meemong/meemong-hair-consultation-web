@@ -52,6 +52,10 @@ export const consultingPostFormSchema = z.object({
   [CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE]: z.enum(SKIN_TONE_OPTION).nullable(),
   [CONSULTING_POST_FORM_FIELD_NAME.CONTENT]: z.string().optional(),
   [CONSULTING_POST_FORM_FIELD_NAME.TITLE]: z.string().optional(),
+  [CONSULTING_POST_FORM_FIELD_NAME.PRICE]: z.object({
+    minPaymentPrice: z.number().nullable(),
+    maxPaymentPrice: z.number().nullable(),
+  })
 });
 
 export type ConsultingPostFormValues = z.infer<typeof consultingPostFormSchema>;

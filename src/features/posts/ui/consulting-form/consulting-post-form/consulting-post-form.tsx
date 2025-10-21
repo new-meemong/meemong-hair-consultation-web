@@ -9,27 +9,29 @@ import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-p
 import { type ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 
 import ConsultingPostFormStepAspirationImages from './consulting-post-form-step-aspiration-images';
-import ConsultingPostFormStepConcern from './consulting-post-form-step-concern';
-import ConsultingPostFormStepContent from './consulting-post-form-step-content';
 import ConsultingPostFormStepMyImages from './consulting-post-form-step-my-images';
+import ConsultingPostFormStepPrice from './consulting-post-form-step-price';
 import ConsultingPostFormStepSkinTone from './consulting-post-form-step-skin-tone';
-import ConsultingPostFormStepTitle from './consulting-post-form-step-title';
+import ConsultingPostFormStepTitleAndConcern from './consulting-post-form-step-title-and-concern';
 import ConsultingPostFormStepTreatments from './consulting-post-form-step-treatments';
 
 const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.CONCERN,
-    question: '어떤 헤어 고민이 있나요?',
+    name: [CONSULTING_POST_FORM_FIELD_NAME.TITLE, CONSULTING_POST_FORM_FIELD_NAME.CONCERN],
     required: true,
-    children: <ConsultingPostFormStepConcern />,
+    children: <ConsultingPostFormStepTitleAndConcern />,
   },
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
-    question: '시술 이력을 알려주세요',
-    description:
-      ' • 자세히 작성할수록 답변받을 확률이 높아요\n • 기장이 길수록 자세한 이력이 필요해요\n   (가슴선 이상: 최소 3년 / 단발: 2년 / 숏컷 : 1년)',
-    required: true,
-    children: <ConsultingPostFormStepTreatments />,
+    name: CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE,
+    question: '피부톤을 알려주세요',
+    required: false,
+    children: <ConsultingPostFormStepSkinTone />,
+  },
+  {
+    name: CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES,
+    question: '선호하는 스타일을 알려주세요',
+    required: false,
+    children: <ConsultingPostFormStepAspirationImages />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES,
@@ -39,29 +41,20 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
     children: <ConsultingPostFormStepMyImages />,
   },
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.ASPIRATION_IMAGES,
-    question: '원하는 스타일을 알려주세요',
-    required: false,
-    children: <ConsultingPostFormStepAspirationImages />,
+    name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
+    question: '최근 받은 헤어시술을 알려주세요',
+    description:
+      ' • 필수작성: 탈색, 블랙계열 염색, 신데렐라 등 특수시술\n • 요구이력: 기장이 어깨선보다 긴 경우 3년 이상, 숏컷은 약 1년치 이력이 필요합니다.',
+    required: true,
+    children: <ConsultingPostFormStepTreatments />,
   },
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE,
-    question: '피부톤을 알려주세요',
-    required: false,
-    children: <ConsultingPostFormStepSkinTone />,
-  },
-  {
-    name: CONSULTING_POST_FORM_FIELD_NAME.CONTENT,
-    question: '기타 요청사항을 적어주세요',
-    required: false,
-    children: <ConsultingPostFormStepContent />,
-  },
-  {
-    name: CONSULTING_POST_FORM_FIELD_NAME.TITLE,
-    question: '글 제목을 입력하세요',
-    description: '작성하지 않으면 고민 유형에 따라 자동으로 제목이 부여됩니다',
-    required: false,
-    children: <ConsultingPostFormStepTitle />,
+    name: CONSULTING_POST_FORM_FIELD_NAME.PRICE,
+    question: '어느 정도의 비용을 생각하시나요?',
+    description:
+      ' • 비용을 고려해 맞춤 헤어시술을 알려드려요\n • 해당 내용은 디자이너에게만 공개됩니다',
+    required: true,
+    children: <ConsultingPostFormStepPrice />,
   },
 ];
 
@@ -78,7 +71,12 @@ export default function ConsultingPostForm({
 }: ConsultingPostFormProps) {
   const method = useFormContext<ConsultingPostFormValues>();
 
-  const canMoveNext = (name: KeyOf<ConsultingPostFormValues>) => {
+  const canMoveNext = (name: KeyOf<ConsultingPostFormValues>): boolean => {
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.TITLE) {
+      const formValue = method.getValues(name);
+      return !!formValue && formValue.length > 0;
+    }
+
     if (name === CONSULTING_POST_FORM_FIELD_NAME.CONCERN) {
       const formValue = method.getValues(name);
       return (
@@ -97,7 +95,22 @@ export default function ConsultingPostForm({
       return formValue && formValue.length === 4;
     }
 
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.PRICE) {
+      const formValue = method.getValues(name);
+      return formValue.minPaymentPrice !== null && formValue.maxPaymentPrice !== null;
+    }
+
     return true;
+  };
+
+  const canMoveNextStep = (
+    name: KeyOf<ConsultingPostFormValues> | Array<KeyOf<ConsultingPostFormValues>>,
+  ): boolean => {
+    if (Array.isArray(name)) {
+      return name.every((name) => canMoveNext(name));
+    }
+
+    return canMoveNext(name);
   };
 
   return (
@@ -105,7 +118,7 @@ export default function ConsultingPostForm({
       currentStep={currentStep}
       setCurrentStep={setCurrentStep}
       steps={CONSULTING_POST_FORM_STEPS}
-      canMoveNext={canMoveNext}
+      canMoveNext={canMoveNextStep}
       onSubmit={onSubmit}
       lastStepButtonLabel="완료"
     />

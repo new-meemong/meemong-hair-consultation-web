@@ -2,7 +2,6 @@ import CommentIcon from '@/assets/icons/comment.svg';
 import EyeIcon from '@/assets/icons/eye.svg';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { LikeButton } from '@/features/likes/ui/like-button';
-import { Separator } from '@/shared/ui';
 import ActionItem from '@/shared/ui/action-item';
 
 import { usePostDetail } from '../../context/post-detail-context';
@@ -22,7 +21,6 @@ function PostDetailItem() {
         <PostDetailContent postDetail={postDetail} />
       )}
 
-      <Separator />
       <div className="flex items-center justify-between gap-5 px-5">
         <div className="flex flex-1 justify-center items-center gap-1">
           <LikeButton postId={id} liked={isFavorited} likeCount={likeCount} />
@@ -36,7 +34,7 @@ function PostDetailItem() {
           label={viewCount.toString()}
         />
       </div>
-      <Separator />
+      <div className="w-full h-1.5 bg-alternative" />
       <div className="py-3">
         <TopAdvisorCarousel />
       </div>

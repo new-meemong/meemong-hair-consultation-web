@@ -13,11 +13,6 @@ export default function usePostListTab() {
   const activePostListTab =
     (searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) as PostListTab) ?? 'latest';
 
-  console.log(
-    'searchParams.get(SEARCH_PARAMS.POST_LIST_TAB)',
-    searchParams.get(SEARCH_PARAMS.POST_LIST_TAB),
-  );
-
   const setActivePostListTab = (tab: PostListTab) => {
     router.replace(window.location.pathname, {
       [SEARCH_PARAMS.POST_LIST_TAB]: tab,

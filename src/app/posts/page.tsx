@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react';
 
+import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import useGetPosts from '@/features/posts/api/use-get-posts';
@@ -82,7 +83,12 @@ export default function PostsPage() {
               </ToggleChipGroup>
             </div>
             {posts && (
-              <PostList posts={posts} tab={activePostListTab} fetchNextPage={handleFetchNextPage} />
+              <PostList
+                posts={posts}
+                tab={activePostListTab}
+                fetchNextPage={handleFetchNextPage}
+                isConsultingPost={activePostTab === CONSULT_TYPE.CONSULTING}
+              />
             )}
           </div>
         </div>

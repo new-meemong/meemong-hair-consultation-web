@@ -82,6 +82,8 @@ export function useCreateConsultingPost() {
       })),
       myImages,
       aspirations,
+      minPaymentPrice: data.price.minPaymentPrice,
+      maxPaymentPrice: data.price.maxPaymentPrice,  
     };
 
     createConsultingPost(request, {
