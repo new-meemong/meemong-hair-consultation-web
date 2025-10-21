@@ -48,4 +48,6 @@ export type PostDetail = {
   myImages?: MyImages;
   aspirations?: Aspirations;
   isAnsweredByDesigner?: boolean;
+  minPaymentPrice: number | null;
+  maxPaymentPrice: number | null;
 };

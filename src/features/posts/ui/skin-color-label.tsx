@@ -15,7 +15,7 @@ export default function SkinColorLabel({ type }: SkinColorLabelProps) {
         className="w-6 h-6 border-1 border-border-strong rounded-2"
         style={{ backgroundColor: color }}
       />
-      <p>{label}</p>
+      <p className="typo-body-2-long-regular text-label-sub">{label}</p>
     </div>
   );
 }

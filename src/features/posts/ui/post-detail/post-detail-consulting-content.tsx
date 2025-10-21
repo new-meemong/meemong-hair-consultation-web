@@ -27,7 +27,7 @@ function ContentItem({
   className?: string;
 }) {
   return (
-    <div className={cn('flex flex-col gap-2', className)}>
+    <div className={cn('flex flex-col gap-3', className)}>
       <p className="typo-body-1-semibold text-label-default">{label}</p>
       {children}
     </div>
@@ -43,7 +43,7 @@ function HiddenImageAlertBox() {
   );
 }
 
-function ImageList({ images }: { images: string[] }) {
+function ImageList({ images, size }: { images: string[]; size: 'small' | 'large' }) {
   return (
     <div className="flex gap-2 overflow-x-auto scrollbar-hide">
       {images.map((image, index) => (
@@ -51,7 +51,7 @@ function ImageList({ images }: { images: string[] }) {
           key={`${index}-${image}`}
           images={images}
           currentIndex={index}
-          size="small"
+          size={size}
         />
       ))}
     </div>
@@ -81,6 +81,8 @@ export default function PostDetailConsultingContent({
     myImages,
     aspirations,
     skinTone,
+    minPaymentPrice,
+    maxPaymentPrice,
   } = postDetail;
 
   const myImageUrls = myImages
@@ -93,7 +95,9 @@ export default function PostDetailConsultingContent({
     : null;
 
   const isWriter = authorId === user.id;
+
   const hiddenImages = !isWriter && !isUserDesigner;
+  const priceShowed = isWriter || isUserDesigner;
 
   const skinToneValue = getSkinToneValue(skinTone);
 
@@ -111,13 +115,34 @@ export default function PostDetailConsultingContent({
           region={authorRegion}
           createdAt={createdAt}
         />
-        <p className="typo-title-3-semibold text-label-default">{title}</p>
-        {concern && <p className="typo-body-1-long-regular text-label-default">{concern}</p>}
+        <div className="flex flex-col gap-3">
+          <p className="typo-title-3-semibold text-label-default">{title}</p>
+          {concern && <p className="typo-body-1-long-regular text-label-default">{concern}</p>}
+        </div>
         {myImageUrls &&
-          (hiddenImages ? <HiddenImageAlertBox /> : <ImageList images={myImageUrls} />)}
+          (hiddenImages ? (
+            <HiddenImageAlertBox />
+          ) : (
+            <ImageList images={myImageUrls} size="large" />
+          ))}
       </div>
       <Separator />
       <div className="flex flex-col gap-8 px-5">
+        {hasAspirations && (
+          <ContentItem label="추구미">
+            {aspirations.aspirationImages.length > 0 &&
+              (hiddenImages ? (
+                <HiddenImageAlertBox />
+              ) : (
+                <ImageList images={aspirations.aspirationImages} size="small" />
+              ))}
+            {aspirations.aspirationDescription && (
+              <p className="typo-body-2-long-regular text-label-default whitespace-pre-wrap">
+                {aspirations.aspirationDescription}
+              </p>
+            )}
+          </ContentItem>
+        )}
         {treatments && treatments.length > 0 && (
           <ContentItem label="최근 받은 시술">
             {treatments.map(({ treatmentName, treatmentDate }, index) => (
@@ -129,29 +154,21 @@ export default function PostDetailConsultingContent({
             ))}
           </ContentItem>
         )}
-        {hasAspirations && (
-          <ContentItem label="추구미">
-            {aspirations.aspirationImages.length > 0 &&
-              (hiddenImages ? (
-                <HiddenImageAlertBox />
-              ) : (
-                <ImageList images={aspirations.aspirationImages} />
-              ))}
-            {aspirations.aspirationDescription && (
-              <p className="typo-body-2-long-regular text-label-info whitespace-pre-wrap">
-                {aspirations.aspirationDescription}
-              </p>
-            )}
-          </ContentItem>
-        )}
         {skinToneValue && (
-          <ContentItem label="피부톤" className="flex flex-row items-center justify-between">
+          <ContentItem label="피부톤" className="gap-4">
             <SkinColorLabel type={skinToneValue} />
           </ContentItem>
         )}
         {content && (
           <ContentItem label="기타의견">
-            <p className="typo-body-2-long-regular text-label-info">{content}</p>
+            <p className="typo-body-2-long-regular text-label-sub">{content}</p>
+          </ContentItem>
+        )}
+        {priceShowed && minPaymentPrice && maxPaymentPrice && (
+          <ContentItem label="원하는 시술 가격대">
+            <p className="typo-body-2-long-regular text-label-sub">
+              {minPaymentPrice.toLocaleString()}원~{maxPaymentPrice.toLocaleString()}원
+            </p>
           </ContentItem>
         )}
       </div>
