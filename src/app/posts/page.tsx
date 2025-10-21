@@ -62,7 +62,7 @@ export default function PostsPage() {
       <SiteHeader title="헤어상담" />
       <div className="flex flex-col gap-5 flex-1 min-h-0">
         {/* <Tab options={POST_TABS} value={activePostTab} onChange={setActivePostTab} /> */}
-        <div ref={containerRef} className="flex flex-col gap-5 flex-1 overflow-y-auto">
+        <div ref={containerRef} className="flex flex-col gap-5 flex-1 overflow-y-auto pt-5">
           <TopAdvisorCarousel />
           <div className="flex-1 flex flex-col min-h-0 gap-2">
             <div className="flex-shrink-0">
