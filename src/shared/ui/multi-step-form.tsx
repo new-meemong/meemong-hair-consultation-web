@@ -11,7 +11,7 @@ type MultiStepFormProps<T extends Record<string, unknown>> = {
   currentStep: number;
   setCurrentStep: (step: number) => void;
   steps: (FormStep<T> | FormStep<T>[])[];
-  canMoveNext: (name: KeyOf<T>) => boolean;
+  canMoveNext: (name: KeyOf<T> | Array<KeyOf<T>>) => boolean;
   onSubmit: (values: T) => void;
   lastStepButtonLabel: string;
 };

@@ -9,19 +9,17 @@ import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-p
 import { type ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 
 import ConsultingPostFormStepAspirationImages from './consulting-post-form-step-aspiration-images';
-import ConsultingPostFormStepConcern from './consulting-post-form-step-concern';
 import ConsultingPostFormStepContent from './consulting-post-form-step-content';
 import ConsultingPostFormStepMyImages from './consulting-post-form-step-my-images';
 import ConsultingPostFormStepSkinTone from './consulting-post-form-step-skin-tone';
-import ConsultingPostFormStepTitle from './consulting-post-form-step-title';
+import ConsultingPostFormStepTitleAndConcern from './consulting-post-form-step-title-and-concern';
 import ConsultingPostFormStepTreatments from './consulting-post-form-step-treatments';
 
 const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   {
-    name: CONSULTING_POST_FORM_FIELD_NAME.CONCERN,
-    question: '어떤 헤어 고민이 있나요?',
+    name: [CONSULTING_POST_FORM_FIELD_NAME.TITLE, CONSULTING_POST_FORM_FIELD_NAME.CONCERN],
     required: true,
-    children: <ConsultingPostFormStepConcern />,
+    children: <ConsultingPostFormStepTitleAndConcern />,
   },
   {
     name: CONSULTING_POST_FORM_FIELD_NAME.TREATMENTS,
@@ -56,13 +54,6 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
     required: false,
     children: <ConsultingPostFormStepContent />,
   },
-  {
-    name: CONSULTING_POST_FORM_FIELD_NAME.TITLE,
-    question: '글 제목을 입력하세요',
-    description: '작성하지 않으면 고민 유형에 따라 자동으로 제목이 부여됩니다',
-    required: false,
-    children: <ConsultingPostFormStepTitle />,
-  },
 ];
 
 type ConsultingPostFormProps = {
@@ -78,7 +69,12 @@ export default function ConsultingPostForm({
 }: ConsultingPostFormProps) {
   const method = useFormContext<ConsultingPostFormValues>();
 
-  const canMoveNext = (name: KeyOf<ConsultingPostFormValues>) => {
+  const canMoveNext = (name: KeyOf<ConsultingPostFormValues>): boolean => {
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.TITLE) {
+      const formValue = method.getValues(name);
+      return !!formValue && formValue.length > 0;
+    }
+
     if (name === CONSULTING_POST_FORM_FIELD_NAME.CONCERN) {
       const formValue = method.getValues(name);
       return (
@@ -100,12 +96,22 @@ export default function ConsultingPostForm({
     return true;
   };
 
+  const canMoveNextStep = (
+    name: KeyOf<ConsultingPostFormValues> | Array<KeyOf<ConsultingPostFormValues>>,
+  ): boolean => {
+    if (Array.isArray(name)) {
+      return name.every((name) => canMoveNext(name));
+    }
+
+    return canMoveNext(name);
+  };
+
   return (
     <MultiStepForm
       currentStep={currentStep}
       setCurrentStep={setCurrentStep}
       steps={CONSULTING_POST_FORM_STEPS}
-      canMoveNext={canMoveNext}
+      canMoveNext={canMoveNextStep}
       onSubmit={onSubmit}
       lastStepButtonLabel="완료"
     />
