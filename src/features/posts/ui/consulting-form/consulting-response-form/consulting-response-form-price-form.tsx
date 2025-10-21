@@ -8,6 +8,7 @@ import { Input } from '@/shared/ui/input';
 
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
+import ConsultingFormPriceInput from '../consulting-form-price-input';
 
 type FormValue = {
   operationName: string;
@@ -20,46 +21,6 @@ const INITIAL_FORM_VALUE: FormValue = {
   minPrice: null,
   maxPrice: null,
 } as const;
-
-function PriceInput({
-  name,
-  value,
-  onChange,
-  label,
-}: {
-  name: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  label: string;
-}) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, '');
-    e.target.value = value;
-    onChange(e);
-  };
-
-  const displayValue = value ? Number(value).toLocaleString() : '';
-
-  return (
-    <div className="flex gap-4 items-center">
-      <div className="px-4 py-1.5 typo-body-2-long-medium text-label-info bg-alternative rounded-6 whitespace-nowrap">
-        {label}
-      </div>
-      <div className="flex gap-2 typo-body-2-regular flex-1 items-center">
-        <div className="border-b-1 border-border-strong flex-1">
-          <Input
-            name={name}
-            value={displayValue}
-            onChange={handleChange}
-            placeholder="금액을 숫자로 입력해주세요"
-            className="h-9"
-          />
-        </div>
-        <span className="text-label-info">원</span>
-      </div>
-    </div>
-  );
-}
 
 export default function ConsultingResponseFormPriceForm() {
   const { setValue, control } = useFormContext<ConsultingResponseFormValues>();
@@ -120,13 +81,13 @@ export default function ConsultingResponseFormPriceForm() {
           className="typo-body-2-regular h-9"
         />
       </FormItem>
-      <PriceInput
+      <ConsultingFormPriceInput
         name="minPrice"
         value={formValue.minPrice?.toString() ?? ''}
         onChange={handleChange}
         label="최소"
       />
-      <PriceInput
+      <ConsultingFormPriceInput
         name="maxPrice"
         value={formValue.maxPrice?.toString() ?? ''}
         onChange={handleChange}

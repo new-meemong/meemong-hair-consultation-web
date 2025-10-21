@@ -23,4 +23,6 @@ export type CreateConsultingPostRequest = {
     images: string[];
     description?: string;
   };
+  minPaymentPrice: number | null;
+  maxPaymentPrice: number | null;
 };

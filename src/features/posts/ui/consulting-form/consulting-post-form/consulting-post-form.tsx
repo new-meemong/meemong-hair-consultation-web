@@ -48,6 +48,14 @@ const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
     required: true,
     children: <ConsultingPostFormStepTreatments />,
   },
+  {
+    name: CONSULTING_POST_FORM_FIELD_NAME.PRICE,
+    question: '어느 정도의 비용을 생각하시나요?',
+    description:
+      ' • 비용을 고려해 맞춤 헤어시술을 알려드려요\n • 해당 내용은 디자이너에게만 공개됩니다',
+    required: true,
+    children: <ConsultingPostFormStepPrice />,
+  },
 ];
 
 type ConsultingPostFormProps = {
@@ -85,6 +93,11 @@ export default function ConsultingPostForm({
     if (name === CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES) {
       const formValue = method.getValues(name);
       return formValue && formValue.length === 4;
+    }
+
+    if (name === CONSULTING_POST_FORM_FIELD_NAME.PRICE) {
+      const formValue = method.getValues(name);
+      return formValue.minPaymentPrice !== null && formValue.maxPaymentPrice !== null;
     }
 
     return true;

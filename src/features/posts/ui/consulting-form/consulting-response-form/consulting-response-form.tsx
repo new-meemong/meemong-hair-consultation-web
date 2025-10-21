@@ -123,7 +123,9 @@ export default function ConsultingResponseForm({
     });
   };
 
-  const canMoveNext = (name: KeyOf<ConsultingResponseFormValues>) => {
+  const canMoveNext = (
+    name: KeyOf<ConsultingResponseFormValues> | Array<KeyOf<ConsultingResponseFormValues>>,
+  ) => {
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE) {
       const value = method.getValues(name);
       return !!value;

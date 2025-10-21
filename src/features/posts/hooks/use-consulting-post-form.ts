@@ -31,6 +31,10 @@ const DEFAULT_FORM_VALUE = {
   [CONSULTING_POST_FORM_FIELD_NAME.SKIN_TONE]: null,
   [CONSULTING_POST_FORM_FIELD_NAME.CONTENT]: '',
   [CONSULTING_POST_FORM_FIELD_NAME.TITLE]: '',
+  [CONSULTING_POST_FORM_FIELD_NAME.PRICE]: {
+    minPaymentPrice: null,
+    maxPaymentPrice: null,
+  },
 };
 
 export default function useConsultingPostForm() {

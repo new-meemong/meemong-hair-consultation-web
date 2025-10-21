@@ -6,4 +6,5 @@ export const CONSULTING_POST_FORM_FIELD_NAME = {
   SKIN_TONE: 'skinTone',
   CONTENT: 'content',
   TITLE: 'title',
+  PRICE: 'price',
 } as const;
