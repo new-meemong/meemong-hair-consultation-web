@@ -1,15 +1,18 @@
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
+import GalleryIcon from '@/assets/icons/gallery.svg';
 import LockIcon from '@/assets/icons/lock2.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/shared';
 
 type ConsultingResponseButtonProps = {
   isCommentWriter: boolean;
+  hasAnswerImages: boolean;
   onClick: () => void;
 };
 
 export default function ConsultingResponseButton({
   isCommentWriter,
+  hasAnswerImages,
   onClick,
 }: ConsultingResponseButtonProps) {
   const { isUserModel } = useAuthContext();
@@ -26,7 +29,7 @@ export default function ConsultingResponseButton({
     <button
       type="button"
       className={cn(
-        'w-full mt-1 py-3 px-4 flex items-center justify-between rounded-6 border-1  typo-body-1-medium',
+        'w-full mt-1 py-3 px-4 flex items-center justify-between rounded-6 border-1 typo-body-1-medium',
         hidden
           ? 'text-label-disable border-border-alternative'
           : 'text-label-default border-border-default',
@@ -34,7 +37,10 @@ export default function ConsultingResponseButton({
       onClick={onClick}
       disabled={hidden}
     >
-      {getButtonText()}
+      <div className="flex items-center gap-2">
+        {hasAnswerImages && <GalleryIcon className="size-5 fill-negative-light" />}
+        {getButtonText()}
+      </div>
       {hidden ? (
         <LockIcon className="size-5 fill-label-disable" />
       ) : (

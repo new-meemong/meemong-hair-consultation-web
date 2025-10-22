@@ -145,6 +145,7 @@ export default function CommentListItem({
               {isConsultingAnswer && !isReply && (
                 <ConsultingResponseButton
                   isCommentWriter={isCommentWriter}
+                  hasAnswerImages={comment.hasAnswerImages}
                   onClick={handleConsultingResponseClick}
                 />
               )}
