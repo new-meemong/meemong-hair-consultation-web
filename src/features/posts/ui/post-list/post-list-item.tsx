@@ -77,7 +77,7 @@ export default function PostListItem({ post, onClick, ref, isConsultingPost }: P
               )}
             </div>
             {isUserDesigner && maxPaymentPrice != null && isConsultingPost ? (
-              <PostListItemDesignerContent content={content} maxPaymentPrice={maxPaymentPrice} />
+              <PostListItemDesignerContent content={title} maxPaymentPrice={maxPaymentPrice} />
             ) : (
               <PostListItemModelContent title={title} content={content} />
             )}
