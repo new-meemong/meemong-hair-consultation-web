@@ -39,12 +39,6 @@ const getRankTier = (rank: number): RankTier => {
   return 'bottom';
 };
 
-const formatCompanyName = (companyName: string) => {
-  if (companyName.length <= 15) return companyName;
-
-  return companyName.slice(0, 14) + '...';
-};
-
 type TopAdvisorCarouselItemProps = {
   topAdvisor: TopAdvisor;
   rank: number;
@@ -77,13 +71,13 @@ export default function TopAdvisorCarouselItem({ topAdvisor, rank }: TopAdvisorC
             height={65}
             className="object-cover rounded-4 w-[65px] h-[65px]"
           />
-          <div className="flex flex-col gap-1 flex-1">
+          <div className="flex flex-col gap-1 flex-1 min-w-0">
             <div className="flex gap-0.25">
               <CrownIcon className={topAdvisorColor} />
               <p className={cn('typo-body-3-medium', topAdvisorColor)}>오늘의 상담왕</p>
             </div>
-            <p className="typo-headline-bold text-label-sub">{displayName}</p>
-            <p className="typo-body-3-medium text-label-info">{formatCompanyName(companyName)}</p>
+            <p className="typo-headline-bold text-label-sub truncate">{displayName}</p>
+            <p className="typo-body-3-medium text-label-info truncate">{companyName}</p>
           </div>
         </div>
         <RankBadge
