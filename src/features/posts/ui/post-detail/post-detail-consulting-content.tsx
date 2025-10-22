@@ -164,13 +164,17 @@ export default function PostDetailConsultingContent({
             <p className="typo-body-2-long-regular text-label-sub">{content}</p>
           </ContentItem>
         )}
-        {priceShowed && minPaymentPrice && maxPaymentPrice && (
-          <ContentItem label="원하는 시술 가격대">
-            <p className="typo-body-2-long-regular text-label-sub">
-              {minPaymentPrice.toLocaleString()}원~{maxPaymentPrice.toLocaleString()}원
-            </p>
-          </ContentItem>
-        )}
+        {priceShowed &&
+          minPaymentPrice != null &&
+          maxPaymentPrice != null &&
+          minPaymentPrice >= 0 &&
+          maxPaymentPrice >= 0 && (
+            <ContentItem label="원하는 시술 가격대">
+              <p className="typo-body-2-long-regular text-label-sub">
+                {minPaymentPrice.toLocaleString()}원~{maxPaymentPrice.toLocaleString()}원
+              </p>
+            </ContentItem>
+          )}
       </div>
     </div>
   );
