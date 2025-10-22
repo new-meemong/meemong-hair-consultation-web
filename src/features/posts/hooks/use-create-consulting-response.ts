@@ -1,4 +1,5 @@
 import type { CreateConsultingResponseRequest } from '@/entities/posts/api/create-consulting-response-request';
+import useSendConsultingAnswerPushNotification from '@/features/chat/api/use-send-consulting-answer-push-notification';
 
 import useCreateConsultingResponseMutation from '../api/use-create-consulting-response-mutation';
 import useUploadPostImageMutation from '../api/use-upload-post-image';
@@ -7,10 +8,14 @@ import { FACE_SHAPE_LABEL } from '../constants/face-shape';
 import { HAIR_TYPE_LABEL } from '../constants/hair-type';
 import type { ConsultingResponseFormValues } from '../types/consulting-response-form-values';
 
-export default function useCreateConsultingResponse(hairConsultPostingId: string) {
+export default function useCreateConsultingResponse(
+  hairConsultPostingId: string,
+  receiverId?: string,
+) {
   const { mutateAsync: uploadImages, isPending: isUploadingImages } = useUploadPostImageMutation();
   const { mutate: createConsultingResponse, isPending: isCreatingConsultingResponse } =
     useCreateConsultingResponseMutation(hairConsultPostingId);
+  const { mutate: sendNotification } = useSendConsultingAnswerPushNotification();
 
   const handleCreateConsultingResponse = async (
     data: ConsultingResponseFormValues,
@@ -42,7 +47,15 @@ export default function useCreateConsultingResponse(hairConsultPostingId: string
     };
 
     createConsultingResponse(request, {
-      onSuccess,
+      onSuccess: () => {
+        // 컨설팅 답변 작성 성공 시 푸시 알림 발송
+        if (receiverId) {
+          sendNotification({
+            userId: receiverId,
+          });
+        }
+        onSuccess();
+      },
     });
   };
 

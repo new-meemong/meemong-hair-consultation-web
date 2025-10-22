@@ -1,5 +1,6 @@
 import { type UseFormReturn } from 'react-hook-form';
 
+import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import useCreateConsultingResponse from '@/features/posts/hooks/use-create-consulting-response';
 import useEditConsultingResponse from '@/features/posts/hooks/use-edit-consulting-response';
 import { ROUTES } from '@/shared';
@@ -90,11 +91,13 @@ export default function ConsultingResponseForm({
 }: ConsultingResponseFormProps) {
   const { showSnackBar } = useOverlayContext();
   const { replace } = useRouterWithUser();
+  const { postDetail } = usePostDetail();
 
   const postId = method.getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID);
+  const receiverId = postDetail?.hairConsultPostingCreateUserId?.toString();
 
   const { handleCreateConsultingResponse, isPending: isCreatingConsultingResponse } =
-    useCreateConsultingResponse(postId);
+    useCreateConsultingResponse(postId, receiverId);
   const { editConsultingResponse, isPending: isEditingConsultingResponse } =
     useEditConsultingResponse({ postId, responseId: responseId ?? '' });
 
