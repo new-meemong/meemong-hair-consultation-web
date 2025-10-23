@@ -13,7 +13,7 @@ export default function PostListItemDesignerContent({
         {content}
       </p>
       <div className="flex gap-1 items-center">
-        <span className="typo-body-2-regular text-label-info">최대</span>
+        <span className="typo-body-2-regular text-label-info">예상 시술비</span>
         <div className="flex items-center gap-0.5">
           <span className="typo-headline-semibold text-label-default">
             {maxPaymentPrice.toLocaleString()}
