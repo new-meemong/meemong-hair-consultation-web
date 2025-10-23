@@ -28,6 +28,7 @@ function Tab({
 }
 
 type RegionTabsProps = {
+  regionKey: string;
   regionOptions: string[];
   selectedRegion: SelectedRegion | null;
   onSelectKey: (key: string) => void;
@@ -35,6 +36,7 @@ type RegionTabsProps = {
 };
 
 export default function RegionTabs({
+  regionKey,
   regionOptions,
   selectedRegion,
   onSelectKey,
@@ -56,10 +58,10 @@ export default function RegionTabs({
         </div>
         <Separator orientation="vertical" />
         <div className="flex-1 overflow-y-auto scrollbar-hide">
-          {regionOptions.map((value) => (
+          {regionOptions.map((value, index) => (
             <Tab
               key={value}
-              label={value}
+              label={index === 0 ? `${regionKey} ${value}` : value}
               value={value}
               onChange={onSelectValue}
               selected={selectedRegion?.values.includes(value) ?? false}

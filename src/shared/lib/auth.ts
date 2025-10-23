@@ -1,5 +1,6 @@
 import type { User } from '@/entities/user/model/user';
 import type { UserWritingContent } from '@/features/posts/types/user-writing-content';
+import type { SelectedRegion } from '@/features/region/types/selected-region';
 import { USER_WRITING_CONTENT_KEYS, USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 
 export interface JWTPayload {
@@ -18,6 +19,8 @@ export type UserData = User & UserWritingContent;
 const USER_DATA_KEY = 'user_data';
 const USER_GUIDE_DATA_KEY_PREFIX = 'user_guide_data_';
 const USER_READING_HISTORY_DATA_KEY_PREFIX = 'user_reading_history_data_';
+const USER_SELECTED_REGION_DATA_KEY_PREFIX = 'user_selected_region_data_';
+
 
 export const decodeJWTPayload = (token: string): JWTPayload | null => {
   try {
@@ -117,6 +120,13 @@ const getUserReadingHistoryDataKey = (): string => {
   return `${USER_READING_HISTORY_DATA_KEY_PREFIX}${currentUser.id}`;
 };
 
+const getUserSelectedRegionDataKey = (): string => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return '';
+
+  return `${USER_SELECTED_REGION_DATA_KEY_PREFIX}${currentUser.id}`;
+};
+
 export const getUserReadingHistoryData = (): number[] => {
   if (typeof window === 'undefined') return [];
 
@@ -128,12 +138,28 @@ export const getUserReadingHistoryData = (): number[] => {
   return JSON.parse(userReadingHistoryData);
 };
 
+export const getUserSelectedRegionData = (): SelectedRegion | null => {
+  if (typeof window === 'undefined') return null;
+
+  const userSelectedRegionDataKey = getUserSelectedRegionDataKey();
+  const userSelectedRegionData = localStorage.getItem(userSelectedRegionDataKey);
+
+  if (!userSelectedRegionData) return null;
+
+  return JSON.parse(userSelectedRegionData);
+};
+
 export const updateUserReadingHistoryData = (readingPostKey: number): void => {
   const userReadingHistoryDataKey = getUserReadingHistoryDataKey();
   const currentUserReadingHistoryData = getUserReadingHistoryData() ?? [];
 
   const updatedUserReadingHistoryData = [...currentUserReadingHistoryData, readingPostKey];
   localStorage.setItem(userReadingHistoryDataKey, JSON.stringify(updatedUserReadingHistoryData));
+};
+
+export const updateUserSelectedRegionData = (selectedRegion: SelectedRegion | null): void => {
+  const userSelectedRegionDataKey = getUserSelectedRegionDataKey  ();
+  localStorage.setItem(userSelectedRegionDataKey, JSON.stringify(selectedRegion));
 };
 
 export const getToken = (): string | null => {

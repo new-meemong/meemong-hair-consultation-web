@@ -13,6 +13,7 @@ import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import PostList from '@/features/posts/ui/post-list/post-list';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
+import useSelectedRegion from '@/features/region/hooks/use-selected-region';
 import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -30,9 +31,12 @@ export default function PostsPage() {
 
   const { containerRef } = useScrollRestoration(POSTS_PAGE_KEY);
 
+  const { userSelectedRegionData } = useSelectedRegion();
+
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
     filter: activePostListTab,
     consultType: activePostTab,
+    selectedRegion: userSelectedRegionData,
   });
 
   const handleFetchNextPage = useCallback(() => {
@@ -90,6 +94,7 @@ export default function PostsPage() {
                         icon={regionTab.icon}
                         pressed={regionTab.pressed}
                         onPressedChange={regionTab.onPressedChange}
+                        onDelete={regionTab.onDelete}
                       >
                         {regionTab.label}
                       </ToggleChip>

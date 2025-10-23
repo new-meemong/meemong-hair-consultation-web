@@ -1,3 +1,4 @@
+export const ALL_OPTION = '전체';
 
 export const REGIONS = {
   서울: [

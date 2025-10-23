@@ -2,46 +2,52 @@
 
 import { useState } from 'react';
 
-import { REGIONS } from '@/features/region/constants/region';
+import { ALL_OPTION, REGIONS } from '@/features/region/constants/region';
+import useSelectedRegion from '@/features/region/hooks/use-selected-region';
 import type { SelectedRegion } from '@/features/region/types/selected-region';
 import RegionTabs from '@/features/region/ui/region-tabs';
 import SelectedRegionItem from '@/features/region/ui/selected-region-item';
 import { Button, Separator } from '@/shared';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { KeyOf } from '@/shared/type/types';
 import { SiteHeader } from '@/widgets/header';
 
 const MAX_SELECTED_VALUES = 3;
 
 export default function SelectRegionPage() {
-  const [selectedRegion, setSelectedRegion] = useState<SelectedRegion | null>(null);
+  const { userSelectedRegionData, setSelectedRegionData } = useSelectedRegion();
+
+  const [selectedRegion, setSelectedRegion] = useState<SelectedRegion | null>(
+    userSelectedRegionData,
+  );
+
+  const { back } = useRouterWithUser();
 
   const handleSelectKey = (key: string) => {
     setSelectedRegion({ key, values: [] });
   };
 
-  const allOption = `${selectedRegion?.key} 전체`;
-
   const options = selectedRegion
-    ? [allOption, ...(selectedRegion ? REGIONS[selectedRegion.key as KeyOf<typeof REGIONS>] : [])]
+    ? [ALL_OPTION, ...(selectedRegion ? REGIONS[selectedRegion.key as KeyOf<typeof REGIONS>] : [])]
     : [];
 
   const handleSelectValue = (value: string) => {
     setSelectedRegion((prev) => {
       if (!prev) return prev;
 
-      const selectedAllOption = prev.values.includes(allOption);
+      const selectedAllOption = prev.values.includes(ALL_OPTION);
 
-      if (value === allOption) {
-        return { ...prev, values: selectedAllOption ? [] : [allOption] };
+      if (value === ALL_OPTION) {
+        return { ...prev, values: selectedAllOption ? [] : [ALL_OPTION] };
       }
 
       if (prev.values.includes(value)) {
-        return { ...prev, values: prev.values.filter((v) => v !== value && v !== allOption) };
+        return { ...prev, values: prev.values.filter((v) => v !== value && v !== ALL_OPTION) };
       }
 
       if (prev.values.length >= MAX_SELECTED_VALUES) return prev;
 
-      return { ...prev, values: [...prev.values.filter((v) => v !== allOption), value] };
+      return { ...prev, values: [...prev.values.filter((v) => v !== ALL_OPTION), value] };
     });
   };
 
@@ -52,11 +58,11 @@ export default function SelectRegionPage() {
       return { ...prev, values: prev.values.filter((v) => v !== value) };
     });
   };
-
-  console.log('selectedRegion', selectedRegion);
-
   const handleSubmit = () => {
-    console.log(selectedRegion);
+    const newData = selectedRegion && selectedRegion.values.length === 0 ? null : selectedRegion;
+    setSelectedRegionData(newData);
+
+    back();
   };
 
   return (
@@ -71,6 +77,7 @@ export default function SelectRegionPage() {
       <Separator />
       <div className="overflow-y-auto scrollbar-hide">
         <RegionTabs
+          regionKey={selectedRegion?.key ?? ''}
           regionOptions={options}
           selectedRegion={selectedRegion}
           onSelectKey={handleSelectKey}
