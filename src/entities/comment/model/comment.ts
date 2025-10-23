@@ -18,6 +18,7 @@ export type Comment = {
   user: CommentUser;
   answerId: number;
   isConsultingAnswer: boolean;
+  hasAnswerImages: boolean;
 };
 
 export type CommentWithReplies = Comment & {
