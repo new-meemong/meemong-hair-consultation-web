@@ -14,6 +14,7 @@ export const getPostsQueryKeyPrefix = () => GET_POSTS_QUERY_ENDPOINT;
 type GetPostsQueryParams = PagingQueryParams & {
   filter?: PostListTab;
   consultType: ValueOf<typeof CONSULT_TYPE>;
+  addresses?: string[];
 };
 
 export default function useGetPosts(params: GetPostsQueryParams) {

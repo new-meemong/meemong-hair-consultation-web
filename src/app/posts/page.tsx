@@ -6,6 +6,7 @@ import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import useGetPosts from '@/features/posts/api/use-get-posts';
+import usePostListRegionTab from '@/features/posts/hooks/use-post-list-region-tab';
 import usePostListTab from '@/features/posts/hooks/use-post-list-tab';
 import { usePostTab } from '@/features/posts/hooks/use-post-tab';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
@@ -57,6 +58,8 @@ export default function PostsPage() {
 
   const posts = data?.pages.flatMap((page) => page.dataList);
 
+  const regionTab = usePostListRegionTab();
+
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">
       {/* 헤더 */}
@@ -68,16 +71,42 @@ export default function PostsPage() {
           <div className="flex-1 flex flex-col min-h-0 gap-2">
             <div className="flex-shrink-0">
               <ToggleChipGroup className="flex overflow-x-auto scrollbar-hide px-5">
-                {listTabs.map(({ id, icon, label }) => (
-                  <ToggleChip
-                    key={id}
-                    icon={icon}
-                    pressed={activePostListTab === id}
-                    onPressedChange={() => handleTabChange(id)}
-                  >
-                    {label}
-                  </ToggleChip>
-                ))}
+                {(() => {
+                  const [first, ...rest] = listTabs;
+
+                  return (
+                    <>
+                      <ToggleChip
+                        key={first.id}
+                        icon={first.icon}
+                        pressed={activePostListTab === first.id}
+                        onPressedChange={() => handleTabChange(first.id)}
+                      >
+                        {first.label}
+                      </ToggleChip>
+
+                      <ToggleChip
+                        key={regionTab.id}
+                        icon={regionTab.icon}
+                        pressed={regionTab.pressed}
+                        onPressedChange={regionTab.onPressedChange}
+                      >
+                        {regionTab.label}
+                      </ToggleChip>
+
+                      {rest.map(({ id, icon, label }) => (
+                        <ToggleChip
+                          key={id}
+                          icon={icon}
+                          pressed={activePostListTab === id}
+                          onPressedChange={() => handleTabChange(id)}
+                        >
+                          {label}
+                        </ToggleChip>
+                      ))}
+                    </>
+                  );
+                })()}
               </ToggleChipGroup>
             </div>
             {posts && (
