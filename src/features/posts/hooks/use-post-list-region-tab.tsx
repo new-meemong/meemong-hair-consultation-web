@@ -39,7 +39,7 @@ export default function usePostListRegionTab() {
     setSelectedRegionData(null);
   };
 
-  return {
+  const regionTab = {
     id: 'region',
     label: getLabel(),
     icon: userSelectedRegionData ? null : <LocationIcon className="size-5 fill-label-sub" />,
@@ -47,4 +47,6 @@ export default function usePostListRegionTab() {
     pressed: selected,
     onPressedChange,
   };
+
+  return { regionTab, userSelectedRegionData };
 }
