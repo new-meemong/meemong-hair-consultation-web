@@ -13,7 +13,6 @@ import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import PostList from '@/features/posts/ui/post-list/post-list';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
-import useSelectedRegion from '@/features/region/hooks/use-selected-region';
 import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -31,7 +30,7 @@ export default function PostsPage() {
 
   const { containerRef } = useScrollRestoration(POSTS_PAGE_KEY);
 
-  const { userSelectedRegionData } = useSelectedRegion();
+  const { regionTab, userSelectedRegionData } = usePostListRegionTab();
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
     filter: activePostListTab,
@@ -61,8 +60,6 @@ export default function PostsPage() {
   };
 
   const posts = data?.pages.flatMap((page) => page.dataList);
-
-  const regionTab = usePostListRegionTab();
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">
