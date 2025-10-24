@@ -14,6 +14,7 @@ export const ROUTES = {
     `/posts/${postId}/consulting/${responseId}/edit`,
   POSTS_CONSULTING_RESPONSE: (postId: string, responseId: string) =>
     `/posts/${postId}/consulting/${responseId}`,
+  POSTS_SELECT_REGION: '/posts/select-region',
 
   // 채팅
   CHAT_HAIR_CONSULTATION: '/chat/hair-consultation',

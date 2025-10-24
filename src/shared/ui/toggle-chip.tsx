@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 
+import CloseIcon from '@/assets/icons/close.svg';
 import { cn } from '@/shared/lib/utils';
 
 import { Toggle } from './toggle';
@@ -9,9 +10,14 @@ import { Toggle } from './toggle';
 interface ToggleChipProps extends React.ComponentPropsWithoutRef<typeof Toggle> {
   icon?: React.ReactNode;
   children: React.ReactNode;
+  onDelete?: () => void;
 }
 
-export function ToggleChip({ className, icon, children, ...props }: ToggleChipProps) {
+export function ToggleChip({ className, icon, children, onDelete, ...props }: ToggleChipProps) {
+  const handleDelete = () => {
+    onDelete?.();
+  };
+
   return (
     <Toggle
       className={cn(
@@ -25,6 +31,9 @@ export function ToggleChip({ className, icon, children, ...props }: ToggleChipPr
     >
       {icon && <span className="flex items-center justify-center">{icon}</span>}
       {children}
+      {onDelete && (
+        <CloseIcon className="pl-1 size-4 fill-label-placeholder" onClick={handleDelete} />
+      )}
     </Toggle>
   );
 }
