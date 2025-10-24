@@ -18,7 +18,7 @@ export default function ConsultingPostFormStepPrice() {
 
     setValue(CONSULTING_POST_FORM_FIELD_NAME.PRICE, {
       ...price,
-      [name]: Number(value),
+      [name]: value ? Number(value) : null,
     });
   };
 

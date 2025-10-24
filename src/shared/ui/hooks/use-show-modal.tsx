@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, type ReactNode } from 'react';
 
 import { useOverlayContext } from '@/shared/context/overlay-context';
 
@@ -6,7 +6,7 @@ import Modal, { type ModalButtonProps } from '../modal';
 
 type UseShowModalProps = {
   id: string;
-  text: string;
+  text: string | ReactNode;
   buttons: ModalButtonProps[];
 };
 
