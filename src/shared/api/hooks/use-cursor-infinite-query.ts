@@ -33,10 +33,7 @@ export default function useCursorInfiniteQuery<TData extends Record<string, unkn
       if (searchParams) {
         Object.entries(searchParams).forEach(([key, value]) => {
           if (Array.isArray(value)) {
-            value.forEach(v => params.append(key, String(v)));
-            if (value.length === 1) {
-              params.append(key, String(''))
-            }
+            value.forEach(v => params.append(`${key}[]`, String(v)));
           } else if (value !== undefined && value !== null) {
             params.append(key, String(value));
           }
