@@ -92,6 +92,7 @@ export default function ConsultingResponseFormPriceForm() {
         value={formValue.maxPrice?.toString() ?? ''}
         onChange={handleChange}
         label="최대"
+        minPrice={formValue.minPrice ? Number(formValue.minPrice) : undefined}
       />
       <Button theme="white" onClick={handleSubmit} disabled={!canSubmit}>
         시술 입력
