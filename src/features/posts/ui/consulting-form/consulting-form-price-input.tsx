@@ -7,6 +7,7 @@ type ConsultingFormPriceInputProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   label: string;
+  minPrice?: number;
 };
 export default function ConsultingFormPriceInput({
   name,
@@ -14,6 +15,7 @@ export default function ConsultingFormPriceInput({
   onChange,
   onBlur,
   label,
+  minPrice,
 }: ConsultingFormPriceInputProps) {
   const showModal = useShowModal();
 
@@ -45,7 +47,27 @@ export default function ConsultingFormPriceInput({
           {
             label: '확인',
             onClick: () => {
-              console.log('haha');
+              e.target.value = '';
+              onChange(e);
+            },
+          },
+        ],
+      });
+    }
+
+    if (minPrice && numericValue < minPrice) {
+      showModal({
+        id: 'report-form-reason-required',
+        text: (
+          <p className="typo-body-1-long-regular whitespace-pre-line">
+            최소 금액보다 <span className="typo-body-1-long-semibold">크거나 같은</span> <br />
+            최대 금액을 입력해주세요.
+          </p>
+        ),
+        buttons: [
+          {
+            label: '확인',
+            onClick: () => {
               e.target.value = '';
               onChange(e);
             },
