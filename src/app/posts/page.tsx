@@ -21,7 +21,7 @@ import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { SiteHeader } from '@/widgets/header';
 
 export default function PostsPage() {
-  const { user, isUserModel } = useAuthContext();
+  const { user, isUserModel, isUserDesigner } = useAuthContext();
 
   const router = useRouterWithUser();
 
@@ -86,15 +86,17 @@ export default function PostsPage() {
                         {first.label}
                       </ToggleChip>
 
-                      <ToggleChip
-                        key={regionTab.id}
-                        icon={regionTab.icon}
-                        pressed={regionTab.pressed}
-                        onPressedChange={regionTab.onPressedChange}
-                        onDelete={regionTab.onDelete}
-                      >
-                        {regionTab.label}
-                      </ToggleChip>
+                      {isUserDesigner && (
+                        <ToggleChip
+                          key={regionTab.id}
+                          icon={regionTab.icon}
+                          pressed={regionTab.pressed}
+                          onPressedChange={regionTab.onPressedChange}
+                          onDelete={regionTab.onDelete}
+                        >
+                          {regionTab.label}
+                        </ToggleChip>
+                      )}
 
                       {rest.map(({ id, icon, label }) => (
                         <ToggleChip
