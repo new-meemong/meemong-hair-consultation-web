@@ -29,8 +29,19 @@ export default function useCursorInfiniteQuery<TData extends Record<string, unkn
         ...additionalParams,
       });
 
+      const params = new URLSearchParams();
+      if (searchParams) {
+        Object.entries(searchParams).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach(v => params.append(`${key}[]`, String(v)));
+          } else if (value !== undefined && value !== null) {
+            params.append(key, String(value));
+          }
+        });
+      }
+
       return apiClient.getList<TData>(endpoint, {
-        searchParams,
+        searchParams: params,
       });
     },
     getNextPageParam: (lastPage: ApiListResponse<TData>) => {
