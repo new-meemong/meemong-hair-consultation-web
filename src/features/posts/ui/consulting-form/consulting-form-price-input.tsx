@@ -13,8 +13,14 @@ export default function ConsultingFormPriceInput({
   label,
 }: ConsultingFormPriceInputProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, '');
-    e.target.value = value;
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/[^0-9]/g, '');
+
+    if (inputValue !== numericValue) {
+      return;
+    }
+
+    e.target.value = numericValue;
     onChange(e);
   };
 
