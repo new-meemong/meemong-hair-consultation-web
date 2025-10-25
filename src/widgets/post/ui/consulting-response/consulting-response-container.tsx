@@ -52,7 +52,7 @@ export default function ConsultingResponseContainer({
 
   return (
     <div>
-      <div className="sticky top-0 z-10 bg-white">
+      <div className="sticky top-0 z-999 bg-white">
         <Tab
           options={CONSULTING_RESPONSE_TAB_OPTIONS}
           value={activeTab}
@@ -96,6 +96,7 @@ export default function ConsultingResponseContainer({
             comment={consultingResponse.comment}
           />
         </div>
+        <div className=" h-50">dd</div>
       </div>
     </div>
   );
