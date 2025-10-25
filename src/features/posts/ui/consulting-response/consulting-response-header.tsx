@@ -21,7 +21,6 @@ export default function ConsultingResponseHeader({
   author,
   createdAt,
   responseId,
-  hairConsultPostingCreateUserId,
 }: ConsultingResponseHeaderProps) {
   const { push } = useRouterWithUser();
   const { user } = useAuthContext();
@@ -40,8 +39,6 @@ export default function ConsultingResponseHeader({
   const handleOriginalPostClick = () => {
     push(ROUTES.POSTS_DETAIL(postId));
   };
-
-  const isPostWriter = hairConsultPostingCreateUserId === user.id;
 
   return (
     <div className="flex flex-col px-5 py-8 bg-label-default gap-8">
@@ -68,7 +65,7 @@ export default function ConsultingResponseHeader({
           <Button theme="whiteBorder" onClick={handleEditClick}>
             수정하기
           </Button>
-        ) : isPostWriter ? (
+        ) : (
           <>
             <Button
               theme="whiteBorder"
@@ -82,7 +79,7 @@ export default function ConsultingResponseHeader({
               원글 보기
             </Button>
           </>
-        ) : null}
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 
-const PROGRESS_BAR_PADDING = '4px';
+const PROGRESS_BAR_PADDING = '12px';
 const PROGRESS_BAR_POINTER_SIZE = '32px';
 
 const getProgressLeft = (index: number, total: number) => {
@@ -88,15 +88,16 @@ function ProgressPointer({
   onChange: (value: number) => void;
 }) {
   return (
-    <div className="absolute  h-8 py-2.5 w-full flex justify-center">
+    <div className="absolute h-8 py-2.5 w-full flex justify-center">
       {Array.from({ length: total }).map((_, index) => {
         return (
           <button
             type="button"
             key={index}
             className={cn(
-              'absolute py-3.25 px-1.5 -translate-y-2.5 z-10 -translate-x-1/2 ',
-              index === 0 && 'pl-4.5',
+              'absolute py-5 pr-3.5 pl-5 -translate-y-[17px] z-10 -translate-x-1/2',
+              index === 0 && 'pl-2.5',
+              index === total - 1 && 'pr-1.5  ',
             )}
             style={{
               left: getProgressLeft(index, total),
