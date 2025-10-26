@@ -28,7 +28,7 @@ const buttonVariants = cva(
       theme: {
         black: 'typo-body-1-semibold bg-label-default hover:bg-label-sub text-white',
         white:
-          'typo-body-2-medium bg-white hover:bg-label-sub text-label-sub border border-border-default disabled:text-label-disable disabled:bg-white',
+          'typo-body-2-medium bg-white hover:bg-label-sub text-label-sub border border-border-default disabled:text-label-disable disabled:bg-white active:bg-white active:text-label-sub focus:bg-white focus:text-label-sub',
         whiteBorder: 'rounded-4 border-1 border-white bg-transparent text-white typo-body-2-medium',
         text: '',
       },
