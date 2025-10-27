@@ -78,21 +78,14 @@ export default function PostDetailConsultingContent({
     hairConcernDetail,
     treatments,
     createdAt,
-    myImages,
+    myImageList,
     aspirations,
     skinTone,
     minPaymentPrice,
     maxPaymentPrice,
   } = postDetail;
 
-  const myImageUrls = myImages
-    ? [
-        myImages.frontLooseImageUrl,
-        myImages.frontTiedImageUrl,
-        myImages.sideTiedImageUrl,
-        myImages.upperBodyImageUrl,
-      ]
-    : null;
+  const myImageUrls = myImageList?.map(({ imageUrl }) => imageUrl) ?? [];
 
   const isWriter = authorId === user.id;
 

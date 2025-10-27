@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { HAIR_IMAGE_POSITION } from '@/features/posts/constants/hair-image-position';
+import { MY_IMAGE_TYPE } from '@/features/posts/constants/my-image-type';
 import { Button } from '@/shared';
 import { IMAGE_TYPE } from '@/shared/constants/image-type';
 import type { ValueOf } from '@/shared/type/types';
@@ -26,9 +26,9 @@ export default function ConsultingPostFormStepMyImages() {
   });
 
   const getCurrentImage = useCallback(
-    (position: string) => {
+    (type: ValueOf<typeof MY_IMAGE_TYPE>) => {
       const currentImage = currentImages?.find(
-        (img: { position: string; image: File }) => img.position === position,
+        (img: { type: ValueOf<typeof MY_IMAGE_TYPE>; image: File }) => img.type === type,
       );
 
       return currentImage
@@ -43,9 +43,9 @@ export default function ConsultingPostFormStepMyImages() {
   );
 
   const handleImageUpload = useCallback(
-    ({ file, position }: { file: File; position: ValueOf<typeof HAIR_IMAGE_POSITION> }) => {
+    ({ file, type }: { file: File; type: ValueOf<typeof MY_IMAGE_TYPE> }) => {
       const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES) || [];
-      const newImage = { position, image: file };
+      const newImage = { type, image: file };
 
       setValue(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES, [...currentImages, newImage]);
     },
@@ -53,10 +53,10 @@ export default function ConsultingPostFormStepMyImages() {
   );
 
   const handleImageDelete = useCallback(
-    ({ position }: { position: ValueOf<typeof HAIR_IMAGE_POSITION> }) => {
+    ({ type }: { type: ValueOf<typeof MY_IMAGE_TYPE> }) => {
       const currentImages = getValues(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES) || [];
       const newImages = currentImages.filter(
-        (img: { position: string; image: File }) => img.position !== position,
+        (img: { type: ValueOf<typeof MY_IMAGE_TYPE>; image: File }) => img.type !== type,
       );
       setValue(CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES, newImages);
     },
@@ -68,44 +68,40 @@ export default function ConsultingPostFormStepMyImages() {
       <div className="flex flex-col gap-5 items-center justify-center">
         <div className="grid grid-cols-2 gap-6">
           <ImageUploaderItem
-            currentImage={getCurrentImage(HAIR_IMAGE_POSITION.FRONT_LOOSE)}
-            onUpload={(file: File) =>
-              handleImageUpload({ file, position: HAIR_IMAGE_POSITION.FRONT_LOOSE })
-            }
-            onDelete={() => handleImageDelete({ position: HAIR_IMAGE_POSITION.FRONT_LOOSE })}
-            label="푼머리 정면"
+            currentImage={getCurrentImage(MY_IMAGE_TYPE.RECENT)}
+            onUpload={(file: File) => handleImageUpload({ file, type: MY_IMAGE_TYPE.RECENT })}
+            onDelete={() => handleImageDelete({ type: MY_IMAGE_TYPE.RECENT })}
+            label="최근"
           />
           <ImageUploaderItem
-            currentImage={getCurrentImage(HAIR_IMAGE_POSITION.FRONT_TIED)}
+            currentImage={getCurrentImage(MY_IMAGE_TYPE.FRONT)}
             onUpload={(file: File) =>
               handleImageUpload({
                 file,
-                position: HAIR_IMAGE_POSITION.FRONT_TIED,
+                type: MY_IMAGE_TYPE.FRONT,
               })
             }
-            onDelete={() => handleImageDelete({ position: HAIR_IMAGE_POSITION.FRONT_TIED })}
-            label="묶은 머리 정면"
+            onDelete={() => handleImageDelete({ type: MY_IMAGE_TYPE.FRONT })}
+            label="정면"
           />
         </div>
         <div className="grid grid-cols-2 gap-6">
           <ImageUploaderItem
-            currentImage={getCurrentImage(HAIR_IMAGE_POSITION.SIDE_TIED)}
+            currentImage={getCurrentImage(MY_IMAGE_TYPE.SIDE)}
             onUpload={(file: File) =>
               handleImageUpload({
                 file,
-                position: HAIR_IMAGE_POSITION.SIDE_TIED,
+                type: MY_IMAGE_TYPE.SIDE,
               })
             }
-            label="묶은 머리 측면"
-            onDelete={() => handleImageDelete({ position: HAIR_IMAGE_POSITION.SIDE_TIED })}
+            label="측면"
+            onDelete={() => handleImageDelete({ type: MY_IMAGE_TYPE.SIDE })}
           />
           <ImageUploaderItem
-            currentImage={getCurrentImage(HAIR_IMAGE_POSITION.UPPER_BODY) || null}
-            onUpload={(file: File) =>
-              handleImageUpload({ file, position: HAIR_IMAGE_POSITION.UPPER_BODY })
-            }
-            onDelete={() => handleImageDelete({ position: HAIR_IMAGE_POSITION.UPPER_BODY })}
-            label="상반신 전체"
+            currentImage={getCurrentImage(MY_IMAGE_TYPE.WHOLE_BODY) || null}
+            onUpload={(file: File) => handleImageUpload({ file, type: MY_IMAGE_TYPE.WHOLE_BODY })}
+            onDelete={() => handleImageDelete({ type: MY_IMAGE_TYPE.WHOLE_BODY })}
+            label="상반신"
           />
         </div>
       </div>

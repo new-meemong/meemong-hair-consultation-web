@@ -31,7 +31,7 @@ const getSidebarTab = (post?: PostDetail) => {
 
   return CONSULTING_RESPONSE_SIDEBAR_TABS.filter((tab) => {
     if (tab.value === CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.CURRENT_STATE) {
-      return post.myImages;
+      return post.myImageList;
     }
     if (tab.value === CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.DESIRED_STYLE) {
       return post.aspirations;
@@ -83,13 +83,8 @@ export default function ConsultingResponseSidebar({
 
   if (!consultingPost) return null;
 
-  const myImages = consultingPost.myImages
-    ? [
-        consultingPost.myImages.frontLooseImageUrl,
-        consultingPost.myImages.frontTiedImageUrl,
-        consultingPost.myImages.sideTiedImageUrl,
-        consultingPost.myImages.upperBodyImageUrl,
-      ]
+  const myImages = consultingPost.myImageList
+    ? consultingPost.myImageList.map(({ imageUrl }) => imageUrl)
     : null;
 
   const aspirationImageUrls = consultingPost.aspirations?.aspirationImages ?? [];
