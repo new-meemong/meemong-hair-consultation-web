@@ -34,7 +34,7 @@ export default function ConsultingFormPriceInput({
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const numericValue = Number(value);
 
-    if (numericValue < 10000) {
+    if (label === '최소' && numericValue < 10000) {
       showModal({
         id: 'report-form-reason-required',
         text: (
