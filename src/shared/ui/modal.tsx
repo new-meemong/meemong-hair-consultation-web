@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import { useOverlayContext } from '../context/overlay-context';
 import { cn } from '../lib/utils';
 
@@ -11,7 +13,7 @@ export type ModalButtonProps = {
 
 type ModalProps = {
   id: string;
-  text: string;
+  text: string | ReactNode;
   buttons: ModalButtonProps[];
 };
 
@@ -47,11 +49,17 @@ export default function Modal({ id, text, buttons }: ModalProps) {
     closeModal(id);
   };
 
+  console.log(typeof text === 'string');
+
   return (
     <DialogContent showCloseButton={false}>
       <div className="bg-white rounded-12">
-        <div className="pt-8 pb-7 px-7 typo-body-1-long-regular text-center whitespace-pre-line">
-          {text}
+        <div className="pt-8 pb-7 px-7 text-center">
+          {typeof text === 'string' ? (
+            <div className="typo-body-1-long-regular whitespace-pre-line">{text}</div>
+          ) : (
+            text
+          )}
         </div>
         {buttons.map((button, index) => (
           <div key={index}>

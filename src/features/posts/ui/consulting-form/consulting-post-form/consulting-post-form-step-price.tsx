@@ -18,7 +18,7 @@ export default function ConsultingPostFormStepPrice() {
 
     setValue(CONSULTING_POST_FORM_FIELD_NAME.PRICE, {
       ...price,
-      [name]: Number(value),
+      [name]: value ? Number(value) : null,
     });
   };
 
@@ -35,6 +35,7 @@ export default function ConsultingPostFormStepPrice() {
         value={price.maxPaymentPrice?.toString() ?? ''}
         onChange={handleChange}
         label="최대"
+        minPrice={price.minPaymentPrice ?? undefined}
       />
     </div>
   );
