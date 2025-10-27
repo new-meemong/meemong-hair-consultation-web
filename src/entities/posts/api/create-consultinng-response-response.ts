@@ -1,5 +1,4 @@
 export type CreateConsultingResponseResponse = {
-  data: {
     answer: {
       id: number;
       hairConsultPostingId: number;
@@ -14,5 +13,4 @@ export type CreateConsultingResponseResponse = {
       updatedAt: string;
     };
     message: string;
-  };
 };

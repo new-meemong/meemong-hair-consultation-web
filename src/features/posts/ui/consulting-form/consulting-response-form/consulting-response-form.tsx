@@ -1,5 +1,7 @@
 import { type UseFormReturn } from 'react-hook-form';
 
+import useCreateEventMongMutation from '@/features/mong/api/use-create-event-mong-mutation';
+import useShowEventMongSheet from '@/features/mong/hook/use-show-event-mong-sheet';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import useCreateConsultingResponse from '@/features/posts/hooks/use-create-consulting-response';
 import useEditConsultingResponse from '@/features/posts/hooks/use-edit-consulting-response';
@@ -103,7 +105,11 @@ export default function ConsultingResponseForm({
 
   const showModal = useShowModal();
 
-  const submit = (values: ConsultingResponseFormValues) => {
+  const { mutateAsync: createEventMong } = useCreateEventMongMutation();
+
+  const showEventMongSheet = useShowEventMongSheet();
+
+  const submit = async (values: ConsultingResponseFormValues) => {
     if (responseId) {
       editConsultingResponse(values, {
         onSuccess: () => {
@@ -123,7 +129,8 @@ export default function ConsultingResponseForm({
       });
       return;
     }
-    handleCreateConsultingResponse(values, {
+
+    const answerId = await handleCreateConsultingResponse(values, {
       onSuccess: () => {
         showSnackBar({
           type: 'success',
@@ -133,6 +140,14 @@ export default function ConsultingResponseForm({
         replace(ROUTES.POSTS_DETAIL(postId));
       },
     });
+
+    const response = await createEventMong({
+      createType: 'HAIR_CONSULT_ANSWER_EVENT',
+      refType: 'hairConsultPostingsAnswers',
+      refId: answerId,
+    });
+
+    showEventMongSheet(response.data);
   };
 
   const canMoveNext = (
