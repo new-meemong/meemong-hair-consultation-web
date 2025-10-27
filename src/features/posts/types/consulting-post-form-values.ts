@@ -2,14 +2,14 @@ import z from 'zod';
 
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../constants/consulting-post-form-field-name';
 import { HAIR_CONCERN_OPTION_VALUE } from '../constants/hair-concern-option';
-import { HAIR_IMAGE_POSITION } from '../constants/hair-image-position';
+import { MY_IMAGE_TYPE } from '../constants/my-image-type';
 import { SKIN_TONE_OPTION_VALUE } from '../constants/skin-tone';
 
-const IMAGE_POSITIONS = [
-  HAIR_IMAGE_POSITION.FRONT_LOOSE,
-  HAIR_IMAGE_POSITION.FRONT_TIED,
-  HAIR_IMAGE_POSITION.SIDE_TIED,
-  HAIR_IMAGE_POSITION.UPPER_BODY,
+const MY_IMAGE_TYPES = [
+  MY_IMAGE_TYPE.RECENT,
+  MY_IMAGE_TYPE.FRONT,
+  MY_IMAGE_TYPE.SIDE,
+  MY_IMAGE_TYPE.WHOLE_BODY,
 ] as const;
 
 const CONCERN_OPTION = [
@@ -41,7 +41,7 @@ export const consultingPostFormSchema = z.object({
     .nullable(),
   [CONSULTING_POST_FORM_FIELD_NAME.MY_IMAGES]: z.array(
     z.object({
-      position: z.enum(IMAGE_POSITIONS),
+      type: z.enum(MY_IMAGE_TYPES),
       image: z.instanceof(File),
     }),
   ),

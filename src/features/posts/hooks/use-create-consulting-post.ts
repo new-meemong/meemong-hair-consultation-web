@@ -1,7 +1,6 @@
 import { format } from 'date-fns';
 
 import type { CreateConsultingPostRequest } from '@/entities/posts/api/create-consulting-post-request';
-import type { ValueOf } from '@/shared/type/types';
 
 import useCreateConsultingPostMutation from '../api/use-create-consulting-post-mutation';
 import useUploadPostImageMutation from '../api/use-upload-post-image';
@@ -9,7 +8,6 @@ import {
   HAIR_CONCERN_OPTION_LABEL,
   HAIR_CONCERN_OPTION_VALUE,
 } from '../constants/hair-concern-option';
-import type { HAIR_IMAGE_POSITION } from '../constants/hair-image-position';
 import { SKIN_TONE_OPTION_LABEL } from '../constants/skin-tone';
 import type { ConsultingPostFormValues } from '../types/consulting-post-form-values';
 
@@ -42,16 +40,12 @@ export function useCreateConsultingPost() {
     data: ConsultingPostFormValues,
     { onSuccess }: { onSuccess: () => void },
   ) => {
-    const uploadedMyImages = await Promise.all(
-      data.myImages.map(async ({ position, image }) => ({
-        [position]: (await uploadImages([image])).dataList[0].imageURL,
+    const myImageList = await Promise.all(
+      data.myImages.map(async ({ type, image }) => ({
+        type,
+        imageUrl: (await uploadImages([image])).dataList[0].imageURL,
       })),
     );
-
-    const myImages = uploadedMyImages.reduce((acc, curr) => ({ ...acc, ...curr }), {}) as Record<
-      ValueOf<typeof HAIR_IMAGE_POSITION>,
-      string
-    >;
 
     const uploadedAspirationImages =
       data.aspirationImages.images && data.aspirationImages.images.length > 0
@@ -80,7 +74,7 @@ export function useCreateConsultingPost() {
         treatmentName: name,
         treatmentDate: format(date, 'yyyy.MM'),
       })),
-      myImages,
+      myImageList,
       aspirations,
       minPaymentPrice: data.price.minPaymentPrice,
       maxPaymentPrice: data.price.maxPaymentPrice,  
