@@ -33,7 +33,7 @@ export default function useShowEventMongSheet() {
                 <span className="typo-body-1-long-regular text-label-sub">
                   현재 내 몽:{' '}
                   <span className="typo-body-1-semibold text-negative-light">
-                    {data.depositSum} 개
+                    {data.depositTotalSum - data.withdrawTotalSum} 개
                   </span>
                 </span>
               </span>
