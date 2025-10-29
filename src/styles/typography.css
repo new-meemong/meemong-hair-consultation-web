@@ -53,6 +53,13 @@
   font-weight: 500;
 }
 
+@utility typo-title-2-bold {
+  font-size: var(--title-2-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  font-weight: 700;
+}
+
 @utility typo-title-2-semibold {
   font-size: var(--title-2-size);
   line-height: var(--line-height-normal);

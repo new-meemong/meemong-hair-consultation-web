@@ -13,7 +13,7 @@ export default function useCreateConsultingResponse(
   receiverId?: string,
 ) {
   const { mutateAsync: uploadImages, isPending: isUploadingImages } = useUploadPostImageMutation();
-  const { mutate: createConsultingResponse, isPending: isCreatingConsultingResponse } =
+  const { mutateAsync: createConsultingResponse, isPending: isCreatingConsultingResponse } =
     useCreateConsultingResponseMutation(hairConsultPostingId);
   const { mutate: sendNotification } = useSendConsultingAnswerPushNotification();
 
@@ -46,7 +46,7 @@ export default function useCreateConsultingResponse(
       comment: data.comment ? data.comment : undefined,
     };
 
-    createConsultingResponse(request, {
+    const response = await createConsultingResponse(request, {
       onSuccess: () => {
         // 컨설팅 답변 작성 성공 시 푸시 알림 발송
         if (receiverId) {
@@ -57,6 +57,10 @@ export default function useCreateConsultingResponse(
         onSuccess();
       },
     });
+
+    const answerId = response.data.answer.id;
+
+    return answerId;
   };
 
   return {

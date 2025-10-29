@@ -30,8 +30,6 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
 
   const method = useFormContext<T>();
 
-  console.log('method.getValues()', method.getValues());
-
   useWatch({ control: method.control });
 
   const handleNextButtonClick = () => {

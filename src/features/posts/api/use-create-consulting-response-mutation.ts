@@ -41,6 +41,7 @@ export default function useCreateConsultingResponseMutation(hairConsultPostingId
 
   return {
     mutate,
+    mutateAsync: mutation.mutateAsync,
     isPending: mutation.isPending,
     error: mutation.error,
     isSuccess: mutation.isSuccess,
