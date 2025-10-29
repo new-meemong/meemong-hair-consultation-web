@@ -16,6 +16,19 @@
   body {
     background-color: #ffffff;
     overflow: hidden;
+    -webkit-user-select: none; /* iOS Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+    user-select: none; /* Standard */
+  }
+
+  /* 입력 필드는 선택 가능하도록 */
+  input,
+  textarea {
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto;
   }
 }
 
