@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useFormContext } from 'react-hook-form';
 
@@ -8,7 +8,14 @@ import { Input, Textarea } from '@/shared';
 
 export default function ConsultingPostFormStepTitleAndConcern() {
   const { register } = useFormContext<ConsultingPostFormValues>();
+  const titleRef = useRef<HTMLInputElement | null>(null);
   const concernRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (!titleRef.current) return;
+
+    titleRef.current.focus();
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
@@ -18,6 +25,7 @@ export default function ConsultingPostFormStepTitleAndConcern() {
           placeholder="제목을 입력하세요"
           className="typo-title-3-medium h-13.5 flex-1"
           enterKeyHint="next"
+          ref={titleRef}
           onBlur={() => {
             concernRef.current?.focus();
           }}
