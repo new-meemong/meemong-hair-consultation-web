@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 
 import { isConsultingPost } from '@/entities/posts/lib/consulting-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
@@ -12,6 +12,7 @@ import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { PostDetailProvider } from '@/features/posts/context/post-detail-context';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 import { CommentContainer } from '@/widgets/comments/ui/comment-container';
 import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
@@ -21,6 +22,10 @@ import { PostDetailContainer } from '@/widgets/post/post-detail-container';
 export default function PostDetailPage() {
   const { isUserDesigner, user } = useAuthContext();
   const { postId } = useParams();
+  const searchParams = useSearchParams();
+  const { back } = useRouterWithUser();
+
+  const isFromMain = searchParams.get('isFromMain') === 'true';
 
   useShowGuide(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
 
@@ -48,6 +53,14 @@ export default function PostDetailPage() {
     [handlers],
   );
 
+  const handleBackClick = useCallback(() => {
+    if (isFromMain) {
+      window.closeWebview('close');
+    } else {
+      back();
+    }
+  }, [isFromMain, back]);
+
   if (!postId || !postDetail) return null;
 
   return (
@@ -56,6 +69,7 @@ export default function PostDetailPage() {
         <SiteHeader
           title="헤어상담"
           showBackButton
+          onBackClick={handleBackClick}
           rightComponent={
             isWriter && (
               <PostDetailMoreButton
