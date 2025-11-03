@@ -7,7 +7,7 @@ import { usePostTab } from '@/features/posts/hooks/use-post-tab';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 import type { ValueOf } from '@/shared/type/types';
-import ConsultingPostFormContainer from '@/widgets/post/ui/consulting-post-form-container';
+import ConsultingPostFormContainer from '@/widgets/post/ui/consulting-post/consulting-post-form-container';
 
 export default function CreatePostPage() {
   useShowGuide(USER_GUIDE_KEYS.hasSeenCreatePostGuide);
