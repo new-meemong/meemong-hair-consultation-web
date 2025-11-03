@@ -96,7 +96,6 @@ export default function ConsultingResponseContainer({
             comment={consultingResponse.comment}
           />
         </div>
-        <div className=" h-50">dd</div>
       </div>
     </div>
   );
