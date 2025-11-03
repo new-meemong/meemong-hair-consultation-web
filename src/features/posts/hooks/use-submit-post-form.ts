@@ -1,5 +1,3 @@
-import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ROUTES } from '@/shared/lib/routes';
@@ -25,9 +23,9 @@ export default function useSubmitPostForm(postId?: number) {
           type: 'success',
           message: '업로드가 완료되었습니다!',
         });
-        replace(ROUTES.POSTS, {
-          [SEARCH_PARAMS.POST_TAB]: CONSULT_TYPE.GENERAL,
-        });
+        // replace(ROUTES.POSTS, {
+        //   [SEARCH_PARAMS.POST_TAB]: CONSULT_TYPE.GENERAL,
+        // });
       },
     });
   };

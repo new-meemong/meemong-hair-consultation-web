@@ -5,44 +5,34 @@ import { useCallback } from 'react';
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
-import useGetPosts from '@/features/posts/api/use-get-posts';
+import { POST_TABS } from '@/features/posts/constants/post-tabs';
 import usePostListRegionTab from '@/features/posts/hooks/use-post-list-region-tab';
 import usePostListTab from '@/features/posts/hooks/use-post-list-tab';
 import { usePostTab } from '@/features/posts/hooks/use-post-tab';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
-import PostList from '@/features/posts/ui/post-list/post-list';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { POSTS_PAGE_KEY, useScrollRestoration } from '@/shared/hooks/use-scroll-restoration';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
+import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
+import ConsultingPostListContainer from '@/widgets/post/ui/consulting-post-list-container';
+import ExperienceGroupListContainer from '@/widgets/post/ui/experience-group-list-container';
 
 export default function PostsPage() {
   const { user, isUserModel, isUserDesigner } = useAuthContext();
 
   const router = useRouterWithUser();
 
-  const [activePostTab] = usePostTab();
+  const [activePostTab, setActivePostTab] = usePostTab();
   const [activePostListTab, setActivePostListTab] = usePostListTab();
 
   const { containerRef } = useScrollRestoration(POSTS_PAGE_KEY);
 
   const { regionTab, userSelectedRegionData } = usePostListRegionTab();
-
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPosts({
-    filter: activePostListTab,
-    consultType: activePostTab,
-    selectedRegion: userSelectedRegionData,
-  });
-
-  const handleFetchNextPage = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleTabChange = (tab: PostListTab) => {
     if (activePostListTab === tab) return;
@@ -53,20 +43,37 @@ export default function PostsPage() {
 
   const listTabs = getPostListTabs(user.role);
 
-  const handleWriteButtonClick = () => {
+  const handleWriteButtonClick = useCallback(() => {
     router.push(ROUTES.POSTS_CREATE, {
       [SEARCH_PARAMS.POST_TAB]: activePostTab,
     });
-  };
+  }, [router, activePostTab]);
 
-  const posts = data?.pages.flatMap((page) => page.dataList);
+  const getListContainer = useCallback(() => {
+    switch (activePostTab) {
+      case CONSULT_TYPE.CONSULTING:
+        return (
+          <ConsultingPostListContainer
+            activePostListTab={activePostListTab}
+            userSelectedRegionData={userSelectedRegionData}
+          />
+        );
+      case CONSULT_TYPE.EXPERIENCE_GROUP:
+        return (
+          <ExperienceGroupListContainer
+            activePostListTab={activePostListTab}
+            userSelectedRegionData={userSelectedRegionData}
+          />
+        );
+    }
+  }, [activePostTab, activePostListTab, userSelectedRegionData]);
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">
       {/* 헤더 */}
       <SiteHeader title="헤어상담" />
       <div className="flex flex-col gap-5 flex-1 min-h-0">
-        {/* <Tab options={POST_TABS} value={activePostTab} onChange={setActivePostTab} /> */}
+        <Tab options={POST_TABS} value={activePostTab} onChange={setActivePostTab} />
         <div ref={containerRef} className="flex flex-col gap-5 flex-1 overflow-y-auto pt-5">
           <TopAdvisorCarousel />
           <div className="flex-1 flex flex-col min-h-0 gap-2">
@@ -113,14 +120,11 @@ export default function PostsPage() {
                 })()}
               </ToggleChipGroup>
             </div>
-            {posts && (
-              <PostList
-                posts={posts}
-                tab={activePostListTab}
-                fetchNextPage={handleFetchNextPage}
-                isConsultingPost={activePostTab === CONSULT_TYPE.CONSULTING}
-              />
-            )}
+            <div className="flex flex-col h-full">
+              <div className="flex-1">
+                <div className="[&>*:last-child]:border-b-0">{getListContainer()}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
