@@ -8,6 +8,7 @@ type ConsultingFormPriceInputProps = {
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   label: string;
   minPrice?: number;
+  hasValid?: boolean;
 };
 export default function ConsultingFormPriceInput({
   name,
@@ -16,6 +17,7 @@ export default function ConsultingFormPriceInput({
   onBlur,
   label,
   minPrice,
+  hasValid = true,
 }: ConsultingFormPriceInputProps) {
   const showModal = useShowModal();
 
@@ -34,7 +36,7 @@ export default function ConsultingFormPriceInput({
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const numericValue = Number(value);
 
-    if (label === '최소' && numericValue < 10000) {
+    if (hasValid && label === '최소' && numericValue < 10000) {
       showModal({
         id: 'report-form-reason-required',
         text: (
@@ -55,7 +57,7 @@ export default function ConsultingFormPriceInput({
       });
     }
 
-    if (minPrice && numericValue < minPrice) {
+    if (hasValid && minPrice && numericValue < minPrice) {
       showModal({
         id: 'report-form-reason-required',
         text: (

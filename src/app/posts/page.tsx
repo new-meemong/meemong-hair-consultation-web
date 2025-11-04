@@ -20,7 +20,7 @@ import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import Tab from '@/shared/ui/tab';
 import { SiteHeader } from '@/widgets/header';
 import ConsultingPostListContainer from '@/widgets/post/ui/consulting-post/consulting-post-list-container';
-import ExperienceGroupListContainer from '@/widgets/post/ui/experience-group-list-container';
+import ExperienceGroupListContainer from '@/widgets/post/ui/experience-group/experience-group-list-container';
 
 export default function PostsPage() {
   const { user, isUserModel, isUserDesigner } = useAuthContext();

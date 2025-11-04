@@ -8,6 +8,7 @@ import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 import type { ValueOf } from '@/shared/type/types';
 import ConsultingPostFormContainer from '@/widgets/post/ui/consulting-post/consulting-post-form-container';
+import ExperienceGroupFormContainer from '@/widgets/post/ui/experience-group/experience-group-form-container';
 
 export default function CreatePostPage() {
   useShowGuide(USER_GUIDE_KEYS.hasSeenCreatePostGuide);
@@ -22,6 +23,8 @@ export default function CreatePostPage() {
         return <ConsultingPostFormContainer />;
       // case CONSULT_TYPE.GENERAL:
       //   return <PostFormContainer />;
+      case CONSULT_TYPE.EXPERIENCE_GROUP:
+        return <ExperienceGroupFormContainer />;
       default:
         return null;
     }

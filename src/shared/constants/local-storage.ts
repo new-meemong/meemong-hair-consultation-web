@@ -11,4 +11,5 @@ export const USER_READING_HISTORY_KEYS = {
 export const USER_WRITING_CONTENT_KEYS = {
   consultingPost: 'consultingPost',
   consultingResponse: 'consultingResponse',
+  experienceGroup: 'experienceGroup',
 } as const;

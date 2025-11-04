@@ -21,7 +21,6 @@ const USER_GUIDE_DATA_KEY_PREFIX = 'user_guide_data_';
 const USER_READING_HISTORY_DATA_KEY_PREFIX = 'user_reading_history_data_';
 const USER_SELECTED_REGION_DATA_KEY_PREFIX = 'user_selected_region_data_';
 
-
 export const decodeJWTPayload = (token: string): JWTPayload | null => {
   try {
     const base64Url = token.split('.')[1];
@@ -44,6 +43,7 @@ export const getDefaultUserData = (user: User): UserData => {
     ...user,
     [USER_WRITING_CONTENT_KEYS.consultingPost]: null,
     [USER_WRITING_CONTENT_KEYS.consultingResponse]: [],
+    [USER_WRITING_CONTENT_KEYS.experienceGroup]: null,
   };
 };
 
@@ -158,7 +158,7 @@ export const updateUserReadingHistoryData = (readingPostKey: number): void => {
 };
 
 export const updateUserSelectedRegionData = (selectedRegion: SelectedRegion | null): void => {
-  const userSelectedRegionDataKey = getUserSelectedRegionDataKey  ();
+  const userSelectedRegionDataKey = getUserSelectedRegionDataKey();
   localStorage.setItem(userSelectedRegionDataKey, JSON.stringify(selectedRegion));
 };
 
