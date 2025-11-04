@@ -1,4 +1,5 @@
 import type { ExperienceGroup } from '@/entities/posts/model/experience-group';
+import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -22,8 +23,7 @@ export default function ExperienceGroupList({
   const router = useRouterWithUser();
 
   const handlePostClick = (id: number) => {
-    //TODO: 상세페이지로이동
-    router.push(`/experience-groups/${id}`, {
+    router.push(ROUTES.POSTS_EXPERIENCE_GROUP_DETAIL(id.toString()), {
       [SEARCH_PARAMS.POST_LIST_TAB]: tab,
     });
   };

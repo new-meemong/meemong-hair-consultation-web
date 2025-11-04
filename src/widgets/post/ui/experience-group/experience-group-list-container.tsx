@@ -21,8 +21,6 @@ export default function ExperienceGroupListContainer({
 
   const experienceGroups = data?.pages.flatMap((page) => page.dataList);
 
-  console.log('hasNextPage', hasNextPage);
-
   const handleFetchNextPage = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
