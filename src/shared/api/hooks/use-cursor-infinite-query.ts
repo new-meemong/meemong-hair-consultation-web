@@ -33,7 +33,7 @@ export default function useCursorInfiniteQuery<TData extends Record<string, unkn
       if (searchParams) {
         Object.entries(searchParams).forEach(([key, value]) => {
           if (Array.isArray(value)) {
-            value.forEach(v => params.append(`${key}[]`, String(v)));
+            value.forEach((v) => params.append(`${key}[]`, String(v)));
           } else if (value !== undefined && value !== null) {
             params.append(key, String(value));
           }
@@ -45,7 +45,7 @@ export default function useCursorInfiniteQuery<TData extends Record<string, unkn
       });
     },
     getNextPageParam: (lastPage: ApiListResponse<TData>) => {
-      return lastPage.nextCursor;
+      return lastPage.nextCursor ?? lastPage.__nextCursor;
     },
     initialPageParam: undefined as string | undefined,
     meta: {
