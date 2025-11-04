@@ -1,4 +1,4 @@
-import type { ExperienceGroup } from '@/entities/experience-group/model/experience-group';
+import type { ExperienceGroup } from '@/entities/posts/model/experience-group';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
