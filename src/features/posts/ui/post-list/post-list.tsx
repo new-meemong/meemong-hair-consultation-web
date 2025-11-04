@@ -5,6 +5,7 @@ import { type PostListTab } from '@/features/posts/types/post-list-tab';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { ROUTES } from '@/shared/lib/routes';
 
 import PostListEmptyView from './post-list-empty-view';
 import PostListItem from './post-list-item';
@@ -19,7 +20,7 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
   const router = useRouterWithUser();
 
   const handlePostClick = (postId: number) => {
-    router.push(`/posts/${postId}`, {
+    router.push(ROUTES.POSTS_DETAIL(postId), {
       [SEARCH_PARAMS.POST_LIST_TAB]: tab,
     });
   };

@@ -1,5 +1,7 @@
 import { useRef } from 'react';
 
+import { useSearchParams } from 'next/navigation';
+
 import { format } from 'date-fns';
 
 import MoreIcon from '@/assets/icons/more-vertical.svg';
@@ -9,6 +11,7 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import { cn } from '@/lib/utils';
 import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 import CommentAuthorProfile from './comment-author-profile';
@@ -40,12 +43,17 @@ export default function CommentListItem({
   onReport,
   onTriggerClick,
 }: CommentListItemProps) {
+  const searchParams = useSearchParams();
+  const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
+
   const { user, isUserDesigner } = useAuthContext();
   const { push } = useRouterWithUser();
   const { postDetail } = usePostDetail();
 
   const handleConsultingResponseClick = () => {
-    push(ROUTES.POSTS_CONSULTING_RESPONSE(postDetail.id.toString(), comment.answerId.toString()));
+    push(ROUTES.POSTS_CONSULTING_RESPONSE(postDetail.id.toString(), comment.answerId.toString()), {
+      [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+    });
   };
 
   const {
