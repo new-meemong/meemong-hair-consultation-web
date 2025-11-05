@@ -3,10 +3,10 @@ import type { ValueOf } from '@/shared/type/types';
 
 export type CommentUser = {
   userId: number;
-  name: string;
+  displayName: string;
   profilePictureURL: string | null;
   address?: string;
-  companyName: string | null;
+  companyName?: string | null;
   role: ValueOf<typeof USER_ROLE>;
 };
 
@@ -15,10 +15,12 @@ export type Comment = {
   content: string;
   isVisibleToModel: boolean;
   createdAt: string;
+  updatedAt?: string;
   user: CommentUser;
-  answerId: number;
-  isConsultingAnswer: boolean;
-  hasAnswerImages: boolean;
+  isAnonymou?: boolean;
+  answerId?: number;
+  isConsultingAnswer?: boolean;
+  hasAnswerImages?: boolean;
 };
 
 export type CommentWithReplies = Comment & {

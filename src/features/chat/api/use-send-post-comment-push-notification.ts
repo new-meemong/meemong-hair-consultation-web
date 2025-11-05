@@ -1,13 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 
+import type { SendCommentPushNotificationRequest } from '@/entities/comment/api/send-push-notification-request';
 import { apiClient } from '@/shared/api/client';
 
-type SendCommentPushNotificationRequest = {
-  userId: string;
-  message: string;
-};
-
-export default function useSendCommentPushNotification() {
+export default function useSendPostCommentPushNotification() {
   const mutation = useMutation({
     mutationFn: (data: SendCommentPushNotificationRequest) => {
       return apiClient.post('push/hair-consulting-replies', data);

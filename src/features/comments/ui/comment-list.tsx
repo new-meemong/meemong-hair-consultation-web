@@ -7,6 +7,8 @@ import CommentListItem from './comment-list-item';
 
 interface CommentListProps {
   comments: CommentWithReplyStatus[];
+  postId: string;
+  postWriterId: number;
   fetchNextPage: () => void;
   onReplyClick: (commentId: number) => void;
   focusedCommentId: number | null;
@@ -18,6 +20,8 @@ interface CommentListProps {
 
 export function CommentList({
   comments,
+  postId,
+  postWriterId,
   fetchNextPage,
   onReplyClick,
   focusedCommentId,
@@ -38,6 +42,8 @@ export function CommentList({
         <div key={comment.id} ref={index === comments.length - 2 ? observerRef : undefined}>
           <CommentListItem
             comment={comment}
+            postId={postId}
+            postWriterId={postWriterId}
             onReplyClick={onReplyClick}
             isFocused={isFocused(comment.id)}
             onDelete={() => onDelete(comment.id)}

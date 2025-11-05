@@ -10,8 +10,8 @@ import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-
 import type { CommentFormValues } from '@/features/comments/ui/comment-form';
 import useGetExperienceGroupDetail from '@/features/posts/api/use-get-experience-group-detail';
 import ExperienceGroupDetailMoreButton from '@/features/posts/ui/experience-group-detail/experience-group-detail-more-button';
-import { CommentContainer } from '@/widgets/comments/ui/comment-container';
 import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
+import ExperienceGroupCommentContainer from '@/widgets/comments/ui/experience-group-comment-container';
 import { SiteHeader } from '@/widgets/header';
 import ExperienceGroupDetailContainer from '@/widgets/post/ui/experience-group/experience-group-detail-container';
 
@@ -27,7 +27,7 @@ export default function ExperienceGroupDetailPage() {
 
   const { commentFormState, textareaRef, isCommentCreating, isCommentUpdating, handlers } =
     useCommentFormState({
-      postId: id?.toString() ?? '',
+      experienceGroupId: id?.toString() ?? '',
       receiverId: experienceGroupDetail?.user.id.toString() ?? '',
     });
 
@@ -57,8 +57,9 @@ export default function ExperienceGroupDetailPage() {
       />
       <div className="flex-1 overflow-y-auto" onClick={handleContainerClick}>
         <ExperienceGroupDetailContainer experienceGroupDetail={experienceGroupDetail}>
-          <CommentContainer
-            postId={id.toString()}
+          <ExperienceGroupCommentContainer
+            experienceGroupId={id.toString()}
+            postWriterId={experienceGroupDetail.user.id}
             commentFormState={commentFormState}
             handlers={{
               ...handlers,
