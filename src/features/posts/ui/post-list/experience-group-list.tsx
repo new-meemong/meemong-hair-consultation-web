@@ -48,12 +48,12 @@ export default function ExperienceGroupList({
     <>
       {experienceGroups.map(
         (
-          { id, updatedAt, title, viewCount, likeCount, commentCount, price, priceType, isRead },
+          { id, createdAt, title, viewCount, likeCount, commentCount, price, priceType, isRead },
           index,
         ) => (
           <PostListItem
             key={id}
-            updatedAt={updatedAt}
+            createdAt={createdAt}
             title={title}
             viewCount={viewCount}
             likeCount={likeCount}

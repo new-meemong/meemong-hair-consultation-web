@@ -19,7 +19,7 @@ import PostListItemContent from './post-list-item-content';
 import PostListItemContentWithPrice from './post-list-item-price-content';
 
 type PostListItemProps = {
-  updatedAt: string;
+  createdAt: string;
   hairConsultPostingCreateUserRegion?: string;
   price: number | null;
   isConsultingPost: boolean;
@@ -36,7 +36,7 @@ type PostListItemProps = {
 };
 
 export default function PostListItem({
-  updatedAt,
+  createdAt,
   hairConsultPostingCreateUserRegion,
   price,
   isConsultingPost,
@@ -97,7 +97,7 @@ export default function PostListItem({
                   <Dot size="1" />
                 </>
               )}
-              <p>{formatDateTime(updatedAt)}</p>
+              <p>{formatDateTime(createdAt)}</p>
               {isUserDesigner && hairConsultPostingCreateUserRegion && (
                 <>
                   <Dot size="1" />
