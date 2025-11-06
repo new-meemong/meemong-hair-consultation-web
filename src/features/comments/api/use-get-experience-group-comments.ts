@@ -23,6 +23,7 @@ export default function useGetExperienceGroupComments(
     __limit,
     additionalParams: {
       experienceGroupId,
+      sort: 'asc',
     },
   });
 }
