@@ -7,6 +7,8 @@ import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observe
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ROUTES } from '@/shared/lib/routes';
 
+import useCreatePostReadingMutation from '../../api/use-create-post-reading-mutation';
+
 import PostListEmptyView from './post-list-empty-view';
 import PostListItem from './post-list-item';
 
@@ -19,7 +21,13 @@ type PostListProps = {
 export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
   const router = useRouterWithUser();
 
-  const handlePostClick = (postId: number) => {
+  const { mutate: createPostReadingMutation } = useCreatePostReadingMutation();
+
+  const handlePostClick = ({ postId, isRead }: { postId: number; isRead: boolean }) => {
+    if (!isRead) {
+      createPostReadingMutation(postId, { onSuccess: () => {} });
+    }
+
     router.push(ROUTES.POSTS_DETAIL(postId), {
       [SEARCH_PARAMS.POST_LIST_TAB]: tab,
     });
@@ -38,7 +46,6 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
       {posts.map((post, index) => (
         <PostListItem
           key={post.id}
-          id={post.id}
           updatedAt={post.updatedAt}
           hairConsultPostingCreateUserRegion={post.hairConsultPostingCreateUserRegion}
           price={post.maxPaymentPrice}
@@ -49,8 +56,9 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
           viewCount={post.viewCount}
           likeCount={post.likeCount}
           commentCount={post.commentCount}
-          onClick={() => handlePostClick(post.id)}
+          onClick={() => handlePostClick({ postId: post.id, isRead: post.isRead })}
           ref={index === posts.length - 2 ? observerRef : undefined}
+          isRead={post.isRead}
         />
       ))}
     </>

@@ -4,6 +4,7 @@ import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
+import useCreateExperienceGroupReadingMutation from '../../api/use-create-experience-group-reading-mutation';
 import type { PostListTab } from '../../types/post-list-tab';
 
 import PostListEmptyView from './post-list-empty-view';
@@ -22,7 +23,14 @@ export default function ExperienceGroupList({
 }: ExperienceGroupListProps) {
   const router = useRouterWithUser();
 
-  const handlePostClick = (id: number) => {
+  const { mutate: createExperienceGroupReadingMutation } =
+    useCreateExperienceGroupReadingMutation();
+
+  const handlePostClick = ({ id, isRead }: { id: number; isRead: boolean }) => {
+    if (!isRead) {
+      createExperienceGroupReadingMutation(id, { onSuccess: () => {} });
+    }
+
     router.push(ROUTES.POSTS_EXPERIENCE_GROUP_DETAIL(id.toString()), {
       [SEARCH_PARAMS.POST_LIST_TAB]: tab,
     });
@@ -39,20 +47,23 @@ export default function ExperienceGroupList({
   return (
     <>
       {experienceGroups.map(
-        ({ id, updatedAt, title, viewCount, likeCount, commentCount, price, priceType }, index) => (
+        (
+          { id, updatedAt, title, viewCount, likeCount, commentCount, price, priceType, isRead },
+          index,
+        ) => (
           <PostListItem
             key={id}
-            id={id}
             updatedAt={updatedAt}
             title={title}
             viewCount={viewCount}
             likeCount={likeCount}
             commentCount={commentCount}
-            onClick={() => handlePostClick(id)}
+            onClick={() => handlePostClick({ id, isRead })}
             ref={index === experienceGroups.length - 2 ? observerRef : undefined}
             isConsultingPost={false}
             price={price}
             priceType={priceType}
+            isRead={isRead}
           />
         ),
       )}

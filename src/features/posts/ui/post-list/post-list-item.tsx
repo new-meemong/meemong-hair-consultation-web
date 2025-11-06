@@ -13,13 +13,11 @@ import type { ValueOf } from '@/shared/type/types';
 import Dot from '@/shared/ui/dot';
 
 import type { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
-import useReadingPostHistory from '../../hooks/use-reading-post-history';
 
 import PostListItemContent from './post-list-item-content';
 import PostListItemContentWithPrice from './post-list-item-price-content';
 
 type PostListItemProps = {
-  id: number;
   updatedAt: string;
   hairConsultPostingCreateUserRegion?: string;
   price: number | null;
@@ -30,13 +28,13 @@ type PostListItemProps = {
   viewCount: number;
   likeCount: number;
   commentCount: number;
+  isRead: boolean;
   priceType?: ValueOf<typeof EXPERIENCE_GROUP_PRICE_TYPE>;
   onClick?: () => void;
   ref?: RefObject<HTMLDivElement | null>;
 };
 
 export default function PostListItem({
-  id,
   updatedAt,
   hairConsultPostingCreateUserRegion,
   price,
@@ -49,20 +47,16 @@ export default function PostListItem({
   viewCount,
   likeCount,
   commentCount,
+  isRead,
   priceType,
 }: PostListItemProps) {
   const isValidImageUrl = repImageUrl && isValidUrl(repImageUrl);
 
   const { isUserDesigner } = useAuthContext();
 
-  const { isReadingPost, addReadingPostHistory } = useReadingPostHistory(id);
-
   const handleClick = useCallback(() => {
-    if (isUserDesigner) {
-      addReadingPostHistory();
-    }
     onClick?.();
-  }, [isUserDesigner, addReadingPostHistory, onClick]);
+  }, [onClick]);
 
   const getContent = useCallback(() => {
     const isDesignerConsultingWithPrice = isUserDesigner && price && isConsultingPost;
@@ -96,7 +90,7 @@ export default function PostListItem({
         <div className="flex justify-between items-stretch gap-7 flex-1">
           <div className="flex flex-col min-w-0 flex-1 gap-1">
             <div className="flex gap-[6.5px] items-center typo-body-3-regular text-label-info">
-              {isReadingPost && (
+              {isRead && (
                 <>
                   <p>읽음</p>
                   <Dot size="1" />
