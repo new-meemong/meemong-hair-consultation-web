@@ -18,9 +18,9 @@ export default function CommentAuthorProfile({ author, lockIconShown }: CommentA
 
   const isWriter = user.id === author.userId;
 
-  const { profilePictureURL, name } = author;
+  const { profilePictureURL, displayName } = author;
 
-  const displayedName = isWriter ? `${name}(글쓴이)` : name;
+  const displayedName = isWriter ? `${displayName}(글쓴이)` : displayName;
 
   const isCommentAuthorDesigner = author.role === USER_ROLE.DESIGNER;
 
@@ -60,7 +60,7 @@ export default function CommentAuthorProfile({ author, lockIconShown }: CommentA
             isWriter ? 'text-negative-light' : 'text-label-default',
           )}
         >
-          {displayedName}
+          {displayedName ?? '익명'}
         </p>
         {lockIconShown && <LockIcon className="size-3.5 fill-label-placeholder" />}
       </div>

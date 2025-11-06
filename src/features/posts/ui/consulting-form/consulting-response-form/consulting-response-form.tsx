@@ -1,11 +1,14 @@
 import { type UseFormReturn } from 'react-hook-form';
 
+import { useSearchParams } from 'next/navigation';
+
 import useCreateEventMongMutation from '@/features/mong/api/use-create-event-mong-mutation';
 import useShowEventMongSheet from '@/features/mong/hook/use-show-event-mong-sheet';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import useCreateConsultingResponse from '@/features/posts/hooks/use-create-consulting-response';
 import useEditConsultingResponse from '@/features/posts/hooks/use-edit-consulting-response';
 import { ROUTES } from '@/shared';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { FormStep } from '@/shared/type/form-step';
@@ -91,6 +94,9 @@ export default function ConsultingResponseForm({
   setCurrentStep,
   responseId,
 }: ConsultingResponseFormProps) {
+  const searchParams = useSearchParams();
+  const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
+
   const { showSnackBar } = useOverlayContext();
   const { replace } = useRouterWithUser();
   const { postDetail } = usePostDetail();
@@ -137,7 +143,9 @@ export default function ConsultingResponseForm({
           message: '컨설팅 답변을 보냈습니다!',
         });
 
-        replace(ROUTES.POSTS_DETAIL(postId));
+        replace(ROUTES.POSTS_DETAIL(postId), {
+          [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+        });
       },
     });
 

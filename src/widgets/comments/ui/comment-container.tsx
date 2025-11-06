@@ -1,27 +1,12 @@
 import { useCallback } from 'react';
 
-import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
+import convertToCommentWithReplyStatusFromPostComment from '@/entities/comment/lib/convertToCommentWithReplyStatus';
+import type { CommentActionHandlers } from '@/entities/comment/model/comment-action-handlers';
 import type { CommentFormState } from '@/features/comments/types/comment-form-state';
+import { usePostDetail } from '@/features/posts/context/post-detail-context';
 
 import useGetPostComments from '../../../features/comments/api/use-get-post-comments';
 import { CommentList } from '../../../features/comments/ui/comment-list';
-
-type CommentActionHandlers = {
-  handleReplyClick: (commentId: number) => void;
-  handleDeleteComment: (commentId: number) => void;
-  handleEditComment: (commentId: number, comments: CommentWithReplyStatus[]) => void;
-  handleCommentFormSubmit: (
-    data: {
-      content: string;
-      isVisibleToModel: boolean;
-      parentCommentId: string | null;
-    },
-    options: {
-      onSuccess: () => void;
-    },
-  ) => void;
-  resetCommentState: () => void;
-};
 
 type CommentContainerProps = {
   postId: string;
@@ -32,13 +17,9 @@ type CommentContainerProps = {
 export const CommentContainer = ({ postId, commentFormState, handlers }: CommentContainerProps) => {
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetPostComments(postId);
 
-  const comments: CommentWithReplyStatus[] =
-    data?.pages.flatMap((page) =>
-      page.dataList.flatMap((comment) => [
-        { ...comment, isReply: false },
-        ...(comment.replies ?? []).map((reply) => ({ ...reply, isReply: true })),
-      ]),
-    ) ?? [];
+  const comments = convertToCommentWithReplyStatusFromPostComment(data);
+
+  const { postDetail } = usePostDetail();
 
   const handleFetchNextPage = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -49,6 +30,8 @@ export const CommentContainer = ({ postId, commentFormState, handlers }: Comment
   return (
     <CommentList
       comments={comments}
+      postId={postDetail.id.toString()}
+      postWriterId={postDetail.hairConsultPostingCreateUserId}
       fetchNextPage={handleFetchNextPage}
       onReplyClick={handlers.handleReplyClick}
       focusedCommentId={commentFormState.commentId}

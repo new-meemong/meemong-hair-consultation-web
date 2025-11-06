@@ -1,29 +1,34 @@
 'use client';
 
-import ErrorIcon from '@/assets/icons/error.svg';
 import { type Post } from '@/entities/posts';
-import { useAuthContext } from '@/features/auth/context/auth-context';
-import { POST_LIST_TAB } from '@/features/posts/constants/post-list-tabs';
 import { type PostListTab } from '@/features/posts/types/post-list-tab';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { ROUTES } from '@/shared/lib/routes';
 
+import useCreatePostReadingMutation from '../../api/use-create-post-reading-mutation';
+
+import PostListEmptyView from './post-list-empty-view';
 import PostListItem from './post-list-item';
 
 type PostListProps = {
   posts: Post[];
   tab: PostListTab;
   fetchNextPage: () => void;
-  isConsultingPost: boolean;
 };
 
-export default function PostList({ posts, tab, fetchNextPage, isConsultingPost }: PostListProps) {
+export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
   const router = useRouterWithUser();
-  const { user } = useAuthContext();
 
-  const handlePostClick = (postId: number) => {
-    router.push(`/posts/${postId}`, {
+  const { mutate: createPostReadingMutation } = useCreatePostReadingMutation();
+
+  const handlePostClick = ({ postId, isRead }: { postId: number; isRead: boolean }) => {
+    if (!isRead) {
+      createPostReadingMutation(postId, { onSuccess: () => {} });
+    }
+
+    router.push(ROUTES.POSTS_DETAIL(postId), {
       [SEARCH_PARAMS.POST_LIST_TAB]: tab,
     });
   };
@@ -33,31 +38,29 @@ export default function PostList({ posts, tab, fetchNextPage, isConsultingPost }
   });
 
   if (posts.length === 0) {
-    return (
-      <div className="flex flex-col gap-2 items-center justify-center pt-30">
-        <ErrorIcon className="size-7 fill-label-info" />
-        <p className="typo-body-1-medium text-label-placeholder">
-          {POST_LIST_TAB[tab].getEmptyText(user.role)}
-        </p>
-      </div>
-    );
+    return <PostListEmptyView tab={tab} />;
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1">
-        <div className="[&>*:last-child]:border-b-0">
-          {posts.map((post, index) => (
-            <PostListItem
-              key={post.id}
-              post={post}
-              onClick={() => handlePostClick(post.id)}
-              ref={index === posts.length - 2 ? observerRef : undefined}
-              isConsultingPost={isConsultingPost}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
+    <>
+      {posts.map((post, index) => (
+        <PostListItem
+          key={post.id}
+          createdAt={post.createdAt}
+          hairConsultPostingCreateUserRegion={post.hairConsultPostingCreateUserRegion}
+          price={post.maxPaymentPrice}
+          isConsultingPost={true}
+          title={post.title}
+          content={post.content}
+          repImageUrl={post.repImageUrl}
+          viewCount={post.viewCount}
+          likeCount={post.likeCount}
+          commentCount={post.commentCount}
+          onClick={() => handlePostClick({ postId: post.id, isRead: post.isRead })}
+          ref={index === posts.length - 2 ? observerRef : undefined}
+          isRead={post.isRead}
+        />
+      ))}
+    </>
   );
 }

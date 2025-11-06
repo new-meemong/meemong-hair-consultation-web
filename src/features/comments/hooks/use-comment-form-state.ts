@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Comment } from '@/entities/comment/model/comment';
-import useSendCommentPushNotification from '@/features/chat/api/use-send-comment-push-notification';
+import useSendExperienceGroupCommentPushNotification from '@/features/chat/api/use-send-experience-group-comment-push-notification';
+import useSendPostCommentPushNotification from '@/features/chat/api/use-send-post-comment-push-notification';
 
 import type { CommentFormState } from '../types/comment-form-state';
 import type { CommentFormValues } from '../ui/comment-form';
@@ -13,13 +14,18 @@ const INITIAL_COMMENT_FORM_STATE: CommentFormState = {
   commentId: null,
   content: null,
 } as const;
+
+type UseCommentFormStateProps = {
+  postId?: string;
+  experienceGroupId?: string;
+  receiverId: string;
+};
+
 export const useCommentFormState = ({
   postId,
+  experienceGroupId,
   receiverId,
-}: {
-  postId: string;
-  receiverId: string;
-}) => {
+}: UseCommentFormStateProps) => {
   const [commentFormState, setCommentFormState] = useState<CommentFormState>(
     INITIAL_COMMENT_FORM_STATE,
   );
@@ -27,7 +33,7 @@ export const useCommentFormState = ({
   const shouldFocusRef = useRef(false);
 
   const { handleCreate, handleUpdate, handleDelete, isCommentCreating, isCommentUpdating } =
-    useCommentOperations(postId, commentFormState.commentId);
+    useCommentOperations({ postId, experienceGroupId, commentId: commentFormState.commentId });
 
   const resetCommentState = useCallback(() => {
     setCommentFormState(INITIAL_COMMENT_FORM_STATE);
@@ -78,14 +84,21 @@ export const useCommentFormState = ({
     }
   }, [commentFormState]);
 
-  const { mutate: sendNotification } = useSendCommentPushNotification();
+  const { mutate: sendPostCommentNotification } = useSendPostCommentPushNotification();
+  const { mutate: sendExperienceGroupCommentNotification } =
+    useSendExperienceGroupCommentPushNotification();
 
   const handleCommentFormSubmit = useCallback(
     (data: CommentFormValues, options: { onSuccess: () => void }) => {
       const onSuccess = () => {
         options.onSuccess();
         resetCommentState();
-        sendNotification({
+
+        const sendPush = postId
+          ? sendPostCommentNotification
+          : sendExperienceGroupCommentNotification;
+
+        sendPush({
           userId: receiverId,
           message: data.content,
         });
@@ -101,9 +114,11 @@ export const useCommentFormState = ({
       commentFormState.state,
       handleCreate,
       handleUpdate,
+      postId,
       receiverId,
       resetCommentState,
-      sendNotification,
+      sendExperienceGroupCommentNotification,
+      sendPostCommentNotification,
     ],
   );
 

@@ -3,10 +3,7 @@ type PostListItemModelContentProps = {
   content: string;
 };
 
-export default function PostListItemModelContent({
-  title,
-  content,
-}: PostListItemModelContentProps) {
+export default function PostListItemContent({ title, content }: PostListItemModelContentProps) {
   return (
     <div className="flex flex-col gap-2 flex-1">
       <h2 className="typo-headline-bold text-label-strong overflow-hidden text-ellipsis line-clamp-1">
