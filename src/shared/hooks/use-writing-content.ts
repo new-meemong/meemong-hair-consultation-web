@@ -13,7 +13,7 @@ export default function useWritingContent<K extends KeyOf<UserWritingContent>>(k
   }, [user, key]);
 
   const saveContent = useCallback(
-    (content: UserWritingContent[K]) => {
+    (content: UserWritingContent[K] | null) => {
       updateUser({ [key]: content });
     },
     [key, updateUser],

@@ -1,3 +1,5 @@
+import { useSearchParams } from 'next/navigation';
+
 import { format } from 'date-fns';
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
@@ -5,6 +7,7 @@ import ProfileIcon from '@/assets/icons/profile.svg';
 import type { ConsultingResponseDesigner } from '@/entities/posts/model/consulting-response';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 
@@ -22,6 +25,9 @@ export default function ConsultingResponseHeader({
   createdAt,
   responseId,
 }: ConsultingResponseHeaderProps) {
+  const searchParams = useSearchParams();
+  const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
+
   const { push } = useRouterWithUser();
   const { user } = useAuthContext();
   const { id, name, profileImageUrl } = author;
@@ -37,7 +43,9 @@ export default function ConsultingResponseHeader({
   };
 
   const handleOriginalPostClick = () => {
-    push(ROUTES.POSTS_DETAIL(postId));
+    push(ROUTES.POSTS_DETAIL(postId), {
+      [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+    });
   };
 
   return (

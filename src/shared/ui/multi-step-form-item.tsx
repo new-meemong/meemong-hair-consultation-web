@@ -1,19 +1,22 @@
+import { cn } from '../lib';
 import type { FormStep } from '../type/form-step';
 
 const MULTI_STEP_FORM_PORTAL_ID = 'multi-step-form-portal';
 
 type MultiStepFormItemProps<T extends Record<string, unknown>> = {
   step: FormStep<T>;
+  className?: string;
 };
 
 export default function MultiStepFormItem<T extends Record<string, unknown>>({
   step,
+  className,
 }: MultiStepFormItemProps<T>) {
   const { question, required, description, children } = step;
 
   return (
     <>
-      <form className="flex flex-col flex-1 min-h-0 px-5 pt-10 gap-7 relative">
+      <div className={cn('flex flex-col flex-1 min-h-0 px-5 pt-10 gap-7 relative', className)}>
         {(question || description) && (
           <div className="flex flex-col gap-3 flex-shrink-0">
             <div className="flex items-center justify-between">
@@ -36,7 +39,7 @@ export default function MultiStepFormItem<T extends Record<string, unknown>>({
           </div>
         )}
         <div className="flex-1 overflow-y-auto scrollbar-hide pb-7">{children}</div>
-      </form>
+      </div>
       <div id={MULTI_STEP_FORM_PORTAL_ID} />
     </>
   );

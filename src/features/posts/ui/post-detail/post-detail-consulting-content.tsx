@@ -1,13 +1,11 @@
-import type { ReactNode } from 'react';
-
 import LockIcon from '@/assets/icons/lock.svg';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import { cn } from '@/lib/utils';
 
 import { HAIR_CONCERN_OPTION } from '../../constants/hair-concern-option';
 import getSkinToneValue from '../../lib/get-skin-tone-value';
 import ConsultingInputResultListItem from '../consulting-input-result-list-item';
+import PostDetailContentItem from '../post-detail-content-item';
 import SkinColorLabel from '../skin-color-label';
 
 import PostDetailAuthorProfile from './post-detail-author-profile';
@@ -15,23 +13,6 @@ import PostDetailImage from './post-detail-image';
 
 function Separator() {
   return <div className="bg-alternative h-1.5" />;
-}
-
-function ContentItem({
-  label,
-  children,
-  className,
-}: {
-  label: string;
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={cn('flex flex-col gap-3', className)}>
-      <p className="typo-body-1-semibold text-label-default">{label}</p>
-      {children}
-    </div>
-  );
 }
 
 function HiddenImageAlertBox() {
@@ -122,7 +103,7 @@ export default function PostDetailConsultingContent({
       <Separator />
       <div className="flex flex-col gap-8 px-5">
         {hasAspirations && (
-          <ContentItem label="추구미">
+          <PostDetailContentItem label="추구미">
             {aspirations.aspirationImages.length > 0 &&
               (hiddenImages ? (
                 <HiddenImageAlertBox />
@@ -134,10 +115,10 @@ export default function PostDetailConsultingContent({
                 {aspirations.aspirationDescription}
               </p>
             )}
-          </ContentItem>
+          </PostDetailContentItem>
         )}
         {treatments && treatments.length > 0 && (
-          <ContentItem label="최근 받은 시술">
+          <PostDetailContentItem label="최근 받은 시술">
             {treatments.map(({ treatmentName, treatmentDate }, index) => (
               <ConsultingInputResultListItem
                 key={`${treatmentName}-${treatmentDate}-${index}`}
@@ -145,28 +126,28 @@ export default function PostDetailConsultingContent({
                 description={treatmentDate}
               />
             ))}
-          </ContentItem>
+          </PostDetailContentItem>
         )}
         {skinToneValue && (
-          <ContentItem label="피부톤" className="gap-4">
+          <PostDetailContentItem label="피부톤" className="gap-4">
             <SkinColorLabel type={skinToneValue} />
-          </ContentItem>
+          </PostDetailContentItem>
         )}
         {content && (
-          <ContentItem label="기타의견">
+          <PostDetailContentItem label="기타의견">
             <p className="typo-body-2-long-regular text-label-sub">{content}</p>
-          </ContentItem>
+          </PostDetailContentItem>
         )}
         {priceShowed &&
           minPaymentPrice != null &&
           maxPaymentPrice != null &&
           minPaymentPrice >= 0 &&
           maxPaymentPrice >= 0 && (
-            <ContentItem label="원하는 시술 가격대">
+            <PostDetailContentItem label="원하는 시술 가격대">
               <p className="typo-body-2-long-regular text-label-sub">
                 {minPaymentPrice.toLocaleString()}원~{maxPaymentPrice.toLocaleString()}원
               </p>
-            </ContentItem>
+            </PostDetailContentItem>
           )}
       </div>
     </div>

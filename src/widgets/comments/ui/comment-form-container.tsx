@@ -1,11 +1,14 @@
 import { useCallback, useState } from 'react';
 
+import { useSearchParams } from 'next/navigation';
+
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import type { CommentFormState } from '@/features/comments/types/comment-form-state';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
 import useWritingConsultingResponse from '@/features/posts/hooks/use-writing-consulting-response';
 import { ROUTES } from '@/shared';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { Button } from '@/shared/ui/button';
 
@@ -33,6 +36,9 @@ export default function CommentFormContainer({
   isConsulting,
   isAnsweredByDesigner,
 }: CommentFormContainerProps) {
+  const searchParams = useSearchParams();
+  const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
+
   const { push } = useRouterWithUser();
   const { isUserDesigner } = useAuthContext();
 
@@ -54,7 +60,9 @@ export default function CommentFormContainer({
   const writingResponseButtonText = hasSavedContent ? '이어서 작성하기' : '컨설팅 답변하기';
 
   const handleWriteConsultingResponseClick = () => {
-    push(ROUTES.POSTS_CREATE_CONSULTING_POST(postId.toString()));
+    push(ROUTES.POSTS_CREATE_CONSULTING_POST(postId.toString()), {
+      [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+    });
   };
 
   return (

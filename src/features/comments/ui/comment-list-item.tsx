@@ -1,5 +1,7 @@
 import { useRef } from 'react';
 
+import { useSearchParams } from 'next/navigation';
+
 import { format } from 'date-fns';
 
 import MoreIcon from '@/assets/icons/more-vertical.svg';
@@ -7,9 +9,9 @@ import ReplyIcon from '@/assets/icons/reply.svg';
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
 import { AD_TYPE } from '@/features/ad/constants/ad-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import { cn } from '@/lib/utils';
 import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
 
@@ -24,6 +26,8 @@ const MORE_ACTION = {
 
 type CommentListItemProps = {
   comment: CommentWithReplyStatus;
+  postId: string;
+  postWriterId: number;
   onReplyClick: (commentId: number) => void;
   isFocused: boolean;
   onDelete: () => void;
@@ -34,6 +38,8 @@ type CommentListItemProps = {
 
 export default function CommentListItem({
   comment,
+  postId,
+  postWriterId,
   onReplyClick,
   isFocused,
   onDelete,
@@ -41,17 +47,23 @@ export default function CommentListItem({
   onReport,
   onTriggerClick,
 }: CommentListItemProps) {
+  const searchParams = useSearchParams();
+  const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
+
   const { user, isUserDesigner, isUserModel } = useAuthContext();
   const { push } = useRouterWithUser();
-  const { postDetail } = usePostDetail();
 
   const handleConsultingResponseClick = () => {
-    if (isUserModel) {
-      showAdIfAllowed({
-        adType: AD_TYPE.VIEW_HAIR_CONSULTING_ANSWER,
+    if (comment.answerId) {
+      if (isUserModel) {
+        showAdIfAllowed({
+          adType: AD_TYPE.VIEW_HAIR_CONSULTING_ANSWER,
+        });
+      }
+      push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
+        [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
       });
     }
-    push(ROUTES.POSTS_CONSULTING_RESPONSE(postDetail.id.toString(), comment.answerId.toString()));
   };
 
   const {
@@ -63,7 +75,7 @@ export default function CommentListItem({
     isConsultingAnswer,
   } = comment;
 
-  const isPostWriter = postDetail.hairConsultPostingCreateUserId === user.id;
+  const isPostWriter = postWriterId === user.id;
   const isCommentWriter = author.userId === user.id;
 
   const replyCommentRef = useRef<HTMLDivElement>(null);
@@ -150,7 +162,7 @@ export default function CommentListItem({
             ) : (
               <ConsultingResponseButton
                 isCommentWriter={isCommentWriter}
-                hasAnswerImages={comment.hasAnswerImages}
+                hasAnswerImages={comment.hasAnswerImages ?? false}
                 onClick={handleConsultingResponseClick}
               />
             )}

@@ -8,12 +8,14 @@ type ConsultingFormOptionListProps = {
   options: ConsultingFormOption[];
   name: string;
   canReset?: boolean;
+  onChange?: (value: string) => void;
 };
 
 export default function ConsultingFormOptionList({
   options,
   name,
   canReset = false,
+  onChange,
 }: ConsultingFormOptionListProps) {
   const { control, setValue, getValues } = useFormContext();
   const selectedOption = useWatch({ control, name });
@@ -27,6 +29,7 @@ export default function ConsultingFormOptionList({
       }
     }
     setValue(name, value, { shouldDirty: true });
+    onChange?.(value);
   };
 
   return (

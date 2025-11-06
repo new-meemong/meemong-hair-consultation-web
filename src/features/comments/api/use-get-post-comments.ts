@@ -1,4 +1,4 @@
-import type { CommentWithReplies } from '@/entities/comment/model/comment';
+import type { PostCommentWithReplies } from '@/entities/comment/model/post-comment';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '@/features/posts/constants/api';
 import { DEFAULT_LIMIT } from '@/shared/api/constants/default-limit';
 import useCursorInfiniteQuery from '@/shared/api/hooks/use-cursor-infinite-query';
@@ -12,7 +12,7 @@ export const getGetPostCommentsQueryKeyPrefix = (postId: string) =>
 export default function useGetPostComments(postId: string, params: PagingQueryParams = {}) {
   const { __limit = DEFAULT_LIMIT } = params;
 
-  return useCursorInfiniteQuery<CommentWithReplies>({
+  return useCursorInfiniteQuery<PostCommentWithReplies>({
     endpoint: getGetPostCommentsEndpoint(postId),
     queryKey: [getGetPostCommentsQueryKeyPrefix(postId), params],
     __limit,

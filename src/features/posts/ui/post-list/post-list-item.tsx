@@ -1,56 +1,85 @@
-'use client';
-
-import type { RefObject } from 'react';
+import { useCallback, type RefObject } from 'react';
 
 import Image from 'next/image';
 
 import CommentIcon from '@/assets/icons/comment.svg';
 import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
-import { type Post } from '@/entities/posts';
+import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import formatAddress from '@/features/auth/lib/format-address';
+import formatDateTime from '@/shared/lib/formatDateTime';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
+import type { ValueOf } from '@/shared/type/types';
 import Dot from '@/shared/ui/dot';
 
-import useReadingPostHistory from '../../hooks/use-reading-post-history';
+import type { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
 
-import PostListItemDesignerContent from './post-list-item-designer-content';
-import PostListItemModelContent from './post-list-item-model-content';
+import PostListItemContent from './post-list-item-content';
+import PostListItemContentWithPrice from './post-list-item-price-content';
 
-type PostItemProps = {
-  post: Post;
+type PostListItemProps = {
+  createdAt: string;
+  hairConsultPostingCreateUserRegion?: string;
+  price: number | null;
+  isConsultingPost: boolean;
+  title: string;
+  content?: string;
+  repImageUrl?: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+  isRead: boolean;
+  priceType?: ValueOf<typeof EXPERIENCE_GROUP_PRICE_TYPE>;
   onClick?: () => void;
   ref?: RefObject<HTMLDivElement | null>;
-  isConsultingPost: boolean;
 };
 
-export default function PostListItem({ post, onClick, ref, isConsultingPost }: PostItemProps) {
-  const {
-    id,
-    updatedAt,
-    title,
-    content,
-    repImageUrl,
-    viewCount,
-    likeCount,
-    commentCount,
-    hairConsultPostingCreateUserRegion,
-    maxPaymentPrice,
-  } = post;
-
+export default function PostListItem({
+  createdAt,
+  hairConsultPostingCreateUserRegion,
+  price,
+  isConsultingPost,
+  title,
+  content,
+  repImageUrl,
+  onClick,
+  ref,
+  viewCount,
+  likeCount,
+  commentCount,
+  isRead,
+  priceType,
+}: PostListItemProps) {
   const isValidImageUrl = repImageUrl && isValidUrl(repImageUrl);
 
   const { isUserDesigner } = useAuthContext();
 
-  const { isReadingPost, addReadingPostHistory } = useReadingPostHistory(id);
-
-  const handleClick = () => {
-    if (isUserDesigner) {
-      addReadingPostHistory();
-    }
+  const handleClick = useCallback(() => {
     onClick?.();
-  };
+  }, [onClick]);
+
+  const getContent = useCallback(() => {
+    const isDesignerConsultingWithPrice = isUserDesigner && price && isConsultingPost;
+    const isConsulting = !isDesignerConsultingWithPrice && content && isConsultingPost;
+    const isExperienceGroup = !isConsultingPost && price !== undefined && priceType;
+
+    if (isDesignerConsultingWithPrice) {
+      return (
+        <PostListItemContentWithPrice
+          content={title}
+          price={price}
+          type={CONSULT_TYPE.CONSULTING}
+        />
+      );
+    }
+    if (isConsulting) {
+      return <PostListItemContent title={title} content={content} />;
+    }
+    if (isExperienceGroup) {
+      return <PostListItemContentWithPrice content={title} price={price} type={priceType} />;
+    }
+  }, [isUserDesigner, price, isConsultingPost, content, title, priceType]);
 
   return (
     <div
@@ -62,13 +91,13 @@ export default function PostListItem({ post, onClick, ref, isConsultingPost }: P
         <div className="flex justify-between items-stretch gap-7 flex-1">
           <div className="flex flex-col min-w-0 flex-1 gap-1">
             <div className="flex gap-[6.5px] items-center typo-body-3-regular text-label-info">
-              {isReadingPost && (
+              {isRead && (
                 <>
                   <p>읽음</p>
                   <Dot size="1" />
                 </>
               )}
-              <p>{updatedAt}</p>
+              <p>{formatDateTime(createdAt)}</p>
               {isUserDesigner && hairConsultPostingCreateUserRegion && (
                 <>
                   <Dot size="1" />
@@ -76,11 +105,7 @@ export default function PostListItem({ post, onClick, ref, isConsultingPost }: P
                 </>
               )}
             </div>
-            {isUserDesigner && maxPaymentPrice != null && isConsultingPost ? (
-              <PostListItemDesignerContent content={title} maxPaymentPrice={maxPaymentPrice} />
-            ) : (
-              <PostListItemModelContent title={title} content={content} />
-            )}
+            {getContent()}
           </div>
 
           {isValidImageUrl && (

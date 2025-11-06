@@ -19,6 +19,7 @@ export type Post = {
   hairConsultPostingCreateUserRegion: string;
   minPaymentPrice: number | null;
   maxPaymentPrice: number | null;
+  isRead: boolean;
 };
 
 export interface Banner {
