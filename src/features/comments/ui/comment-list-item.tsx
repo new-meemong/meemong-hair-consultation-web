@@ -12,7 +12,6 @@ import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 import CommentAuthorProfile from './comment-author-profile';
-import CommentListItemSecret from './comment-list-item-secret';
 import ConsultingResponseButton from './consulting-response-button';
 
 const MORE_ACTION = {
@@ -111,47 +110,48 @@ export default function CommentListItem({
     >
       <>
         {isReply && <ReplyIcon className="size-4.5 fill-label-strong" />}
-        {isSecret ? (
-          <CommentListItemSecret createdAt={createdAt} />
-        ) : (
-          <div className="flex flex-col gap-3 flex-1">
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <CommentAuthorProfile author={comment.user} lockIconShown={lockIconShown} />
-              </div>
-              <div className="flex items-center gap-1.5">
-                {!isReply && (
-                  <Button variant="text" theme="text" size="text" onClick={handleReplyClick}>
-                    답글달기
-                  </Button>
-                )}
-                <MoreOptionsMenu
-                  trigger={<MoreIcon className="size-6" />}
-                  options={getMoreOptions()}
-                  contentClassName="-right-[14px] "
-                  onOpenChange={(open) => {
-                    if (open) {
-                      onTriggerClick();
-                    }
-                  }}
-                />
-              </div>
+        <div className="flex flex-col gap-3 flex-1">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <CommentAuthorProfile author={comment.user} lockIconShown={lockIconShown} />
             </div>
-            <div className="flex flex-col gap-2">
-              {!isConsultingAnswer && <div className="typo-body-1-long-regular">{content}</div>}
-              <span className="typo-body-3-regular text-label-info">
-                {format(createdAt, 'MM/dd hh:mm')}
-              </span>
-              {isConsultingAnswer && !isReply && (
-                <ConsultingResponseButton
-                  isCommentWriter={isCommentWriter}
-                  hasAnswerImages={comment.hasAnswerImages}
-                  onClick={handleConsultingResponseClick}
-                />
+            <div className="flex items-center gap-1.5">
+              {!isReply && (
+                <Button variant="text" theme="text" size="text" onClick={handleReplyClick}>
+                  답글달기
+                </Button>
               )}
+              <MoreOptionsMenu
+                trigger={<MoreIcon className="size-6" />}
+                options={getMoreOptions()}
+                contentClassName="-right-[14px] "
+                onOpenChange={(open) => {
+                  if (open) {
+                    onTriggerClick();
+                  }
+                }}
+              />
             </div>
           </div>
-        )}
+          <div className="flex flex-col gap-2">
+            {isSecret ? (
+              <span className="typo-body-1-long-regular text-label-info">
+                {`타 디자이너의 ${isReply ? '답글' : '댓글'}은 볼 수 없습니다`}
+              </span>
+            ) : !isConsultingAnswer ? (
+              <div className="typo-body-1-long-regular">{content}</div>
+            ) : (
+              <ConsultingResponseButton
+                isCommentWriter={isCommentWriter}
+                hasAnswerImages={comment.hasAnswerImages}
+                onClick={handleConsultingResponseClick}
+              />
+            )}
+            <span className="typo-body-3-regular text-label-info">
+              {format(createdAt, 'MM/dd hh:mm')}
+            </span>
+          </div>
+        </div>
       </>
     </div>
   );
