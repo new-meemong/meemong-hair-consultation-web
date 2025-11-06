@@ -60,7 +60,7 @@ export default function CommentAuthorProfile({ author, lockIconShown }: CommentA
             isWriter ? 'text-negative-light' : 'text-label-default',
           )}
         >
-          {displayedName}
+          {displayedName ?? '익명'}
         </p>
         {lockIconShown && <LockIcon className="size-3.5 fill-label-placeholder" />}
       </div>
