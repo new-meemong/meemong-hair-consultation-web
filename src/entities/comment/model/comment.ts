@@ -17,7 +17,7 @@ export type Comment = {
   createdAt: string;
   updatedAt?: string;
   user: CommentUser;
-  isAnonymou?: boolean;
+  isAnonymous?: boolean;
   answerId?: number;
   isConsultingAnswer?: boolean;
   hasAnswerImages?: boolean;
