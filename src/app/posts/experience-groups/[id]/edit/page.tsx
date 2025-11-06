@@ -7,14 +7,11 @@ import { FormProvider } from 'react-hook-form';
 import { useParams } from 'next/navigation';
 
 import useGetExperienceGroupDetail from '@/features/posts/api/use-get-experience-group-detail';
-import usePatchExperienceGroupMutation from '@/features/posts/api/use-patch-experience-group-mutation';
 import { EXPERIENCE_GROUP_FORM_FIELD_NAME } from '@/features/posts/constants/experience-group/experience-group-form-field-name';
 import useExperienceGroupForm from '@/features/posts/hooks/experience-group/use-experience-group-form';
-import type { ExperienceGroupFormValues } from '@/features/posts/types/experience-group-form-values';
+import useEditExperienceGroup from '@/features/posts/hooks/use-edit-experience-group';
 import ExperienceGroupForm from '@/features/posts/ui/experience-group-form/experience-group-form';
-import { ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { SiteHeader } from '@/widgets/header';
 
 export default function EditExperienceGroupPage() {
@@ -24,16 +21,11 @@ export default function EditExperienceGroupPage() {
 
   const { back } = useRouterWithUser();
 
+  const { handleEdit } = useEditExperienceGroup({ experienceGroupId: id?.toString() ?? '' });
+
   const { data: detailResponse } = useGetExperienceGroupDetail(id?.toString() ?? '');
 
   const { method } = useExperienceGroupForm();
-
-  const showModal = useShowModal();
-  const { replace } = useRouterWithUser();
-
-  const { mutate: editExperienceGroup } = usePatchExperienceGroupMutation({
-    experienceGroupId: id?.toString() ?? '',
-  });
 
   useEffect(() => {
     if (!detailResponse?.data || !id) return;
@@ -52,25 +44,6 @@ export default function EditExperienceGroupPage() {
     });
   }, [detailResponse?.data, id, method]);
 
-  const handleSubmit = (values: ExperienceGroupFormValues) => {
-    editExperienceGroup(values, {
-      onSuccess: () => {
-        showModal({
-          id: 'edit-consulting-response-confirm-modal',
-          text: '수정이 완료되었습니다',
-          buttons: [
-            {
-              label: '확인',
-              onClick: () => {
-                replace(ROUTES.POSTS_EXPERIENCE_GROUP_DETAIL(id?.toString() ?? ''));
-              },
-            },
-          ],
-        });
-      },
-    });
-  };
-
   if (!id) return null;
 
   return (
@@ -80,7 +53,7 @@ export default function EditExperienceGroupPage() {
         <ExperienceGroupForm
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
-          onSubmit={handleSubmit}
+          onSubmit={handleEdit}
         />
       </FormProvider>
     </div>
