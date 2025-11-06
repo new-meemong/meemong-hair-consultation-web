@@ -45,7 +45,7 @@ export default function useCursorInfiniteQuery<TData extends Record<string, unkn
       });
     },
     getNextPageParam: (lastPage: ApiListResponse<TData>) => {
-      return lastPage.nextCursor ?? lastPage.__nextCursor;
+      return lastPage.__nextCursor;
     },
     initialPageParam: undefined as string | undefined,
     meta: {
