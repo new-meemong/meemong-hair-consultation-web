@@ -24,4 +24,6 @@ export type ExperienceGroupDetail = {
     url: string;
   }>;
   isAnonymous: boolean;
+  isLiked: boolean;
+  isRead: boolean;
 };
