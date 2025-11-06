@@ -1,47 +1,51 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
+import type { KeyOf } from '@/shared/type/types';
 
-import type { ConsultingPostFormValues } from '../types/consulting-post-form-values';
-import type { WritingStep } from '../types/user-writing-content';
+import type { UserWritingContent } from '../types/user-writing-content';
 
-import useShowLeaveCreateConsultingPostModal from './use-show-leave-create-consulting-post';
-import useShowReloadConsultingPostModal from './use-show-reload-consulting-post-modal';
+import useShowLeaveCreatePostModal from './use-show-leave-create-post-modal';
+import useShowReloadSavedPostFormModal from './use-show-reload-saved-post-form-modal';
 
-export default function usePostFormNavigation({
+export default function usePostFormNavigation<
+  T extends Exclude<KeyOf<UserWritingContent>, 'consultingResponse'>,
+>({
+  type,
   onSavedContentReload,
 }: {
-  onSavedContentReload: (savedContent: WritingStep<ConsultingPostFormValues>) => void;
+  onSavedContentReload: (savedContent: UserWritingContent[T]) => void;
+  type: T;
 }) {
   const [initialize, setInitialize] = useState(false);
 
-  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.consultingPost);
-  const hasSavedContent = savedContent !== null;
+  const { savedContent, saveContent } = useWritingContent(type);
+  const hasSavedContent = savedContent !== null && savedContent !== undefined;
 
   const { back } = useRouterWithUser();
 
-  const showReloadConsultingPostModal = useShowReloadConsultingPostModal({
+  const showReloadSavedPostFormModal = useShowReloadSavedPostFormModal({
     onClose: back,
     onPositive: () => onSavedContentReload(savedContent),
     onNegative: () => {
       saveContent(null);
     },
+    type,
   });
-  const showLeaveCreateConsultingPostModal = useShowLeaveCreateConsultingPostModal();
+  const showLeaveCreatePostModal = useShowLeaveCreatePostModal({ type });
 
   useEffect(() => {
-    if (hasSavedContent && !initialize ) {
-      showReloadConsultingPostModal();
+    if (hasSavedContent && !initialize) {
+      showReloadSavedPostFormModal();
     }
     setInitialize(true);
-  }, [showReloadConsultingPostModal, initialize, hasSavedContent]);
+  }, [showReloadSavedPostFormModal, initialize, hasSavedContent]);
 
   const leaveForm = useCallback(
-    (writingContent: WritingStep<ConsultingPostFormValues>, isDirty: boolean) => {
+    (writingContent: UserWritingContent[T], isDirty: boolean) => {
       if (savedContent || isDirty) {
-        showLeaveCreateConsultingPostModal({
+        showLeaveCreatePostModal({
           onClose: () => {
             back();
             saveContent(writingContent);
@@ -51,11 +55,9 @@ export default function usePostFormNavigation({
       }
 
       back();
-
     },
-    [back, savedContent, showLeaveCreateConsultingPostModal, saveContent],
+    [back, savedContent, showLeaveCreatePostModal, saveContent],
   );
-
 
   return { leaveForm };
 }

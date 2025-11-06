@@ -1,9 +1,9 @@
 import type { Post } from '@/entities/posts';
 import type { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-import { ALL_OPTION } from '@/features/region/constants/region';
 import type { SelectedRegion } from '@/features/region/types/selected-region';
 import { DEFAULT_LIMIT } from '@/shared/api/constants/default-limit';
 import useCursorInfiniteQuery from '@/shared/api/hooks/use-cursor-infinite-query';
+import convertToAddresses from '@/shared/api/lib/convert-to-addresses';
 import type { PagingQueryParams } from '@/shared/api/types/paging-query-params';
 import type { ValueOf } from '@/shared/type/types';
 
@@ -29,9 +29,7 @@ export default function useGetPosts(params: GetPostsQueryParams) {
     additionalParams: {
       filter,
       consultType,
-      addresses: selectedRegion
-      ? selectedRegion.values.map((value) => value === ALL_OPTION ? selectedRegion.key : `${selectedRegion.key} ${value}`)
-      : undefined,
+      addresses: convertToAddresses(selectedRegion),
     },
   });
 }

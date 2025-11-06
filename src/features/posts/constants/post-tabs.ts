@@ -7,9 +7,9 @@ const POST_TAB: Record<ValueOf<typeof CONSULT_TYPE>, Option<ValueOf<typeof CONSU
     label: '헤어 컨설팅',
     value: CONSULT_TYPE.CONSULTING,
   },
-  [CONSULT_TYPE.GENERAL]: {
-    label: '자유 상담',
-    value: CONSULT_TYPE.GENERAL,
+  [CONSULT_TYPE.EXPERIENCE_GROUP]: {
+    label: '체험단 협찬신청',
+    value: CONSULT_TYPE.EXPERIENCE_GROUP,
   },
 };
 

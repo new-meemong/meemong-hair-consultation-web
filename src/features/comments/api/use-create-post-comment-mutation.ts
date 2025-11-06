@@ -8,7 +8,7 @@ import { apiClient } from '@/shared/api/client';
 
 import { getGetPostCommentsQueryKeyPrefix } from './use-get-post-comments';
 
-export default function useCreateCommentMutation(postId: string) {
+export default function useCreatePostCommentMutation(postId: string) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({

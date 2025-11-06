@@ -1,24 +1,34 @@
 'use client';
 
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
+import useExperienceGroupFavoriteMutation from '@/features/posts/api/use-experience-group-favorite-mutation';
 import usePostFavoriteMutation from '@/features/posts/api/use-post-favorite-mutation';
 import { cn } from '@/shared/lib/utils';
 import ActionItem from '@/shared/ui/action-item';
 
 interface LikeButtonProps {
-  postId: number;
+  postId?: number;
+  experienceGroupId?: number;
   liked: boolean;
   likeCount: number;
 }
 
-export function LikeButton({ postId, liked, likeCount }: LikeButtonProps) {
+export function LikeButton({ postId, experienceGroupId, liked, likeCount }: LikeButtonProps) {
   const toggleFavoriteMutation = usePostFavoriteMutation();
+  const toggleExperienceGroupFavoriteMutation = useExperienceGroupFavoriteMutation();
 
   const handleToggle = (liked: boolean) => {
-    toggleFavoriteMutation.mutate({
-      hairConsultPostingId: postId,
-      liked,
-    });
+    if (postId) {
+      toggleFavoriteMutation.mutate({
+        hairConsultPostingId: postId,
+        liked,
+      });
+    } else if (experienceGroupId) {
+      toggleExperienceGroupFavoriteMutation.mutate({
+        id: experienceGroupId,
+        liked,
+      });
+    }
   };
 
   return (
