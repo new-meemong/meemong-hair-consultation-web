@@ -5,11 +5,13 @@ import { format } from 'date-fns';
 import MoreIcon from '@/assets/icons/more-vertical.svg';
 import ReplyIcon from '@/assets/icons/reply.svg';
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
+import { AD_TYPE } from '@/features/ad/constants/ad-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import { cn } from '@/lib/utils';
 import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
 
 import CommentAuthorProfile from './comment-author-profile';
 import ConsultingResponseButton from './consulting-response-button';
@@ -39,11 +41,16 @@ export default function CommentListItem({
   onReport,
   onTriggerClick,
 }: CommentListItemProps) {
-  const { user, isUserDesigner } = useAuthContext();
+  const { user, isUserDesigner, isUserModel } = useAuthContext();
   const { push } = useRouterWithUser();
   const { postDetail } = usePostDetail();
 
   const handleConsultingResponseClick = () => {
+    if (isUserModel) {
+      showAdIfAllowed({
+        adType: AD_TYPE.VIEW_HAIR_CONSULTING_ANSWER,
+      });
+    }
     push(ROUTES.POSTS_CONSULTING_RESPONSE(postDetail.id.toString(), comment.answerId.toString()));
   };
 

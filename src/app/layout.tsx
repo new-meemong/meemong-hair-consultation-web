@@ -111,6 +111,16 @@ export default function RootLayout({
             window.setCustomBackAction = setCustomBackAction;
 
             window.customBackAction = null;
+
+            function showAdIfAllowed({adType}) {
+              if(window.ShowAdIfAllowed) {
+                window.ShowAdIfAllowed.postMessage(JSON.stringify({adType}));
+              } else {
+                console.log("ShowAdIfAllowed channel is not available.");
+              }
+            }
+
+            window.showAdIfAllowed = showAdIfAllowed;
           `}
         </Script>
       </body>
