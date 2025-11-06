@@ -8,6 +8,7 @@ import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import formatAddress from '@/features/auth/lib/format-address';
+import formatDateTime from '@/shared/lib/formatDateTime';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
 import type { ValueOf } from '@/shared/type/types';
 import Dot from '@/shared/ui/dot';
@@ -96,7 +97,7 @@ export default function PostListItem({
                   <Dot size="1" />
                 </>
               )}
-              <p>{updatedAt}</p>
+              <p>{formatDateTime(updatedAt)}</p>
               {isUserDesigner && hairConsultPostingCreateUserRegion && (
                 <>
                   <Dot size="1" />
