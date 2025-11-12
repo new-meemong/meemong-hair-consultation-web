@@ -6,6 +6,8 @@ import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { MoreOptionsMenu } from '@/shared/ui/more-options-menu';
 
+import useDeleteExperienceGroup from '../../hooks/use-delete-experience-group';
+
 type ExperienceGroupDetailMoreButtonProps = {
   experienceGroupId: string;
 };
@@ -18,15 +20,13 @@ export default function ExperienceGroupDetailMoreButton({
 
   const { push } = useRouterWithUser();
 
-  const handleDelete = () => {
-    console.log('experienceGroupId', experienceGroupId);
-  };
-
   const handleEdit = () => {
     push(ROUTES.POSTS_EXPERIENCE_GROUP_EDIT(experienceGroupId), {
       [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
     });
   };
+
+  const { handleDelete } = useDeleteExperienceGroup(experienceGroupId);
 
   const moreOptions = [
     {

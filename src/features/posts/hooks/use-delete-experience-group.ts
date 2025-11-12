@@ -8,7 +8,7 @@ import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 import useDeleteExperienceGroupMutation from '../api/use-delete-experience-group-mutation';
 
-export default function useDeleteExperienceGroup(experienceGroupId: number) {
+export default function useDeleteExperienceGroup(experienceGroupId: string) {
   const showModal = useShowModal();
   const { push } = useRouterWithUser();
 
@@ -16,7 +16,7 @@ export default function useDeleteExperienceGroup(experienceGroupId: number) {
 
   const handleDeleteConfirm = useCallback(
     () =>
-      deleteExperienceGroup(Number(experienceGroupId), {
+      deleteExperienceGroup(experienceGroupId, {
         onSuccess: () => {
           showModal({
             id: 'delete-post-confirm-modal',
@@ -37,7 +37,7 @@ export default function useDeleteExperienceGroup(experienceGroupId: number) {
     [deleteExperienceGroup, experienceGroupId, showModal, push],
   );
 
-  const handleDeletePost = useCallback(() => {
+  const handleDelete = useCallback(() => {
     if (!experienceGroupId) return;
 
     showModal({
@@ -56,6 +56,6 @@ export default function useDeleteExperienceGroup(experienceGroupId: number) {
   }, [experienceGroupId, showModal, handleDeleteConfirm]);
 
   return {
-    handleDeletePost,
+    handleDelete,
   };
 }

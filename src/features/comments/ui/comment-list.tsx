@@ -39,7 +39,10 @@ export function CommentList({
   return (
     <>
       {comments.map((comment, index) => (
-        <div key={comment.id} ref={index === comments.length - 2 ? observerRef : undefined}>
+        <div
+          key={`${comment.id}-${index}`}
+          ref={index === comments.length - 2 ? observerRef : undefined}
+        >
           <CommentListItem
             comment={comment}
             postId={postId}

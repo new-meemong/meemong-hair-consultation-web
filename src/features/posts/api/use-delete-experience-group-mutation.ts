@@ -10,11 +10,11 @@ export default function useDeleteExperienceGroupMutation() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (experienceGroupId: number) =>
+    mutationFn: (experienceGroupId: string) =>
       apiClient.delete(`${EXPERIENCE_GROUP_API_PREFIX}/${experienceGroupId}`),
   });
 
-  const mutate = (experienceGroupId: number, { onSuccess }: { onSuccess: () => void }) => {
+  const mutate = (experienceGroupId: string, { onSuccess }: { onSuccess: () => void }) => {
     mutation.mutate(experienceGroupId, {
       onSuccess: () => {
         onSuccess();
