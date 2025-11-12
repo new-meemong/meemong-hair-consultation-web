@@ -54,8 +54,9 @@ export default function useConsultingPostForm() {
 
   const submit = (values: ConsultingPostFormValues) => {
     handleCreateConsultingPost(values, {
-      onSuccess: () => {
-        showAdIfAllowed({ adType: AD_TYPE.CREATING_HAIR_CONSULTING });
+      onSuccess: async () => {
+        await showAdIfAllowed({ adType: AD_TYPE.CREATING_HAIR_CONSULTING });
+
         saveContent(null);
         showSnackBar({
           type: 'success',

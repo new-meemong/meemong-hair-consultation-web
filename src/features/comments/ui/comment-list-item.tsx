@@ -53,17 +53,17 @@ export default function CommentListItem({
   const { user, isUserDesigner, isUserModel } = useAuthContext();
   const { push } = useRouterWithUser();
 
-  const handleConsultingResponseClick = () => {
-    if (comment.answerId) {
-      if (isUserModel) {
-        showAdIfAllowed({
-          adType: AD_TYPE.VIEW_HAIR_CONSULTING_ANSWER,
-        });
-      }
-      push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
-        [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+  const handleConsultingResponseClick = async () => {
+    if (!comment.answerId) return;
+
+    if (isUserModel) {
+      await showAdIfAllowed({
+        adType: AD_TYPE.VIEW_HAIR_CONSULTING_ANSWER,
       });
     }
+    push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
+      [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+    });
   };
 
   const {

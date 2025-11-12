@@ -5,5 +5,6 @@ interface Window {
   externalLink: (message: string) => void;
   setCustomBackAction: (hasAction: boolean) => void;
   customBackAction: (() => void) | null;
-  showAdIfAllowed: ({ adType }: { adType: string }) => void;
+  showAdIfAllowed: ({ adType }: { adType: string }) => Promise<void>;
+  onAdCompleted: () => void;
 }

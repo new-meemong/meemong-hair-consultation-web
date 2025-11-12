@@ -1,5 +1,6 @@
-export function showAdIfAllowed({ adType }: { adType: string }) {
+export function showAdIfAllowed({ adType }: { adType: string }): Promise<void> {
   if (window.showAdIfAllowed) {
-    window.showAdIfAllowed({ adType });
+    return window.showAdIfAllowed({ adType });
   }
+  return Promise.resolve();
 }
