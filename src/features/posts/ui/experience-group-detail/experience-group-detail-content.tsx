@@ -2,6 +2,7 @@ import { formatDate } from 'date-fns';
 
 import type { ExperienceGroupDetail } from '@/entities/posts/model/experience-group-detail';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import openUrlInApp from '@/shared/lib/open-url-in-app';
 import Dot from '@/shared/ui/dot';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
@@ -28,7 +29,7 @@ function SnsLink({ snsType, url }: { snsType: string; url: string }) {
       return;
     }
 
-    window.open(url, '_blank');
+    openUrlInApp(url);
   };
   return (
     <div className="flex items-center justify-between bg-alternative rounded-4 gap-4 px-4 py-3">
@@ -93,7 +94,9 @@ export default function ExperienceGroupDetailContent({
         />
         <div className="flex flex-col gap-3">
           <p className="typo-title-3-semibold text-label-default">{title}</p>
-          <p className="typo-body-1-long-regular text-label-default">{content}</p>
+          <p className="typo-body-1-long-regular text-label-default whitespace-pre-line">
+            {content}
+          </p>
         </div>
       </div>
       <div className="h-1.5 bg-alternative mt-6 mb-7" />

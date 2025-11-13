@@ -22,7 +22,7 @@ export default function ExperienceGroupFormStepTitleAndContent() {
         <Input
           {...register(`${EXPERIENCE_GROUP_FORM_FIELD_NAME.TITLE}`)}
           placeholder="제목을 입력하세요"
-          className="typo-title-3-medium h-13.5 flex-1"
+          className="typo-title-3-medium h-13.5 flex-1 placeholder:text-label-info"
           enterKeyHint="next"
           onBlur={() => {
             contentRef.current?.focus();
@@ -33,7 +33,7 @@ export default function ExperienceGroupFormStepTitleAndContent() {
       <Textarea
         {...contentRegister}
         placeholder={`1. 어떤 방식의 협찬이 가능한지 설명해주세요\n(블로그 후기, 인스타그램 태그 게시물 등)\n\n2. 어떤 시술을 받고 싶은지 설명해주세요\n(헤어, 네일 / 스타일 / 상관없음 등)`}
-        className="min-h-38"
+        className="min-h-38 placeholder:text-label-info"
         ref={(el) => {
           contentRegisterRef(el);
           contentRef.current = el;
