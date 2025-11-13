@@ -93,7 +93,9 @@ export default function ExperienceGroupDetailContent({
         />
         <div className="flex flex-col gap-3">
           <p className="typo-title-3-semibold text-label-default">{title}</p>
-          <p className="typo-body-1-long-regular text-label-default">{content}</p>
+          <p className="typo-body-1-long-regular text-label-default whitespace-pre-line">
+            {content}
+          </p>
         </div>
       </div>
       <div className="h-1.5 bg-alternative mt-6 mb-7" />
