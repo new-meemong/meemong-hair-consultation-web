@@ -112,28 +112,15 @@ export default function RootLayout({
 
             window.customBackAction = null;
 
-            let adResolveCallback = null;
-
             function showAdIfAllowed({adType}) {
               if(window.ShowAdIfAllowed) {
                 window.ShowAdIfAllowed.postMessage(JSON.stringify({adType}));
-                return new Promise((resolve) => {
-                  adResolveCallback = resolve;
-                });
               } else {
                 console.log("ShowAdIfAllowed channel is not available.");
-                return Promise.resolve();
               }
             }
 
             window.showAdIfAllowed = showAdIfAllowed;
-
-            window.onAdCompleted = function() {
-              if(adResolveCallback) {
-                adResolveCallback();
-                adResolveCallback = null;
-              }
-            };
           `}
         </Script>
       </body>
