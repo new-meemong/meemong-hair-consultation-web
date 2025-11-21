@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
 import CloseIcon from '@/assets/icons/close.svg';
+
 import { cn } from '@/shared/lib/utils';
 
 function Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
@@ -42,8 +43,9 @@ function DrawerOverlay({
 function DrawerContent({
   className,
   children,
+  hideHandle = false,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Content> & { hideHandle?: boolean }) {
   return (
     <DrawerPortal data-slot="drawer-portal">
       <DrawerOverlay />
@@ -59,7 +61,9 @@ function DrawerContent({
         )}
         {...props}
       >
-        <div className="mx-auto mt-5 hidden h-2 w-[100px] shrink-0 rounded-full bg-border-default group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
+        {!hideHandle && (
+          <div className="mx-auto mt-5 hidden h-2 w-[100px] shrink-0 rounded-full bg-border-default group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
+        )}
         {children}
       </DrawerPrimitive.Content>
     </DrawerPortal>

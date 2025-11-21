@@ -146,9 +146,9 @@ export class ApiClient {
 
   async get<T>(
     endpoint: string,
-    { searchParams }: { searchParams?: SearchParamsOption } = {},
+    { searchParams, json }: { searchParams?: SearchParamsOption; json?: unknown } = {},
   ): Promise<ApiResponse<T>> {
-    return this.api.get(endpoint, { searchParams }).json<ApiResponse<T>>();
+    return this.api.get(endpoint, { searchParams, json }).json<ApiResponse<T>>();
   }
 
   async getList<T extends Record<string, unknown>>(

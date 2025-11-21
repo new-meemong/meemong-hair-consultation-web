@@ -1,7 +1,6 @@
+import { FlatCompat } from '@eslint/eslintrc';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-
-import { FlatCompat } from '@eslint/eslintrc';
 import importPlugin from 'eslint-plugin-import';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -53,15 +52,41 @@ const eslintConfig = [
               position: 'before',
             },
             {
+              pattern: '@/assets/**',
+              group: 'internal',
+              position: 'before',
+            },
+            {
+              pattern: '@/entities/**',
+              group: 'internal',
+              position: 'before',
+            },
+            {
+              pattern: '@/features/**',
+              group: 'internal',
+              position: 'before',
+            },
+            {
+              pattern: '@/lib/**',
+              group: 'internal',
+              position: 'before',
+            },
+            {
+              pattern: '@/shared/**',
+              group: 'internal',
+              position: 'before',
+            },
+            {
+              pattern: '@/widgets/**',
+              group: 'internal',
+              position: 'before',
+            },
+            {
               pattern: '@/**',
               group: 'internal',
             },
           ],
           pathGroupsExcludedImportTypes: ['react', 'next'],
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
         },
       ],
       // 중복 import 방지

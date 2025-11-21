@@ -1,7 +1,5 @@
 import type { CreateEventMongResponse } from '@/entities/mong/api/create-event-mong-response';
-import { Button } from '@/shared';
-import { useOverlayContext } from '@/shared/context/overlay-context';
-import { goStorePage } from '@/shared/lib/go-store-page';
+
 import {
   DrawerClose,
   DrawerDescription,
@@ -9,6 +7,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/shared/ui/drawer';
+import { goStorePage } from '@/shared/lib/go-store-page';
+import { useOverlayContext } from '@/shared/context/overlay-context';
+
+import { Button } from '@/shared';
 
 export default function useShowEventMongSheet() {
   const { showBottomSheet } = useOverlayContext();

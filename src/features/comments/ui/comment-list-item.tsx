@@ -1,22 +1,18 @@
-import { useRef } from 'react';
-
-import { useSearchParams } from 'next/navigation';
-
-import { format } from 'date-fns';
-
-import MoreIcon from '@/assets/icons/more-vertical.svg';
-import ReplyIcon from '@/assets/icons/reply.svg';
-import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
-import { AD_TYPE } from '@/features/ad/constants/ad-type';
-import { useAuthContext } from '@/features/auth/context/auth-context';
-import { cn } from '@/lib/utils';
 import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
-import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
 
 import CommentAuthorProfile from './comment-author-profile';
+import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
 import ConsultingResponseButton from './consulting-response-button';
+import MoreIcon from '@/assets/icons/more-vertical.svg';
+import ReplyIcon from '@/assets/icons/reply.svg';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useRef } from 'react';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { useSearchParams } from 'next/navigation';
+import useShowMongConsumeSheet from '@/features/mong/hook/use-show-mong-consume-sheet';
 
 const MORE_ACTION = {
   EDIT: 'edit',
@@ -52,14 +48,28 @@ export default function CommentListItem({
 
   const { user, isUserDesigner, isUserModel } = useAuthContext();
   const { push } = useRouterWithUser();
+  const showMongConsumeSheet = useShowMongConsumeSheet();
 
-  const handleConsultingResponseClick = () => {
+  const handleConsultingResponseClick = async () => {
     if (comment.answerId) {
       if (isUserModel) {
-        showAdIfAllowed({
-          adType: AD_TYPE.VIEW_HAIR_CONSULTING_ANSWER,
+        // 모델인 경우 결제 이력 확인
+        const result = await showMongConsumeSheet({
+          designerName: comment.user.displayName,
+          answerId: comment.answerId,
+          postId,
+          postListTab,
         });
+        // 결제 이력이 있으면 바로 답변 페이지로 이동
+        if (result?.alreadyPaid) {
+          push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
+            [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+          });
+        }
+        // 결제 이력이 없으면 바텀시트가 표시됨 (버튼 클릭 동작은 아직 연결하지 않음)
+        return;
       }
+      // 디자이너인 경우 바로 답변 페이지로 이동
       push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
         [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
       });
