@@ -8,6 +8,7 @@ import z from 'zod';
 import CloseIcon from '@/assets/icons/close.svg';
 import PlusIcon from '@/assets/icons/plus.svg';
 import SendIcon from '@/assets/icons/send.svg';
+
 import { Textarea } from '@/shared';
 
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';

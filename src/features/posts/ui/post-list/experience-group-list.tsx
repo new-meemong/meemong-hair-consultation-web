@@ -1,8 +1,10 @@
 import type { ExperienceGroup } from '@/entities/posts/model/experience-group';
-import { ROUTES } from '@/shared';
+
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+
+import { ROUTES } from '@/shared';
 
 import useCreateExperienceGroupReadingMutation from '../../api/use-create-experience-group-reading-mutation';
 import type { PostListTab } from '../../types/post-list-tab';

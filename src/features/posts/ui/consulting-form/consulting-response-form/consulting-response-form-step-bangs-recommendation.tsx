@@ -1,6 +1,7 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isUserMale } from '@/entities/user/lib/user-sex';
+
 import { BANG_STYLE_OPTIONS } from '@/features/posts/constants/bang-style';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 

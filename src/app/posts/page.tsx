@@ -3,6 +3,7 @@
 import { useCallback } from 'react';
 
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
+
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { POST_TABS } from '@/features/posts/constants/post-tabs';
@@ -12,15 +13,18 @@ import { usePostTab } from '@/features/posts/hooks/use-post-tab';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
-import { ROUTES } from '@/shared';
+
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { POSTS_PAGE_KEY, useScrollRestoration } from '@/shared/hooks/use-scroll-restoration';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import Tab from '@/shared/ui/tab';
+
 import { SiteHeader } from '@/widgets/header';
 import ConsultingPostListContainer from '@/widgets/post/ui/consulting-post/consulting-post-list-container';
 import ExperienceGroupListContainer from '@/widgets/post/ui/experience-group/experience-group-list-container';
+
+import { ROUTES } from '@/shared';
 
 export default function PostsPage() {
   const { user, isUserModel, isUserDesigner } = useAuthContext();

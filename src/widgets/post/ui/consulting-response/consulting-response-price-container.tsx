@@ -1,4 +1,5 @@
 import type { ConsultingResponseTreatment } from '@/entities/posts/model/consulting-response';
+
 import ConsultingResponseTreatments from '@/features/posts/ui/consulting-response/result/consulting-response-treatments';
 
 type ConsultingResponsePriceAndCommentContainerProps = {

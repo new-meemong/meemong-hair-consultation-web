@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
 import type { ConsultingResponseStyle } from '@/entities/posts/model/consulting-response';
+
 import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
 
 import ConsultingResponseItem from '../consulting-response-item';

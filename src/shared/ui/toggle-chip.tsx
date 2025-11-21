@@ -3,6 +3,7 @@
 import * as React from 'react';
 
 import CloseIcon from '@/assets/icons/close.svg';
+
 import { cn } from '@/shared/lib/utils';
 
 import { Toggle } from './toggle';

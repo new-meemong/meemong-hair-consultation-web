@@ -1,8 +1,11 @@
 import Image from 'next/image';
 
 import LockIcon from '@/assets/icons/lock.svg';
+
 import { useAuthContext } from '@/features/auth/context/auth-context';
+
 import { cn } from '@/lib/utils';
+
 import { isValidUrl } from '@/shared/lib/is-valid-url';
 import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
 

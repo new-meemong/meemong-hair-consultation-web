@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { CreateConsultingPostRequest } from '@/entities/posts/api/create-consulting-post-request';
 import type { CreateConsultingPostResponse } from '@/entities/posts/api/create-consulting-post-response';
+
 import { apiClient } from '@/shared/api/client';
 
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';

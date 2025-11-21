@@ -7,10 +7,13 @@ import useSelectedRegion from '@/features/region/hooks/use-selected-region';
 import type { SelectedRegion } from '@/features/region/types/selected-region';
 import RegionTabs from '@/features/region/ui/region-tabs';
 import SelectedRegionItem from '@/features/region/ui/selected-region-item';
-import { Button, Separator } from '@/shared';
+
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { KeyOf } from '@/shared/type/types';
+
 import { SiteHeader } from '@/widgets/header';
+
+import { Button, Separator } from '@/shared';
 
 const MAX_SELECTED_VALUES = 3;
 

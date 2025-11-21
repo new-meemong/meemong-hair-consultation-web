@@ -7,7 +7,9 @@ import usePostFormNavigation from '@/features/posts/hooks/use-consulting-post-fo
 import type { ExperienceGroupFormValues } from '@/features/posts/types/experience-group-form-values';
 import type { WritingStep } from '@/features/posts/types/user-writing-content';
 import ExperienceGroupForm from '@/features/posts/ui/experience-group-form/experience-group-form';
+
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
+
 import { SiteHeader } from '@/widgets/header';
 
 export default function ExperienceGroupFormContainer() {

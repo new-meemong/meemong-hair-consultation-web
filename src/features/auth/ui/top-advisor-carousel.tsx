@@ -1,8 +1,10 @@
 import Image from 'next/image';
 
 import CrownIcon from '@/assets/icons/crown.svg';
-import { Carousel } from '@/shared';
+
 import { CarouselContent, CarouselItem } from '@/shared/ui/carousel';
+
+import { Carousel } from '@/shared';
 
 import useGetTopAdvisors from '../api/use-get-top-advisors';
 

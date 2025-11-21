@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
 import type { Banner } from '@/entities/banner/model/banner';
+
 import openUrlInApp from '@/shared/lib/open-url-in-app';
 
 type BannerProps = {

@@ -4,11 +4,15 @@ import { FormProvider, useWatch } from 'react-hook-form';
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import GalleryIcon from '@/assets/icons/gallery.svg';
+
 import { CREATE_POST_FORM_MAX_COUNT } from '@/features/posts/constants/create-post-form';
+
 import { cn } from '@/lib/utils';
-import { Button, Input, Label, Separator, Textarea } from '@/shared';
+
 import ControlledCheckbox from '@/shared/ui/controlled-checkbox';
 import ImageUploader from '@/shared/ui/image-uploader';
+
+import { Button, Input, Label, Separator, Textarea } from '@/shared';
 
 import { POST_FORM_FIELD_NAME } from '../../constants/post-form-field-name';
 import usePostForm from '../../hooks/use-post-form';

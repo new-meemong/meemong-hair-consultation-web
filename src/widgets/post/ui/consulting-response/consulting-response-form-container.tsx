@@ -6,6 +6,7 @@ import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '@/features/posts/constants/
 import { PostDetailProvider } from '@/features/posts/context/post-detail-context';
 import type { ConsultingResponseFormValues } from '@/features/posts/types/consulting-response-form-values';
 import ConsultingResponseForm from '@/features/posts/ui/consulting-form/consulting-response-form/consulting-response-form';
+
 import { SiteHeader } from '@/widgets/header';
 
 import ConsultingResponseSidebar from '../consulting-response-sidebar/consulting-response-sidebar';

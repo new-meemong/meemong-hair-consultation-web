@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import type { ConsultingResponse } from '@/entities/posts/model/consulting-response';
+
 import { apiClient } from '@/shared/api/client';
 
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';

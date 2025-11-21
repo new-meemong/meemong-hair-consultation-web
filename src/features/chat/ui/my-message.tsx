@@ -1,6 +1,7 @@
 import type { Timestamp } from 'firebase/firestore';
 
 import MyChatMessageTip from '@/assets/icons/my-chat-message-tip.svg';
+
 import Dot from '@/shared/ui/dot';
 
 import { useHairConsultationChatChannelStore } from '../store/hair-consultation-chat-channel-store';

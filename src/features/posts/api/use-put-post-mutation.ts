@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { CreatePostRequest } from '@/entities/posts/api/create-post-request';
+
 import { apiClient } from '@/shared/api/client';
 
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';

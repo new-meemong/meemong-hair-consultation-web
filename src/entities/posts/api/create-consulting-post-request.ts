@@ -1,6 +1,7 @@
 import type { HAIR_CONCERN_OPTION_LABEL } from '@/features/posts/constants/hair-concern-option';
 import type { MY_IMAGE_TYPE } from '@/features/posts/constants/my-image-type';
 import type { SKIN_TONE_OPTION_LABEL } from '@/features/posts/constants/skin-tone';
+
 import type { ValueOf } from '@/shared/type/types';
 
 export type CreateConsultingPostRequest = {

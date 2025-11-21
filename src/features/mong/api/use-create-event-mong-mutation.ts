@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import type { CreateEventMongRequest } from "@/entities/mong/api/create-event-mong-request";
 import type { CreateEventMongResponse } from "@/entities/mong/api/create-event-mong-response";
+
 import { apiClient } from "@/shared/api/client";
 
 export default function useCreateEventMongMutation() {

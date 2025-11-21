@@ -3,14 +3,17 @@ import { useCallback, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
+
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import type { CommentFormState } from '@/features/comments/types/comment-form-state';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
 import useWritingConsultingResponse from '@/features/posts/hooks/use-writing-consulting-response';
-import { ROUTES } from '@/shared';
+
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { Button } from '@/shared/ui/button';
+
+import { ROUTES } from '@/shared';
 
 type CommentFormContainerProps = {
   postId: string;

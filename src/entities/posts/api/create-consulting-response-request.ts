@@ -1,6 +1,7 @@
 import type { BANG_STYLE_LABEL } from '@/features/posts/constants/bang-style';
 import type { FACE_SHAPE_LABEL } from '@/features/posts/constants/face-shape';
 import type { HAIR_TYPE_LABEL } from '@/features/posts/constants/hair-type';
+
 import type { ValueOf } from '@/shared/type/types';
 
 export type CreateConsultingResponseRequest = {

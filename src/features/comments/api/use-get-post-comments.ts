@@ -1,5 +1,7 @@
 import type { PostCommentWithReplies } from '@/entities/comment/model/post-comment';
+
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '@/features/posts/constants/api';
+
 import { DEFAULT_LIMIT } from '@/shared/api/constants/default-limit';
 import useCursorInfiniteQuery from '@/shared/api/hooks/use-cursor-infinite-query';
 import type { PagingQueryParams } from '@/shared/api/types/paging-query-params';

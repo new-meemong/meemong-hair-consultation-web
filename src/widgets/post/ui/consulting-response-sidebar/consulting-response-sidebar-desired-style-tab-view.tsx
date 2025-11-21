@@ -1,8 +1,10 @@
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
-import { Separator } from '@/shared';
+
 import { isValidUrl } from '@/shared/lib/is-valid-url';
+
+import { Separator } from '@/shared';
 
 import ConsultingResponseSidebarItem from './consulting-response-sidebar-item';
 

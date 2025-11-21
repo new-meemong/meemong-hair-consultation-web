@@ -3,8 +3,10 @@ import Image from 'next/image';
 import type { Timestamp } from 'firebase/firestore';
 
 import OtherChatMessageTip from '@/assets/icons/other-chat-message-tip.svg';
+
 import { isDesigner } from '@/entities/user/lib/user-role';
 import type { User } from '@/entities/user/model/user';
+
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 import goModelProfilePage from '@/shared/lib/go-model-profile-page';
 

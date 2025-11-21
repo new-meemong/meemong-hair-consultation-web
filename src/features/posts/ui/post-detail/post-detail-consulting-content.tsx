@@ -1,5 +1,7 @@
 import LockIcon from '@/assets/icons/lock.svg';
+
 import type { PostDetail } from '@/entities/posts/model/post-detail';
+
 import { useAuthContext } from '@/features/auth/context/auth-context';
 
 import { HAIR_CONCERN_OPTION } from '../../constants/hair-concern-option';

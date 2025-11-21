@@ -13,6 +13,7 @@ import {
 import { create } from 'zustand';
 
 import { getUser } from '@/features/auth/api/use-get-user';
+
 import { db } from '@/shared/lib/firebase';
 
 import { ChatChannelTypeEnum } from '../constants/chat-channel-type';

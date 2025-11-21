@@ -1,7 +1,9 @@
 import CommentIcon from '@/assets/icons/comment.svg';
 import EyeIcon from '@/assets/icons/eye.svg';
+
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { LikeButton } from '@/features/likes/ui/like-button';
+
 import ActionItem from '@/shared/ui/action-item';
 
 import { usePostDetail } from '../../context/post-detail-context';

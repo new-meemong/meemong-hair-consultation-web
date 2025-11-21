@@ -1,4 +1,5 @@
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
+
 import type { ValueOf } from '@/shared/type/types';
 
 import { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';

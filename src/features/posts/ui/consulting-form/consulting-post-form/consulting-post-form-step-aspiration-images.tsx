@@ -2,9 +2,10 @@ import { useCallback, useMemo } from 'react';
 
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { Textarea } from '@/shared';
 import FormItem from '@/shared/ui/form-item';
 import ImageUploaderList from '@/shared/ui/image-uploader-list';
+
+import { Textarea } from '@/shared';
 
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
 import type { ConsultingPostFormValues } from '../../../types/consulting-post-form-values';

@@ -1,7 +1,9 @@
 import { formatDate } from 'date-fns';
 
 import type { ExperienceGroupDetail } from '@/entities/posts/model/experience-group-detail';
+
 import { useAuthContext } from '@/features/auth/context/auth-context';
+
 import openUrlInApp from '@/shared/lib/open-url-in-app';
 import Dot from '@/shared/ui/dot';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';

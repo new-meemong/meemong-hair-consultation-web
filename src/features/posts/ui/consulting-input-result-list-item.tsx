@@ -1,4 +1,5 @@
 import TrashIcon from '@/assets/icons/trash.svg';
+
 import Dot from '@/shared/ui/dot';
 
 type ConsultingInputResultListItemProps = {

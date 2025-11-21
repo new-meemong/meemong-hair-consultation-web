@@ -7,10 +7,13 @@ import { format } from 'date-fns';
 import ChatTrashIcon from '@/assets/icons/chat-trash.svg';
 import PinOffIcon from '@/assets/icons/pin-off.svg';
 import PinIcon from '@/assets/icons/pin.svg';
+
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import type { UserHairConsultationChatChannelType } from '@/features/chat/type/user-hair-consultation-chat-channel-type';
+
 import { cn } from '@/lib/utils';
+
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ROUTES } from '@/shared/lib/routes';
 

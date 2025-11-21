@@ -1,4 +1,5 @@
 import type { USER_ROLE } from '@/entities/user/constants/user-role';
+
 import type { ValueOf } from '@/shared/type/types';
 
 export type CommentUser = {

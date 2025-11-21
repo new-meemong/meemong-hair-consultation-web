@@ -1,6 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 
 import { HAIR_CONCERN_OPTION_VALUE } from '@/features/posts/constants/hair-concern-option';
+
 import type { FormStep } from '@/shared/type/form-step';
 import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';

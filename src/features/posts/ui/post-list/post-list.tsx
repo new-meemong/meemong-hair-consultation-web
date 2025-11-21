@@ -1,7 +1,9 @@
 'use client';
 
 import { type Post } from '@/entities/posts';
+
 import { type PostListTab } from '@/features/posts/types/post-list-tab';
+
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';

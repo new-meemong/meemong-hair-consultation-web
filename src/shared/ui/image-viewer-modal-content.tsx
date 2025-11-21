@@ -8,6 +8,7 @@ import { XIcon } from 'lucide-react';
 
 import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
 import DownloadIcon from '@/assets/icons/download.svg';
+
 import { downloadImage } from '@/shared/lib/download-image';
 
 import { useOverlayContext } from '../context/overlay-context';

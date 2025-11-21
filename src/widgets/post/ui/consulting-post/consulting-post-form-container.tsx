@@ -7,7 +7,9 @@ import usePostFormNavigation from '@/features/posts/hooks/use-consulting-post-fo
 import type { ConsultingPostFormValues } from '@/features/posts/types/consulting-post-form-values';
 import type { WritingStep } from '@/features/posts/types/user-writing-content';
 import ConsultingPostForm from '@/features/posts/ui/consulting-form/consulting-post-form/consulting-post-form';
+
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
+
 import { SiteHeader } from '@/widgets/header';
 
 export default function ConsultingPostFormContainer() {

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import type { Banner } from '@/entities/banner/model/banner';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
+
 import { apiClientWithoutAuth } from '@/shared/api/client';
 import type { ValueOf } from '@/shared/type/types';
 

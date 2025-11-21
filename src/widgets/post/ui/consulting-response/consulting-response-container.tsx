@@ -1,17 +1,21 @@
 import { useState } from 'react';
 
 import type { ConsultingResponse } from '@/entities/posts/model/consulting-response';
+
 import getBangsStyleValue from '@/features/posts/lib/get-bangs-style-value';
 import getFaceShapeValue from '@/features/posts/lib/get-face-shape-value';
 import getHairTypeValue from '@/features/posts/lib/get-hair-type-value';
-import { Separator } from '@/shared';
+
 import useIntersectionObserverTab from '@/shared/hooks/use-intersection-observer-tab';
 import type { ValueOf } from '@/shared/type/types';
 import Tab from '@/shared/ui/tab';
+
 import {
   CONSULTING_RESPONSE_TAB,
   CONSULTING_RESPONSE_TAB_OPTIONS,
 } from '@/widgets/post/constants/consulting-response-tab';
+
+import { Separator } from '@/shared';
 
 import ConsultingResponseCurrentStateContainer from './consulting-response-current-state-container';
 import ConsultingResponsePriceContainer from './consulting-response-price-container';

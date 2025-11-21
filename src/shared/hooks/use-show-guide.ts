@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import useShowCreatePostGuideSheet from '@/features/posts/hooks/use-show-create-post-guide-sheet';
 import useShowDesignerOnboardingSheet from '@/features/posts/hooks/use-show-designer-onboarding-sheet';
+
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 
 import { getUserGuideData, updateUserGuideData, type UserGuideData } from '../lib';

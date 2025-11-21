@@ -1,6 +1,8 @@
 import type { User } from '@/entities/user/model/user';
+
 import type { UserWritingContent } from '@/features/posts/types/user-writing-content';
 import type { SelectedRegion } from '@/features/region/types/selected-region';
+
 import { USER_WRITING_CONTENT_KEYS, USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 
 export interface JWTPayload {

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { CreateExperienceGroupRequest } from '@/entities/posts/api/create-experience-group-request';
 import type { CreateExperienceGroupResponse } from '@/entities/posts/api/create-experience-group-response';
+
 import { apiClient } from '@/shared/api/client';
 
 import { EXPERIENCE_GROUP_API_PREFIX } from '../constants/api';

@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom';
 
 import CheckIcon from '@/assets/icons/check.svg';
 import ErrorIcon from '@/assets/icons/error.svg';
+
 import { cn } from '@/lib/utils';
 
 export const SNACK_BAR_ANIMATION_DURATION = 2000;

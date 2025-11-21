@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+
 import ProgressSlider from '@/shared/ui/progress-slider';
 
 import { HAIR_CONDITION_OPTION, HAIR_CONDITION_OPTION_VALUES } from '../constants/hair-condition';

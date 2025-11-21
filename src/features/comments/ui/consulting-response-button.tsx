@@ -1,7 +1,9 @@
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import GalleryIcon from '@/assets/icons/gallery.svg';
 import LockIcon from '@/assets/icons/lock2.svg';
+
 import { useAuthContext } from '@/features/auth/context/auth-context';
+
 import { cn } from '@/shared';
 
 type ConsultingResponseButtonProps = {

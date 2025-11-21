@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { type Banner } from '@/entities/posts';
+
 import { Carousel, CarouselContent, CarouselItem } from '@/shared/ui/carousel';
 
 interface BannerCarouselProps {

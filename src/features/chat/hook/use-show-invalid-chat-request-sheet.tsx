@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Button } from '@/shared';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import {
   DrawerClose,
@@ -9,6 +8,8 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/shared/ui/drawer';
+
+import { Button } from '@/shared';
 
 export const useShowInvalidChatRequestSheet = () => {
   const { showBottomSheet } = useOverlayContext();

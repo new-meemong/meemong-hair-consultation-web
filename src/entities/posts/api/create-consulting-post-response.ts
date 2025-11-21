@@ -1,4 +1,5 @@
 import type { SKIN_TONE_OPTION_LABEL } from '@/features/posts/constants/skin-tone';
+
 import type { ValueOf } from '@/shared/type/types';
 
 type NewHairConsultPosting = {

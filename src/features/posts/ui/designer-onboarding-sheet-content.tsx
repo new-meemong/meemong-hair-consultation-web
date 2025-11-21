@@ -2,8 +2,9 @@ import { useState } from 'react';
 
 import Image from 'next/image';
 
-import { Button } from '@/shared';
 import { DrawerClose , DrawerFooter , DrawerDescription, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer';
+
+import { Button } from '@/shared';
 
 type DesignerOnboardingGuideContent = {
   title: string;
