@@ -3,10 +3,10 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ROUTES } from '@/shared/lib/routes';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
-import type { PostFormValues } from '../types/post-form-values';
 
 import { useCreatePost } from './use-create-post';
 import useEditPost from './use-edit-post';
+import type { PostFormValues } from '../types/post-form-values';
 
 export default function useSubmitPostForm(postId?: number) {
   const { replace } = useRouterWithUser();

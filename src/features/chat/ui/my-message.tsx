@@ -1,17 +1,16 @@
 import type { Timestamp } from 'firebase/firestore';
 
 import MyChatMessageTip from '@/assets/icons/my-chat-message-tip.svg';
-
 import Dot from '@/shared/ui/dot';
 
+import ImageMessage from './image-message';
+import MessageDate from './message-date';
 import { useHairConsultationChatChannelStore } from '../store/hair-consultation-chat-channel-store';
 import {
   HairConsultationChatMessageTypeEnum,
   type HairConsultationChatMessageType,
 } from '../type/hair-consultation-chat-message-type';
 
-import ImageMessage from './image-message';
-import MessageDate from './message-date';
 
 function MyChatMessageBox({ message }: { message: string }) {
   return (

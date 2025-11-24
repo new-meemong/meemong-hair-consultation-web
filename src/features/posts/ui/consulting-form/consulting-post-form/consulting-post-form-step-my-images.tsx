@@ -1,14 +1,11 @@
 import { useCallback } from 'react';
-
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { MY_IMAGE_TYPE } from '@/features/posts/constants/my-image-type';
-
+import { Button } from '@/shared';
 import { IMAGE_TYPE } from '@/shared/constants/image-type';
 import type { ValueOf } from '@/shared/type/types';
 import ImageUploaderItem from '@/shared/ui/image-uploader-item';
-
-import { Button } from '@/shared';
 
 import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
 import useShowConsultingPostImageGuideSheet from '../../../hooks/use-show-consulting-post-image-guide-sheet';

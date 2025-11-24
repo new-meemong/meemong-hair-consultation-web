@@ -1,5 +1,4 @@
 import ErrorIcon from '@/assets/icons/error.svg';
-
 import { useAuthContext } from '@/features/auth/context/auth-context';
 
 import { POST_LIST_TAB } from '../../constants/post-list-tabs';

@@ -1,17 +1,15 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { useCallback } from 'react';
 
-import { useParams } from 'next/navigation';
 
 import { USER_ROLE } from '@/entities/user/constants/user-role';
-
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
 import type { CommentFormValues } from '@/features/comments/ui/comment-form';
 import useGetExperienceGroupDetail from '@/features/posts/api/use-get-experience-group-detail';
 import ExperienceGroupDetailMoreButton from '@/features/posts/ui/experience-group-detail/experience-group-detail-more-button';
-
 import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
 import ExperienceGroupCommentContainer from '@/widgets/comments/ui/experience-group-comment-container';
 import { SiteHeader } from '@/widgets/header';

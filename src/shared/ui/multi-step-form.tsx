@@ -1,11 +1,11 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import type { FormStep } from '../type/form-step';
-import type { KeyOf } from '../type/types';
 
 import MultiStepFormItem from './multi-step-form-item';
 import ProgressPagination from './progress-pagination';
 import { Separator } from './separator';
+import type { FormStep } from '../type/form-step';
+import type { KeyOf } from '../type/types';
 
 type MultiStepFormProps<T extends Record<string, unknown>> = {
   currentStep: number;

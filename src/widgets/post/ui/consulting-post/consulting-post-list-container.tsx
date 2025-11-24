@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-
 import useGetPosts from '@/features/posts/api/use-get-posts';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import PostList from '@/features/posts/ui/post-list/post-list';

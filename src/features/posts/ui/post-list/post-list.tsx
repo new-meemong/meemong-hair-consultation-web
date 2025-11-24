@@ -1,18 +1,16 @@
 'use client';
 
 import { type Post } from '@/entities/posts';
-
 import { type PostListTab } from '@/features/posts/types/post-list-tab';
-
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ROUTES } from '@/shared/lib/routes';
 
-import useCreatePostReadingMutation from '../../api/use-create-post-reading-mutation';
 
 import PostListEmptyView from './post-list-empty-view';
 import PostListItem from './post-list-item';
+import useCreatePostReadingMutation from '../../api/use-create-post-reading-mutation';
 
 type PostListProps = {
   posts: Post[];

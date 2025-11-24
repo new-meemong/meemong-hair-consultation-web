@@ -1,13 +1,10 @@
 import { useFormContext } from 'react-hook-form';
 
 import { HAIR_CONCERN_OPTION_VALUE } from '@/features/posts/constants/hair-concern-option';
-
 import type { FormStep } from '@/shared/type/form-step';
 import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';
 
-import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
-import { type ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 
 import ConsultingPostFormStepAspirationImages from './consulting-post-form-step-aspiration-images';
 import ConsultingPostFormStepMyImages from './consulting-post-form-step-my-images';
@@ -15,6 +12,8 @@ import ConsultingPostFormStepPrice from './consulting-post-form-step-price';
 import ConsultingPostFormStepSkinTone from './consulting-post-form-step-skin-tone';
 import ConsultingPostFormStepTitleAndConcern from './consulting-post-form-step-title-and-concern';
 import ConsultingPostFormStepTreatments from './consulting-post-form-step-treatments';
+import { CONSULTING_POST_FORM_FIELD_NAME } from '../../../constants/consulting-post-form-field-name';
+import { type ConsultingPostFormValues } from '../../../types/consulting-post-form-values';
 
 const CONSULTING_POST_FORM_STEPS: FormStep<ConsultingPostFormValues>[] = [
   {

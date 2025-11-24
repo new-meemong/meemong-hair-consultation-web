@@ -1,25 +1,20 @@
+import { format } from 'date-fns';
+import { useSearchParams } from 'next/navigation';
 import { useRef } from 'react';
 
-import { useSearchParams } from 'next/navigation';
 
-import { format } from 'date-fns';
 
 import MoreIcon from '@/assets/icons/more-vertical.svg';
 import ReplyIcon from '@/assets/icons/reply.svg';
-
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
-
-import { useAuthContext } from '@/features/auth/context/auth-context';
 import { AD_TYPE } from '@/features/ad/constants/ad-type';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import useShowMongConsumeSheet from '@/features/mong/hook/use-show-mong-consume-sheet';
-
 import { cn } from '@/lib/utils';
-
+import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
-
-import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
 
 import CommentAuthorProfile from './comment-author-profile';
 import ConsultingResponseButton from './consulting-response-button';

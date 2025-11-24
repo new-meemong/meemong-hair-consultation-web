@@ -1,6 +1,5 @@
-import { useCallback } from 'react';
-
 import Image from 'next/image';
+import { useCallback } from 'react';
 
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { Button } from '@/shared/ui/button';

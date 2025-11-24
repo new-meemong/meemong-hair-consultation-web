@@ -1,9 +1,7 @@
 import type { USER_ROLE } from '@/entities/user/constants/user-role';
 import type { USER_SEX } from '@/entities/user/constants/user-sex';
-
 import type { MY_IMAGE_TYPE } from '@/features/posts/constants/my-image-type';
 import type { SKIN_TONE_OPTION_LABEL } from '@/features/posts/constants/skin-tone';
-
 import type { ValueOf } from '@/shared/type/types';
 
 import type { CONSULT_TYPE } from '../constants/consult-type';

@@ -1,7 +1,5 @@
 import LockIcon from '@/assets/icons/lock.svg';
-
 import type { PostDetail } from '@/entities/posts/model/post-detail';
-
 import { useAuthContext } from '@/features/auth/context/auth-context';
 
 import { HAIR_CONCERN_OPTION } from '../../constants/hair-concern-option';
@@ -9,7 +7,6 @@ import getSkinToneValue from '../../lib/get-skin-tone-value';
 import ConsultingInputResultListItem from '../consulting-input-result-list-item';
 import PostDetailContentItem from '../post-detail-content-item';
 import SkinColorLabel from '../skin-color-label';
-
 import PostDetailAuthorProfile from './post-detail-author-profile';
 import PostDetailImage from './post-detail-image';
 

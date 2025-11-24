@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
+import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
-import { ROUTES } from '@/shared';
 
 import useDeletePostMutation from '../api/use-delete-post-mutation';
 import { usePostDetail } from '../context/post-detail-context';

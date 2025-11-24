@@ -1,5 +1,4 @@
 import type { CreateConsultingResponseRequest } from '@/entities/posts/api/create-consulting-response-request';
-
 import useSendConsultingAnswerPushNotification from '@/features/chat/api/use-send-consulting-answer-push-notification';
 
 import useCreateConsultingResponseMutation from '../api/use-create-consulting-response-mutation';

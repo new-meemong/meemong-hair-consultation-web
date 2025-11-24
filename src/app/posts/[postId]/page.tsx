@@ -1,22 +1,19 @@
 'use client';
 
+import { useParams, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 
-import { useParams, useSearchParams } from 'next/navigation';
 
 import { isConsultingPost } from '@/entities/posts/lib/consulting-type';
-
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
 import { type CommentFormValues } from '@/features/comments/ui/comment-form';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { PostDetailProvider } from '@/features/posts/context/post-detail-context';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
-
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowGuide from '@/shared/hooks/use-show-guide';
-
 import { CommentContainer } from '@/widgets/comments/ui/comment-container';
 import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
 import { SiteHeader } from '@/widgets/header';

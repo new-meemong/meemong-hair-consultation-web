@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Comment } from '@/entities/comment/model/comment';
-
 import useSendExperienceGroupCommentPushNotification from '@/features/chat/api/use-send-experience-group-comment-push-notification';
 import useSendPostCommentPushNotification from '@/features/chat/api/use-send-post-comment-push-notification';
 
+import useCommentOperations from './use-comment-operations';
 import type { CommentFormState } from '../types/comment-form-state';
 import type { CommentFormValues } from '../ui/comment-form';
 
-import useCommentOperations from './use-comment-operations';
 
 const INITIAL_COMMENT_FORM_STATE: CommentFormState = {
   state: 'create',

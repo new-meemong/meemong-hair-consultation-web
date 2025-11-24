@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getExperienceGroupDetailQueryKeyPrefix } from '@/features/posts/api/use-get-experience-group-detail';
 import { getExperienceListQueryKeyPrefix } from '@/features/posts/api/use-get-experience-groups';
 import { EXPERIENCE_GROUP_COMMENT_API_PREFIX } from '@/features/posts/constants/api';
-
 import { apiClient } from '@/shared/api/client';
 
 import { getGetExperienceGroupCommentsQueryKeyPrefix } from './use-get-experience-group-comments';

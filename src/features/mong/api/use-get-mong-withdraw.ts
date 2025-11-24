@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 
 import type { GetMongWithdrawRequest } from '@/entities/mong/api/get-mong-withdraw-request';
 import type { GetMongWithdrawResponse } from '@/entities/mong/api/get-mong-withdraw-response';
-
 import { apiClient } from '@/shared/api/client';
 
 const GET_MONG_WITHDRAW_ENDPOINT = 'mong-moneys/withdraw';

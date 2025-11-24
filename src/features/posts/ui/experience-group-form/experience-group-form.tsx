@@ -4,13 +4,13 @@ import type { FormStep } from '@/shared/type/form-step';
 import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';
 
+import ExperienceGroupFormStepPriceType from './experience-group-form-step-price-type';
+import ExperienceGroupFormStepSnsTypes from './experience-group-form-step-sns-types';
+import ExperienceGroupFormStepTitleAndContent from './experience-group-form-step-title-and-content';
 import { EXPERIENCE_GROUP_FORM_FIELD_NAME } from '../../constants/experience-group/experience-group-form-field-name';
 import { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
 import type { ExperienceGroupFormValues } from '../../types/experience-group-form-values';
 
-import ExperienceGroupFormStepPriceType from './experience-group-form-step-price-type';
-import ExperienceGroupFormStepSnsTypes from './experience-group-form-step-sns-types';
-import ExperienceGroupFormStepTitleAndContent from './experience-group-form-step-title-and-content';
 
 const EXPERIENCE_GROUP_FORM_STEPS: FormStep<ExperienceGroupFormValues>[] = [
   {

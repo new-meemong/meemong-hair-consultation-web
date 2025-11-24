@@ -1,13 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { PostDetail } from '@/entities/posts/model/post-detail';
-
 import { apiClient } from '@/shared/api/client';
 
-import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
 
 import { getPostDetailQueryKeyPrefix } from './use-get-post-detail';
 import { getPostsQueryKeyPrefix } from './use-get-posts';
+import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
 
 type MutationParams = {
   hairConsultPostingId: number;

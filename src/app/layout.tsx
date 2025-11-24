@@ -1,15 +1,11 @@
 import '../styles/globals.css';
 
+import type { Metadata, Viewport } from 'next';
+import localFont from 'next/font/local';
+import Script from 'next/script';
 import { Suspense } from 'react';
 
-import type { Metadata, Viewport } from 'next';
-
-import Script from 'next/script';
-
-import localFont from 'next/font/local';
-
 import { AuthProvider } from '@/features/auth/context/auth-context';
-
 import { LoadingProvider } from '@/shared/context/loading-context';
 import { OverlayProvider } from '@/shared/context/overlay-context';
 import { ErrorBoundary } from '@/shared/error-boundary';

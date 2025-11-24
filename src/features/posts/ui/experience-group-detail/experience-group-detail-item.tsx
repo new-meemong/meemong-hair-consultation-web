@@ -1,11 +1,8 @@
 import CommentIcon from '@/assets/icons/comment.svg';
 import EyeIcon from '@/assets/icons/eye.svg';
-
 import type { ExperienceGroupDetail } from '@/entities/posts/model/experience-group-detail';
-
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { LikeButton } from '@/features/likes/ui/like-button';
-
 import ActionItem from '@/shared/ui/action-item';
 
 import ExperienceGroupDetailContent from './experience-group-detail-content';

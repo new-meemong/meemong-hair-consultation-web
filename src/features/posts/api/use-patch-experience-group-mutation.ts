@@ -1,12 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { CreateExperienceGroupRequest } from '@/entities/posts/api/create-experience-group-request';
-
 import { apiClient } from '@/shared/api/client';
 
+import { getExperienceGroupDetailQueryKeyPrefix } from './use-get-experience-group-detail';
 import { EXPERIENCE_GROUP_API_PREFIX } from '../constants/api';
 
-import { getExperienceGroupDetailQueryKeyPrefix } from './use-get-experience-group-detail';
 
 export default function usePatchExperienceGroupMutation({
   experienceGroupId,

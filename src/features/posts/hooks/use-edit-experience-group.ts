@@ -1,7 +1,7 @@
+import { ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
-import { ROUTES } from '@/shared';
 
 import usePatchExperienceGroupMutation from '../api/use-patch-experience-group-mutation';
 import type { ExperienceGroupFormValues } from '../types/experience-group-form-values';

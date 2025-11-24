@@ -1,7 +1,5 @@
 import type { ExperienceGroup } from '@/entities/posts/model/experience-group';
-
 import type { SelectedRegion } from '@/features/region/types/selected-region';
-
 import { DEFAULT_LIMIT } from '@/shared/api/constants/default-limit';
 import useCursorInfiniteQuery from '@/shared/api/hooks/use-cursor-infinite-query';
 import convertToAddresses from '@/shared/api/lib/convert-to-addresses';

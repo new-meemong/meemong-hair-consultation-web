@@ -1,11 +1,11 @@
+import { XIcon } from 'lucide-react';
 import Image from 'next/image';
 
-import { XIcon } from 'lucide-react';
 
+import { Button } from '@/shared';
 import type { IMAGE_TYPE } from '@/shared/constants/image-type';
 import type { ValueOf } from '@/shared/type/types';
 
-import { Button } from '@/shared';
 
 export type Image = {
   type: ValueOf<typeof IMAGE_TYPE>;

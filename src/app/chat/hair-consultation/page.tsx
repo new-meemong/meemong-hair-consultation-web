@@ -8,7 +8,6 @@ import Banner from '@/features/banner/ui/banner';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import ChatChannelListItem from '@/features/chat/ui/chat-channel-list-item';
 import ChatChannelListItemSkeleton from '@/features/chat/ui/chat-channel-list-item-skeleton';
-
 import { useDynamicSkeletonCount } from '@/shared/hooks/use-dynamic-skeleton-count';
 
 export default function HairConsultationChatPage() {

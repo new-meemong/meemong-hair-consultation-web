@@ -2,7 +2,6 @@ import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 
 import { cn } from '../lib';
-
 import { Button } from './button';
 
 type ProgressPaginationProps = {

@@ -1,7 +1,6 @@
 'use client';
 
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
-
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 
 import CommentListItem from './comment-list-item';

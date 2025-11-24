@@ -2,9 +2,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { apiClient } from '@/shared/api/client';
 
+import { getExperienceListQueryKeyPrefix } from './use-get-experience-groups';
 import { EXPERIENCE_GROUP_API_PREFIX } from '../constants/api';
 
-import { getExperienceListQueryKeyPrefix } from './use-get-experience-groups';
 
 export default function useDeleteExperienceGroupMutation() {
   const queryClient = useQueryClient();

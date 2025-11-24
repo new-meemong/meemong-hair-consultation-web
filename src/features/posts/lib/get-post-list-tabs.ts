@@ -1,5 +1,4 @@
 import { USER_ROLE } from '@/entities/user/constants/user-role';
-
 import type { ValueOf } from '@/shared/type/types';
 
 import { POST_LIST_TABS } from '../constants/post-list-tabs';

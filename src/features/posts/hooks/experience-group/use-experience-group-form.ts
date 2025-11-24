@@ -1,16 +1,14 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-
+import { ROUTES } from '@/shared';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
-
-import { ROUTES } from '@/shared';
 
 import useCreateExperienceGroupMutation from '../../api/use-create-experience-group-mutation';
 import { EXPERIENCE_GROUP_FORM_FIELD_NAME } from '../../constants/experience-group/experience-group-form-field-name';

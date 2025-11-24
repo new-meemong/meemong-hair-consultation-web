@@ -1,13 +1,12 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
-import { useParams } from 'next/navigation';
 
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { POST_FORM_FIELD_NAME } from '@/features/posts/constants/post-form-field-name';
 import PostForm from '@/features/posts/ui/post-form/post-form';
-
 import { SiteHeader } from '@/widgets/header';
 
 export default function EditPostPage() {

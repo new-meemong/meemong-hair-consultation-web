@@ -2,13 +2,13 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import MultiStepFormItem from '@/shared/ui/multi-step-form-item';
 
+import ExperienceGroupFormStepPrice from './experience-group-form-step-price';
 import { EXPERIENCE_GROUP_FORM_FIELD_NAME } from '../../constants/experience-group/experience-group-form-field-name';
 import { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
 import type { ConsultingFormOption } from '../../types/consulting-form-option';
 import type { ExperienceGroupFormValues } from '../../types/experience-group-form-values';
 import ConsultingFormOptionList from '../consulting-form/consulting-form-option-list';
 
-import ExperienceGroupFormStepPrice from './experience-group-form-step-price';
 
 const PRICE_TYPE_OPTIONS: ConsultingFormOption[] = [
   {

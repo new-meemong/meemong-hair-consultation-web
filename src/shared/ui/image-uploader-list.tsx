@@ -1,10 +1,10 @@
 import useShowImageUploadLimitSheet from '@/features/posts/hooks/use-show-image-upload-limit-sheet';
 
+import ImageFormItem, { type Image } from './image-form-item';
+import ImageUploaderItem from './image-uploader-item';
 import { IMAGE_TYPE } from '../constants/image-type';
 import { getImages } from '../lib/get-images';
 
-import ImageFormItem, { type Image } from './image-form-item';
-import ImageUploaderItem from './image-uploader-item';
 
 const IMAGE_UPLOADER_LIST_MAX_COUNT = 6;
 

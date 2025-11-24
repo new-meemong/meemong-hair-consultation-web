@@ -1,8 +1,8 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { useParams } from 'next/navigation';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useIsFromApp from '@/features/chat/hook/use-is-from-app';
@@ -14,10 +14,8 @@ import type { UserHairConsultationChatChannelType } from '@/features/chat/type/u
 import ChatDetailMoreButton from '@/features/chat/ui/chat-detail-more-button';
 import ChatMessageForm, { type ChatMessageInputValues } from '@/features/chat/ui/chat-message-form';
 import MessageSection from '@/features/chat/ui/message-section';
-
 import { useLoadingContext } from '@/shared/context/loading-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-
 import { SiteHeader } from '@/widgets/header';
 
 export default function HairConsultationChatDetailPage() {

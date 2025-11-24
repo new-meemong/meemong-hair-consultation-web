@@ -1,13 +1,11 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 
-import { useSearchParams } from 'next/navigation';
 
 import { isDesigner, isModel } from '@/entities/user/lib/user-role';
-
 import { useWebviewLogin } from '@/features/auth/api/use-webview-login';
-
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import {
   getCurrentUser,

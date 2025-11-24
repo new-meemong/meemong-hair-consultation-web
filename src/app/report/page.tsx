@@ -3,9 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 
 import ReportForm from '@/features/report/ui/report-form';
-
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-
 import { SiteHeader } from '@/widgets/header';
 
 export default function ReportPage() {

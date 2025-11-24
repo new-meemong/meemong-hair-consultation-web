@@ -1,16 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
-
-import { FormProvider, useForm } from 'react-hook-form';
-
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
 
 import ArrowUpIcon from '@/assets/icons/arrow-up.svg';
-
 import { useAuthContext } from '@/features/auth/context/auth-context';
-
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';

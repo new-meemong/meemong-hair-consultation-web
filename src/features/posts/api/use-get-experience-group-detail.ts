@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
 import type { ExperienceGroupDetail } from '@/entities/posts/model/experience-group-detail';
-
 import { apiClient } from '@/shared/api/client';
 
 import { EXPERIENCE_GROUP_API_PREFIX } from '../constants/api';

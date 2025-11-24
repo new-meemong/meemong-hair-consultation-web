@@ -1,10 +1,8 @@
 import { useCallback, useMemo } from 'react';
 
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
-
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-
 import { MoreOptionsMenu, ROUTES } from '@/shared';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 import useDeletePost from '../../hooks/use-delete-post';
 

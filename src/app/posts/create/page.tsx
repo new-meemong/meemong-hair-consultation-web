@@ -3,13 +3,10 @@
 import { useState } from 'react';
 
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-
 import { usePostTab } from '@/features/posts/hooks/use-post-tab';
-
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 import type { ValueOf } from '@/shared/type/types';
-
 import ConsultingPostFormContainer from '@/widgets/post/ui/consulting-post/consulting-post-form-container';
 import ExperienceGroupFormContainer from '@/widgets/post/ui/experience-group/experience-group-form-container';
 

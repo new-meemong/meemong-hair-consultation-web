@@ -1,5 +1,4 @@
 import type { ConsultingResponseTreatment } from '@/entities/posts/model/consulting-response';
-
 import { Separator } from '@/shared';
 
 import ConsultingResponseItem from '../consulting-response-item';

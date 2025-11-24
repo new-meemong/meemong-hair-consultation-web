@@ -1,6 +1,6 @@
+import { Label } from '@/shared';
 import Checkbox from '@/shared/ui/checkbox';
 
-import { Label } from '@/shared';
 
 import type { ConsultingFormOption } from '../../types/consulting-form-option';
 

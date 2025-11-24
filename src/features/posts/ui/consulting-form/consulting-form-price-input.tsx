@@ -1,6 +1,6 @@
+import { Input } from '@/shared';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
-import { Input } from '@/shared';
 
 type ConsultingFormPriceInputProps = {
   name: string;

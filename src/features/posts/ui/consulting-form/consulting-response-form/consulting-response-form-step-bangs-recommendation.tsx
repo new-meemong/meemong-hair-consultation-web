@@ -1,14 +1,12 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isUserMale } from '@/entities/user/lib/user-sex';
-
 import { BANG_STYLE_OPTIONS } from '@/features/posts/constants/bang-style';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 import ConsultingFormOptionList from '../consulting-form-option-list';
-
 import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
 
 export default function ConsultingResponseFormStepBangsRecommendation() {

@@ -1,17 +1,12 @@
 import LockIcon from '@/assets/icons/lock.svg';
 import ProfileIcon from '@/assets/icons/profile.svg';
-
 import type { CommentUser } from '@/entities/comment/model/comment';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
-
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useShowInvalidChatRequestSheet } from '@/features/chat/hook/use-show-invalid-chat-request-sheet';
-
 import { cn } from '@/lib/utils';
-
-import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
+import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 
 type CommentAuthorProfileProps = {
   author: CommentUser;

@@ -1,10 +1,8 @@
 import { useRef } from 'react';
-
 import { useFormContext } from 'react-hook-form';
 
 import { CONSULTING_POST_FORM_FIELD_NAME } from '@/features/posts/constants/consulting-post-form-field-name';
 import type { ConsultingPostFormValues } from '@/features/posts/types/consulting-post-form-values';
-
 import { Input, Textarea } from '@/shared';
 
 export default function ConsultingPostFormStepTitleAndConcern() {

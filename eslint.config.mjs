@@ -11,13 +11,26 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  {
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'out/**',
+      'build/**',
+      'dist/**',
+      '.cache/**',
+      'public/**',
+      '*.config.js',
+      '*.config.mjs',
+    ],
+  },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
     plugins: {
       import: importPlugin,
     },
     rules: {
-      // Import 순서 규칙 - 일반적인 컨벤션 적용
+      // Import 순서 규칙 - 단순화된 컨벤션
       'import/order': [
         'error',
         {
@@ -25,68 +38,21 @@ const eslintConfig = [
             'builtin', // Node.js 내장 모듈 (fs, path 등)
             'external', // 외부 라이브러리 (react, next 등)
             'internal', // 절대 경로 import (@/ 시작)
-            'parent', // 상위 디렉토리 (../)
-            'sibling', // 같은 디렉토리 (./)
-            'index', // index 파일
+            ['parent', 'sibling', 'index'], // 상대 경로 imports
           ],
           'newlines-between': 'always',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
           pathGroups: [
-            {
-              pattern: 'react',
-              group: 'external',
-              position: 'before',
-            },
-            {
-              pattern: 'react-*',
-              group: 'external',
-              position: 'before',
-            },
-            {
-              pattern: 'next',
-              group: 'external',
-              position: 'before',
-            },
-            {
-              pattern: 'next/*',
-              group: 'external',
-              position: 'before',
-            },
-            {
-              pattern: '@/assets/**',
-              group: 'internal',
-              position: 'before',
-            },
-            {
-              pattern: '@/entities/**',
-              group: 'internal',
-              position: 'before',
-            },
-            {
-              pattern: '@/features/**',
-              group: 'internal',
-              position: 'before',
-            },
-            {
-              pattern: '@/lib/**',
-              group: 'internal',
-              position: 'before',
-            },
-            {
-              pattern: '@/shared/**',
-              group: 'internal',
-              position: 'before',
-            },
-            {
-              pattern: '@/widgets/**',
-              group: 'internal',
-              position: 'before',
-            },
             {
               pattern: '@/**',
               group: 'internal',
+              position: 'after',
             },
           ],
-          pathGroupsExcludedImportTypes: ['react', 'next'],
+          pathGroupsExcludedImportTypes: ['builtin'],
         },
       ],
       // 중복 import 방지

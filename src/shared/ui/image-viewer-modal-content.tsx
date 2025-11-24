@@ -1,19 +1,16 @@
+import { XIcon } from 'lucide-react';
+import Image from 'next/image';
 import React from 'react';
-
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
-import Image from 'next/image';
 
-import { XIcon } from 'lucide-react';
 
 import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
 import DownloadIcon from '@/assets/icons/download.svg';
-
 import { downloadImage } from '@/shared/lib/download-image';
 
-import { useOverlayContext } from '../context/overlay-context';
-
 import { Carousel, CarouselContent, CarouselItem } from './carousel';
+import { useOverlayContext } from '../context/overlay-context';
 import { useCarouselIndex } from './hooks/use-carousel-index';
 
 function ImageViewerModalHeader({

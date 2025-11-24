@@ -2,16 +2,16 @@ import { useEffect, useRef } from 'react';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
 
+import ChatDateDivider from './chat-date-divider';
+import MyMessage from './my-message';
+import OtherMessage from './other-message';
+import SystemMessage from './system-message';
 import { shouldShowDateDivider } from '../lib/should-show-date-divider';
 import { useHairConsultationChatChannelStore } from '../store/hair-consultation-chat-channel-store';
 import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
 import { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 
-import ChatDateDivider from './chat-date-divider';
-import MyMessage from './my-message';
-import OtherMessage from './other-message';
-import SystemMessage from './system-message';
 
 type MessageSectionProps = {
   userChannel: UserHairConsultationChatChannelType;

@@ -1,8 +1,6 @@
 import ProfileIcon from '@/assets/icons/profile.svg';
-
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import formatAddress from '@/features/auth/lib/format-address';
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
 
 type PostDetailAuthorProfileProps = {

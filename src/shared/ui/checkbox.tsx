@@ -2,7 +2,6 @@ import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 import SquareCheckboxEmptyIcon from '@/assets/icons/square-checkbox-empty.svg';
 import SquareCheckboxIcon from '@/assets/icons/square-checkbox.svg';
-
 import { cn } from '@/shared/lib/utils';
 
 export type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {

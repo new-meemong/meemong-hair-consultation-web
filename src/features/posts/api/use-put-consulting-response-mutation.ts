@@ -1,12 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { CreateConsultingResponseRequest } from '@/entities/posts/api/create-consulting-response-request';
-
 import { apiClient } from '@/shared/api/client';
 
+import { getConsultingResponseEndpoint } from './use-get-consulting-response';
 import { HAIR_CONSULT_POSTING_API_PREFIX } from '../constants/api';
 
-import { getConsultingResponseEndpoint } from './use-get-consulting-response';
 
 export default function usePutConsultingResponseMutation({
   postId,

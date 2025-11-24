@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 
+import { DialogContent } from './dialog';
 import { useOverlayContext } from '../context/overlay-context';
 import { cn } from '../lib/utils';
 
-import { DialogContent } from './dialog';
 
 export type ModalButtonProps = {
   label: string;

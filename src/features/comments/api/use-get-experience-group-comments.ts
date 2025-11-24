@@ -1,7 +1,5 @@
 import type { ExperienceGroupCommentWithReplies } from '@/entities/comment/model/experience-group-comment';
-
 import { EXPERIENCE_GROUP_COMMENT_API_PREFIX } from '@/features/posts/constants/api';
-
 import { DEFAULT_LIMIT } from '@/shared/api/constants/default-limit';
 import useCursorInfiniteQuery from '@/shared/api/hooks/use-cursor-infinite-query';
 import type { PagingQueryParams } from '@/shared/api/types/paging-query-params';

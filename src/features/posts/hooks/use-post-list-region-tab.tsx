@@ -1,13 +1,10 @@
 import { useCallback } from 'react';
 
 import LocationIcon from '@/assets/icons/location.svg';
-
 import { ALL_OPTION } from '@/features/region/constants/region';
 import useSelectedRegion from '@/features/region/hooks/use-selected-region';
-
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-
 import { ROUTES } from '@/shared';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 export default function usePostListRegionTab() {
   const { push } = useRouterWithUser();

@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { type ImageUploadResponse } from '@/entities/posts';
-
 import { apiClient } from '@/shared/api/client';
 
 export default function useUploadPostImageMutation() {

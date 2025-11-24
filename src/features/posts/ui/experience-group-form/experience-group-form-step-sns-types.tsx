@@ -3,7 +3,6 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { EXPERIENCE_GROUP_FORM_FIELD_NAME } from '../../constants/experience-group/experience-group-form-field-name';
 import type { ExperienceGroupFormValues } from '../../types/experience-group-form-values';
 import ConsultingInputResultListItem from '../consulting-input-result-list-item';
-
 import ExperienceGroupFormSnsForm from './experience-group-form-sns-form';
 
 export default function ExperienceGroupFormStepSnsTypes() {

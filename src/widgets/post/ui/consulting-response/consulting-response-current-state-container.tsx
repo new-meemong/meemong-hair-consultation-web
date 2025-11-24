@@ -1,5 +1,4 @@
 import type { FACE_SHAPE } from '@/features/posts/constants/face-shape';
-
 import type { ValueOf } from '@/shared/type/types';
 
 import { HAIR_TYPE } from '../../../../features/posts/constants/hair-type';

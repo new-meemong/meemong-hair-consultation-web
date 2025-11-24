@@ -1,10 +1,8 @@
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
-
 import { zodResolver } from '@hookform/resolvers/zod';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useGetUser } from '@/features/auth/api/use-get-user';
-
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import ImageUploaderList from '@/shared/ui/image-uploader-list';

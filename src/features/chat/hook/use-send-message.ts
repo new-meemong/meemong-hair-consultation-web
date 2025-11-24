@@ -1,5 +1,4 @@
 import { useAuthContext } from '@/features/auth/context/auth-context';
-
 import { removeQueryParams } from '@/shared/lib/remove-query-params';
 
 import useSendChatPushNotification from '../api/use-send-chat-push-notification';

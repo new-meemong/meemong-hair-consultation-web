@@ -1,10 +1,10 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import ConsultingResponseFormPriceForm from './consulting-response-form-price-form';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 import ConsultingInputResultListItem from '../../consulting-input-result-list-item';
 
-import ConsultingResponseFormPriceForm from './consulting-response-form-price-form';
 
 export default function ConsultingResponseFormStepTreatments() {
   const { control, setValue } = useFormContext<ConsultingResponseFormValues>();

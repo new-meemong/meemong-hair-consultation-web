@@ -1,6 +1,5 @@
 import useShowLeaveCreateGeneralPostModal from '@/features/posts/hooks/use-show-leave-create-general-post-modal';
 import PostForm from '@/features/posts/ui/post-form/post-form';
-
 import { SiteHeader } from '@/widgets/header';
 
 export default function PostFormContainer() {

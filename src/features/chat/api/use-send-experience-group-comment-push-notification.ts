@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
 import type { SendCommentPushNotificationRequest } from '@/entities/comment/api/send-push-notification-request';
-
 import { apiClient } from '@/shared/api/client';
 
 export default function useSendExperienceGroupCommentPushNotification() {

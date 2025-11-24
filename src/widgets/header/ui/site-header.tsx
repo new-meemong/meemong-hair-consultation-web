@@ -3,7 +3,6 @@
 import { type ReactNode } from 'react';
 
 import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
-
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 interface SiteHeaderProps {

@@ -1,12 +1,10 @@
 import { useCallback } from 'react';
 
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-
+import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
-
-import { ROUTES } from '@/shared';
 
 import useDeleteExperienceGroupMutation from '../api/use-delete-experience-group-mutation';
 

@@ -1,9 +1,7 @@
 import { useRef, useState } from 'react';
 
 import CloseIcon from '@/assets/icons/close.svg';
-
 import type { PostDetail } from '@/entities/posts/model/post-detail';
-
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import {
   HAIR_CONCERN_OPTION_LABEL,
@@ -11,26 +9,22 @@ import {
 } from '@/features/posts/constants/hair-concern-option';
 import getSkinToneValue from '@/features/posts/lib/get-skin-tone-value';
 import ConsultingResponseSidebarButton from '@/features/posts/ui/consulting-form/consulting-response-form/consulting-response-sidebar/consulting-response-sidebar-button';
-
 import { cn } from '@/lib/utils';
-
+import { Drawer, ToggleChip, ToggleChipGroup } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 import type { ValueOf } from '@/shared/type/types';
 import { DrawerClose, DrawerContent, DrawerTitle, DrawerTrigger } from '@/shared/ui/drawer';
-
 import {
   CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE,
   CONSULTING_RESPONSE_SIDEBAR_TABS,
 } from '@/widgets/post/constants/consulting-response-sidebar-tab';
 
-import { Drawer, ToggleChip, ToggleChipGroup } from '@/shared';
-
-import ConsultingResponseSidebarGuideTooltip from '../consulting-response/consulting-response-sidebar-guide-tooltip';
-
 import ConsultingResponseSidebarAdditionalInfoTabView from './consulting-response-sidebar-additional-info-tab-view';
 import ConsultingResponseSidebarCurrentStateTabView from './consulting-response-sidebar-current-state-tab-view';
 import ConsultingResponseSidebarDesiredStyleTabView from './consulting-response-sidebar-desired-style-tab-view';
+import ConsultingResponseSidebarGuideTooltip from '../consulting-response/consulting-response-sidebar-guide-tooltip';
+
 
 const getSidebarTab = (post?: PostDetail) => {
   if (!post) return [];

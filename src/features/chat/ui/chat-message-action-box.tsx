@@ -3,9 +3,7 @@ import { type ReactNode } from 'react';
 import CalendarIcon from '@/assets/icons/calendar.svg';
 import ContractIcon from '@/assets/icons/contract.svg';
 import GalleryIcon from '@/assets/icons/gallery.svg';
-
 import useUploadPostImageMutation from '@/features/posts/api/use-upload-post-image';
-
 import type { ValueOf } from '@/shared/type/types';
 import ImageUploader from '@/shared/ui/image-uploader';
 

@@ -1,25 +1,22 @@
-import { useCallback, type RefObject } from 'react';
 
 import Image from 'next/image';
+import { useCallback, type RefObject } from 'react';
 
 import CommentIcon from '@/assets/icons/comment.svg';
 import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
-
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import formatAddress from '@/features/auth/lib/format-address';
-
 import formatDateTime from '@/shared/lib/formatDateTime';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
 import type { ValueOf } from '@/shared/type/types';
 import Dot from '@/shared/ui/dot';
 
-import type { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
 
 import PostListItemContent from './post-list-item-content';
 import PostListItemContentWithPrice from './post-list-item-price-content';
+import type { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
 
 type PostListItemProps = {
   createdAt: string;

@@ -1,5 +1,4 @@
 import type { ExperienceGroupDetail } from '@/entities/posts/model/experience-group-detail';
-
 import ExperienceGroupDetailItem from '@/features/posts/ui/experience-group-detail/experience-group-detail-item';
 
 type ExperienceGroupDetailContainerProps = {

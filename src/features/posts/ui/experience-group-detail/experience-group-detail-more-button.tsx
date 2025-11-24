@@ -1,12 +1,10 @@
 import { useSearchParams } from 'next/navigation';
 
 import MoreIcon from '@/assets/icons/more-horizontal.svg';
-
+import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { MoreOptionsMenu } from '@/shared/ui/more-options-menu';
-
-import { ROUTES } from '@/shared';
 
 import useDeleteExperienceGroup from '../../hooks/use-delete-experience-group';
 

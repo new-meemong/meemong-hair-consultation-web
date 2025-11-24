@@ -1,5 +1,4 @@
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-
 import type { Option } from '@/shared/type/option';
 import type { ValueOf } from '@/shared/type/types';
 

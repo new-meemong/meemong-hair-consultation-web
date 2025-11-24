@@ -1,13 +1,13 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation } from '@tanstack/react-query';
 
-import type { CreateEventMongRequest } from "@/entities/mong/api/create-event-mong-request";
-import type { CreateEventMongResponse } from "@/entities/mong/api/create-event-mong-response";
-
-import { apiClient } from "@/shared/api/client";
+import type { CreateEventMongRequest } from '@/entities/mong/api/create-event-mong-request';
+import type { CreateEventMongResponse } from '@/entities/mong/api/create-event-mong-response';
+import { apiClient } from '@/shared/api/client';
 
 export default function useCreateEventMongMutation() {
   const mutation = useMutation({
-    mutationFn: (data: CreateEventMongRequest) => apiClient.post<CreateEventMongResponse>('mong-moneys/event-mong', data),
+    mutationFn: (data: CreateEventMongRequest) =>
+      apiClient.post<CreateEventMongResponse>('mong-moneys/event-mong', data),
   });
 
   return {

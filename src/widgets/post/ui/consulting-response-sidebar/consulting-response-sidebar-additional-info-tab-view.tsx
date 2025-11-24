@@ -1,12 +1,9 @@
 import type { Treatment } from '@/entities/posts/model/post-detail';
-
 import type { SKIN_TONE_OPTION_VALUE } from '@/features/posts/constants/skin-tone';
 import ConsultingInputResultListItem from '@/features/posts/ui/consulting-input-result-list-item';
 import SkinColorLabel from '@/features/posts/ui/skin-color-label';
-
-import type { ValueOf } from '@/shared/type/types';
-
 import { Separator } from '@/shared';
+import type { ValueOf } from '@/shared/type/types';
 
 import ConsultingResponseSidebarItem from './consulting-response-sidebar-item';
 

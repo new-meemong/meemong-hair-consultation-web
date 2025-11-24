@@ -1,9 +1,7 @@
 import WarnIcon from '@/assets/icons/warn.svg';
-
+import { Button } from '@/shared';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { DrawerClose, DrawerFooter, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer';
-
-import { Button } from '@/shared';
 
 export default function useShowDeleteAllOperations() {
   const { showBottomSheet } = useOverlayContext();

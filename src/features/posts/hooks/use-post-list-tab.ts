@@ -1,7 +1,6 @@
 import { useSearchParams } from 'next/navigation';
 
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import type { ValueOf } from '@/shared/type/types';

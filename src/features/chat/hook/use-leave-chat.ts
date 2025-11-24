@@ -1,5 +1,4 @@
 import { useAuthContext } from '@/features/auth/context/auth-context';
-
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 import { useHairConsultationChatChannelStore } from '../store/hair-consultation-chat-channel-store';

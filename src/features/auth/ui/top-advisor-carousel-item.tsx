@@ -1,17 +1,14 @@
 import Image from 'next/image';
 
 import CrownIcon from '@/assets/icons/crown.svg';
-
 import { type TopAdvisor } from '@/entities/user/model/top-advisor';
-
+import { cn } from '@/shared';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 import { CarouselItem } from '@/shared/ui/carousel';
 
-import { cn } from '@/shared';
-
+import RankBadge from './rank-badge';
 import { useAuthContext } from '../context/auth-context';
 
-import RankBadge from './rank-badge';
 
 type RankTier = 'top' | 'middle' | 'bottom';
 
