@@ -10,12 +10,14 @@ import ReplyIcon from '@/assets/icons/reply.svg';
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import { AD_TYPE } from '@/features/ad/constants/ad-type';
 import useShowMongConsumeSheet from '@/features/mong/hook/use-show-mong-consume-sheet';
 
 import { cn } from '@/lib/utils';
 
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
 
 import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
 
@@ -61,21 +63,31 @@ export default function CommentListItem({
   const handleConsultingResponseClick = async () => {
     if (comment.answerId) {
       if (isUserModel) {
-        // 모델인 경우 결제 이력 확인
-        const result = await showMongConsumeSheet({
-          designerName: comment.user.displayName,
-          answerId: comment.answerId,
-          postId,
-          postListTab,
-        });
-        // 결제 이력이 있으면 바로 답변 페이지로 이동
-        if (result?.alreadyPaid) {
+        // 내가 작성한 글의 컨설팅 답변을 볼 때만 몽 차감 결제 로직 적용
+        if (isPostWriter) {
+          // 모델인 경우 결제 이력 확인
+          const result = await showMongConsumeSheet({
+            designerName: comment.user.displayName,
+            answerId: comment.answerId,
+            postId,
+            postListTab,
+          });
+          // 결제 이력이 있으면 바로 답변 페이지로 이동
+          if (result?.alreadyPaid) {
+            push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
+              [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+            });
+          }
+          // 결제 이력이 없으면 바텀시트가 표시됨 (버튼 클릭 동작은 아직 연결하지 않음)
+          return;
+        } else {
+          // 다른 사람 글의 컨설팅 답변을 볼 때는 구글 애드몹 광고 표시
+          showAdIfAllowed({ adType: AD_TYPE.VIEW_HAIR_CONSULTING_ANSWER });
           push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
             [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
           });
+          return;
         }
-        // 결제 이력이 없으면 바텀시트가 표시됨 (버튼 클릭 동작은 아직 연결하지 않음)
-        return;
       }
       // 디자이너인 경우 바로 답변 페이지로 이동
       push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
