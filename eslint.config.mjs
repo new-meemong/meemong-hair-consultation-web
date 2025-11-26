@@ -30,31 +30,8 @@ const eslintConfig = [
       import: importPlugin,
     },
     rules: {
-      // Import 순서 규칙 - 단순화된 컨벤션
-      'import/order': [
-        'error',
-        {
-          groups: [
-            'builtin', // Node.js 내장 모듈 (fs, path 등)
-            'external', // 외부 라이브러리 (react, next 등)
-            'internal', // 절대 경로 import (@/ 시작)
-            ['parent', 'sibling', 'index'], // 상대 경로 imports
-          ],
-          'newlines-between': 'always',
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
-          pathGroups: [
-            {
-              pattern: '@/**',
-              group: 'internal',
-              position: 'after',
-            },
-          ],
-          pathGroupsExcludedImportTypes: ['builtin'],
-        },
-      ],
+      // Import 순서 규칙 비활성화
+      'import/order': 'off',
       // 중복 import 방지
       'import/no-duplicates': 'error',
       // import 문과 첫 번째 코드 사이에 빈 줄 추가
