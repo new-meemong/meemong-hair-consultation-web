@@ -1,5 +1,5 @@
-import { cn } from '../lib';
 import type { Option } from '../type/option';
+import { cn } from '../lib';
 
 type TabProps<T> = {
   options: Option<T>[];
@@ -12,9 +12,9 @@ export default function Tab<T>({ options, value, onChange }: TabProps<T>) {
 
   return (
     <div className="px-5 flex items-center justify-stretch border-b-1 border-border-default">
-      {options.map((option) => (
+      {options.map((option, index) => (
         <button
-          key={String(option.value)}
+          key={`${String(option.value)}-${option.label}-${index}`}
           className={cn(
             'flex-1 py-[17.5px]',
             selected(option) && 'border-b-2 border-label-default py-4',

@@ -2,6 +2,7 @@
 
 import { POSTS_PAGE_KEY, useScrollRestoration } from '@/shared/hooks/use-scroll-restoration';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
+import { useCallback, useMemo } from 'react';
 
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import ConsultingPostListContainer from '@/widgets/post/ui/consulting-post/consulting-post-list-container';
@@ -16,7 +17,6 @@ import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import { getPostTabs } from '@/features/posts/constants/post-tabs';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import { useCallback } from 'react';
 import usePostListRegionTab from '@/features/posts/hooks/use-post-list-region-tab';
 import usePostListTab from '@/features/posts/hooks/use-post-list-tab';
 import { usePostTab } from '@/features/posts/hooks/use-post-tab';
@@ -68,7 +68,7 @@ export default function PostsPage() {
     }
   }, [activePostTab, activePostListTab, userSelectedRegionData]);
 
-  const postTabs = getPostTabs(user.role);
+  const postTabs = useMemo(() => getPostTabs(user?.role), [user?.role]);
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">
