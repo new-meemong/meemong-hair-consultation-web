@@ -1,16 +1,14 @@
-import { formatDate } from 'date-fns';
-
 import { AD_TYPE } from '@/features/ad/constants/ad-type';
-import type { ExperienceGroupDetail } from '@/entities/posts/model/experience-group-detail';
-import { useAuthContext } from '@/features/auth/context/auth-context';
-import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
-import openUrlInApp from '@/shared/lib/open-url-in-app';
 import Dot from '@/shared/ui/dot';
-import useShowModal from '@/shared/ui/hooks/use-show-modal';
-
 import { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
+import type { ExperienceGroupDetail } from '@/entities/posts/model/experience-group-detail';
 import PostDetailAuthorProfile from '../post-detail/post-detail-author-profile';
 import PostDetailContentItem from '../post-detail-content-item';
+import { formatDate } from 'date-fns';
+import openUrlInApp from '@/shared/lib/open-url-in-app';
+import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
+import { useAuthContext } from '@/features/auth/context/auth-context';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 function SnsLink({ snsType, url }: { snsType: string; url: string }) {
   const { isUserModel, isUserDesigner } = useAuthContext();
