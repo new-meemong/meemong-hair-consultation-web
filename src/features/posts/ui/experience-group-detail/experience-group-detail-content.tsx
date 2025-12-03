@@ -1,7 +1,9 @@
 import { formatDate } from 'date-fns';
 
+import { AD_TYPE } from '@/features/ad/constants/ad-type';
 import type { ExperienceGroupDetail } from '@/entities/posts/model/experience-group-detail';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
 import openUrlInApp from '@/shared/lib/open-url-in-app';
 import Dot from '@/shared/ui/dot';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
@@ -11,7 +13,7 @@ import PostDetailAuthorProfile from '../post-detail/post-detail-author-profile';
 import PostDetailContentItem from '../post-detail-content-item';
 
 function SnsLink({ snsType, url }: { snsType: string; url: string }) {
-  const { isUserModel } = useAuthContext();
+  const { isUserModel, isUserDesigner } = useAuthContext();
 
   const showModal = useShowModal();
 
@@ -27,6 +29,11 @@ function SnsLink({ snsType, url }: { snsType: string; url: string }) {
         ],
       });
       return;
+    }
+
+    // 디자이너가 모델이 올린 체험단 신청 글의 sns link를 클릭하면 광고 표시
+    if (isUserDesigner) {
+      showAdIfAllowed({ adType: AD_TYPE.snsUrlInExperienceGroup });
     }
 
     openUrlInApp(url);
