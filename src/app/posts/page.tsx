@@ -14,6 +14,7 @@ import { SiteHeader } from '@/widgets/header';
 import Tab from '@/shared/ui/tab';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
+import PromotionBanner from '@/features/banner/ui/promotion-banner';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import { getPostTabs } from '@/features/posts/constants/post-tabs';
 import { useAuthContext } from '@/features/auth/context/auth-context';
@@ -74,8 +75,9 @@ export default function PostsPage() {
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">
       {/* 헤더 */}
       <SiteHeader title="헤어상담" />
-      <div className="flex flex-col gap-5 flex-1 min-h-0">
+      <div className="flex flex-col flex-1 min-h-0">
         <Tab options={postTabs} value={activePostTab} onChange={setActivePostTab} />
+        <PromotionBanner />
         <div ref={containerRef} className="flex flex-col gap-5 flex-1 overflow-y-auto">
           <TopAdvisorCarousel />
           <div className="flex-1 flex flex-col min-h-0 gap-2">
