@@ -1,12 +1,11 @@
 'use client';
 
-import { useMemo } from 'react';
-
+import { Button } from '@/shared/ui/button';
+import { ROUTES } from '@/shared';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
-import { ROUTES } from '@/shared';
+import { useMemo } from 'react';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import { Button } from '@/shared/ui/button';
 
 type ChatPostButtonsProps = {
   postId: string;
@@ -78,20 +77,35 @@ export default function ChatPostButtons({ postId, answerId }: ChatPostButtonsPro
   }
 
   return (
-    <div className="px-4 py-3 bg-white border-b border-label-disable">
-      <div className="flex gap-2">
+    <div className="bg-white border-b border-label-disable sticky top-0 z-10">
+      <div className="px-4 py-3 flex gap-2 overflow-x-auto scrollbar-hide">
         {showOriginalPostButton && (
-          <Button theme="whiteBorder" size="md" onClick={handleOriginalPostClick}>
+          <Button
+            theme="whiteBorder"
+            size="md"
+            onClick={handleOriginalPostClick}
+            className="flex-shrink-0 min-h-[44px]"
+          >
             원글 보기
           </Button>
         )}
         {showResponseButton && (
-          <Button theme="whiteBorder" size="md" onClick={handleResponseClick}>
+          <Button
+            theme="whiteBorder"
+            size="md"
+            onClick={handleResponseClick}
+            className="flex-shrink-0 min-h-[44px]"
+          >
             답변 보기
           </Button>
         )}
         {showReservationButton && (
-          <Button theme="black" size="md" onClick={handleReservationClick}>
+          <Button
+            theme="black"
+            size="md"
+            onClick={handleReservationClick}
+            className="flex-shrink-0 min-h-[44px]"
+          >
             매장예약
           </Button>
         )}
@@ -99,4 +113,3 @@ export default function ChatPostButtons({ postId, answerId }: ChatPostButtonsPro
     </div>
   );
 }
-

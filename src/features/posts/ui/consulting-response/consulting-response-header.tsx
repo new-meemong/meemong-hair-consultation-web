@@ -1,15 +1,15 @@
-import { format } from 'date-fns';
-import { useSearchParams } from 'next/navigation';
+import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
-import ProfileIcon from '@/assets/icons/profile.svg';
 import type { ConsultingResponseDesigner } from '@/entities/posts/model/consulting-response';
-import { useAuthContext } from '@/features/auth/context/auth-context';
-import useStartChat from '@/features/chat/hook/use-start-chat';
-import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
+import ProfileIcon from '@/assets/icons/profile.svg';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { format } from 'date-fns';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
+import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { useSearchParams } from 'next/navigation';
+import useStartChat from '@/features/chat/hook/use-start-chat';
 
 type ConsultingResponseHeaderProps = {
   postId: string;
