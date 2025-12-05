@@ -13,6 +13,7 @@ import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-c
 import type { UserHairConsultationChatChannelType } from '@/features/chat/type/user-hair-consultation-chat-channel-type';
 import ChatDetailMoreButton from '@/features/chat/ui/chat-detail-more-button';
 import ChatMessageForm, { type ChatMessageInputValues } from '@/features/chat/ui/chat-message-form';
+import ChatPostButtons from '@/features/chat/ui/chat-post-buttons';
 import MessageSection from '@/features/chat/ui/message-section';
 import { useLoadingContext } from '@/shared/context/loading-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -208,6 +209,10 @@ export default function HairConsultationChatDetailPage() {
         }
         onBackClick={handleBackClick}
       />
+      {/* 게시물 버튼 추가 - postId가 있을 때만 표시 */}
+      {userChannel?.postId && (
+        <ChatPostButtons postId={userChannel.postId} answerId={userChannel.answerId} />
+      )}
       <div className="flex-1 overflow-hidden">
         <MessageSection userChannel={userChannel} />
       </div>

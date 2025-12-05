@@ -50,6 +50,9 @@ interface ChatChannelState {
   findOrCreateChannel: (params: {
     senderId: string;
     receiverId: string;
+    postId?: string;
+    answerId?: string;
+    entrySource?: 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
   }) => Promise<{ channelId: string | null; isCreated: boolean }>;
 
   subscribeToChannels: (userId: number) => () => void;
@@ -89,7 +92,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
   error: null,
   otherUserHairConsultationChatChannels: null,
 
-  findOrCreateChannel: async ({ senderId, receiverId }) => {
+  findOrCreateChannel: async ({ senderId, receiverId, postId, answerId, entrySource }) => {
     try {
       // 참여자 ID 정렬 및 channelKey 생성
       const participantIds = [senderId, receiverId].sort();
@@ -103,7 +106,8 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
         const channelSnapshot = await transaction.get(channelRef);
 
         if (channelSnapshot.exists()) {
-          // 채널이 존재하는 경우 삭제 여부 확인
+          // 채널이 존재하는 경우
+          const existingData = channelSnapshot.data();
           const participantRefs = participantIds.map((userId) =>
             doc(db, getDbPath(userId), channelRef.id),
           );
@@ -128,6 +132,29 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
             return { channelId: channelRef.id, isCreated: true };
           }
 
+          // 새로운 게시물 정보가 있고, 기존 정보와 다르다면 업데이트
+          if (postId && existingData.postId !== postId) {
+            // 채널 정보 업데이트
+            const updateData: {
+              postId: string;
+              answerId?: string;
+              entrySource?: string;
+              updatedAt: ReturnType<typeof serverTimestamp>;
+            } = {
+              postId,
+              updatedAt: serverTimestamp(),
+            };
+            if (answerId) updateData.answerId = answerId;
+            if (entrySource) updateData.entrySource = entrySource;
+
+            transaction.update(channelRef, updateData);
+
+            // 참여자들의 메타데이터도 업데이트
+            participantRefs.forEach((ref) => {
+              transaction.update(ref, updateData);
+            });
+          }
+
           return { channelId: channelRef.id, isCreated: false };
         }
 
@@ -142,6 +169,9 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           channelKey,
           participantsIds: participantIds,
           channelOpenUserId: senderId,
+          ...(postId && { postId }),
+          ...(answerId && { answerId }),
+          ...(entrySource && { entrySource }),
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         };
@@ -165,6 +195,9 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
             isPinned: false,
             pinnedAt: null,
             lastReadAt: null,
+            ...(postId && { postId }),
+            ...(answerId && { answerId }),
+            ...(entrySource && { entrySource }),
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             deletedAt: null,

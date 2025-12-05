@@ -5,6 +5,7 @@ import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import ProfileIcon from '@/assets/icons/profile.svg';
 import type { ConsultingResponseDesigner } from '@/entities/posts/model/consulting-response';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import useStartChat from '@/features/chat/hook/use-start-chat';
 import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -23,15 +24,18 @@ export default function ConsultingResponseHeader({
   author,
   createdAt,
   responseId,
+  hairConsultPostingCreateUserId,
 }: ConsultingResponseHeaderProps) {
   const searchParams = useSearchParams();
   const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
 
   const { push } = useRouterWithUser();
   const { user } = useAuthContext();
+  const { startChat } = useStartChat();
   const { id, name, profileImageUrl } = author;
 
   const isResponseWriter = user.id === id;
+  const isPostWriter = user.id === hairConsultPostingCreateUserId;
 
   const handleEditClick = () => {
     push(ROUTES.POSTS_CONSULTING_RESPONSE_EDIT(postId, responseId));
@@ -44,6 +48,15 @@ export default function ConsultingResponseHeader({
   const handleOriginalPostClick = () => {
     push(ROUTES.POSTS_DETAIL(postId), {
       [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+    });
+  };
+
+  const handleChatClick = async () => {
+    await startChat({
+      receiverId: id,
+      postId,
+      answerId: responseId,
+      entrySource: 'CONSULTING_RESPONSE',
     });
   };
 
@@ -74,6 +87,9 @@ export default function ConsultingResponseHeader({
           </Button>
         ) : (
           <>
+            <Button theme="whiteBorder" onClick={handleChatClick}>
+              채팅하기
+            </Button>
             <Button
               theme="whiteBorder"
               className="flex gap-2 items-center"
@@ -82,9 +98,11 @@ export default function ConsultingResponseHeader({
               디자이너 프로필 보기
               <ChevronRightIcon className="size-5 fill-white" />
             </Button>
-            <Button theme="whiteBorder" onClick={handleOriginalPostClick}>
-              원글 보기
-            </Button>
+            {isPostWriter && (
+              <Button theme="whiteBorder" onClick={handleOriginalPostClick}>
+                원글 보기
+              </Button>
+            )}
           </>
         )}
       </div>
