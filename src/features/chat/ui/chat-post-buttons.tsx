@@ -7,7 +7,6 @@ import { ROUTES } from '@/shared';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 import { cn } from '@/shared/lib/utils';
-import { isDesigner } from '@/entities/user/lib/user-role';
 import openUrlInApp from '@/shared/lib/open-url-in-app';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
@@ -79,32 +78,46 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
   const isDesignerPostEnabled = !isPostNotFound; // 고객 글 (게시물이 있으면 활성화)
   const isDesignerResponseEnabled = !isPostNotFound && hasConsultingResponse && isValidAnswerId; // 내 답변 (답변이 있으면 활성화)
 
-  // 예약 링크 활성화 여부 (채팅방의 디자이너의 storeUrl이 있는 경우에만 활성화)
-  // 채팅방 참여자 중 디자이너를 찾아서 그 디자이너의 storeUrl 사용
+  // 예약 링크 활성화 여부 (채팅방의 디자이너(role 2)의 designerInfo.storelink가 있는 경우에만 활성화)
+  // 채팅방 참여자 중 디자이너(role 2)를 찾아서 그 디자이너의 designerInfo.storelink 사용
   const storeUrl = useMemo(() => {
-    // otherUser가 디자이너인 경우
-    if (userChannel?.otherUser && isDesigner(userChannel.otherUser)) {
+    // otherUser가 디자이너(role 2)인 경우
+    if (
+      userChannel?.otherUser &&
+      (userChannel.otherUser.role === USER_ROLE.DESIGNER ||
+        userChannel.otherUser.Role === USER_ROLE.DESIGNER)
+    ) {
       const otherUser = userChannel.otherUser as {
+        designerInfo?: {
+          storelink?: string;
+        };
         storeUrl?: string;
         storelink?: string;
       };
-      return otherUser.storeUrl || otherUser.storelink || null;
+      // designerInfo.storelink를 우선 사용, 없으면 기존 필드 확인
+      return otherUser.designerInfo?.storelink || otherUser.storeUrl || otherUser.storelink || null;
     }
 
-    // otherUser가 디자이너가 아닌 경우, 현재 사용자가 디자이너인지 확인
+    // otherUser가 디자이너가 아닌 경우, 현재 사용자가 디자이너(role 2)인지 확인
     if (user && (user.role === USER_ROLE.DESIGNER || user.Role === USER_ROLE.DESIGNER)) {
       const currentUser = user as {
+        designerInfo?: {
+          storelink?: string;
+        };
         storeUrl?: string;
         storelink?: string;
       };
-      return currentUser.storeUrl || currentUser.storelink || null;
+      // designerInfo.storelink를 우선 사용, 없으면 기존 필드 확인
+      return (
+        currentUser.designerInfo?.storelink || currentUser.storeUrl || currentUser.storelink || null
+      );
     }
 
     return null;
   }, [userChannel?.otherUser, user]);
 
   const isReservationButtonEnabled = !!storeUrl;
-
+  console.log('moonsae storeUrl', storeUrl);
   // 버튼 활성화 여부 결정 (역할에 따라)
   const isFirstButtonEnabled = isUserModel ? isModelOriginalPostEnabled : isDesignerPostEnabled;
   const isSecondButtonEnabled = isUserModel ? isModelResponseEnabled : isDesignerResponseEnabled;
@@ -127,6 +140,7 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
 
   // 매장예약 클릭 핸들러
   const handleReservationClick = () => {
+    console.log('handleReservationClick called, storeUrl:', storeUrl);
     if (!storeUrl) {
       showModal({
         id: 'no-store-url-modal',
@@ -136,7 +150,12 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
       return;
     }
 
-    openUrlInApp(storeUrl);
+    // 웹에서는 window.open 사용, 앱에서는 openUrlInApp 사용
+    if (typeof window.externalLink === 'function') {
+      openUrlInApp(storeUrl);
+    } else {
+      window.open(storeUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   // 버튼 공통 스타일

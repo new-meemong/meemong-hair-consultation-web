@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useGetUser } from '@/features/auth/api/use-get-user';
 import useIsFromApp from '@/features/chat/hook/use-is-from-app';
 import useSendMessage from '@/features/chat/hook/use-send-message';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
@@ -131,10 +132,15 @@ export default function HairConsultationChatDetailPage() {
     };
   }, [chatChannelId, subscribeToMessages, clearMessages]);
 
+  // 서버에서 상대방 유저 정보 가져오기 (항상 최신 데이터 사용)
+  const otherUserId = userChannel?.otherUserId;
+  const { data: otherUserResponse } = useGetUser(otherUserId || '');
+  const otherUserFromServer = otherUserResponse?.data;
+
   useEffect(() => {
     if (!userId || !chatChannelId || !userChannel) return;
 
-    // 채팅방 입장 시 상대방 정보 업데이트
+    // 채팅방 입장 시 상대방 정보 업데이트 (항상 서버에서 가져와서 Firestore 업데이트)
     updateChannelUserInfo(chatChannelId, userId);
     resetUnreadCount(chatChannelId, userId);
   }, [userId, chatChannelId, userChannel, updateChannelUserInfo, resetUnreadCount]);
@@ -143,14 +149,15 @@ export default function HairConsultationChatDetailPage() {
 
   async function handleSendMessage(data: ChatMessageInputValues) {
     const message = data.content;
-    if (!message.trim() || !userChannel?.otherUser?.id || !userId || !chatChannelId) {
+    const receiverId = otherUserFromServer?.id || userChannel?.otherUser?.id;
+    if (!message.trim() || !receiverId || !userId || !chatChannelId) {
       return { success: false };
     }
 
     try {
       return await sendMessage({
         channelId: chatChannelId,
-        receiverId: userChannel.otherUser.id.toString(),
+        receiverId: receiverId.toString(),
         message: message,
         messageType: HairConsultationChatMessageTypeEnum.TEXT,
       });
@@ -221,13 +228,19 @@ export default function HairConsultationChatDetailPage() {
 
   console.log('userChannel', userChannel);
 
+  // 서버에서 가져온 유저 정보를 사용 (없으면 Firestore 데이터 fallback)
+  const otherUser = otherUserFromServer || userChannel?.otherUser;
+  console.log('moonsae otherUserFromServer', otherUserFromServer);
   return (
     <div className="h-screen flex flex-col">
       <SiteHeader
         showBackButton
-        title={userChannel?.otherUser?.DisplayName ?? ''}
+        title={otherUser?.DisplayName || otherUser?.displayName || ''}
         rightComponent={
-          <ChatDetailMoreButton chatChannel={userChannel} onLeaveChat={handleBackClick} />
+          <ChatDetailMoreButton
+            chatChannel={userChannel && otherUser ? { ...userChannel, otherUser } : userChannel}
+            onLeaveChat={handleBackClick}
+          />
         }
         onBackClick={handleBackClick}
       />
@@ -235,12 +248,17 @@ export default function HairConsultationChatDetailPage() {
       <ChatPostButtons
         postId={userChannel?.postId || ''}
         answerId={userChannel?.answerId}
-        userChannel={userChannel}
+        userChannel={userChannel && otherUser ? { ...userChannel, otherUser } : userChannel}
       />
       <div className="flex-1 overflow-hidden">
-        <MessageSection userChannel={userChannel} />
+        <MessageSection
+          userChannel={userChannel && otherUser ? { ...userChannel, otherUser } : userChannel}
+        />
       </div>
-      <ChatMessageForm onSubmit={handleSendMessage} userChannel={userChannel} />
+      <ChatMessageForm
+        onSubmit={handleSendMessage}
+        userChannel={userChannel && otherUser ? { ...userChannel, otherUser } : userChannel}
+      />
     </div>
   );
 }

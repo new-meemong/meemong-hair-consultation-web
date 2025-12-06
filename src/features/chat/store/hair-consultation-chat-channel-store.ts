@@ -25,20 +25,20 @@ import {
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 
 // Firestore에 저장된 실제 데이터 구조에 맞는 타입
-interface FirestoreUser {
-  DisplayName?: string;
-  Email?: string;
-  FcmToken?: string;
-  Korean?: string;
-  Role?: number;
-  Sex?: string;
-  profileUrl?: string;
-  UserID?: string | null;
-  id?: number;
-  // 기존 User 타입의 필드들도 포함
-  displayName?: string;
-  profilePictureURL?: string;
-}
+// interface FirestoreUser {
+//   DisplayName?: string;
+//   Email?: string;
+//   FcmToken?: string;
+//   Korean?: string;
+//   Role?: number;
+//   Sex?: string;
+//   profileUrl?: string;
+//   UserID?: string | null;
+//   id?: number;
+//   // 기존 User 타입의 필드들도 포함
+//   displayName?: string;
+//   profilePictureURL?: string;
+// }
 
 interface ChatChannelState {
   userHairConsultationChatChannels: UserHairConsultationChatChannelType[];
@@ -466,23 +466,18 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           });
         }
       }
-      // otherUser 정보가 없거나 불완전한 경우에만 업데이트
-      if (
-        !userHairConsultationChatChannel.otherUser ||
-        !(userHairConsultationChatChannel.otherUser as FirestoreUser)?.DisplayName
-      ) {
-        const userData = await getUser(userHairConsultationChatChannel.otherUserId);
+      // 항상 서버에서 최신 유저 정보를 가져와서 업데이트
+      const userData = await getUser(userHairConsultationChatChannel.otherUserId);
 
-        if (userData.success) {
-          await updateDoc(ref, {
-            otherUser: userData.data,
-            updatedAt: serverTimestamp(),
-          });
-        } else {
-          console.error('사용자 정보 가져오기 실패:', {
-            otherUserId: userHairConsultationChatChannel.otherUserId,
-          });
-        }
+      if (userData.success) {
+        await updateDoc(ref, {
+          otherUser: userData.data,
+          updatedAt: serverTimestamp(),
+        });
+      } else {
+        console.error('사용자 정보 가져오기 실패:', {
+          otherUserId: userHairConsultationChatChannel.otherUserId,
+        });
       }
     } catch (error) {
       console.error('사용자 정보 업데이트 중 오류 발생:', error);
