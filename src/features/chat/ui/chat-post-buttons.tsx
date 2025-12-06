@@ -4,15 +4,21 @@ import HairChatButtonIcon1 from '@/assets/icons/hair-chat-button-icon1.svg';
 import HairChatButtonIcon2 from '@/assets/icons/hair-chat-button-icon2.svg';
 import HairChatButtonIcon3 from '@/assets/icons/hair-chat-button-icon3.svg';
 import { ROUTES } from '@/shared';
+import { USER_ROLE } from '@/entities/user/constants/user-role';
+import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 import { cn } from '@/shared/lib/utils';
+import { isDesigner } from '@/entities/user/lib/user-role';
+import openUrlInApp from '@/shared/lib/open-url-in-app';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
 import { useMemo } from 'react';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 type ChatPostButtonsProps = {
   postId: string;
   answerId?: string;
+  userChannel?: UserHairConsultationChatChannelType | null;
 };
 
 /**
@@ -20,16 +26,21 @@ type ChatPostButtonsProps = {
  * 모델 채팅방: 내 질문, 받은 답변, 예약 링크
  * 디자이너 채팅방: 고객 글, 내 답변, 예약 링크
  */
-export default function ChatPostButtons({ postId, answerId }: ChatPostButtonsProps) {
+export default function ChatPostButtons({ postId, answerId, userChannel }: ChatPostButtonsProps) {
   const { user, isUserModel } = useAuthContext();
   const { push } = useRouterWithUser();
+  const showModal = useShowModal();
 
-  // 게시물 정보 조회 (postId가 있을 때만)
-  const { data: postDetailResponse, isError, isLoading } = useGetPostDetail(postId);
+  // postId가 없으면 모든 버튼 비활성화
+  const hasPostId = !!postId;
+
+  // 게시물 정보 조회 (postId가 있을 때만, useGetPostDetail 내부에서 enabled: !!id로 처리됨)
+  const { data: postDetailResponse, isError, isLoading } = useGetPostDetail(postId || '');
   const postDetail = postDetailResponse?.data;
 
   // 게시물이 삭제되었거나 찾을 수 없는 경우를 감지
-  const isPostNotFound = isError || (!isLoading && !postDetail);
+  // postId가 없으면 항상 not found로 처리
+  const isPostNotFound = !hasPostId || isError || (!isLoading && hasPostId && !postDetail);
 
   // 작성자 확인 (게시물이 있을 때만)
   const isPostWriter = useMemo(() => {
@@ -37,27 +48,62 @@ export default function ChatPostButtons({ postId, answerId }: ChatPostButtonsPro
     return postDetail.hairConsultPostingCreateUserId === user.id;
   }, [postDetail, user.id, isPostNotFound]);
 
-  // 컨설팅 답변 존재 여부 확인 (게시물이 있을 때만)
-  const hasConsultingResponse = postDetail?.isAnsweredByDesigner ?? false;
+  // answerId는 userChannel에서도 확인 (props로 전달된 answerId가 없을 수 있음)
+  const actualAnswerId = answerId || userChannel?.answerId || '';
+
+  // 컨설팅 답변 존재 여부 확인
+  // answerId가 있으면 답변이 존재한다고 간주 (userChannel에 answerId가 저장되어 있으므로)
+  // 또는 postDetail에서 isAnsweredByDesigner 확인
+  const hasConsultingResponse = useMemo(() => {
+    // answerId가 있으면 답변이 존재한다고 간주
+    if (actualAnswerId) return true;
+    // postDetail이 있으면 그 값을 사용
+    return postDetail?.isAnsweredByDesigner ?? false;
+  }, [actualAnswerId, postDetail?.isAnsweredByDesigner]);
 
   // answerId 유효성 체크
   // answerId가 있고, 컨설팅 답변이 존재하는 경우 유효한 것으로 간주
   const isValidAnswerId = useMemo(() => {
-    if (isPostNotFound || !postDetail) return false;
-    return !!answerId && hasConsultingResponse;
-  }, [answerId, hasConsultingResponse, isPostNotFound, postDetail]);
+    if (isPostNotFound || !postDetail) {
+      // postDetail이 없어도 answerId가 있으면 유효하다고 간주
+      return !!actualAnswerId;
+    }
+    return !!actualAnswerId && hasConsultingResponse;
+  }, [actualAnswerId, hasConsultingResponse, isPostNotFound, postDetail]);
 
   // 모델인 경우 버튼 활성화 조건
   const isModelOriginalPostEnabled = !isPostNotFound && isPostWriter; // 내 질문
-  const isModelResponseEnabled =
-    !isPostNotFound && isPostWriter && hasConsultingResponse && isValidAnswerId; // 받은 답변
+  const isModelResponseEnabled = !isPostNotFound && hasConsultingResponse && isValidAnswerId; // 받은 답변 (answerId가 있고 답변이 있으면 활성화)
 
   // 디자이너인 경우 버튼 활성화 조건
   const isDesignerPostEnabled = !isPostNotFound; // 고객 글 (게시물이 있으면 활성화)
   const isDesignerResponseEnabled = !isPostNotFound && hasConsultingResponse && isValidAnswerId; // 내 답변 (답변이 있으면 활성화)
 
-  // 예약 링크는 항상 활성화
-  const isReservationButtonEnabled = true; // TODO: 예약 링크 존재 여부에 따라 결정
+  // 예약 링크 활성화 여부 (채팅방의 디자이너의 storeUrl이 있는 경우에만 활성화)
+  // 채팅방 참여자 중 디자이너를 찾아서 그 디자이너의 storeUrl 사용
+  const storeUrl = useMemo(() => {
+    // otherUser가 디자이너인 경우
+    if (userChannel?.otherUser && isDesigner(userChannel.otherUser)) {
+      const otherUser = userChannel.otherUser as {
+        storeUrl?: string;
+        storelink?: string;
+      };
+      return otherUser.storeUrl || otherUser.storelink || null;
+    }
+
+    // otherUser가 디자이너가 아닌 경우, 현재 사용자가 디자이너인지 확인
+    if (user && (user.role === USER_ROLE.DESIGNER || user.Role === USER_ROLE.DESIGNER)) {
+      const currentUser = user as {
+        storeUrl?: string;
+        storelink?: string;
+      };
+      return currentUser.storeUrl || currentUser.storelink || null;
+    }
+
+    return null;
+  }, [userChannel?.otherUser, user]);
+
+  const isReservationButtonEnabled = !!storeUrl;
 
   // 버튼 활성화 여부 결정 (역할에 따라)
   const isFirstButtonEnabled = isUserModel ? isModelOriginalPostEnabled : isDesignerPostEnabled;
@@ -75,17 +121,22 @@ export default function ChatPostButtons({ postId, answerId }: ChatPostButtonsPro
 
   // 두 번째 버튼 클릭 핸들러
   const handleSecondButtonClick = () => {
-    if (!isSecondButtonEnabled || !postId || !answerId) return;
-    push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId));
+    if (!isSecondButtonEnabled || !postId || !actualAnswerId) return;
+    push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, actualAnswerId));
   };
 
   // 매장예약 클릭 핸들러
   const handleReservationClick = () => {
-    if (!isReservationButtonEnabled) return;
-    // TODO: 매장예약 링크 처리 로직 구현 필요
-    // 현재는 otherUser에서 예약 링크 정보를 가져와야 함
-    // userChannel.otherUser?.reservationLink 등을 확인 필요
-    console.warn('매장예약 기능은 아직 구현되지 않았습니다.');
+    if (!storeUrl) {
+      showModal({
+        id: 'no-store-url-modal',
+        text: '예약 링크가 등록되지 않았습니다.',
+        buttons: [{ label: '확인' }],
+      });
+      return;
+    }
+
+    openUrlInApp(storeUrl);
   };
 
   // 버튼 공통 스타일

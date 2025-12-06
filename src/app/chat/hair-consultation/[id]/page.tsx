@@ -3,7 +3,6 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useIsFromApp from '@/features/chat/hook/use-is-from-app';
 import useSendMessage from '@/features/chat/hook/use-send-message';
@@ -43,10 +42,13 @@ export default function HairConsultationChatDetailPage() {
 
   const { setLoading } = useLoadingContext();
 
-  const { subscribeToMessages, loading } = useHairConsultationChatMessageStore((state) => ({
-    subscribeToMessages: state.subscribeToMessages,
-    loading: state.loading,
-  }));
+  const { subscribeToMessages, loading, clearMessages } = useHairConsultationChatMessageStore(
+    (state) => ({
+      subscribeToMessages: state.subscribeToMessages,
+      loading: state.loading,
+      clearMessages: state.clearMessages,
+    }),
+  );
 
   useEffect(() => {
     setLoading(loading);
@@ -64,51 +66,70 @@ export default function HairConsultationChatDetailPage() {
     subscribeToMine: state.subscribeToMine,
   }));
 
-  // 웹에서 접근한 경우 리스트에서 채널 찾아서 세팅
+  // 웹/앱 모두에서 채널이 없을 때 해당 채널 구독
+  // => 직접 URL로 접근한 경우나 앱에서 접근한 경우를 처리
+  useEffect(() => {
+    if (!chatChannelId || !userId || userChannel) return;
+
+    // 리스트에 채널이 없을 때 해당 채널 구독
+    const foundUserChannel = userHairConsultationChatChannels.find(
+      (channel) => channel.channelId === chatChannelId,
+    );
+
+    if (!foundUserChannel) {
+      const unsubscribe = subscribeToMine(chatChannelId, userId);
+      return () => unsubscribe();
+    }
+  }, [chatChannelId, userId, subscribeToMine, userChannel, userHairConsultationChatChannels]);
+
+  // userHairConsultationChatChannels에서 채널 찾아서 userChannel로 설정
   useEffect(() => {
     if (userChannel) return;
 
-    const initializeChannel = async () => {
-      const foundUserChannel = userHairConsultationChatChannels.find(
-        (channel) => channel.channelId === params.id,
-      );
+    const foundUserChannel = userHairConsultationChatChannels.find(
+      (channel) => channel.channelId === params.id,
+    );
 
-      if (foundUserChannel) {
-        setUserChannel(foundUserChannel);
-        setError(null);
-      } else if (userHairConsultationChatChannels.length > 0) {
-        setError('사용자 채널 정보를 찾을 수 없습니다.');
-      }
-
+    if (foundUserChannel) {
+      setUserChannel(foundUserChannel);
+      setError(null);
       setIsInitializing(false);
-    };
+    } else if (userHairConsultationChatChannels.length > 0) {
+      // 리스트에 채널이 있지만 해당 채널이 없는 경우
+      // 약간의 지연 후 다시 확인 (subscribeToMine이 완료될 시간을 줌)
+      const timer = setTimeout(() => {
+        const retryFound = userHairConsultationChatChannels.find(
+          (channel) => channel.channelId === params.id,
+        );
+        if (retryFound) {
+          setUserChannel(retryFound);
+          setError(null);
+          setIsInitializing(false);
+        } else {
+          setError('사용자 채널 정보를 찾을 수 없습니다.');
+          setIsInitializing(false);
+        }
+      }, 500);
 
-    initializeChannel();
+      return () => clearTimeout(timer);
+    }
+    // userHairConsultationChatChannels가 비어있는 경우는 아직 로딩 중이므로 기다림
   }, [userHairConsultationChatChannels, params.id, userChannel]);
 
-  // 앱에서 접근한 경우 내 채널 구독
-  // => 앱에서는 리스트와 상관없이 해당 채널 방을 바로 웹뷰로 띄우기 때문에 새로운 구독 필요
+  // 메시지 구독 (채널 ID만 있으면 구독 가능, userChannel과 무관)
   useEffect(() => {
-    if (!isFromApp || !chatChannelId) return;
+    if (!chatChannelId) return;
 
-    const unsubscribe = subscribeToMine(chatChannelId, userId);
+    // 이전 메시지 초기화
+    clearMessages();
 
-    return () => unsubscribe();
-  }, [chatChannelId, userId, subscribeToMine, userChannel, isFromApp]);
-  // 앱에서 접근한 경우 내채널 구독후 해당 채널 userChannel로 등록
-
-  //   useEffect(() => {
-  //     if (source === 'app' && userHairConsultationChatChannels.length === 1 && !userChannel) {
-  //       setUserChannel(userHairConsultationChatChannels[0]);
-  //     }
-  //   }, [source, userHairConsultationChatChannels, userChannel]);
-
-  useEffect(() => {
-    if (chatChannelId) {
-      const unsubscribe = subscribeToMessages(chatChannelId);
-      return () => unsubscribe();
-    }
-  }, [chatChannelId, params.id, subscribeToMessages]);
+    // 메시지 구독 시작
+    const unsubscribe = subscribeToMessages(chatChannelId);
+    return () => {
+      unsubscribe();
+      clearMessages();
+    };
+  }, [chatChannelId, subscribeToMessages, clearMessages]);
 
   useEffect(() => {
     if (!userId || !chatChannelId || !userChannel) return;
@@ -138,6 +159,7 @@ export default function HairConsultationChatDetailPage() {
       return { success: false, channelId: null };
     }
   }
+  console.log('userChannel', userChannel);
 
   //   if (!userId && source !== 'app') {
   //     return <div>로그인이 필요합니다.</div>;
@@ -209,10 +231,12 @@ export default function HairConsultationChatDetailPage() {
         }
         onBackClick={handleBackClick}
       />
-      {/* 게시물 버튼 추가 - postId가 있을 때만 표시 */}
-      {userChannel?.postId && (
-        <ChatPostButtons postId={userChannel.postId} answerId={userChannel.answerId} />
-      )}
+      {/* 게시물 버튼 추가 - 항상 표시, postId가 없으면 비활성화 상태로 표시 */}
+      <ChatPostButtons
+        postId={userChannel?.postId || ''}
+        answerId={userChannel?.answerId}
+        userChannel={userChannel}
+      />
       <div className="flex-1 overflow-hidden">
         <MessageSection userChannel={userChannel} />
       </div>

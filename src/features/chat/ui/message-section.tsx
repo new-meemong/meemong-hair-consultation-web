@@ -1,17 +1,15 @@
 import { useEffect, useRef } from 'react';
 
-import { useAuthContext } from '@/features/auth/context/auth-context';
-
 import ChatDateDivider from './chat-date-divider';
+import { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
 import MyMessage from './my-message';
 import OtherMessage from './other-message';
 import SystemMessage from './system-message';
+import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 import { shouldShowDateDivider } from '../lib/should-show-date-divider';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useHairConsultationChatChannelStore } from '../store/hair-consultation-chat-channel-store';
 import { useHairConsultationChatMessageStore } from '../store/hair-consultation-chat-message-store';
-import { HairConsultationChatMessageTypeEnum } from '../type/hair-consultation-chat-message-type';
-import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
-
 
 type MessageSectionProps = {
   userChannel: UserHairConsultationChatChannelType;
@@ -20,9 +18,8 @@ type MessageSectionProps = {
 export default function MessageSection({ userChannel }: MessageSectionProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, clearMessages, loading } = useHairConsultationChatMessageStore((state) => ({
+  const { messages, loading } = useHairConsultationChatMessageStore((state) => ({
     messages: state.messages,
-    clearMessages: state.clearMessages,
     loading: state.loading,
   }));
 
@@ -57,14 +54,15 @@ export default function MessageSection({ userChannel }: MessageSectionProps) {
   }, [userChannel.channelId, userId, messages.length, loading, updateUserLastReadAt]);
 
   // cleanup을 위한 별도 useEffect
+  // 주의: clearMessages는 페이지 레벨에서 처리하므로 여기서는 호출하지 않음
   useEffect(() => {
     return () => {
       if (userId && userChannel.channelId) {
         resetUnreadCount(userChannel.channelId, userId);
-        clearMessages();
+        // clearMessages는 페이지 레벨에서 채널 변경 시에만 호출
       }
     };
-  }, [clearMessages, resetUnreadCount, userChannel.channelId, userId]);
+  }, [resetUnreadCount, userChannel.channelId, userId]);
 
   useEffect(() => {
     if (!userChannel?.channelId || !userId) return;
