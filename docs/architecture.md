@@ -105,3 +105,4 @@ UI 컴포넌트는 그 성격과 사용 범위에 따라 다음과 같이 분류
 
 - [Feature-Sliced Design 공식 문서](https://feature-sliced.design/)
 - [(번역) 기능 분할 설계 - 최고의 프런트엔드 아키텍처](https://emewjin.github.io/feature-sliced-design/)
+
