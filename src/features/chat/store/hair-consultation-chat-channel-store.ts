@@ -132,41 +132,38 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
             return { channelId: channelRef.id, isCreated: true };
           }
 
-          // postId가 undefined가 아니고, 기존 정보와 다르다면 업데이트
-          // (null로 명시적으로 전달된 경우도 업데이트)
-          if (postId !== undefined && existingData.postId !== postId) {
+          // postId 또는 answerId가 변경된 경우 업데이트
+          const existingPostId = existingData.postId ?? null;
+          const existingAnswerId = existingData.answerId ?? null;
+          const newPostId = postId !== undefined ? (postId || null) : existingPostId;
+          const newAnswerId = answerId !== undefined ? (answerId || null) : existingAnswerId;
+
+          const postIdChanged = existingPostId !== newPostId;
+          const answerIdChanged = existingAnswerId !== newAnswerId;
+          const entrySourceChanged = entrySource && existingData.entrySource !== entrySource;
+
+          if (postIdChanged || answerIdChanged || entrySourceChanged) {
             // 채널 정보 업데이트
             const updateData: {
-              postId: string | null;
+              postId?: string | null;
               answerId?: string | null;
               entrySource?: string;
               updatedAt: ReturnType<typeof serverTimestamp>;
             } = {
-              postId: postId || null,
               updatedAt: serverTimestamp(),
             };
+
+            // postId가 전달된 경우에만 업데이트 (undefined가 아닌 경우)
+            if (postId !== undefined) {
+              updateData.postId = postId || null;
+            }
+            // answerId가 전달된 경우에만 업데이트 (undefined가 아닌 경우)
             if (answerId !== undefined) {
               updateData.answerId = answerId || null;
             }
             if (entrySource) {
               updateData.entrySource = entrySource;
             }
-
-            transaction.update(channelRef, updateData);
-
-            // 참여자들의 메타데이터도 업데이트
-            participantRefs.forEach((ref) => {
-              transaction.update(ref, updateData);
-            });
-          } else if (postId === undefined && answerId !== undefined) {
-            // postId는 변경되지 않았지만 answerId만 변경된 경우
-            const updateData: {
-              answerId: string | null;
-              updatedAt: ReturnType<typeof serverTimestamp>;
-            } = {
-              answerId: answerId || null,
-              updatedAt: serverTimestamp(),
-            };
 
             transaction.update(channelRef, updateData);
 

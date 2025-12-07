@@ -54,12 +54,13 @@ export default function useStartChat() {
         }
 
         // 2. 네이티브 앱인 경우 브릿지 호출
+        // null을 undefined로 변환하여 네이티브 앱으로 전달 (타입 정의상 undefined만 허용)
         if (window.openChatChannel && isFromApp) {
           window.openChatChannel({
             userId: user.id.toString(),
             chatChannelId: result.channelId,
-            postId,
-            answerId,
+            postId: postId ?? undefined,
+            answerId: answerId ?? undefined,
             entrySource,
           });
           return;
