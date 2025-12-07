@@ -11,8 +11,8 @@ export interface HairConsultationChatChannelType {
   channelOpenUserId: string; // 채널을 연 사용자 ID
 
   // 게시물 관련 정보
-  postId?: string; // 게시물 ID
-  answerId?: string; // 컨설팅 답변 ID (있는 경우)
+  postId?: string | null; // 게시물 ID (null: 다른 사람 글에서 채팅 시작한 경우)
+  answerId?: string | null; // 컨설팅 답변 ID (null: 답변이 없는 경우 또는 다른 사람 글에서 채팅 시작한 경우)
   entrySource?: ChatEntrySource; // 진입 경로 (통계용)
 
   createdAt: Timestamp | FieldValue; // 생성 시간

@@ -1,23 +1,20 @@
-import { format } from 'date-fns';
-import { useSearchParams } from 'next/navigation';
-import { useRef } from 'react';
+import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
 
-
-
+import { AD_TYPE } from '@/features/ad/constants/ad-type';
+import CommentAuthorProfile from './comment-author-profile';
+import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
+import ConsultingResponseButton from './consulting-response-button';
 import MoreIcon from '@/assets/icons/more-vertical.svg';
 import ReplyIcon from '@/assets/icons/reply.svg';
-import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
-import { AD_TYPE } from '@/features/ad/constants/ad-type';
-import { useAuthContext } from '@/features/auth/context/auth-context';
-import useShowMongConsumeSheet from '@/features/mong/hook/use-show-mong-consume-sheet';
-import { cn } from '@/lib/utils';
-import { Button, MoreOptionsMenu, ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
-
-import CommentAuthorProfile from './comment-author-profile';
-import ConsultingResponseButton from './consulting-response-button';
+import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useRef } from 'react';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { useSearchParams } from 'next/navigation';
+import useShowMongConsumeSheet from '@/features/mong/hook/use-show-mong-consume-sheet';
 
 const MORE_ACTION = {
   EDIT: 'edit',
@@ -35,6 +32,7 @@ type CommentListItemProps = {
   onEdit: () => void;
   onReport: () => void;
   onTriggerClick: () => void;
+  allComments?: CommentWithReplyStatus[];
 };
 
 export default function CommentListItem({
@@ -47,6 +45,7 @@ export default function CommentListItem({
   onEdit,
   onReport,
   onTriggerClick,
+  allComments = [],
 }: CommentListItemProps) {
   const searchParams = useSearchParams();
   const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
@@ -157,7 +156,14 @@ export default function CommentListItem({
         <div className="flex flex-col gap-3 flex-1">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <CommentAuthorProfile author={comment.user} lockIconShown={lockIconShown} />
+              <CommentAuthorProfile
+                author={comment.user}
+                lockIconShown={lockIconShown}
+                postId={postId}
+                answerId={comment.answerId}
+                isPostWriter={isPostWriter}
+                allComments={allComments}
+              />
             </div>
             <div className="flex items-center gap-1.5">
               {!isReply && (

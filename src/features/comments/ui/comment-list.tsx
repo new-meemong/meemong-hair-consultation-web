@@ -53,6 +53,7 @@ export function CommentList({
             onEdit={() => onEdit(comment.id)}
             onReport={() => onReport(comment.id)}
             onTriggerClick={() => onTriggerClick()}
+            allComments={comments}
           />
         </div>
       ))}

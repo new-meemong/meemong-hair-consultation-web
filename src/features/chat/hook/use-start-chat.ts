@@ -40,11 +40,12 @@ export default function useStartChat() {
 
       try {
         // 1. 채널 생성 또는 찾기
+        // undefined를 null로 변환하여 Firestore에 null로 저장되도록 함
         const result = await findOrCreateChannel({
           senderId: user.id.toString(),
           receiverId: receiverId.toString(),
-          postId,
-          answerId,
+          postId: postId ?? null,
+          answerId: answerId ?? null,
           entrySource,
         });
 

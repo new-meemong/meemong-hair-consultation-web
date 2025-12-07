@@ -52,10 +52,16 @@ export default function ConsultingResponseHeader({
   };
 
   const handleChatClick = async () => {
+    // 요구사항에 따른 postId, answerId 설정
+    // 내 글인 경우: postId, answerId 전달
+    // 다른 사람 글인 경우: postId, answerId 모두 null
+    const finalPostId = isPostWriter ? postId : undefined;
+    const finalAnswerId = isPostWriter ? responseId : undefined;
+
     await startChat({
       receiverId: id,
-      postId,
-      answerId: responseId,
+      postId: finalPostId,
+      answerId: finalAnswerId,
       entrySource: 'CONSULTING_RESPONSE',
     });
   };
