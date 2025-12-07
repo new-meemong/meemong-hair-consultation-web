@@ -1,9 +1,8 @@
 import { FieldValue, Timestamp } from 'firebase/firestore';
 
-import type { User } from '@/entities/user/model/user';
-
 import type { ChatEntrySource } from './hair-consultation-chat-channel-type';
 import type { HairConsultationChatMessageType } from './hair-consultation-chat-message-type';
+import type { User } from '@/entities/user/model/user';
 
 export interface UserHairConsultationChatChannelType {
   channelId: string;

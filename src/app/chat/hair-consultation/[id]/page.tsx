@@ -246,8 +246,8 @@ export default function HairConsultationChatDetailPage() {
       />
       {/* 게시물 버튼 추가 - 항상 표시, postId가 없으면 비활성화 상태로 표시 */}
       <ChatPostButtons
-        postId={userChannel?.postId || ''}
-        answerId={userChannel?.answerId}
+        postId={userChannel?.postId ?? ''}
+        answerId={userChannel?.answerId ?? undefined}
         userChannel={userChannel && otherUser ? { ...userChannel, otherUser } : userChannel}
       />
       <div className="flex-1 overflow-hidden">

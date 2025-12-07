@@ -15,8 +15,8 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 type ChatPostButtonsProps = {
-  postId: string;
-  answerId?: string;
+  postId: string | null | undefined;
+  answerId?: string | null;
   userChannel?: UserHairConsultationChatChannelType | null;
 };
 

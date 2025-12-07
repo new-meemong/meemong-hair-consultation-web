@@ -1,11 +1,10 @@
 'use client';
 
-import { useCallback } from 'react';
-
+import { ROUTES } from '@/shared';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useCallback } from 'react';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import useIsFromApp from '@/features/chat/hook/use-is-from-app';
-import { ROUTES } from '@/shared';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 type ChatEntrySource = 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
@@ -77,4 +76,3 @@ export default function useStartChat() {
 
   return { startChat };
 }
-
