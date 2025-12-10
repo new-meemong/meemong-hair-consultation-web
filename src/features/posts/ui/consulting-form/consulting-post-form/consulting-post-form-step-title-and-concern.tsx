@@ -1,9 +1,9 @@
-import { useRef } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { Input, Textarea } from '@/shared';
 
 import { CONSULTING_POST_FORM_FIELD_NAME } from '@/features/posts/constants/consulting-post-form-field-name';
 import type { ConsultingPostFormValues } from '@/features/posts/types/consulting-post-form-values';
-import { Input, Textarea } from '@/shared';
+import { useFormContext } from 'react-hook-form';
+import { useRef } from 'react';
 
 export default function ConsultingPostFormStepTitleAndConcern() {
   const { register } = useFormContext<ConsultingPostFormValues>();
@@ -13,8 +13,8 @@ export default function ConsultingPostFormStepTitleAndConcern() {
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-end border-b-1 border-border-strong">
+    <div className="flex flex-col h-full gap-4">
+      <div className="flex items-center justify-end border-b-1 border-border-strong flex-shrink-0">
         <Input
           {...register(`${CONSULTING_POST_FORM_FIELD_NAME.TITLE}`)}
           placeholder="제목을 입력하세요"
@@ -26,15 +26,19 @@ export default function ConsultingPostFormStepTitleAndConcern() {
         />
         <span className="typo-body-2-semibold text-cautionary">필수</span>
       </div>
-      <Textarea
-        {...concernRegister}
-        placeholder="헤어고민/요청사항을 간단하게 입력해주세요"
-        className="min-h-38"
-        ref={(el) => {
-          concernRegisterRef(el);
-          concernRef.current = el;
-        }}
-      />
+      <div className="flex-1 min-h-0 flex">
+        <Textarea
+          {...concernRegister}
+          placeholder="헤어고민/요청사항을 간단하게 입력해주세요"
+          className="flex-1 w-full"
+          hasBorder
+          fullHeight
+          ref={(el) => {
+            concernRegisterRef(el);
+            concernRef.current = el;
+          }}
+        />
+      </div>
     </div>
   );
 }

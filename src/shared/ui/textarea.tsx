@@ -6,14 +6,17 @@ import { cn } from '@/shared/lib/utils';
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   maxRows?: number;
   hasBorder?: boolean;
+  fullHeight?: boolean;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, maxRows = 2, value, hasBorder = false, ...props }, ref) => {
+  ({ className, maxRows = 2, value, hasBorder = false, fullHeight = false, ...props }, ref) => {
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const [isOverflowing, setIsOverflowing] = useState(false);
 
     const adjustHeight = useCallback(() => {
+      if (fullHeight) return;
+
       const textarea = textareaRef.current;
       if (!textarea) return;
 
@@ -28,13 +31,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
       textarea.style.height = `${Math.max(newHeight, lineHeight)}px`;
       setIsOverflowing(shouldOverflow);
-    }, [maxRows]);
+    }, [maxRows, fullHeight]);
 
     useEffect(() => {
-      if (textareaRef.current) {
+      if (textareaRef.current && !fullHeight) {
         adjustHeight();
       }
-    }, [adjustHeight, value]);
+    }, [adjustHeight, value, fullHeight]);
 
     return (
       <textarea
@@ -48,11 +51,11 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         }}
         className={cn(
           'flex w-full h-auto typo-body-2-long-regular text-label-default placeholder:text-label-placeholder outline-none resize-none',
-          isOverflowing ? 'overflow-y-auto' : 'overflow-hidden',
+          fullHeight ? 'h-full overflow-y-auto' : isOverflowing ? 'overflow-y-auto' : 'overflow-hidden',
           hasBorder && 'p-3 rounded-6 border-1 border-border-default',
           className,
         )}
-        onInput={adjustHeight}
+        onInput={fullHeight ? undefined : adjustHeight}
         rows={1}
         {...props}
       />
