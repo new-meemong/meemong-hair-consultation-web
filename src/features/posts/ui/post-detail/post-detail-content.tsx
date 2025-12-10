@@ -33,6 +33,7 @@ export default function PostDetailContent({ postDetail }: PostDetailContentProps
           name={authorName}
           region={authorRegion}
           createdAt={createdAt}
+          authorId={authorId}
         />
         <div className="flex flex-col gap-3">
           <h1 className="typo-headline-bold text-label-strong">{title}</h1>

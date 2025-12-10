@@ -87,6 +87,7 @@ export default function PostDetailConsultingContent({
           name={authorName}
           region={authorRegion}
           createdAt={createdAt}
+          authorId={authorId}
         />
         <div className="flex flex-col gap-3">
           <p className="typo-title-3-semibold text-label-default">{title}</p>
