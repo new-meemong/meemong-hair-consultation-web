@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useRef, useCallback, useState, forwardRef } from 'react';
+
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/shared/lib/utils';
 
@@ -51,7 +52,11 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         }}
         className={cn(
           'flex w-full h-auto typo-body-2-long-regular text-label-default placeholder:text-label-placeholder outline-none resize-none',
-          fullHeight ? 'h-full overflow-y-auto' : isOverflowing ? 'overflow-y-auto' : 'overflow-hidden',
+          fullHeight
+            ? 'h-full overflow-y-auto'
+            : isOverflowing
+              ? 'overflow-y-auto'
+              : 'overflow-hidden',
           hasBorder && 'p-3 rounded-6 border-1 border-border-default',
           className,
         )}
