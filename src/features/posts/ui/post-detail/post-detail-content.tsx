@@ -1,8 +1,7 @@
 import type { PostDetail } from '@/entities/posts/model/post-detail';
-import { useAuthContext } from '@/features/auth/context/auth-context';
-
 import PostDetailAuthorProfile from './post-detail-author-profile';
 import PostDetailImage from './post-detail-image';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 
 type PostDetailContentProps = {
   postDetail: PostDetail;

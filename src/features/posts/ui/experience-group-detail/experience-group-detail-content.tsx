@@ -96,6 +96,7 @@ export default function ExperienceGroupDetailContent({
           name={isAnonymous ? '익명' : user.displayName}
           region={null}
           createdAt={formatDate(createdAt, 'MM/dd HH:mm')}
+          authorId={user.id}
         />
         <div className="flex flex-col gap-3">
           <p className="typo-title-3-semibold text-label-default">{title}</p>
