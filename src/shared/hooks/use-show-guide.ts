@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from 'react';
 
-import useShowCreatePostGuideSheet from '@/features/posts/hooks/use-show-create-post-guide-sheet';
-import useShowDesignerOnboardingSheet from '@/features/posts/hooks/use-show-designer-onboarding-sheet';
+// 당분간 사용하지 않음
+// import useShowCreatePostGuideSheet from '@/features/posts/hooks/use-show-create-post-guide-sheet';
+// import useShowDesignerOnboardingSheet from '@/features/posts/hooks/use-show-designer-onboarding-sheet';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 
 import { getUserGuideData, updateUserGuideData, type UserGuideData } from '../lib';
@@ -17,12 +18,17 @@ function useShowGuide(
 ) {
   const userGuideData = getUserGuideData();
 
-  const showCreatePostGuideSheet = useShowCreatePostGuideSheet();
-  const showDesignerOnboardingSheet = useShowDesignerOnboardingSheet();
+  // 당분간 사용하지 않음
+  // const showCreatePostGuideSheet = useShowCreatePostGuideSheet();
+  // const showDesignerOnboardingSheet = useShowDesignerOnboardingSheet();
 
-  const showGuideMapper = {
-    [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: showCreatePostGuideSheet,
-    [USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide]: showDesignerOnboardingSheet,
+  const showGuideMapper: Record<
+    KeyOf<UserGuideData>,
+    ((props: UseGuidePopupProps) => void) | null
+  > = {
+    // 당분간 사용하지 않음
+    [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: null, // showCreatePostGuideSheet,
+    [USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide]: null, // showDesignerOnboardingSheet,
     [USER_GUIDE_KEYS.hasSeenConsultingResponseSidebarGuide]: null,
   };
 
