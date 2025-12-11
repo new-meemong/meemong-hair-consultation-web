@@ -7,6 +7,7 @@
 ### 기능 문서 (`features/`)
 
 - [채팅 게시물 버튼 로직](./features/chat-post-buttons.md) - 채팅 화면의 게시물 관련 버튼 구현 로직
+- [채팅 안읽은 메시지 수 서버 동기화](./features/chat-unread-count-sync.md) - 채팅 안읽은 메시지 수의 Firestore-서버 동기화 구현
 
 ### 데이터베이스 문서 (`database/`)
 
