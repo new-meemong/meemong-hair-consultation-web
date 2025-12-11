@@ -15,6 +15,8 @@ import { create } from 'zustand';
 import { getUser } from '@/features/auth/api/use-get-user';
 import { db } from '@/shared/lib/firebase';
 
+import { updateChattingUnreadCount } from '../api/use-update-user-unread-count';
+
 import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
 import { getDbPath } from '../lib/get-db-path';
 import type { HairConsultationChatChannelType } from '../type/hair-consultation-chat-channel-type';
@@ -135,8 +137,8 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           // postId 또는 answerId가 변경된 경우 업데이트
           const existingPostId = existingData.postId ?? null;
           const existingAnswerId = existingData.answerId ?? null;
-          const newPostId = postId !== undefined ? (postId || null) : existingPostId;
-          const newAnswerId = answerId !== undefined ? (answerId || null) : existingAnswerId;
+          const newPostId = postId !== undefined ? postId || null : existingPostId;
+          const newAnswerId = answerId !== undefined ? answerId || null : existingAnswerId;
 
           const postIdChanged = existingPostId !== newPostId;
           const answerIdChanged = existingAnswerId !== newAnswerId;
@@ -289,10 +291,25 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
     try {
       const ref = doc(db, getDbPath(userId), channelId);
 
+      // 현재 unreadCount 값을 읽어옴
+      const snap = await getDoc(ref);
+      const currentUnreadCount = snap.exists() ? snap.data().unreadCount || 0 : 0;
+
+      // Firestore 업데이트
       await updateDoc(ref, {
         unreadCount: 0,
         updatedAt: serverTimestamp(),
       });
+
+      // 서버 unreadCount 동기화: 현재 사용자의 unreadCount 감소
+      if (currentUnreadCount > 0) {
+        try {
+          await updateChattingUnreadCount(Number(userId), -currentUnreadCount);
+        } catch (error) {
+          // 서버 동기화 실패는 로그만 남기고 Firestore 업데이트는 성공 처리
+          console.error('서버 unreadCount 동기화 실패 (채팅방 입장):', error);
+        }
+      }
     } catch (error) {
       console.error('안 읽은 메시지 카운트 리셋 중 오류 발생:', error);
     }
@@ -505,6 +522,11 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
   leaveChannel: async (channelId: string, userId: string, userName: string) => {
     try {
+      // 0. 현재 unreadCount 값을 읽어옴
+      const userMetaRef = doc(db, getDbPath(userId), channelId);
+      const userMetaSnap = await getDoc(userMetaRef);
+      const currentUnreadCount = userMetaSnap.exists() ? userMetaSnap.data().unreadCount || 0 : 0;
+
       // 1. 시스템 메시지 전송
       const messageRef = doc(
         collection(
@@ -524,8 +546,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
       });
 
       // 2. 유저의 채널 메타데이터 업데이트
-      const ref = doc(db, getDbPath(userId), channelId);
-      await updateDoc(ref, {
+      await updateDoc(userMetaRef, {
         deletedAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
@@ -544,6 +565,16 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           participantsIds: updatedParticipants,
           updatedAt: serverTimestamp(),
         });
+      }
+
+      // 4. 서버 unreadCount 동기화: 현재 사용자의 unreadCount 감소
+      if (currentUnreadCount > 0) {
+        try {
+          await updateChattingUnreadCount(Number(userId), -currentUnreadCount);
+        } catch (error) {
+          // 서버 동기화 실패는 로그만 남기고 Firestore 업데이트는 성공 처리
+          console.error('서버 unreadCount 동기화 실패 (채팅방 나가기):', error);
+        }
       }
 
       return { success: true };

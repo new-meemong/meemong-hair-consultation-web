@@ -147,6 +147,9 @@ export const useHairConsultationChatMessageStore = create<HairConsultationChatMe
 
         await Promise.all([updateSenderMeta, updateReceiverMeta]);
 
+        // 서버 unreadCount 동기화는 서버에서 메시지 전송 시 자동으로 처리됨
+        // 여기서는 Firestore 업데이트만 수행
+
         return { success: true, channelId };
       } catch (error) {
         console.error('Error sending message:', error);
