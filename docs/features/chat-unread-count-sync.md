@@ -11,6 +11,7 @@
 안읽은 메시지 수를 업데이트하는 API입니다.
 
 **Request:**
+
 ```typescript
 {
   "userId": number,        // 업데이트할 사용자 ID
@@ -19,6 +20,7 @@
 ```
 
 **Response:**
+
 ```typescript
 {
   "data": {
@@ -32,6 +34,7 @@
 ```
 
 **예시:**
+
 - `{ userId: 12345, unreadCount: 1 }` → 사용자 12345의 unreadCount를 1 증가
 - `{ userId: 12345, unreadCount: -5 }` → 사용자 12345의 unreadCount를 5 감소
 
@@ -49,11 +52,13 @@ await updateChattingUnreadCount(Number(receiverId), 1);
 ```
 
 **동작 흐름:**
+
 1. Firestore에 메시지 저장
 2. Firestore에서 상대방의 unreadCount 1 증가
 3. 서버 API 호출하여 상대방의 unreadCount 1 증가
 
 **에러 처리:**
+
 - 서버 동기화 실패 시에도 메시지 전송은 성공 처리
 - 콘솔에 에러 로그만 기록
 
@@ -80,11 +85,13 @@ if (currentUnreadCount > 0) {
 ```
 
 **동작 흐름:**
+
 1. Firestore에서 현재 채팅방의 unreadCount 값 읽기
 2. Firestore의 unreadCount를 0으로 초기화
 3. 서버 API 호출하여 현재 사용자의 unreadCount에서 해당 값만큼 차감
 
 **호출 시점:**
+
 - 채팅방 상세 페이지 입장 시 (`src/app/chat/hair-consultation/[id]/page.tsx`)
 - MessageSection 컴포넌트 cleanup 시
 
@@ -96,9 +103,7 @@ if (currentUnreadCount > 0) {
 
 ```typescript
 // 현재 unreadCount 값을 읽어옴
-const currentUnreadCount = userMetaSnap.exists()
-  ? userMetaSnap.data().unreadCount || 0
-  : 0;
+const currentUnreadCount = userMetaSnap.exists() ? userMetaSnap.data().unreadCount || 0 : 0;
 
 // ... 채팅방 나가기 처리 ...
 
@@ -109,6 +114,7 @@ if (currentUnreadCount > 0) {
 ```
 
 **동작 흐름:**
+
 1. Firestore에서 현재 채팅방의 unreadCount 값 읽기
 2. 시스템 메시지 전송 ("{userName}님이 나갔습니다.")
 3. Firestore에서 채널 메타데이터에 deletedAt 설정
@@ -134,6 +140,7 @@ export const updateChattingUnreadCount = async (
 ```
 
 **사용 예시:**
+
 ```typescript
 import { updateChattingUnreadCount } from '@/features/chat/api/use-update-user-unread-count';
 
@@ -147,10 +154,11 @@ await updateChattingUnreadCount(12345, -5);
 ### React Hook
 
 ```typescript
-export default function useUpdateChattingUnreadCount()
+export default function useUpdateChattingUnreadCount();
 ```
 
 **반환값:**
+
 - `mutate`: mutation 실행 함수
 - `mutateAsync`: async mutation 실행 함수
 - `isPending`: 로딩 상태
@@ -160,6 +168,7 @@ export default function useUpdateChattingUnreadCount()
 ## 동작 흐름 다이어그램
 
 ### 메시지 전송 시
+
 ```
 사용자 A가 사용자 B에게 메시지 전송
   ↓
@@ -169,6 +178,7 @@ Firestore: B의 unreadCount +1
 ```
 
 ### 채팅방 입장 시
+
 ```
 사용자가 채팅방 입장
   ↓
@@ -180,6 +190,7 @@ Firestore: unreadCount = 0으로 초기화
 ```
 
 ### 채팅방 나갈 때
+
 ```
 사용자가 채팅방 나가기
   ↓
@@ -193,17 +204,21 @@ Firestore: 채널 deletedAt 설정
 ## 주의사항
 
 ### 1. 에러 처리
+
 - 서버 동기화 실패 시에도 Firestore 업데이트는 성공 처리됩니다
 - 에러는 콘솔에만 기록되며, 사용자에게는 표시되지 않습니다
 - 이는 서버 동기화가 실패해도 채팅 기능이 정상 동작하도록 하기 위함입니다
 
 ### 2. 중복 호출 방지
+
 - `resetUnreadCount`는 채팅방 입장 시와 cleanup 시 모두 호출될 수 있으나, Firestore의 unreadCount가 0이면 서버 API를 호출하지 않습니다
 
 ### 3. 타입 변환
+
 - `receiverId`와 `userId`는 문자열로 전달되지만, API 호출 시 `Number()`로 변환하여 숫자로 전달합니다
 
 ### 4. 음수 처리
+
 - `unreadCount`가 음수로 전달되면 서버에서 차감 처리됩니다
 - 예: `updateChattingUnreadCount(12345, -5)` → 사용자 12345의 unreadCount를 5 감소
 
@@ -218,17 +233,20 @@ Firestore: 채널 deletedAt 설정
 ## 테스트 시나리오
 
 ### 시나리오 1: 메시지 전송
+
 1. 사용자 A가 사용자 B에게 메시지 전송
 2. Firestore에서 B의 unreadCount 확인 (1 증가)
 3. 서버에서 B의 totalUnreadCount 확인 (1 증가)
 
 ### 시나리오 2: 채팅방 입장
+
 1. 사용자 B의 채팅방에 unreadCount가 5인 채팅방 존재
 2. 사용자 B가 해당 채팅방 입장
 3. Firestore에서 해당 채팅방의 unreadCount 확인 (0으로 초기화)
 4. 서버에서 B의 totalUnreadCount 확인 (5 감소)
 
 ### 시나리오 3: 채팅방 나가기
+
 1. 사용자 B의 채팅방에 unreadCount가 3인 채팅방 존재
 2. 사용자 B가 해당 채팅방 나가기
 3. Firestore에서 해당 채널의 deletedAt 확인 (설정됨)
@@ -247,4 +265,3 @@ Firestore: 채널 deletedAt 설정
 3. **디버깅**
    - 서버 동기화 실패 시 콘솔 로그 확인
    - Firestore와 서버의 unreadCount 값 비교
-
