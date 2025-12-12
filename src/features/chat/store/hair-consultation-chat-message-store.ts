@@ -1,3 +1,8 @@
+import type {
+  HairConsultationChatMessageType,
+  HairConsultationChatMessageTypeEnum,
+  MetaPathType,
+} from '../type/hair-consultation-chat-message-type';
 import {
   collection,
   doc,
@@ -9,17 +14,11 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
-import { create } from 'zustand';
-
-import { db } from '@/shared/lib/firebase';
 
 import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
+import { create } from 'zustand';
+import { db } from '@/shared/lib/firebase';
 import { getDbPath } from '../lib/get-db-path';
-import type {
-  HairConsultationChatMessageType,
-  HairConsultationChatMessageTypeEnum,
-  MetaPathType,
-} from '../type/hair-consultation-chat-message-type';
 
 interface HairConsultationChatMessageState {
   messages: HairConsultationChatMessageType[];
