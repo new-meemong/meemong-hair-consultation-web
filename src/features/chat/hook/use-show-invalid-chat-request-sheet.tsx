@@ -1,7 +1,3 @@
-import React from 'react';
-
-import { Button } from '@/shared';
-import { useOverlayContext } from '@/shared/context/overlay-context';
 import {
   DrawerClose,
   DrawerDescription,
@@ -10,6 +6,9 @@ import {
   DrawerTitle,
 } from '@/shared/ui/drawer';
 
+import { Button } from '@/shared';
+import React from 'react';
+import { useOverlayContext } from '@/shared/context/overlay-context';
 
 export const useShowInvalidChatRequestSheet = () => {
   const { showBottomSheet } = useOverlayContext();
@@ -21,11 +20,7 @@ export const useShowInvalidChatRequestSheet = () => {
         <>
           <DrawerHeader>
             <DrawerTitle>채팅은 모델만 요청할 수 있어요</DrawerTitle>
-            <DrawerDescription>
-              상담하기에서 채팅은 모델만 시작할 수 있습니다.
-              <br />
-              진정성 있는 댓글로 모델의 채팅을 받아보세요!
-            </DrawerDescription>
+            <DrawerDescription>진정성있는 컨설팅 답변을 작성해 채팅을 받아보세요</DrawerDescription>
           </DrawerHeader>
           <DrawerFooter
             buttons={[
