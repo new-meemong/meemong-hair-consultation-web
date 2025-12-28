@@ -28,4 +28,3 @@ export type CreateMongWithdrawRequest =
       refId: number; // Users.id
       refType: 'ExperienceGroups';
     };
-

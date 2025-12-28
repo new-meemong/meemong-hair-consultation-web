@@ -9,4 +9,3 @@ export type CreateMongWithdrawResponse = {
   deletedAt: string | null;
   isPaidThisTime: boolean;
 };
-

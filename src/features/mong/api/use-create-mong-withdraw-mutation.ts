@@ -1,8 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
-
 import type { CreateMongWithdrawRequest } from '@/entities/mong/api/create-mong-withdraw-request';
 import type { CreateMongWithdrawResponse } from '@/entities/mong/api/create-mong-withdraw-response';
 import { apiClient } from '@/shared/api/client';
+import { useMutation } from '@tanstack/react-query';
 
 const CREATE_MONG_WITHDRAW_ENDPOINT = 'mong-moneys/withdraw';
 
@@ -20,4 +19,3 @@ export default function useCreateMongWithdrawMutation() {
     isSuccess: mutation.isSuccess,
   };
 }
-
