@@ -1,8 +1,8 @@
 import { useSearchParams } from 'next/navigation';
 import { type UseFormReturn } from 'react-hook-form';
 
-
 import useCreateEventMongMutation from '@/features/mong/api/use-create-event-mong-mutation';
+import useGetRewards from '@/features/mong/api/use-get-rewards';
 import useShowEventMongSheet from '@/features/mong/hook/use-show-event-mong-sheet';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import useCreateConsultingResponse from '@/features/posts/hooks/use-create-consulting-response';
@@ -23,12 +23,13 @@ import ConsultingResponseFormStepHairType from './consulting-response-form-step-
 import ConsultingResponseFormStepStyle from './consulting-response-form-step-style';
 import ConsultingResponseFormStepTreatments from './consulting-response-form-step-treatments';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
+import { CONSULTING_RESPONSE_REWARD } from '../../../constants/consulting-response-reward';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
-const CONSULTING_RESPONSE_FORM_STEPS: (
-  | FormStep<ConsultingResponseFormValues>
-  | FormStep<ConsultingResponseFormValues>[]
-)[] = [
+const getConsultingResponseFormSteps = (
+  rewardWithImage: number,
+  rewardWithoutImage: number,
+): (FormStep<ConsultingResponseFormValues> | FormStep<ConsultingResponseFormValues>[])[] => [
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
     question: '추천하는 시술과 가격을 입력해주세요',
@@ -71,7 +72,8 @@ const CONSULTING_RESPONSE_FORM_STEPS: (
           <span style={{ fontWeight: 700 }}>사진</span>은 선택입니다
         </div>
         <div style={{ fontWeight: 400 }}>
-          • 이미지 첨부 시 채팅 받을 확률이 <span style={{ fontWeight: 700 }}>2.3배</span> 높아요
+          • 이미지 첨부 시 <span style={{ fontWeight: 700 }}>{rewardWithImage}</span>몽이 지급됩니다
+          (일반답변 {rewardWithoutImage}몽 지급)
         </div>
       </div>
     ),
@@ -99,6 +101,24 @@ export default function ConsultingResponseForm({
   const { showSnackBar } = useOverlayContext();
   const { replace } = useRouterWithUser();
   const { postDetail } = usePostDetail();
+
+  // 보상 정책 조회
+  const { data: rewardsData } = useGetRewards({
+    isActive: true,
+  });
+
+  // 컨설팅 답변 보상 정책 추출
+  const rewardWithImage =
+    rewardsData?.dataList.find((r) => r.code === 'HAIR_CONSULT_ANSWER_EVENT')?.rewardAmount ??
+    CONSULTING_RESPONSE_REWARD.WITH_IMAGE;
+  const rewardWithoutImage =
+    rewardsData?.dataList.find((r) => r.code === 'HAIR_CONSULT_ANSWER_EVENT_MISSING_STYLE_IMAGE')
+      ?.rewardAmount ?? CONSULTING_RESPONSE_REWARD.WITHOUT_IMAGE;
+
+  const CONSULTING_RESPONSE_FORM_STEPS = getConsultingResponseFormSteps(
+    rewardWithImage,
+    rewardWithoutImage,
+  );
 
   const postId = method.getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID);
   const receiverId = postDetail?.hairConsultPostingCreateUserId?.toString();
