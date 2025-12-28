@@ -257,5 +257,26 @@ export const REGIONS = {
   ],
 } as const;
 
-
-export const REGION_KEYS = Object.keys(REGIONS) as (keyof typeof REGIONS)[];
+/**
+ * 지역 선택 필터에서 사용되는 지역 키 목록
+ * 서울 다음에 경기도가 오도록 순서를 지정합니다.
+ */
+export const REGION_KEYS: (keyof typeof REGIONS)[] = [
+  '서울',
+  '경기도',
+  '부산',
+  '인천',
+  '대구',
+  '광주',
+  '대전',
+  '울산',
+  '제주도',
+  '세종시',
+  '강원도',
+  '충청북도',
+  '충청남도',
+  '경상북도',
+  '경상남도',
+  '전라북도',
+  '전라남도',
+];
