@@ -9,6 +9,8 @@ import useWritingConsultingResponse from '@/features/posts/hooks/use-writing-con
 import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { detectExternalContact } from '@/shared/lib/detect-external-contact';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { Button } from '@/shared/ui/button';
 
 type CommentFormContainerProps = {
@@ -40,6 +42,7 @@ export default function CommentFormContainer({
 
   const { push } = useRouterWithUser();
   const { isUserDesigner } = useAuthContext();
+  const showModal = useShowModal();
 
   const isCommentFormReply = commentFormState.state === 'reply';
 
@@ -63,6 +66,53 @@ export default function CommentFormContainer({
       [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
     });
   };
+
+  const handleCommentFormSubmit = useCallback(
+    (data: CommentFormValues, options: { onSuccess: () => void }) => {
+      // 디자이너가 모델의 헤어컨설팅글에 일반댓글 작성 시 항상 모달 표시
+      const shouldShowModal =
+        isUserDesigner && isConsulting && commentMode === 'normal' && !isCommentFormReply;
+
+      if (shouldShowModal) {
+        const hasExternalContact = detectExternalContact(data.content);
+
+        showModal({
+          id: 'external-contact-warning-modal',
+          text: (
+            <div className="typo-body-1-long-regular whitespace-pre-line">
+              댓글에 외부 연락처(
+              <span className="font-bold">인스타, 카톡 등</span>)가
+              {'\n'}
+              포함되어 있다면 수정해 주세요.
+              {'\n'}
+              위반 시 계정이 정지될 수 있습니다.
+            </div>
+          ),
+          buttons: [
+            {
+              label: '수정하기',
+              textColor: 'text-label-default',
+              variant: 'default',
+            },
+            {
+              label: '등록하기',
+              textColor: 'text-positive',
+              variant: 'primary',
+              disabled: hasExternalContact,
+              onClick: () => {
+                onSubmit(data, options);
+              },
+            },
+          ],
+        });
+        return;
+      }
+
+      // 검증이 필요 없는 경우 바로 제출
+      onSubmit(data, options);
+    },
+    [isUserDesigner, isConsulting, commentMode, isCommentFormReply, showModal, onSubmit],
+  );
 
   return (
     <div className="relative">
@@ -90,7 +140,7 @@ export default function CommentFormContainer({
         <div className="bg-white shadow-strong">
           <div className="max-w-[600px] mx-auto">
             <CommentForm
-              onSubmit={onSubmit}
+              onSubmit={handleCommentFormSubmit}
               isReply={isCommentFormReply}
               commentId={commentFormState.commentId}
               content={commentFormState.content}

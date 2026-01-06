@@ -9,6 +9,8 @@ export type ModalButtonProps = {
   label: string;
   textColor?: 'text-label-default' | 'text-negative' | 'text-positive';
   onClick?: () => void;
+  disabled?: boolean;
+  variant?: 'default' | 'primary'; // default: body-1-long-regular, primary: headline-medium
 };
 
 type ModalProps = {
@@ -26,16 +28,26 @@ function ModalButton({
   textColor = 'text-label-default',
   onClick,
   onClose,
+  disabled = false,
+  variant = 'default',
 }: ModalButtonProps & { onClose: () => void }) {
   const handleClick = () => {
     onClick?.();
     onClose();
   };
 
+  const typographyClass = variant === 'primary' ? 'typo-headline-medium' : 'typo-body-1-long-regular';
+
   return (
     <button
-      className={cn('w-full px-7 py-5 text-center typo-headline-medium', textColor)}
+      className={cn(
+        'w-full px-7 py-5 text-center',
+        typographyClass,
+        textColor,
+        disabled && 'opacity-40 cursor-not-allowed',
+      )}
       onClick={handleClick}
+      disabled={disabled}
     >
       {label}
     </button>
