@@ -12,7 +12,7 @@ export default function PromotionBanner() {
   if (!text) return null;
 
   return (
-    <div className="flex w-full px-2 py-2 justify-center items-center gap-2.5 bg-[#FF9142] mb-5">
+    <div className="flex w-full px-2 py-2 justify-center items-center gap-2.5 bg-[#FF9142]">
       <p className="text-white text-center typo-body-2-semibold">{text}</p>
     </div>
   );

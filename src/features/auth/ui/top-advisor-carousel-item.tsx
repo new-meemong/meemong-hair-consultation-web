@@ -9,7 +9,6 @@ import { CarouselItem } from '@/shared/ui/carousel';
 import RankBadge from './rank-badge';
 import { useAuthContext } from '../context/auth-context';
 
-
 type RankTier = 'top' | 'middle' | 'bottom';
 
 const RANK_TIER_STYLES = {
@@ -63,13 +62,13 @@ export default function TopAdvisorCarouselItem({ topAdvisor, rank }: TopAdvisorC
   return (
     <CarouselItem className="px-1 basis-[85%]" onClick={handleCarouselClick}>
       <div className={cn(background, 'p-3 gap-4 items-center flex rounded-6')}>
-        <div className="flex gap-3 flex-1">
+        <div className="flex gap-3 flex-1 min-w-0">
           <Image
             src={profilePictureURL ? profilePictureURL : '/today-consultant-default-profile.png'}
             alt={displayName}
             width={65}
             height={65}
-            className="object-cover rounded-4 w-[65px] h-[65px]"
+            className="object-cover rounded-4 w-[65px] h-[65px] flex-shrink-0"
           />
           <div className="flex flex-col gap-1 flex-1 min-w-0">
             <div className="flex gap-0.25">
@@ -84,6 +83,7 @@ export default function TopAdvisorCarouselItem({ topAdvisor, rank }: TopAdvisorC
           rank={rank}
           badgeOuterBackground={badgeOuterBackground}
           badgeInnerBackground={badgeInnerBackground}
+          className="flex-shrink-0"
         />
       </div>
     </CarouselItem>

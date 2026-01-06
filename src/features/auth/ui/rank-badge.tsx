@@ -4,18 +4,21 @@ type RankBadgeProps = {
   rank: number;
   badgeOuterBackground: string;
   badgeInnerBackground: string;
+  className?: string;
 };
 
 export default function RankBadge({
   rank,
   badgeOuterBackground,
   badgeInnerBackground,
+  className,
 }: RankBadgeProps) {
   return (
     <div
       className={cn(
         badgeOuterBackground,
         'rounded-99 size-11 flex items-center justify-center shadow-heavy',
+        className,
       )}
     >
       <div
