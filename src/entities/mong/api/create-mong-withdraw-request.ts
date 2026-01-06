@@ -11,7 +11,8 @@ export type CreateMongWithdrawRequest =
         | 'MALE_MODEL_CHAT'
         | 'FEMALE_MODEL_CHAT'
         | 'NEARBY_MODEL_CHAT'
-        | 'BEAUTY_MODEL_CHAT';
+        | 'BEAUTY_MODEL_CHAT'
+        | 'FAVORITE_MODEL_CHAT';
       mongType?: 'event' | 'default';
     }
   | {
@@ -27,4 +28,11 @@ export type CreateMongWithdrawRequest =
       mongType?: 'event' | 'default';
       refId: number; // Users.id
       refType: 'ExperienceGroups';
+    }
+  | {
+      // 헤어 컨설팅 답변 보기 차감
+      createType: 'VIEW_MY_HAIR_CONSULTING_ANSWER_MODEL';
+      mongType?: 'event' | 'default';
+      refId: number; // HairConsultPostingsAnswers.id
+      refType: 'hairConsultPostingsAnswers';
     };

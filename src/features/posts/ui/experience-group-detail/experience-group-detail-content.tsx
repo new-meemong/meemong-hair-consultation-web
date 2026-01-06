@@ -1,4 +1,3 @@
-import { AD_TYPE } from '@/features/ad/constants/ad-type';
 import Dot from '@/shared/ui/dot';
 import { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
 import type { ExperienceGroupDetail } from '@/entities/posts/model/experience-group-detail';
@@ -6,16 +5,28 @@ import PostDetailAuthorProfile from '../post-detail/post-detail-author-profile';
 import PostDetailContentItem from '../post-detail-content-item';
 import { formatDate } from 'date-fns';
 import openUrlInApp from '@/shared/lib/open-url-in-app';
-import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import useGetGrowthPassStatus from '@/features/growth-pass/api/use-get-growth-pass-status';
+import useShowExperienceGroupLinkSheet from '@/features/mong/hook/use-show-experience-group-link-sheet';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
-function SnsLink({ snsType, url }: { snsType: string; url: string }) {
+function SnsLink({
+  snsType,
+  url,
+  experienceGroupId,
+  designerName,
+}: {
+  snsType: string;
+  url: string;
+  experienceGroupId: number;
+  designerName: string;
+}) {
   const { isUserModel, isUserDesigner } = useAuthContext();
-
+  const { data: growthPassStatus } = useGetGrowthPassStatus();
   const showModal = useShowModal();
+  const showExperienceGroupLinkSheet = useShowExperienceGroupLinkSheet();
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (isUserModel) {
       showModal({
         id: 'sns-link-modal',
@@ -29,12 +40,21 @@ function SnsLink({ snsType, url }: { snsType: string; url: string }) {
       return;
     }
 
-    // 디자이너가 모델이 올린 체험단 신청 글의 sns link를 클릭하면 광고 표시
+    // 디자이너인 경우
     if (isUserDesigner) {
-      showAdIfAllowed({ adType: AD_TYPE.snsUrlInExperienceGroup });
-    }
+      // 성장패스가 활성화되어 있으면 바로 링크로 이동
+      if (growthPassStatus?.data?.isActive) {
+        openUrlInApp(url);
+        return;
+      }
 
-    openUrlInApp(url);
+      // 성장패스가 비활성화되어 있으면 몽 차감 모달 표시
+      await showExperienceGroupLinkSheet({
+        designerName,
+        experienceGroupId,
+        url,
+      });
+    }
   };
   return (
     <div className="flex items-center justify-between bg-alternative rounded-4 gap-4 px-4 py-3">
@@ -110,7 +130,13 @@ export default function ExperienceGroupDetailContent({
         <PostDetailContentItem label="협찬 SNS 링크">
           <div className="flex flex-col gap-2">
             {snsTypes.map((snsType) => (
-              <SnsLink key={snsType.id} snsType={snsType.snsType} url={snsType.url} />
+              <SnsLink
+                key={snsType.id}
+                snsType={snsType.snsType}
+                url={snsType.url}
+                experienceGroupId={experienceGroupDetail.id}
+                designerName={isAnonymous ? '익명' : user.displayName}
+              />
             ))}
           </div>
         </PostDetailContentItem>

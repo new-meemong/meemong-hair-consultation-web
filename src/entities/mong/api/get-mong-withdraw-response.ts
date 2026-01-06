@@ -1,17 +1,12 @@
 export type GetMongWithdrawResponse = {
   id: number;
-  userId: number;
-  createdAt: string;
-  amount: number;
-  currentAmount: number;
-  depositSum: number;
-  withdrawSum: number;
-  depositTotalSum: number;
-  withdrawTotalSum: number;
-  currentTotalAmount: number;
-  type: string;
-  mongType: string;
   title: string;
-  referTargetType: string;
-  referTargetId: number;
+  type: string;
+  subType: string;
+  price: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  isPaid: boolean; // 결제 true, 미결제 false
+  currentTotalAmount?: number; // 몽 잔여량 (옵션)
 } | null;
