@@ -1,9 +1,7 @@
-import type { ReactNode } from 'react';
-
 import { DialogContent } from './dialog';
-import { useOverlayContext } from '../context/overlay-context';
+import type { ReactNode } from 'react';
 import { cn } from '../lib/utils';
-
+import { useOverlayContext } from '../context/overlay-context';
 
 export type ModalButtonProps = {
   label: string;
@@ -36,7 +34,8 @@ function ModalButton({
     onClose();
   };
 
-  const typographyClass = variant === 'primary' ? 'typo-headline-medium' : 'typo-body-1-long-regular';
+  const typographyClass =
+    variant === 'primary' ? 'typo-headline-medium' : 'typo-body-1-long-regular';
 
   return (
     <button
