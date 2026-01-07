@@ -1,4 +1,3 @@
-
 import Image from 'next/image';
 import { useCallback, type RefObject } from 'react';
 
@@ -12,7 +11,6 @@ import formatDateTime from '@/shared/lib/formatDateTime';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
 import type { ValueOf } from '@/shared/type/types';
 import Dot from '@/shared/ui/dot';
-
 
 import PostListItemContent from './post-list-item-content';
 import PostListItemContentWithPrice from './post-list-item-price-content';
