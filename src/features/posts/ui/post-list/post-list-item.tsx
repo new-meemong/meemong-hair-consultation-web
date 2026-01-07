@@ -21,6 +21,7 @@ import type { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-gro
 type PostListItemProps = {
   createdAt: string;
   hairConsultPostingCreateUserRegion?: string;
+  userAddress?: string;
   price: number | null;
   isConsultingPost: boolean;
   title: string;
@@ -38,6 +39,7 @@ type PostListItemProps = {
 export default function PostListItem({
   createdAt,
   hairConsultPostingCreateUserRegion,
+  userAddress,
   price,
   isConsultingPost,
   title,
@@ -102,6 +104,12 @@ export default function PostListItem({
                 <>
                   <Dot size="1" />
                   <p>{formatAddress(hairConsultPostingCreateUserRegion)}</p>
+                </>
+              )}
+              {isUserDesigner && !isConsultingPost && userAddress && (
+                <>
+                  <Dot size="1" />
+                  <p>{formatAddress(userAddress)}</p>
                 </>
               )}
             </div>

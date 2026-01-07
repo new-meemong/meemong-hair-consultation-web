@@ -16,6 +16,7 @@ export type ExperienceGroup = {
     displayName: string;
     profilePictureURL: string;
     role: number;
+    address?: string;
   };
   isAnonymous: boolean;
   isLiked: boolean;

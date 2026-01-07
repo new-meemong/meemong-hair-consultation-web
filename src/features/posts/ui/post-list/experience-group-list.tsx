@@ -48,7 +48,7 @@ export default function ExperienceGroupList({
     <>
       {experienceGroups.map(
         (
-          { id, createdAt, title, viewCount, likeCount, commentCount, price, priceType, isRead },
+          { id, createdAt, title, viewCount, likeCount, commentCount, price, priceType, isRead, user },
           index,
         ) => (
           <PostListItem
@@ -64,6 +64,7 @@ export default function ExperienceGroupList({
             price={price}
             priceType={priceType}
             isRead={isRead}
+            userAddress={user.address}
           />
         ),
       )}
