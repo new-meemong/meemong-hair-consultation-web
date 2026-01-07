@@ -13,4 +13,3 @@ export type GetMongCurrentResponse = {
   mongType: 'default' | 'event';
   title: string;
 };
-
