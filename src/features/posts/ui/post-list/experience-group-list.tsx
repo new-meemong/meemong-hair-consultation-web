@@ -1,14 +1,12 @@
 import type { ExperienceGroup } from '@/entities/posts/model/experience-group';
-import { ROUTES } from '@/shared';
-import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-
 import PostListEmptyView from './post-list-empty-view';
 import PostListItem from './post-list-item';
-import useCreateExperienceGroupReadingMutation from '../../api/use-create-experience-group-reading-mutation';
 import type { PostListTab } from '../../types/post-list-tab';
-
+import { ROUTES } from '@/shared';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import useCreateExperienceGroupReadingMutation from '../../api/use-create-experience-group-reading-mutation';
+import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 type ExperienceGroupListProps = {
   experienceGroups: ExperienceGroup[];
@@ -48,7 +46,18 @@ export default function ExperienceGroupList({
     <>
       {experienceGroups.map(
         (
-          { id, createdAt, title, viewCount, likeCount, commentCount, price, priceType, isRead, user },
+          {
+            id,
+            createdAt,
+            title,
+            viewCount,
+            likeCount,
+            commentCount,
+            price,
+            priceType,
+            isRead,
+            user,
+          },
           index,
         ) => (
           <PostListItem
