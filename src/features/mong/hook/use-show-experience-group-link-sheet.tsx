@@ -16,6 +16,7 @@ import { useCallback } from 'react';
 import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
+import useGetGrowthPassStatus from '@/features/growth-pass/api/use-get-growth-pass-status';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
 
@@ -29,11 +30,18 @@ export default function useShowExperienceGroupLinkSheet() {
   const { showBottomSheet } = useOverlayContext();
   const { data: presetsData } = useGetMongConsumePresets();
   const { data: mongCurrentData } = useGetMongCurrent();
+  const { data: growthPassStatus } = useGetGrowthPassStatus();
   const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
 
   const showExperienceGroupLinkSheet = useCallback(
     async ({ designerName, experienceGroupId, url }: ShowExperienceGroupLinkSheetParams) => {
+      // 성장패스가 활성화되어 있으면 바로 링크로 이동
+      if (growthPassStatus?.data?.isActive) {
+        openUrlInApp(url);
+        return { alreadyPaid: false, growthPassActive: true };
+      }
+
       // 먼저 몽 차감 유무 조회 API 호출
       let isMongConsumeDisabled = false;
       try {
@@ -153,7 +161,14 @@ export default function useShowExperienceGroupLinkSheet() {
 
       return { alreadyPaid: false };
     },
-    [showBottomSheet, presetsData, mongCurrentData, createMongWithdraw, showMongInsufficientSheet],
+    [
+      showBottomSheet,
+      presetsData,
+      mongCurrentData,
+      growthPassStatus,
+      createMongWithdraw,
+      showMongInsufficientSheet,
+    ],
   );
 
   return showExperienceGroupLinkSheet;
