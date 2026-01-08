@@ -12,7 +12,6 @@ import type { HTTPError } from 'ky';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { apiClient } from '@/shared/api/client';
 import { useCallback } from 'react';
-import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
 import { useOverlayContext } from '@/shared/context/overlay-context';
@@ -30,13 +29,12 @@ export default function useShowMongConsumeSheet() {
   const { showBottomSheet } = useOverlayContext();
   const { data: presetsData } = useGetMongConsumePresets();
   const { data: mongCurrentData } = useGetMongCurrent();
-  const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const { push } = useRouterWithUser();
 
   const showMongConsumeSheet = useCallback(
     async ({ designerName, answerId, postId, postListTab }: ShowMongConsumeSheetParams) => {
-      // 먼저 몽 차감 유무 조회 API 호출
+      // 먼저 몽 차감 유무 조회 API 호출 (자동결제 처리)
       let isMongConsumeDisabled = false;
       try {
         const withdrawResponse = await apiClient.get<GetMongWithdrawResponse>(
@@ -52,6 +50,9 @@ export default function useShowMongConsumeSheet() {
 
         // 이미 결제한 적이 있으면 바텀시트를 열지 않고 바로 답변 페이지로 이동
         if (withdrawResponse?.data?.isPaid === true) {
+          push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString()), {
+            [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+          });
           return { alreadyPaid: true };
         }
       } catch (error) {
@@ -61,6 +62,11 @@ export default function useShowMongConsumeSheet() {
           if (httpError.response?.status === 404) {
             isMongConsumeDisabled = true;
             console.log('몽 소비 비활성화 상태');
+          }
+          // 409 에러: 몽 부족
+          if (httpError.response?.status === 409) {
+            showMongInsufficientSheet();
+            return { alreadyPaid: false, mongInsufficient: true };
           }
         }
 
@@ -115,26 +121,12 @@ export default function useShowMongConsumeSheet() {
                   <Button
                     size="lg"
                     className="rounded-4"
-                    onClick={async () => {
-                      try {
-                        await createMongWithdraw({
-                          createType: 'VIEW_MY_HAIR_CONSULTING_ANSWER_MODEL',
-                          refId: answerId,
-                          refType: 'hairConsultPostingsAnswers',
-                        });
-                        // 몽 차감 성공 후 답변 페이지로 이동
-                        push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString()), {
-                          [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
-                        });
-                      } catch (error) {
-                        // 몽 부족 에러 처리
-                        if (error && typeof error === 'object' && 'response' in error) {
-                          const httpError = error as HTTPError;
-                          if (httpError.response?.status === 409) {
-                            showMongInsufficientSheet();
-                          }
-                        }
-                      }
+                    onClick={() => {
+                      // 자동결제이므로 GET 요청에서 이미 결제 처리됨
+                      // 바로 답변 페이지로 이동
+                      push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString()), {
+                        [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+                      });
                     }}
                   >
                     {price}몽 사용
@@ -148,14 +140,7 @@ export default function useShowMongConsumeSheet() {
 
       return { alreadyPaid: false };
     },
-    [
-      showBottomSheet,
-      push,
-      presetsData,
-      mongCurrentData,
-      createMongWithdraw,
-      showMongInsufficientSheet,
-    ],
+    [showBottomSheet, push, presetsData, mongCurrentData, showMongInsufficientSheet],
   );
 
   return showMongConsumeSheet;

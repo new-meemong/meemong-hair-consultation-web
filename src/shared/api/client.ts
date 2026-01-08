@@ -21,6 +21,10 @@ export interface ApiError {
   code: string;
   message: string;
   httpCode: number;
+  fieldErrors?: Array<{
+    field: string;
+    message: string;
+  }>;
 }
 
 const createApiInstance = () => {
