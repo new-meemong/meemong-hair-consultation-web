@@ -1,26 +1,31 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
-
+import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
+import type { CommentFormValues } from '@/features/comments/ui/comment-form';
+import ExperienceGroupCommentContainer from '@/widgets/comments/ui/experience-group-comment-container';
+import ExperienceGroupDetailContainer from '@/widgets/post/ui/experience-group/experience-group-detail-container';
+import ExperienceGroupDetailMoreButton from '@/features/posts/ui/experience-group-detail/experience-group-detail-more-button';
+import { SiteHeader } from '@/widgets/header';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
+import { getGetExperienceGroupCommentsQueryKeyPrefix } from '@/features/comments/api/use-get-experience-group-comments';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
-import type { CommentFormValues } from '@/features/comments/ui/comment-form';
 import useGetExperienceGroupDetail from '@/features/posts/api/use-get-experience-group-detail';
-import ExperienceGroupDetailMoreButton from '@/features/posts/ui/experience-group-detail/experience-group-detail-more-button';
-import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
-import ExperienceGroupCommentContainer from '@/widgets/comments/ui/experience-group-comment-container';
-import { SiteHeader } from '@/widgets/header';
-import ExperienceGroupDetailContainer from '@/widgets/post/ui/experience-group/experience-group-detail-container';
+import { useParams } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function ExperienceGroupDetailPage() {
   const { id } = useParams();
 
   const { user } = useAuthContext();
+  const queryClient = useQueryClient();
+  const wasHiddenRef = useRef(false);
 
-  const { data: response } = useGetExperienceGroupDetail(id?.toString() ?? '');
+  const { data: response, refetch: refetchDetail } = useGetExperienceGroupDetail(
+    id?.toString() ?? '',
+  );
   const experienceGroupDetail = response?.data;
 
   const isWriter = experienceGroupDetail?.user.id === user.id;
@@ -32,6 +37,34 @@ export default function ExperienceGroupDetailPage() {
     });
 
   const isFormPending = isCommentCreating || isCommentUpdating;
+
+  // 페이지가 다시 보일 때 데이터 새로고침 (링크 클릭 후 돌아올 때)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && wasHiddenRef.current) {
+        // 페이지가 다시 보이고, 이전에 숨겨졌었다면 데이터 새로고침
+        if (id) {
+          refetchDetail();
+          // 댓글 데이터도 새로고침
+          queryClient.invalidateQueries({
+            queryKey: [
+              getGetExperienceGroupCommentsQueryKeyPrefix(),
+              { experienceGroupId: id.toString() },
+            ],
+          });
+        }
+        wasHiddenRef.current = false;
+      } else if (document.visibilityState === 'hidden') {
+        wasHiddenRef.current = true;
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [id, refetchDetail, queryClient]);
 
   const handleContainerClick = useCallback(() => {
     handlers.resetCommentState();
