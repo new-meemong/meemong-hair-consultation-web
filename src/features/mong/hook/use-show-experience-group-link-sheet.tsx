@@ -13,6 +13,7 @@ import { apiClient } from '@/shared/api/client';
 import { goStorePage } from '@/shared/lib/go-store-page';
 import openUrlInApp from '@/shared/lib/open-url-in-app';
 import { useCallback } from 'react';
+import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useGetGrowthPassStatus from '@/features/growth-pass/api/use-get-growth-pass-status';
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
@@ -30,6 +31,7 @@ export default function useShowExperienceGroupLinkSheet() {
   const { data: presetsData } = useGetMongConsumePresets();
   const { data: mongCurrentData } = useGetMongCurrent();
   const { data: growthPassStatus } = useGetGrowthPassStatus();
+  const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
 
   const showExperienceGroupLinkSheet = useCallback(
@@ -40,7 +42,7 @@ export default function useShowExperienceGroupLinkSheet() {
         return { alreadyPaid: false, growthPassActive: true };
       }
 
-      // 먼저 몽 차감 유무 조회 API 호출 (자동결제 처리)
+      // 먼저 몽 차감 유무 조회 API 호출
       let isMongConsumeDisabled = false;
       try {
         const withdrawResponse = await apiClient.get<GetMongWithdrawResponse>(
@@ -66,11 +68,6 @@ export default function useShowExperienceGroupLinkSheet() {
           if (httpError.response?.status === 404) {
             isMongConsumeDisabled = true;
             console.log('몽 소비 비활성화 상태');
-          }
-          // 409 에러: 몽 부족
-          if (httpError.response?.status === 409) {
-            showMongInsufficientSheet();
-            return { alreadyPaid: false, mongInsufficient: true };
           }
         }
 
@@ -133,10 +130,24 @@ export default function useShowExperienceGroupLinkSheet() {
                   <Button
                     size="lg"
                     className="rounded-4"
-                    onClick={() => {
-                      // 자동결제이므로 GET 요청에서 이미 결제 처리됨
-                      // 바로 링크로 이동
-                      openUrlInApp(url);
+                    onClick={async () => {
+                      try {
+                        await createMongWithdraw({
+                          createType: 'EXPERIENCE_GROUPS_LINK_DESIGNER',
+                          refId: experienceGroupId,
+                          refType: 'ExperienceGroups',
+                        });
+                        // 몽 차감 성공 후 링크로 이동
+                        openUrlInApp(url);
+                      } catch (error) {
+                        // 몽 부족 에러 처리
+                        if (error && typeof error === 'object' && 'response' in error) {
+                          const httpError = error as HTTPError;
+                          if (httpError.response?.status === 409) {
+                            showMongInsufficientSheet();
+                          }
+                        }
+                      }
                     }}
                   >
                     {price}몽 사용
@@ -150,7 +161,14 @@ export default function useShowExperienceGroupLinkSheet() {
 
       return { alreadyPaid: false };
     },
-    [showBottomSheet, presetsData, mongCurrentData, growthPassStatus, showMongInsufficientSheet],
+    [
+      showBottomSheet,
+      presetsData,
+      mongCurrentData,
+      growthPassStatus,
+      createMongWithdraw,
+      showMongInsufficientSheet,
+    ],
   );
 
   return showExperienceGroupLinkSheet;
