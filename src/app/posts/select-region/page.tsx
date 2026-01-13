@@ -1,16 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-
 import { ALL_OPTION, REGIONS } from '@/features/region/constants/region';
-import useSelectedRegion from '@/features/region/hooks/use-selected-region';
-import type { SelectedRegion } from '@/features/region/types/selected-region';
-import RegionTabs from '@/features/region/ui/region-tabs';
-import SelectedRegionItem from '@/features/region/ui/selected-region-item';
 import { Button, Separator } from '@/shared';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+
 import type { KeyOf } from '@/shared/type/types';
+import RegionTabs from '@/features/region/ui/region-tabs';
+import type { SelectedRegion } from '@/features/region/types/selected-region';
+import SelectedRegionItem from '@/features/region/ui/selected-region-item';
 import { SiteHeader } from '@/widgets/header';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import useSelectedRegion from '@/features/region/hooks/use-selected-region';
+import { useState } from 'react';
 
 const MAX_SELECTED_VALUES = 3;
 
@@ -24,7 +24,8 @@ export default function SelectRegionPage() {
   const { back } = useRouterWithUser();
 
   const handleSelectKey = (key: string) => {
-    setSelectedRegion({ key, values: [] });
+    // 큰 카테고리 선택 시 "전체" 옵션을 자동으로 선택
+    setSelectedRegion({ key, values: [ALL_OPTION] });
   };
 
   const options = selectedRegion
