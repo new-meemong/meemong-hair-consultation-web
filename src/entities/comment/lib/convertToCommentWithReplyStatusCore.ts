@@ -20,10 +20,26 @@ export default function convertToCommentWithReplyStatusCore<T extends CommentWit
 ): CommentWithReplyStatus[] {
   if (!data) return [];
 
-  return data.pages.flatMap((page) =>
-    page.dataList.flatMap((comment) => [
-      transformComment(comment, false),
-      ...(comment.replies ?? []).map((reply) => transformComment(reply as T, true)),
-    ]),
-  );
+  const seenIds = new Set<number>();
+  const results: CommentWithReplyStatus[] = [];
+
+  data.pages.forEach((page) => {
+    page.dataList.forEach((comment) => {
+      const commentId = comment.id as number;
+      if (!seenIds.has(commentId)) {
+        results.push(transformComment(comment, false));
+        seenIds.add(commentId);
+      }
+
+      (comment.replies ?? []).forEach((reply) => {
+        const replyId = (reply as T).id as number;
+        if (!seenIds.has(replyId)) {
+          results.push(transformComment(reply as T, true));
+          seenIds.add(replyId);
+        }
+      });
+    });
+  });
+
+  return results;
 }
