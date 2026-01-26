@@ -1,20 +1,19 @@
-import Image from 'next/image';
-import { useCallback, type RefObject } from 'react';
+import { forwardRef, useCallback } from 'react';
 
+import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import CommentIcon from '@/assets/icons/comment.svg';
+import Dot from '@/shared/ui/dot';
+import type { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
 import EyeIcon from '@/assets/icons/eye.svg';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
-import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import Image from 'next/image';
+import PostListItemContent from './post-list-item-content';
+import PostListItemContentWithPrice from './post-list-item-price-content';
+import type { ValueOf } from '@/shared/type/types';
 import formatAddress from '@/features/auth/lib/format-address';
 import formatDateTime from '@/shared/lib/formatDateTime';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
-import type { ValueOf } from '@/shared/type/types';
-import Dot from '@/shared/ui/dot';
-
-import PostListItemContent from './post-list-item-content';
-import PostListItemContentWithPrice from './post-list-item-price-content';
-import type { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 
 type PostListItemProps = {
   createdAt: string;
@@ -31,10 +30,10 @@ type PostListItemProps = {
   isRead: boolean;
   priceType?: ValueOf<typeof EXPERIENCE_GROUP_PRICE_TYPE>;
   onClick?: () => void;
-  ref?: RefObject<HTMLDivElement | null>;
 };
 
-export default function PostListItem({
+const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function PostListItem(
+  {
   createdAt,
   hairConsultPostingCreateUserRegion,
   userAddress,
@@ -44,13 +43,14 @@ export default function PostListItem({
   content,
   repImageUrl,
   onClick,
-  ref,
   viewCount,
   likeCount,
   commentCount,
   isRead,
   priceType,
-}: PostListItemProps) {
+  },
+  ref,
+) {
   const isValidImageUrl = repImageUrl && isValidUrl(repImageUrl);
 
   const { isUserDesigner } = useAuthContext();
@@ -139,4 +139,6 @@ export default function PostListItem({
       </div>
     </div>
   );
-}
+});
+
+export default PostListItem;
