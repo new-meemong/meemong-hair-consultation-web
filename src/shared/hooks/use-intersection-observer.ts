@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface UseIntersectionObserverProps {
   onIntersect: () => void;
@@ -13,13 +13,16 @@ export function useIntersectionObserver({
   threshold = 0.1,
   rootMargin = '100px',
 }: UseIntersectionObserverProps) {
-  const ref = useRef<HTMLDivElement>(null);
+  const [target, setTarget] = useState<Element | null>(null);
+
+  const ref = useCallback((node: Element | null) => {
+    setTarget(node);
+  }, []);
 
   useEffect(() => {
     if (!enabled) return;
 
-    const element = ref.current;
-    if (!element) return;
+    if (!target) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -34,12 +37,12 @@ export function useIntersectionObserver({
       },
     );
 
-    observer.observe(element);
+    observer.observe(target);
 
     return () => {
       observer.disconnect();
     };
-  }, [onIntersect, enabled, threshold, rootMargin]);
+  }, [onIntersect, enabled, threshold, rootMargin, target]);
 
   return ref;
 }
