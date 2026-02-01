@@ -7,10 +7,9 @@ import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observe
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { ROUTES } from '@/shared/lib/routes';
 
-
 import PostListEmptyView from './post-list-empty-view';
 import PostListItem from './post-list-item';
-import useCreatePostReadingMutation from '../../api/use-create-post-reading-mutation';
+import useCreateHairConsultationReadingMutation from '../../api/use-create-hair-consultation-reading-mutation';
 
 type PostListProps = {
   posts: Post[];
@@ -21,11 +20,12 @@ type PostListProps = {
 export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
   const router = useRouterWithUser();
 
-  const { mutate: createPostReadingMutation } = useCreatePostReadingMutation();
+  const { mutate: createHairConsultationReadingMutation } =
+    useCreateHairConsultationReadingMutation();
 
   const handlePostClick = ({ postId, isRead }: { postId: number; isRead: boolean }) => {
     if (!isRead) {
-      createPostReadingMutation(postId, { onSuccess: () => {} });
+      createHairConsultationReadingMutation(postId, { onSuccess: () => {} });
     }
 
     router.push(ROUTES.POSTS_DETAIL(postId), {

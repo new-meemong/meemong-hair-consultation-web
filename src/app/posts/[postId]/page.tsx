@@ -3,13 +3,12 @@
 import { useParams, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 
-
-import { isConsultingPost } from '@/entities/posts/lib/consulting-type';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
 import { type CommentFormValues } from '@/features/comments/ui/comment-form';
-import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
+import useGetHairConsultationDetail from '@/features/posts/api/use-get-hair-consultation-detail';
 import { PostDetailProvider } from '@/features/posts/context/post-detail-context';
+import mapHairConsultationDetailToPostDetail from '@/features/posts/lib/map-hair-consultation-detail-to-post-detail';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -29,8 +28,8 @@ export default function PostDetailPage() {
 
   useShowGuide(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
 
-  const { data: response } = useGetPostDetail(postId?.toString() ?? '');
-  const postDetail = response?.data;
+  const { data: response } = useGetHairConsultationDetail(postId?.toString() ?? '');
+  const postDetail = response?.data ? mapHairConsultationDetailToPostDetail(response.data) : null;
 
   const isWriter = postDetail?.hairConsultPostingCreateUserId === user.id;
 
@@ -71,12 +70,7 @@ export default function PostDetailPage() {
           showBackButton
           onBackClick={handleBackClick}
           rightComponent={
-            isWriter && (
-              <PostDetailMoreButton
-                postId={postId.toString()}
-                isConsultingPost={isConsultingPost(postDetail)}
-              />
-            )
+            isWriter && <PostDetailMoreButton postId={postId.toString()} isConsultingPost={true} />
           }
         />
         <div className="flex-1 overflow-y-auto" onClick={handleContainerClick}>
@@ -97,7 +91,7 @@ export default function PostDetailPage() {
           commentFormState={commentFormState}
           isPending={isFormPending}
           textareaRef={textareaRef}
-          isConsulting={isConsultingPost(postDetail)}
+          isConsulting={true}
           isAnsweredByDesigner={postDetail.isAnsweredByDesigner ?? false}
         />
       </PostDetailProvider>

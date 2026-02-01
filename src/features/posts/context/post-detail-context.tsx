@@ -1,9 +1,9 @@
 import { createContext, useContext, type ReactNode } from 'react';
 
-import { isConsultingPost } from '@/entities/posts/lib/consulting-type';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 
-import useGetPostDetail from '../api/use-get-post-detail';
+import useGetHairConsultationDetail from '../api/use-get-hair-consultation-detail';
+import mapHairConsultationDetailToPostDetail from '../lib/map-hair-consultation-detail-to-post-detail';
 
 type PostDetailContextValue = {
   postDetail: PostDetail;
@@ -18,16 +18,15 @@ type PostDetailProviderProps = {
 };
 
 export function PostDetailProvider({ children, postId }: PostDetailProviderProps) {
-  const { data: postDetailResponse } = useGetPostDetail(postId.toString());
-
-  const postDetail = postDetailResponse?.data;
+  const { data: postDetailResponse } = useGetHairConsultationDetail(postId.toString());
+  const postDetail = postDetailResponse?.data
+    ? mapHairConsultationDetailToPostDetail(postDetailResponse.data)
+    : null;
 
   if (!postDetail) return null;
 
-  const isConsulting = isConsultingPost(postDetail);
-
   return (
-    <PostDetailContext.Provider value={{ postDetail, isConsultingPost: isConsulting }}>
+    <PostDetailContext.Provider value={{ postDetail, isConsultingPost: true }}>
       {children}
     </PostDetailContext.Provider>
   );

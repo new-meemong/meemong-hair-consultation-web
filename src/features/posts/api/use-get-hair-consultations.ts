@@ -29,12 +29,21 @@ type HairConsultationListQueryParams = PagingQueryParams & {
 };
 
 export default function useGetHairConsultations(params: HairConsultationListQueryParams) {
-  const { __limit = DEFAULT_LIMIT, ...rest } = params;
+  const {
+    __limit = DEFAULT_LIMIT,
+    __orderColumn = 'contentUpdatedAt',
+    __order = 'desc',
+    ...rest
+  } = params;
 
   return useCursorInfiniteQuery<HairConsultationListItem>({
     endpoint: GET_HAIR_CONSULTATIONS_ENDPOINT,
     queryKey: [getHairConsultationsQueryKeyPrefix(), params],
     __limit,
-    additionalParams: rest,
+    additionalParams: {
+      __orderColumn,
+      __order,
+      ...rest,
+    },
   });
 }
