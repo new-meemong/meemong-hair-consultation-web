@@ -32,8 +32,9 @@ const HAIR_CONSULTATION_FORM_STEPS: FormStep<HairConsultationFormValues>[] = [
   },
   {
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENTS,
-    question: '시술 이력',
-    required: false,
+    question: '최근 N개월 내 받은 시술을 입력해주세요',
+    description: '각 시술을 누르면 세부사항을 입력할 수 있어요',
+    required: true,
     children: <HairConsultationFormStepTreatments />,
   },
   {
@@ -85,8 +86,8 @@ export default function HairConsultationForm({
     }
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENTS) {
-      const formValue = method.getValues(name);
-      return formValue === null || (Array.isArray(formValue) && formValue.length > 0);
+      const formValue = method.getValues(name) as string[];
+      return Array.isArray(formValue) && formValue.length > 0;
     }
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES) {

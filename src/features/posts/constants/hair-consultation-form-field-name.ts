@@ -5,6 +5,7 @@ export const HAIR_CONSULTATION_FORM_FIELD_NAME = {
   SKIN_BRIGHTNESS: 'skinBrightness',
   PERSONAL_COLOR: 'personalColor',
   TREATMENTS: 'treatments',
+  TREATMENT_DETAIL: 'treatmentDetail',
   ASPIRATION_IMAGES: 'aspirationImages',
   PRICE: 'price',
   MY_IMAGES: 'myImages',

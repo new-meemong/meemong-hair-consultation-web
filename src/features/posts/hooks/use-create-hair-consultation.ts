@@ -3,7 +3,6 @@ import type { CreateHairConsultationRequest, HairConsultationMyImageRequest } fr
 import type { HairConsultationFormValues } from '../types/hair-consultation-form-values';
 import { MY_IMAGE_TYPE } from '../constants/my-image-type';
 import type { ValueOf } from '@/shared/type/types';
-import { format } from 'date-fns';
 import useCreateHairConsultationMutation from '../api/use-create-hair-consultation-mutation';
 import useUploadPostImageMutation from '../api/use-upload-post-image';
 
@@ -49,12 +48,13 @@ export function useCreateHairConsultation() {
       imageUrl: image.imageURL,
     }));
 
+    const treatmentSummary =
+      data.treatments && data.treatments.length > 0 ? data.treatments.join(', ') : undefined;
+    const detailText = data.treatmentDetail?.trim();
     const treatmentDescription =
-      data.treatments && data.treatments.length > 0
-        ? data.treatments
-            .map((item) => `${item.name} ${format(item.date, 'yyyy.MM')}`)
-            .join(', ')
-        : undefined;
+      treatmentSummary && detailText
+        ? `${treatmentSummary} / ${detailText}`
+        : treatmentSummary ?? detailText ?? undefined;
 
     const desiredCostPrice =
       data.price.maxPaymentPrice ?? data.price.minPaymentPrice ?? 0;

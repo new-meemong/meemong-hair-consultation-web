@@ -33,14 +33,8 @@ export const hairConsultationFormSchema = z.object({
   [HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR]: z.enum(
     HAIR_CONSULTATION_PERSONAL_COLOR_VALUES,
   ),
-  [HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENTS]: z
-    .array(
-      z.object({
-        name: z.string(),
-        date: z.date(),
-      }),
-    )
-    .nullable(),
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENTS]: z.array(z.string()).min(1),
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENT_DETAIL]: z.string().optional(),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES]: z.array(
     z.object({
       type: z.enum(MY_IMAGE_TYPES),
