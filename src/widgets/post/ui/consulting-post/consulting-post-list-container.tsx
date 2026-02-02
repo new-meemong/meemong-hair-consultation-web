@@ -22,9 +22,7 @@ export default function ConsultingPostListContainer({
       ? { isMine: true }
       : activePostListTab === 'comment'
         ? { isMineComment: true }
-        : activePostListTab === 'favorite'
-          ? { isMineFavorite: true }
-          : {};
+        : {};
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetHairConsultations({
     ...listFilterParams,

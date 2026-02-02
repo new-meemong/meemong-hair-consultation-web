@@ -1,1 +1,1 @@
-export type PostListTab = 'latest' | 'my' | 'comment' | 'favorite';
+export type PostListTab = 'latest' | 'my' | 'comment';

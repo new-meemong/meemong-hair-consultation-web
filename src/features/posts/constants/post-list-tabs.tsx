@@ -1,13 +1,10 @@
-import type { ReactNode } from 'react';
-
 import CommentIcon from '@/assets/icons/comment.svg';
-import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
-import HeartIcon from '@/assets/icons/mdi_heart.svg';
+import type { PostListTab } from '../types/post-list-tab';
+import type { ReactNode } from 'react';
 import RecentIcon from '@/assets/icons/mdi_recent.svg';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
+import UserIcon from '@/assets/icons/lets-icons_user-duotone.svg';
 import type { ValueOf } from '@/shared/type/types';
-
-import type { PostListTab } from '../types/post-list-tab';
 
 type TabInfo = {
   id: PostListTab;
@@ -52,12 +49,6 @@ export const POST_LIST_TAB: Record<PostListTab, TabInfo> = {
           return '';
       }
     },
-  },
-  favorite: {
-    id: 'favorite',
-    label: '좋아한 글',
-    icon: <HeartIcon className="size-5 p-[1px] fill-negative-light" />,
-    getEmptyText: () => '아직 좋아한 글이 없어요',
   },
 } as const;
 

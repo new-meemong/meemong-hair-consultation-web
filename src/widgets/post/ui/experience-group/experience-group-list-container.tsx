@@ -1,9 +1,8 @@
-import { useCallback } from 'react';
-
-import useGetExperienceGroups from '@/features/posts/api/use-get-experience-groups';
-import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import ExperienceGroupList from '@/features/posts/ui/post-list/experience-group-list';
+import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import type { SelectedRegion } from '@/features/region/types/selected-region';
+import { useCallback } from 'react';
+import useGetExperienceGroups from '@/features/posts/api/use-get-experience-groups';
 
 type ExperienceGroupListContainerProps = {
   activePostListTab: PostListTab;
@@ -15,7 +14,6 @@ export default function ExperienceGroupListContainer({
 }: ExperienceGroupListContainerProps) {
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetExperienceGroups({
     isMine: activePostListTab === 'my',
-    isLiked: activePostListTab === 'favorite',
     selectedRegion: userSelectedRegionData,
   });
 
