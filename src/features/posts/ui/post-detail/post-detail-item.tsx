@@ -1,16 +1,14 @@
+import ActionItem from '@/shared/ui/action-item';
 import CommentIcon from '@/assets/icons/comment.svg';
 import EyeIcon from '@/assets/icons/eye.svg';
-import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { LikeButton } from '@/features/likes/ui/like-button';
-import ActionItem from '@/shared/ui/action-item';
-
-
 import PostDetailConsultingContent from './post-detail-consulting-content';
 import PostDetailContent from './post-detail-content';
+import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { usePostDetail } from '../../context/post-detail-context';
 
 function PostDetailItem() {
-  const { postDetail, isConsultingPost } = usePostDetail();
+  const { postDetail, isConsultingPost, postSource } = usePostDetail();
   const { id, likeCount, commentCount, isFavorited, viewCount } = postDetail;
 
   return (
@@ -23,7 +21,7 @@ function PostDetailItem() {
 
       <div className="flex items-center justify-between gap-5 px-5">
         <div className="flex flex-1 justify-center items-center gap-1">
-          <LikeButton postId={id} liked={isFavorited} likeCount={likeCount} />
+          <LikeButton postId={id} liked={isFavorited} likeCount={likeCount} postSource={postSource} />
         </div>
         <ActionItem
           icon={<CommentIcon className="size-5 fill-label-placeholder" />}

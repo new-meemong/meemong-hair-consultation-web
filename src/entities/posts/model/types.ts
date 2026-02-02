@@ -20,6 +20,7 @@ export type Post = {
   minPaymentPrice: number | null;
   maxPaymentPrice: number | null;
   isRead: boolean;
+  postSource?: 'new' | 'legacy';
 };
 
 export interface Banner {

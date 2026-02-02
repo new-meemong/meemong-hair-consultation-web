@@ -1,28 +1,48 @@
 'use client';
 
+import ActionItem from '@/shared/ui/action-item';
 import HeartIcon from '@/assets/icons/mdi_heart.svg';
+import { cn } from '@/shared/lib/utils';
+import useCreateHairConsultationFavoriteMutation from '@/features/posts/api/use-create-hair-consultation-favorite-mutation';
+import useDeleteHairConsultationFavoriteMutation from '@/features/posts/api/use-delete-hair-consultation-favorite-mutation';
 import useExperienceGroupFavoriteMutation from '@/features/posts/api/use-experience-group-favorite-mutation';
 import usePostFavoriteMutation from '@/features/posts/api/use-post-favorite-mutation';
-import { cn } from '@/shared/lib/utils';
-import ActionItem from '@/shared/ui/action-item';
 
 interface LikeButtonProps {
   postId?: number;
   experienceGroupId?: number;
   liked: boolean;
   likeCount: number;
+  postSource?: 'new' | 'legacy';
 }
 
-export function LikeButton({ postId, experienceGroupId, liked, likeCount }: LikeButtonProps) {
+export function LikeButton({
+  postId,
+  experienceGroupId,
+  liked,
+  likeCount,
+  postSource,
+}: LikeButtonProps) {
   const toggleFavoriteMutation = usePostFavoriteMutation();
   const toggleExperienceGroupFavoriteMutation = useExperienceGroupFavoriteMutation();
+  const createHairConsultationFavoriteMutation = useCreateHairConsultationFavoriteMutation();
+  const deleteHairConsultationFavoriteMutation = useDeleteHairConsultationFavoriteMutation();
 
   const handleToggle = (liked: boolean) => {
     if (postId) {
-      toggleFavoriteMutation.mutate({
-        hairConsultPostingId: postId,
-        liked,
-      });
+      if (postSource === 'new') {
+        const onSuccess = () => {};
+        if (liked) {
+          deleteHairConsultationFavoriteMutation.mutate(postId, { onSuccess });
+        } else {
+          createHairConsultationFavoriteMutation.mutate(postId, { onSuccess });
+        }
+      } else {
+        toggleFavoriteMutation.mutate({
+          hairConsultPostingId: postId,
+          liked,
+        });
+      }
     } else if (experienceGroupId) {
       toggleExperienceGroupFavoriteMutation.mutate({
         id: experienceGroupId,
@@ -30,6 +50,12 @@ export function LikeButton({ postId, experienceGroupId, liked, likeCount }: Like
       });
     }
   };
+
+  const isPending =
+    toggleFavoriteMutation.isPending ||
+    toggleExperienceGroupFavoriteMutation.isPending ||
+    createHairConsultationFavoriteMutation.isPending ||
+    deleteHairConsultationFavoriteMutation.isPending;
 
   return (
     <ActionItem
@@ -49,7 +75,7 @@ export function LikeButton({ postId, experienceGroupId, liked, likeCount }: Like
         'active:text-label-placeholder',
         'pt-0.5',
       )}
-      className={cn(toggleFavoriteMutation.isPending && 'cursor-not-allowed')}
+      className={cn(isPending && 'cursor-not-allowed')}
       onClick={() => handleToggle(liked)}
     />
   );
