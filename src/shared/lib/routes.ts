@@ -9,6 +9,7 @@ export const ROUTES = {
   POSTS_CREATE: '/posts/create',
   POSTS_NEW_CREATE: '/posts/new/create',
   POSTS_NEW_CREATE_HAIR_LENGTH: '/posts/new/create/hair-length',
+  POSTS_NEW_CREATE_HAIR_CONCERNS: '/posts/new/create/hair-concerns',
   POSTS_CREATE_CONSULTING_POST: (postId: string) => `/posts/${postId}/consulting/create`,
   POSTS_DETAIL: (postId: string | number) => `/posts/${postId}`,
   POSTS_NEW_DETAIL: (postId: string | number) => `/posts/new/${postId}`,

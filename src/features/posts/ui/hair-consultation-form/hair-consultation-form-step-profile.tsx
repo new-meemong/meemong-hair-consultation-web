@@ -3,31 +3,29 @@ import {
   MALE_HAIR_LENGTH_OPTIONS,
 } from '../../constants/hair-length-options';
 import {
-  HAIR_CONSULTATION_CONCERN_OPTIONS,
   HAIR_CONSULTATION_HAIR_TEXTURE_OPTIONS,
   HAIR_CONSULTATION_PERSONAL_COLOR_OPTIONS,
   HAIR_CONSULTATION_SKIN_BRIGHTNESS_OPTIONS,
 } from '../../constants/hair-consultation-create-options';
-import { Label, ROUTES } from '@/shared';
+import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { AppTypography } from '@/shared/styles/typography';
-import Checkbox from '@/shared/ui/checkbox';
 import ConsultingFormOptionList from '../consulting-form/consulting-form-option-list';
 import EditIcon from '@/assets/icons/edit.svg';
 import FormItem from '@/shared/ui/form-item';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '../../constants/hair-consultation-form-field-name';
-import type { HairConsultationConcern } from '@/entities/posts/api/create-hair-consultation-request';
 import type { HairConsultationFormValues } from '../../types/hair-consultation-form-values';
 import Image from 'next/image';
+import { ROUTES } from '@/shared';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
 export default function HairConsultationFormStepProfile() {
-  const { control, setValue, getValues } = useFormContext<HairConsultationFormValues>();
+  const { control, getValues } = useFormContext<HairConsultationFormValues>();
   const { user } = useAuthContext();
   const { push } = useRouterWithUser();
   const { saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
@@ -57,26 +55,6 @@ export default function HairConsultationFormStepProfile() {
     return option ?? null;
   }, [hairLengthOptions, selectedHairLength]);
 
-  const handleConcernToggle = useCallback(
-    (value: HairConsultationConcern) => {
-      const current = getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS) ?? [];
-      if (current.includes(value)) {
-        setValue(
-          HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS,
-          current.filter((item) => item !== value),
-          { shouldDirty: true },
-        );
-        return;
-      }
-      setValue(
-        HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS,
-        [...current, value],
-        { shouldDirty: true },
-      );
-    },
-    [getValues, setValue],
-  );
-
   const handleHairLengthEdit = useCallback(() => {
     const writingContent = {
       step: 1,
@@ -84,6 +62,15 @@ export default function HairConsultationFormStepProfile() {
     };
     saveContent(writingContent);
     push(ROUTES.POSTS_NEW_CREATE_HAIR_LENGTH, { skipReload: '1' });
+  }, [getValues, push, saveContent]);
+
+  const handleHairConcernEdit = useCallback(() => {
+    const writingContent = {
+      step: 1,
+      content: getValues(),
+    };
+    saveContent(writingContent);
+    push(ROUTES.POSTS_NEW_CREATE_HAIR_CONCERNS, { skipReload: '1' });
   }, [getValues, push, saveContent]);
 
   return (
@@ -127,27 +114,40 @@ export default function HairConsultationFormStepProfile() {
 
       <div className="border-t border-border-default" />
 
-      <FormItem label="헤어 고민" required>
-        <div className="flex flex-col gap-2">
-          {HAIR_CONSULTATION_CONCERN_OPTIONS.map((option, index) => {
-            const checked = selectedConcerns?.includes(option) ?? false;
-            const optionId = `hair-concern-${index}`;
-            return (
-              <div key={option} className="flex items-center gap-3">
-                <Checkbox
-                  id={optionId}
-                  shape="round"
-                  checked={checked}
-                  onChange={() => handleConcernToggle(option)}
-                />
-                <Label htmlFor={optionId} className="typo-body-2-regular text-label-default">
-                  {option}
-                </Label>
-              </div>
-            );
-          })}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <p className={`${AppTypography.body1SemiBold} text-label-default`}>헤어 고민</p>
+          <button
+            type="button"
+            aria-label="헤어 고민 수정"
+            className="flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 overflow-visible"
+            onClick={handleHairConcernEdit}
+          >
+            <EditIcon className="block w-[22px] h-[22px] text-label-info" />
+          </button>
         </div>
-      </FormItem>
+        {selectedConcerns && selectedConcerns.length > 0 && (
+          <ToggleChipGroup className="flex flex-wrap gap-2">
+            {selectedConcerns.map((option) => (
+              <ToggleChip
+                key={option}
+                disabled
+                className={[
+                  'rounded-full px-4 py-2.5 h-auto',
+                  'bg-alternative text-label-sub border-0',
+                  'data-[state=off]:bg-alternative data-[state=off]:text-label-sub data-[state=off]:border-0',
+                  'typo-body-2-regular',
+                  'disabled:opacity-100',
+                ].join(' ')}
+              >
+                {option}
+              </ToggleChip>
+            ))}
+          </ToggleChipGroup>
+        )}
+      </div>
+
+      <div className="border-t border-border-default" />
 
       <FormItem label="모발 타입" required>
         <ConsultingFormOptionList

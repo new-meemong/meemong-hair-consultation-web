@@ -99,7 +99,11 @@ export default function HairLengthSelectPage() {
                 </span>
               </div>
               <div className="flex items-center justify-center">
-                {isSelected ? <RoundCheckboxIcon /> : <RoundCheckboxEmptyIcon />}
+                {isSelected ? (
+                  <RoundCheckboxIcon className="text-label-default" />
+                ) : (
+                  <RoundCheckboxEmptyIcon />
+                )}
               </div>
             </button>
           );
