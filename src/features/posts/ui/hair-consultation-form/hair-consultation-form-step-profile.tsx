@@ -3,7 +3,6 @@ import {
   MALE_HAIR_LENGTH_OPTIONS,
 } from '../../constants/hair-length-options';
 import {
-  HAIR_CONSULTATION_HAIR_TEXTURE_OPTIONS,
   HAIR_CONSULTATION_PERSONAL_COLOR_OPTIONS,
   HAIR_CONSULTATION_SKIN_BRIGHTNESS_OPTIONS,
 } from '../../constants/hair-consultation-create-options';
@@ -33,6 +32,11 @@ export default function HairConsultationFormStepProfile() {
   const selectedConcerns = useWatch({
     control,
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS,
+  });
+
+  const selectedHairTexture = useWatch({
+    control,
+    name: HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE,
   });
 
   const selectedHairLength = useWatch({
@@ -71,6 +75,15 @@ export default function HairConsultationFormStepProfile() {
     };
     saveContent(writingContent);
     push(ROUTES.POSTS_NEW_CREATE_HAIR_CONCERNS, { skipReload: '1' });
+  }, [getValues, push, saveContent]);
+
+  const handleHairTextureEdit = useCallback(() => {
+    const writingContent = {
+      step: 1,
+      content: getValues(),
+    };
+    saveContent(writingContent);
+    push(ROUTES.POSTS_NEW_CREATE_HAIR_TEXTURE, { skipReload: '1' });
   }, [getValues, push, saveContent]);
 
   return (
@@ -149,12 +162,38 @@ export default function HairConsultationFormStepProfile() {
 
       <div className="border-t border-border-default" />
 
-      <FormItem label="모발 타입" required>
-        <ConsultingFormOptionList
-          options={HAIR_CONSULTATION_HAIR_TEXTURE_OPTIONS}
-          name={HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE}
-        />
-      </FormItem>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <p className={`${AppTypography.body1SemiBold} text-label-default`}>모발 타입</p>
+          <button
+            type="button"
+            aria-label="모발 타입 수정"
+            className="flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 overflow-visible"
+            onClick={handleHairTextureEdit}
+          >
+            <EditIcon className="block w-[22px] h-[22px] text-label-info" />
+          </button>
+        </div>
+        {selectedHairTexture && (
+          <ToggleChipGroup className="flex flex-wrap gap-2">
+            <ToggleChip
+              pressed={false}
+              disabled
+              className={[
+                'rounded-full px-4 py-2.5 h-auto',
+                'bg-alternative text-label-sub border-0',
+                'data-[state=off]:bg-alternative data-[state=off]:text-label-sub data-[state=off]:border-0',
+                'typo-body-2-regular',
+                'disabled:opacity-100',
+              ].join(' ')}
+            >
+              {selectedHairTexture}
+            </ToggleChip>
+          </ToggleChipGroup>
+        )}
+      </div>
+
+      <div className="border-t border-border-default" />
 
       <FormItem label="피부톤" required>
         <ConsultingFormOptionList
