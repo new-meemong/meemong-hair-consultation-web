@@ -5,7 +5,7 @@ import CommentIcon from '@/assets/icons/comment.svg';
 import Dot from '@/shared/ui/dot';
 import type { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
 import EyeIcon from '@/assets/icons/eye.svg';
-import HeartIcon from '@/assets/icons/mdi_heart.svg';
+// import HeartIcon from '@/assets/icons/mdi_heart.svg';
 import Image from 'next/image';
 import PostListItemContent from './post-list-item-content';
 import PostListItemContentWithPrice from './post-list-item-price-content';
@@ -44,7 +44,7 @@ const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function Post
   repImageUrl,
   onClick,
   viewCount,
-  likeCount,
+  // likeCount,
   commentCount,
   isRead,
   priceType,
@@ -60,7 +60,7 @@ const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function Post
   }, [onClick]);
 
   const getContent = useCallback(() => {
-    const isDesignerConsultingWithPrice = isUserDesigner && price && isConsultingPost;
+    const isDesignerConsultingWithPrice = price && isConsultingPost;
     const isConsulting = !isDesignerConsultingWithPrice && content && isConsultingPost;
     const isExperienceGroup = !isConsultingPost && price !== undefined && priceType;
 
@@ -79,7 +79,7 @@ const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function Post
     if (isExperienceGroup) {
       return <PostListItemContentWithPrice content={title} price={price} type={priceType} />;
     }
-  }, [isUserDesigner, price, isConsultingPost, content, title, priceType]);
+  }, [price, isConsultingPost, content, title, priceType]);
 
   return (
     <div
@@ -126,10 +126,12 @@ const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function Post
               <EyeIcon className="size-4 fill-label-info" />
               <span className="typo-body-2-medium text-label-info">{viewCount}</span>
             </div>
+            {/*
             <div className="flex items-center gap-1">
               <HeartIcon className="w-4 h-4 fill-negative-light" />
               <span className="typo-body-2-medium text-negative-light">{likeCount}</span>
             </div>
+            */}
             <div className="flex items-center gap-1">
               <CommentIcon className="w-4 h-4 fill-positive" />
               <span className="typo-body-2-medium text-positive">{commentCount}</span>
