@@ -2,18 +2,12 @@ import {
   FEMALE_HAIR_LENGTH_OPTIONS,
   MALE_HAIR_LENGTH_OPTIONS,
 } from '../../constants/hair-length-options';
-import {
-  HAIR_CONSULTATION_PERSONAL_COLOR_OPTIONS,
-  HAIR_CONSULTATION_SKIN_BRIGHTNESS_OPTIONS,
-} from '../../constants/hair-consultation-create-options';
 import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { AppTypography } from '@/shared/styles/typography';
-import ConsultingFormOptionList from '../consulting-form/consulting-form-option-list';
 import EditIcon from '@/assets/icons/edit.svg';
-import FormItem from '@/shared/ui/form-item';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '../../constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '../../types/hair-consultation-form-values';
 import Image from 'next/image';
@@ -37,6 +31,16 @@ export default function HairConsultationFormStepProfile() {
   const selectedHairTexture = useWatch({
     control,
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE,
+  });
+
+  const selectedSkinBrightness = useWatch({
+    control,
+    name: HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS,
+  });
+
+  const selectedPersonalColor = useWatch({
+    control,
+    name: HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR,
   });
 
   const selectedHairLength = useWatch({
@@ -84,6 +88,24 @@ export default function HairConsultationFormStepProfile() {
     };
     saveContent(writingContent);
     push(ROUTES.POSTS_NEW_CREATE_HAIR_TEXTURE, { skipReload: '1' });
+  }, [getValues, push, saveContent]);
+
+  const handleSkinBrightnessEdit = useCallback(() => {
+    const writingContent = {
+      step: 1,
+      content: getValues(),
+    };
+    saveContent(writingContent);
+    push(ROUTES.POSTS_NEW_CREATE_SKIN_BRIGHTNESS, { skipReload: '1' });
+  }, [getValues, push, saveContent]);
+
+  const handlePersonalColorEdit = useCallback(() => {
+    const writingContent = {
+      step: 1,
+      content: getValues(),
+    };
+    saveContent(writingContent);
+    push(ROUTES.POSTS_NEW_CREATE_PERSONAL_COLOR, { skipReload: '1' });
   }, [getValues, push, saveContent]);
 
   return (
@@ -195,19 +217,69 @@ export default function HairConsultationFormStepProfile() {
 
       <div className="border-t border-border-default" />
 
-      <FormItem label="피부톤" required>
-        <ConsultingFormOptionList
-          options={HAIR_CONSULTATION_SKIN_BRIGHTNESS_OPTIONS}
-          name={HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS}
-        />
-      </FormItem>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <p className={`${AppTypography.body1SemiBold} text-label-default`}>피부톤</p>
+          <button
+            type="button"
+            aria-label="피부톤 수정"
+            className="flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 overflow-visible"
+            onClick={handleSkinBrightnessEdit}
+          >
+            <EditIcon className="block w-[22px] h-[22px] text-label-info" />
+          </button>
+        </div>
+        {selectedSkinBrightness && (
+          <ToggleChipGroup className="flex flex-wrap gap-2">
+            <ToggleChip
+              pressed={false}
+              disabled
+              className={[
+                'rounded-full px-4 py-2.5 h-auto',
+                'bg-alternative text-label-sub border-0',
+                'data-[state=off]:bg-alternative data-[state=off]:text-label-sub data-[state=off]:border-0',
+                'typo-body-2-regular',
+                'disabled:opacity-100',
+              ].join(' ')}
+            >
+              {selectedSkinBrightness}
+            </ToggleChip>
+          </ToggleChipGroup>
+        )}
+      </div>
 
-      <FormItem label="퍼스널 컬러" required>
-        <ConsultingFormOptionList
-          options={HAIR_CONSULTATION_PERSONAL_COLOR_OPTIONS}
-          name={HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR}
-        />
-      </FormItem>
+      <div className="border-t border-border-default" />
+
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <p className={`${AppTypography.body1SemiBold} text-label-default`}>퍼스널 컬러</p>
+          <button
+            type="button"
+            aria-label="퍼스널 컬러 수정"
+            className="flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 overflow-visible"
+            onClick={handlePersonalColorEdit}
+          >
+            <EditIcon className="block w-[22px] h-[22px] text-label-info" />
+          </button>
+        </div>
+        {selectedPersonalColor && (
+          <ToggleChipGroup className="flex flex-wrap gap-2">
+            <ToggleChip
+              pressed={false}
+              disabled
+              className={[
+                'rounded-full px-4 py-2.5 h-auto',
+                'bg-alternative text-label-sub border-0',
+                'data-[state=off]:bg-alternative data-[state=off]:text-label-sub data-[state=off]:border-0',
+                'typo-body-2-regular',
+                'disabled:opacity-100',
+              ].join(' ')}
+            >
+              {selectedPersonalColor}
+            </ToggleChip>
+          </ToggleChipGroup>
+        )}
+      </div>
     </div>
   );
 }
