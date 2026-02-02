@@ -6,6 +6,7 @@ export const USER_GUIDE_KEYS = {
 
 export const USER_WRITING_CONTENT_KEYS = {
   consultingPost: 'consultingPost',
+  hairConsultation: 'hairConsultation',
   consultingResponse: 'consultingResponse',
   experienceGroup: 'experienceGroup',
 } as const;

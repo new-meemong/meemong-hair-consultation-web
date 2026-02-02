@@ -1,5 +1,5 @@
-import { cn } from '../lib';
 import type { FormStep } from '../type/form-step';
+import { cn } from '../lib';
 
 const MULTI_STEP_FORM_PORTAL_ID = 'multi-step-form-portal';
 
@@ -12,27 +12,54 @@ export default function MultiStepFormItem<T extends Record<string, unknown>>({
   step,
   className,
 }: MultiStepFormItemProps<T>) {
-  const { question, required, description, children } = step;
+  const {
+    question,
+    required,
+    description,
+    children,
+    containerClassName,
+    questionClassName,
+    descriptionClassName,
+    hideRequired,
+  } = step;
 
   return (
     <>
-      <div className={cn('flex flex-col flex-1 min-h-0 px-5 pt-10 gap-7 relative', className)}>
+      <div
+        className={cn(
+          'flex flex-col flex-1 min-h-0 px-5 pt-10 gap-7 relative',
+          containerClassName,
+          className,
+        )}
+      >
         {(question || description) && (
-          <div className="flex flex-col gap-3 flex-shrink-0">
+          <div className="flex flex-col gap-1.5 flex-shrink-0">
             <div className="flex items-center justify-between">
               {question && (
                 <>
-                  <p className="typo-title-3-semibold text-label-default title">{question}</p>
-                  {
+                  <p
+                    className={cn(
+                      'typo-title-3-semibold text-label-default title',
+                      questionClassName,
+                    )}
+                  >
+                    {question}
+                  </p>
+                  {!hideRequired && (
                     <span className="typo-body-2-semibold text-cautionary">
                       {required ? '필수' : '선택'}
                     </span>
-                  }
+                  )}
                 </>
               )}
             </div>
             {description && (
-              <div className="typo-body-2-long-regular text-label-sub whitespace-pre-wrap">
+              <div
+                className={cn(
+                  'typo-body-2-long-regular text-label-sub whitespace-pre-wrap',
+                  descriptionClassName,
+                )}
+              >
                 {description}
               </div>
             )}

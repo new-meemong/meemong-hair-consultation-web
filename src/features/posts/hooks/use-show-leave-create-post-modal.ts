@@ -3,6 +3,7 @@ import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 const TEXT = {
   [USER_WRITING_CONTENT_KEYS.consultingPost]: '컨설팅 글 작성',
+  [USER_WRITING_CONTENT_KEYS.hairConsultation]: '신규 상담지 작성',
   [USER_WRITING_CONTENT_KEYS.experienceGroup]: '체험단 신청',
 };
 
@@ -11,6 +12,7 @@ export default function useShowLeaveCreatePostModal({
 }: {
   type:
     | typeof USER_WRITING_CONTENT_KEYS.consultingPost
+    | typeof USER_WRITING_CONTENT_KEYS.hairConsultation
     | typeof USER_WRITING_CONTENT_KEYS.experienceGroup;
 }) {
   const showModal = useShowModal();

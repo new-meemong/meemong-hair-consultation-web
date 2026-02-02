@@ -1,0 +1,13 @@
+export const HAIR_CONSULTATION_FORM_FIELD_NAME = {
+  HAIR_LENGTH: 'hairLength',
+  HAIR_CONCERNS: 'hairConcerns',
+  HAIR_TEXTURE: 'hairTexture',
+  SKIN_BRIGHTNESS: 'skinBrightness',
+  PERSONAL_COLOR: 'personalColor',
+  TREATMENTS: 'treatments',
+  ASPIRATION_IMAGES: 'aspirationImages',
+  PRICE: 'price',
+  MY_IMAGES: 'myImages',
+  TITLE: 'title',
+  CONTENT: 'content',
+} as const;

@@ -1,0 +1,23 @@
+import { HAIR_CONSULTATION_CONCERN_OPTIONS } from './hair-consultation-create-options';
+import { HAIR_CONSULTATION_FORM_FIELD_NAME } from './hair-consultation-form-field-name';
+import type { HairConsultationFormValues } from '../types/hair-consultation-form-values';
+
+export const DEFAULT_HAIR_CONSULTATION_FORM_VALUES: HairConsultationFormValues = {
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH]: '숏',
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS]: [HAIR_CONSULTATION_CONCERN_OPTIONS[0]],
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE]: '직모',
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS]: '보통 피부',
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR]: '잘모름',
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENTS]: [],
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES]: [],
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES]: {
+    images: [],
+    description: '',
+  },
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.CONTENT]: '',
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.TITLE]: '',
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.PRICE]: {
+    minPaymentPrice: null,
+    maxPaymentPrice: null,
+  },
+};

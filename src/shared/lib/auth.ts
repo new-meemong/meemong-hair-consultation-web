@@ -1,7 +1,8 @@
+import { USER_GUIDE_KEYS, USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
+
+import type { SelectedRegion } from '@/features/region/types/selected-region';
 import type { User } from '@/entities/user/model/user';
 import type { UserWritingContent } from '@/features/posts/types/user-writing-content';
-import type { SelectedRegion } from '@/features/region/types/selected-region';
-import { USER_WRITING_CONTENT_KEYS, USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 
 export interface JWTPayload {
   userId: number;
@@ -41,6 +42,7 @@ export const getDefaultUserData = (user: User): UserData => {
   return {
     ...user,
     [USER_WRITING_CONTENT_KEYS.consultingPost]: null,
+    [USER_WRITING_CONTENT_KEYS.hairConsultation]: null,
     [USER_WRITING_CONTENT_KEYS.consultingResponse]: [],
     [USER_WRITING_CONTENT_KEYS.experienceGroup]: null,
   };

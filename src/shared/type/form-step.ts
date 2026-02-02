@@ -6,4 +6,8 @@ export type FormStep<T extends Record<string, unknown>> = {
   description?: string | React.ReactNode;
   required: boolean;
   children: React.ReactNode;
+  containerClassName?: string;
+  questionClassName?: string;
+  descriptionClassName?: string;
+  hideRequired?: boolean;
 };
