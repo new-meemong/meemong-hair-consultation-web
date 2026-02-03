@@ -81,7 +81,7 @@ export type HairConsultationDesiredDateType =
 
 export type HairConsultationTreatmentType =
   | '일반펌'
-  | '셋팅펌'
+  | '열펌/셋팅펌'
   | '다운펌'
   | '매직'
   | '일반염색'
@@ -126,7 +126,7 @@ export type CreateHairConsultationRequest = {
   desiredDateType?: HairConsultationDesiredDateType;
   desiredDate?: string | null;
   desiredCostPrice: number;
-  treatment?: HairConsultationTreatmentRequest;
+  treatment?: HairConsultationTreatmentRequest[];
   aspirationImages?: HairConsultationAspirationImageRequest[];
   myImages?: HairConsultationMyImageRequest[];
 };

@@ -1,4 +1,8 @@
-import type { CreateHairConsultationRequest, HairConsultationMyImageRequest } from '@/entities/posts/api/create-hair-consultation-request';
+import type {
+  CreateHairConsultationRequest,
+  HairConsultationMyImageRequest,
+} from '@/entities/posts/api/create-hair-consultation-request';
+import { format, subMonths } from 'date-fns';
 
 import type { HairConsultationFormValues } from '../types/hair-consultation-form-values';
 import { MY_IMAGE_TYPE } from '../constants/my-image-type';
@@ -49,12 +53,22 @@ export function useCreateHairConsultation() {
     }));
 
     const treatmentSummary =
-      data.treatments && data.treatments.length > 0 ? data.treatments.join(', ') : undefined;
+      data.treatments && data.treatments.length > 0
+        ? data.treatments.map((item) => item.treatmentType).join(', ')
+        : undefined;
     const detailText = data.treatmentDetail?.trim();
     const treatmentDescription =
       treatmentSummary && detailText
         ? `${treatmentSummary} / ${detailText}`
         : treatmentSummary ?? detailText ?? undefined;
+
+    const treatment = data.treatments.map((item) => ({
+      treatmentType: item.treatmentType,
+      treatmentDate: format(subMonths(new Date(), item.monthsAgo), 'yyyy-MM'),
+      isSelf: item.isSelf,
+      treatmentArea: item.treatmentArea ?? null,
+      decolorizationCount: item.decolorizationCount ?? null,
+    }));
 
     const desiredCostPrice =
       data.price.maxPaymentPrice ?? data.price.minPaymentPrice ?? 0;
@@ -73,6 +87,7 @@ export function useCreateHairConsultation() {
       desiredCostPrice,
       aspirationImages,
       myImages: myImageList,
+      treatment,
     };
 
     createHairConsultation(request, { onSuccess });

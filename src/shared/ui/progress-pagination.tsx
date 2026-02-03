@@ -26,10 +26,10 @@ type PageButtonProps = {
 function PageButton({ direction, isActive, onClick, label }: PageButtonProps) {
   const renderIcon = () => {
     if (direction === 'left') {
-      return <ChevronLeftIcon className="fill-white size-5" />;
+      return <ChevronLeftIcon className="text-white size-5" />;
     }
 
-    return <ChevronRightIcon className="fill-white size-5" />;
+    return <ChevronRightIcon className="text-white size-5" />;
   };
 
   return label ? (

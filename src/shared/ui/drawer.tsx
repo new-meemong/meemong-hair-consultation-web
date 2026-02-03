@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { Drawer as DrawerPrimitive } from 'vaul';
 
 import CloseIcon from '@/assets/icons/close.svg';
+import { Drawer as DrawerPrimitive } from 'vaul';
 import { cn } from '@/shared/lib/utils';
 
 function Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
@@ -60,7 +60,7 @@ function DrawerContent({
         {...props}
       >
         {!hideHandle && (
-          <div className="mx-auto mt-5 hidden h-2 w-[100px] shrink-0 rounded-full bg-border-default group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
+          <div className="mx-auto mt-5 hidden h-[5px] w-[40px] shrink-0 rounded-full bg-border-default group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
         )}
         {children}
       </DrawerPrimitive.Content>

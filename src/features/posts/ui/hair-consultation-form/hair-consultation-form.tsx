@@ -1,3 +1,5 @@
+import { useFormContext, useWatch } from 'react-hook-form';
+
 import { AppTypography } from '@/shared/styles/typography';
 import type { FormStep } from '@/shared/type/form-step';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '../../constants/hair-consultation-form-field-name';
@@ -10,9 +12,9 @@ import HairConsultationFormStepTreatments from './hair-consultation-form-step-tr
 import type { HairConsultationFormValues } from '../../types/hair-consultation-form-values';
 import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';
-import { useFormContext } from 'react-hook-form';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 
-const HAIR_CONSULTATION_FORM_STEPS: FormStep<HairConsultationFormValues>[] = [
+const BASE_FORM_STEPS: FormStep<HairConsultationFormValues>[] = [
   {
     name: [
       HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH,
@@ -78,6 +80,63 @@ export default function HairConsultationForm({
   onSubmit,
 }: HairConsultationFormProps) {
   const method = useFormContext<HairConsultationFormValues>();
+  const { user } = useAuthContext();
+  const selectedHairLength = useWatch({
+    control: method.control,
+    name: HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH,
+  });
+
+  const getTreatmentMonthsLabel = () => {
+    const isMale = user.sex === '남자';
+    const hairLength = selectedHairLength;
+
+    if (!hairLength) return 'N개월';
+
+    if (isMale) {
+      switch (hairLength) {
+        case '크롭':
+        case '숏':
+          return '1개월';
+        case '미디엄':
+          return '3개월';
+        case '미디엄롱':
+          return '6개월';
+        case '롱':
+          return '1년';
+        case '장발':
+          return '2년';
+        default:
+          return 'N개월';
+      }
+    }
+
+    switch (hairLength) {
+      case '숏컷':
+        return '6개월';
+      case '단발':
+        return '1년';
+      case '중단발':
+        return '2년';
+      case '미디엄':
+      case '미디엄롱':
+      case '롱':
+        return '3년';
+      default:
+        return 'N개월';
+    }
+  };
+
+  const treatmentQuestion = `최근 ${getTreatmentMonthsLabel()} 내 받은 시술을 입력해주세요`;
+
+  const steps = BASE_FORM_STEPS.map((step) => {
+    if (step.name === HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENTS) {
+      return {
+        ...step,
+        question: treatmentQuestion,
+      };
+    }
+    return step;
+  });
 
   const canMoveNext = (name: KeyOf<HairConsultationFormValues>): boolean => {
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS) {
@@ -86,8 +145,34 @@ export default function HairConsultationForm({
     }
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENTS) {
-      const formValue = method.getValues(name) as string[];
-      return Array.isArray(formValue) && formValue.length > 0;
+      const formValue = method.getValues(name) as HairConsultationFormValues['treatments'];
+      if (!Array.isArray(formValue) || formValue.length === 0) return false;
+      const isMale = user.sex === '남자';
+      const specialTreatment = isMale ? '커트만 했어요' : '커트/드라이만 했어요';
+      const type1Treatments = ['일반염색', '블랙염색', '블랙빼기'] as const;
+      const type2Treatments = ['일반펌', '열펌/셋팅펌', '매직', '탈색'] as const;
+      const type3FemaleTreatments = ['클리닉', '특수클리닉(신데렐라 등)'] as const;
+
+      return formValue.every((item) => {
+        if (item.treatmentType === specialTreatment) return true;
+        if (type1Treatments.includes(item.treatmentType as (typeof type1Treatments)[number])) {
+          return !!item.treatmentArea;
+        }
+        if (!isMale) {
+          if (type2Treatments.includes(item.treatmentType as (typeof type2Treatments)[number])) {
+            return !!item.treatmentArea;
+          }
+          if (
+            type3FemaleTreatments.includes(
+              item.treatmentType as (typeof type3FemaleTreatments)[number],
+            )
+          ) {
+            return true;
+          }
+          return true;
+        }
+        return true;
+      });
     }
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES) {
@@ -127,7 +212,7 @@ export default function HairConsultationForm({
     <MultiStepForm
       currentStep={currentStep}
       setCurrentStep={setCurrentStep}
-      steps={HAIR_CONSULTATION_FORM_STEPS}
+      steps={steps}
       canMoveNext={canMoveNextStep}
       onSubmit={onSubmit}
       lastStepButtonLabel="완료"

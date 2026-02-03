@@ -17,6 +17,23 @@ const MY_IMAGE_TYPES = [
   MY_IMAGE_TYPE.WHOLE_BODY,
 ] as const;
 
+const HAIR_TREATMENT_TYPES = [
+  '일반펌',
+  '열펌/셋팅펌',
+  '다운펌',
+  '매직',
+  '일반염색',
+  '블랙염색',
+  '탈색',
+  '커트만 했어요',
+  '커트/드라이만 했어요',
+  '블랙빼기',
+  '클리닉',
+  '특수클리닉(신데렐라 등)',
+] as const;
+
+const HAIR_TREATMENT_AREAS = ['전체', '뿌리', '투톤', '앞머리', '기타'] as const;
+
 export const hairConsultationFormSchema = z.object({
   [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH]: z.enum(
     HAIR_CONSULTATION_HAIR_LENGTH_VALUES,
@@ -33,7 +50,17 @@ export const hairConsultationFormSchema = z.object({
   [HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR]: z.enum(
     HAIR_CONSULTATION_PERSONAL_COLOR_VALUES,
   ),
-  [HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENTS]: z.array(z.string()).min(1),
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENTS]: z
+    .array(
+      z.object({
+        treatmentType: z.enum(HAIR_TREATMENT_TYPES),
+        monthsAgo: z.number().min(0),
+        isSelf: z.boolean(),
+        treatmentArea: z.enum(HAIR_TREATMENT_AREAS).optional().nullable(),
+        decolorizationCount: z.number().min(0).optional().nullable(),
+      }),
+    )
+    .min(1),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENT_DETAIL]: z.string().optional(),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES]: z.array(
     z.object({
