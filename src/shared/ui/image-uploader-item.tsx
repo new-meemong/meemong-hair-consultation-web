@@ -44,7 +44,7 @@ export default function ImageUploaderItem({
         <ImageFormItem image={currentImage} handleImageDelete={onDelete} />
       ) : (
         <button
-          className="w-25 h-25 rounded-6 bg-alternative flex items-center justify-center overflow-hidden"
+          className="w-[120px] h-[120px] rounded-6 bg-alternative flex items-center justify-center overflow-hidden"
           onClick={handleClick}
           type="button"
         >

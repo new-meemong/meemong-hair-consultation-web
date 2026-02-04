@@ -20,7 +20,7 @@ type ImageFormItemProps = {
 
 export default function ImageFormItem({ image, handleImageDelete }: ImageFormItemProps) {
   return (
-    <div className="relative w-25 h-25 flex-shrink-0">
+    <div className="relative w-[120px] h-[120px] flex-shrink-0">
       <Image
         src={image.src}
         alt={`업로드 이미지 ${image.name}`}

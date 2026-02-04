@@ -55,15 +55,13 @@ const BASE_FORM_STEPS: FormStep<HairConsultationFormValues>[] = [
   },
   {
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES,
-    question: '내 사진 업로드',
+    question: '사진을 업로드해주세요',
+    description: '내 머리와 이미지가 잘 드러나는 사진을 업로드해주세요',
     required: true,
     children: <HairConsultationFormStepMyImages />,
   },
   {
-    name: [
-      HAIR_CONSULTATION_FORM_FIELD_NAME.TITLE,
-      HAIR_CONSULTATION_FORM_FIELD_NAME.CONTENT,
-    ],
+    name: [HAIR_CONSULTATION_FORM_FIELD_NAME.TITLE, HAIR_CONSULTATION_FORM_FIELD_NAME.CONTENT],
     question: '제목 및 내용 작성',
     required: true,
     children: <HairConsultationFormStepTitleContent />,
@@ -186,7 +184,11 @@ export default function HairConsultationForm({
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES) {
       const formValue = method.getValues(name);
-      return formValue && formValue.length === 4;
+      if (!Array.isArray(formValue)) return false;
+      const hasFront = formValue.some((item) => item.type === 'FRONT');
+      const hasSide = formValue.some((item) => item.type === 'SIDE');
+      const hasRecent = formValue.some((item) => item.type === 'RECENT');
+      return hasFront && hasSide && hasRecent;
     }
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.PRICE) {

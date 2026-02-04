@@ -66,12 +66,6 @@ export default function HairConsultationFormStepMyImages() {
       <div className="flex flex-col gap-5 items-center justify-center">
         <div className="grid grid-cols-2 gap-6">
           <ImageUploaderItem
-            currentImage={getCurrentImage(MY_IMAGE_TYPE.RECENT)}
-            onUpload={(file: File) => handleImageUpload({ file, type: MY_IMAGE_TYPE.RECENT })}
-            onDelete={() => handleImageDelete({ type: MY_IMAGE_TYPE.RECENT })}
-            label="최근"
-          />
-          <ImageUploaderItem
             currentImage={getCurrentImage(MY_IMAGE_TYPE.FRONT)}
             onUpload={(file: File) =>
               handleImageUpload({
@@ -80,10 +74,8 @@ export default function HairConsultationFormStepMyImages() {
               })
             }
             onDelete={() => handleImageDelete({ type: MY_IMAGE_TYPE.FRONT })}
-            label="정면"
+            label="정면 (필수)"
           />
-        </div>
-        <div className="grid grid-cols-2 gap-6">
           <ImageUploaderItem
             currentImage={getCurrentImage(MY_IMAGE_TYPE.SIDE)}
             onUpload={(file: File) =>
@@ -92,14 +84,22 @@ export default function HairConsultationFormStepMyImages() {
                 type: MY_IMAGE_TYPE.SIDE,
               })
             }
-            label="측면"
+            label="측면 (필수)"
             onDelete={() => handleImageDelete({ type: MY_IMAGE_TYPE.SIDE })}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-6">
+          <ImageUploaderItem
+            currentImage={getCurrentImage(MY_IMAGE_TYPE.RECENT)}
+            onUpload={(file: File) => handleImageUpload({ file, type: MY_IMAGE_TYPE.RECENT })}
+            onDelete={() => handleImageDelete({ type: MY_IMAGE_TYPE.RECENT })}
+            label="현재 내 머리 (필수)"
           />
           <ImageUploaderItem
             currentImage={getCurrentImage(MY_IMAGE_TYPE.WHOLE_BODY) || null}
             onUpload={(file: File) => handleImageUpload({ file, type: MY_IMAGE_TYPE.WHOLE_BODY })}
             onDelete={() => handleImageDelete({ type: MY_IMAGE_TYPE.WHOLE_BODY })}
-            label="상반신"
+            label="전신 (선택)"
           />
         </div>
       </div>
