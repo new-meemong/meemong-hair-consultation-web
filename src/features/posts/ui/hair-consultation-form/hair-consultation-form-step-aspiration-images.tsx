@@ -7,7 +7,7 @@ import type { HairConsultationFormValues } from '../../types/hair-consultation-f
 import ImageUploaderList from '@/shared/ui/image-uploader-list';
 import { Textarea } from '@/shared';
 
-const MAX_IMAGE_COUNT = 6;
+const MAX_IMAGE_COUNT = 3;
 
 export default function HairConsultationFormStepAspirationImages() {
   const { setValue, control, register, getValues } = useFormContext<HairConsultationFormValues>();
@@ -50,7 +50,7 @@ export default function HairConsultationFormStepAspirationImages() {
 
   return (
     <div className="flex flex-col gap-7">
-      <FormItem label="이미지 첨부" description={`${MAX_IMAGE_COUNT}개까지 업로드 할 수 있어요`}>
+      <FormItem label="이미지" description="원하는 머리 사진을 업로드해주세요 (최대 3개)">
         <ImageUploaderList
           imageFiles={currentImages}
           onUpload={handleImageUpload}
@@ -58,11 +58,11 @@ export default function HairConsultationFormStepAspirationImages() {
           maxImageCount={MAX_IMAGE_COUNT}
         />
       </FormItem>
-      <FormItem label="추구미 설명">
+      <FormItem label="상세 설명">
         <Textarea
           {...register(`${HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`)}
-          placeholder="원하는 느낌, 추구미 등 디자이너가 추천에 참고할 내용을 입력해주세요."
-          className="min-h-38"
+          placeholder="추구하는 스타일에 대해 구체적으로 설명해주세요"
+          className="min-h-38 typo-body-2-long-regular"
           hasBorder
         />
       </FormItem>

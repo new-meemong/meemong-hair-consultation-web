@@ -1,5 +1,6 @@
 import {
   HAIR_CONSULTATION_CONCERN_OPTIONS,
+  HAIR_CONSULTATION_DESIRED_DATE_TYPE_VALUES,
   HAIR_CONSULTATION_HAIR_LENGTH_VALUES,
   HAIR_CONSULTATION_HAIR_TEXTURE_VALUES,
   HAIR_CONSULTATION_PERSONAL_COLOR_VALUES,
@@ -76,6 +77,11 @@ export const hairConsultationFormSchema = z.object({
     minPaymentPrice: z.number().nullable(),
     maxPaymentPrice: z.number().nullable(),
   }),
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE_TYPE]: z
+    .enum(HAIR_CONSULTATION_DESIRED_DATE_TYPE_VALUES)
+    .optional()
+    .nullable(),
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE]: z.string().optional().nullable(),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.CONTENT]: z.string(),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.TITLE]: z.string(),
 });

@@ -70,8 +70,13 @@ export function useCreateHairConsultation() {
       decolorizationCount: item.decolorizationCount ?? null,
     }));
 
-    const desiredCostPrice =
-      data.price.maxPaymentPrice ?? data.price.minPaymentPrice ?? 0;
+    const desiredCostPrice = data.price.maxPaymentPrice ?? 0;
+
+    const desiredDateType = data.desiredDateType ?? undefined;
+    const desiredDate =
+      data.desiredDateType === '원하는 날짜 있음'
+        ? data.desiredDate?.trim() || null
+        : null;
 
     const request: CreateHairConsultationRequest = {
       title: data.title,
@@ -84,6 +89,8 @@ export function useCreateHairConsultation() {
       personalColor: data.personalColor,
       aspirationImageTypes: [],
       aspirationImageDescription: data.aspirationImages.description,
+      desiredDateType,
+      desiredDate,
       desiredCostPrice,
       aspirationImages,
       myImages: myImageList,

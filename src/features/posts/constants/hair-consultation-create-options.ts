@@ -4,6 +4,7 @@ import type {
   HairConsultationHairTexture,
   HairConsultationPersonalColor,
   HairConsultationSkinBrightness,
+  HairConsultationDesiredDateType,
 } from '@/entities/posts/api/create-hair-consultation-request';
 
 import type { ConsultingFormOption } from '../types/consulting-form-option';
@@ -93,6 +94,13 @@ export const HAIR_CONSULTATION_CONCERN_OPTIONS = [
   '건조한 두피',
   '특별한 문제는 없어요',
 ] as const satisfies readonly HairConsultationConcern[];
+
+export const HAIR_CONSULTATION_DESIRED_DATE_TYPE_VALUES = [
+  '협의 가능',
+  '가능한 빨리',
+  '일주일 이내',
+  '원하는 날짜 있음',
+] as const satisfies readonly HairConsultationDesiredDateType[];
 
 export type HairConsultationHairLengthOption = HairConsultationHairLength;
 export type HairConsultationHairTextureOption = HairConsultationHairTexture;

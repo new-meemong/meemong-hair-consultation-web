@@ -8,6 +8,8 @@ export const HAIR_CONSULTATION_FORM_FIELD_NAME = {
   TREATMENT_DETAIL: 'treatmentDetail',
   ASPIRATION_IMAGES: 'aspirationImages',
   PRICE: 'price',
+  DESIRED_DATE_TYPE: 'desiredDateType',
+  DESIRED_DATE: 'desiredDate',
   MY_IMAGES: 'myImages',
   TITLE: 'title',
   CONTENT: 'content',

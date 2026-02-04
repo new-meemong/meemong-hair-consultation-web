@@ -41,14 +41,16 @@ const BASE_FORM_STEPS: FormStep<HairConsultationFormValues>[] = [
   },
   {
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES,
-    question: '원하는 스타일 / 추구미',
-    required: false,
+    question: '원하는 스타일이나 추구미를 알려주세요',
+    description: '자세히 적을수록 답변받을 확률이 높아요',
+    required: true,
     children: <HairConsultationFormStepAspirationImages />,
   },
   {
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.PRICE,
-    question: '희망 시술금액',
+    question: '희망하는 최대 시술 금액을 알려주세요',
     required: true,
+    containerClassName: 'gap-6',
     children: <HairConsultationFormStepPrice />,
   },
   {
@@ -175,6 +177,13 @@ export default function HairConsultationForm({
       });
     }
 
+    if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES) {
+      const formValue = method.getValues(name) as HairConsultationFormValues['aspirationImages'];
+      const hasImages = Array.isArray(formValue?.images) && formValue.images.length > 0;
+      const hasDescription = !!formValue?.description?.trim();
+      return hasImages || hasDescription;
+    }
+
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES) {
       const formValue = method.getValues(name);
       return formValue && formValue.length === 4;
@@ -182,7 +191,7 @@ export default function HairConsultationForm({
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.PRICE) {
       const formValue = method.getValues(name);
-      return formValue.minPaymentPrice !== null && formValue.maxPaymentPrice !== null;
+      return formValue.maxPaymentPrice !== null && formValue.maxPaymentPrice >= 10000;
     }
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.TITLE) {

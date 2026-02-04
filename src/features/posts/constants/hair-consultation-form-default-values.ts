@@ -19,6 +19,8 @@ export const DEFAULT_HAIR_CONSULTATION_FORM_VALUES: HairConsultationFormValues =
   [HAIR_CONSULTATION_FORM_FIELD_NAME.TITLE]: '',
   [HAIR_CONSULTATION_FORM_FIELD_NAME.PRICE]: {
     minPaymentPrice: null,
-    maxPaymentPrice: null,
+    maxPaymentPrice: 10000,
   },
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE_TYPE]: null,
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE]: null,
 };
