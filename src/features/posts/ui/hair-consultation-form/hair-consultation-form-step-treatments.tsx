@@ -382,7 +382,10 @@ export default function HairConsultationFormStepTreatments() {
 
   const formatMonthLabel = (monthsAgo: number) => {
     const targetDate = subMonths(new Date(), monthsAgo);
-    return `${monthsAgo}개월전 (약 ${format(targetDate, 'yyyy년 MM월')})`;
+    if (monthsAgo === 0) {
+      return '이번달';
+    }
+    return `약 ${format(targetDate, 'yyyy년 MM월')}`;
   };
 
   return (
@@ -476,15 +479,22 @@ export default function HairConsultationFormStepTreatments() {
                       <div className="flex items-center w-full bg-white px-2 py-2 rounded-6">
                         <button
                           type="button"
-                          className="w-8 h-8 rounded-4 bg-label-disable text-white flex items-center justify-center"
+                          disabled={item.monthsAgo <= 0}
+                          className={[
+                            'w-8 h-8 rounded-4 text-white flex items-center justify-center',
+                            item.monthsAgo > 0 ? 'bg-label-default' : 'bg-label-disable',
+                          ].join(' ')}
                           onClick={() => handleMonthAdjust(item.treatmentType, -1)}
                         >
                           -
                         </button>
-                        <span
-                          className={`${AppTypography.body2Medium} text-label-sub flex-1 text-center`}
-                        >
-                          {formatMonthLabel(item.monthsAgo)}
+                        <span className="flex-1 text-center">
+                          <span className={`${AppTypography.body2Regular} text-label-default`}>
+                            {item.monthsAgo}
+                          </span>
+                          <span className={`${AppTypography.body2Medium} text-label-sub`}>
+                            개월 전 ({formatMonthLabel(item.monthsAgo)})
+                          </span>
                         </span>
                         <button
                           type="button"
