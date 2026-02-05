@@ -71,6 +71,7 @@ export const hairConsultationFormSchema = z.object({
   ),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES]: z.object({
     images: z.array(z.instanceof(File)).optional(),
+    resizedImages: z.array(z.instanceof(File)).optional(),
     description: z.string(),
   }),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.PRICE]: z.object({

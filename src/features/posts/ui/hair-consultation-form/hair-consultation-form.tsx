@@ -62,7 +62,6 @@ const BASE_FORM_STEPS: FormStep<HairConsultationFormValues>[] = [
   },
   {
     name: [HAIR_CONSULTATION_FORM_FIELD_NAME.TITLE, HAIR_CONSULTATION_FORM_FIELD_NAME.CONTENT],
-    question: '제목 및 내용 작성',
     required: true,
     children: <HairConsultationFormStepTitleContent />,
   },

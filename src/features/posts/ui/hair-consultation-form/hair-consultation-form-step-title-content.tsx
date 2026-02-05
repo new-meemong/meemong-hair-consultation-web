@@ -14,7 +14,7 @@ export default function HairConsultationFormStepTitleContent() {
 
   return (
     <div className="flex flex-col h-full gap-4">
-      <div className="flex items-center justify-end border-b-1 border-border-strong flex-shrink-0">
+      <div className="flex items-center border-b-1 border-border-strong flex-shrink-0">
         <Input
           {...register(HAIR_CONSULTATION_FORM_FIELD_NAME.TITLE)}
           placeholder="제목을 입력하세요"
@@ -24,12 +24,11 @@ export default function HairConsultationFormStepTitleContent() {
             contentRef.current?.focus();
           }}
         />
-        <span className="typo-body-2-semibold text-cautionary">필수</span>
       </div>
       <div className="flex-1 min-h-0 flex">
         <Textarea
           {...contentRegister}
-          placeholder="상담 내용을 자세히 입력해주세요"
+          placeholder="컨설팅받고 싶은 내용을 자유롭게 작성해주세요."
           className="flex-1 w-full"
           hasBorder
           fullHeight

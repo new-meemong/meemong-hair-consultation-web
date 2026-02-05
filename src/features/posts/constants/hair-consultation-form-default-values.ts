@@ -13,6 +13,7 @@ export const DEFAULT_HAIR_CONSULTATION_FORM_VALUES: HairConsultationFormValues =
   [HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES]: [],
   [HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES]: {
     images: [],
+    resizedImages: [],
     description: '',
   },
   [HAIR_CONSULTATION_FORM_FIELD_NAME.CONTENT]: '',
