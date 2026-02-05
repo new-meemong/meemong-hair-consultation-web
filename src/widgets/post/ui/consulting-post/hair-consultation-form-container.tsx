@@ -18,7 +18,7 @@ export default function HairConsultationFormContainer() {
   const { replace } = useRouterWithUser();
   const skipReload = searchParams.get('skipReload') === '1';
 
-  const { method, submit } = useHairConsultationForm();
+  const { method, submit, isPending } = useHairConsultationForm();
 
   const { isDirty } = method.formState;
 
@@ -56,6 +56,7 @@ export default function HairConsultationFormContainer() {
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
         onSubmit={submit}
+        isSubmitting={isPending}
       />
     </FormProvider>
   );

@@ -71,12 +71,14 @@ type HairConsultationFormProps = {
   currentStep: number;
   setCurrentStep: (step: number) => void;
   onSubmit: (values: HairConsultationFormValues) => void;
+  isSubmitting?: boolean;
 };
 
 export default function HairConsultationForm({
   currentStep,
   setCurrentStep,
   onSubmit,
+  isSubmitting = false,
 }: HairConsultationFormProps) {
   const method = useFormContext<HairConsultationFormValues>();
   const { user } = useAuthContext();
@@ -225,6 +227,7 @@ export default function HairConsultationForm({
       steps={steps}
       canMoveNext={canMoveNextStep}
       onSubmit={onSubmit}
+      isSubmitting={isSubmitting}
       lastStepButtonLabel="완료"
     />
   );

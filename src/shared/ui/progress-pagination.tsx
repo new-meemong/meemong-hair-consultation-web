@@ -1,8 +1,8 @@
+import { Button } from './button';
 import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
-
+import { Loader } from './loader';
 import { cn } from '../lib';
-import { Button } from './button';
 
 type ProgressPaginationProps = {
   total: number;
@@ -14,6 +14,7 @@ type ProgressPaginationProps = {
   previousButtonLabel?: string;
   onNextButtonClick?: () => void;
   onPreviousButtonClick?: () => void;
+  isSubmitting?: boolean;
 };
 
 type PageButtonProps = {
@@ -21,9 +22,10 @@ type PageButtonProps = {
   direction: 'left' | 'right';
   isActive: boolean;
   onClick: () => void;
+  isLoading?: boolean;
 };
 
-function PageButton({ direction, isActive, onClick, label }: PageButtonProps) {
+function PageButton({ direction, isActive, onClick, label, isLoading }: PageButtonProps) {
   const renderIcon = () => {
     if (direction === 'left') {
       return <ChevronLeftIcon className="text-white size-5" />;
@@ -33,9 +35,14 @@ function PageButton({ direction, isActive, onClick, label }: PageButtonProps) {
   };
 
   return label ? (
-    <Button variant="textWithIcon" size="textWithIcon" disabled={!isActive} onClick={onClick}>
+    <Button
+      variant="textWithIcon"
+      size="textWithIcon"
+      disabled={!isActive || isLoading}
+      onClick={onClick}
+    >
       {label}
-      {renderIcon()}
+      {isLoading ? <Loader size="sm" theme="light" className="!w-5 !h-5" /> : renderIcon()}
     </Button>
   ) : (
     <button
@@ -57,6 +64,7 @@ export default function ProgressPagination({
   previousButtonLabel,
   onNextButtonClick,
   onPreviousButtonClick,
+  isSubmitting = false,
 }: ProgressPaginationProps) {
   const progressPercentage = (current / total) * 100;
 
@@ -104,6 +112,7 @@ export default function ProgressPagination({
             isActive={current <= total && !disabledToNext}
             onClick={handleNextButtonClick}
             label={nextButtonLabel}
+            isLoading={isSubmitting}
           />
         </div>
       </div>

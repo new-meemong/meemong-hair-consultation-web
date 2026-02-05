@@ -232,27 +232,27 @@ export default function HairConsultationFormStepMyImages() {
     return (
       <div className="flex flex-col gap-2 items-center">
         {currentImage ? (
-          <div className="relative w-25 h-25 flex-shrink-0">
+          <div className="relative w-[120px] h-[120px] flex-shrink-0">
             <Image
               src={currentImage.src}
               alt={currentImage.name}
               fill
               className="object-cover rounded-6"
-              sizes="100px"
+              sizes="120px"
             />
             <Button
               type="button"
               variant="icon"
               size="icon"
-              className="absolute top-1 right-1 bg-white"
+              className="absolute top-1 right-1 bg-label-default text-white"
               onClick={() => handleImageDelete({ type })}
             >
-              <XIcon className="w-4 h-4" />
+              <XIcon className="w-4 h-4 text-white" />
             </Button>
           </div>
         ) : (
           <button
-            className="w-25 h-25 rounded-6 bg-alternative flex items-center justify-center overflow-hidden"
+            className="w-[120px] h-[120px] rounded-6 bg-alternative flex items-center justify-center overflow-hidden"
             onClick={() => setActiveGuideType(type)}
             type="button"
           >

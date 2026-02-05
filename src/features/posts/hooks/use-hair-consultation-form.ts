@@ -104,7 +104,7 @@ export default function useHairConsultationForm() {
     method.reset(defaultValues);
   }, [defaultValues, method, savedContent, userDetail]);
 
-  const { handleCreateHairConsultation } = useCreateHairConsultation();
+  const { handleCreateHairConsultation, isPending } = useCreateHairConsultation();
 
   const submit = (values: HairConsultationFormValues) => {
     handleCreateHairConsultation(values, {
@@ -120,5 +120,5 @@ export default function useHairConsultationForm() {
     });
   };
 
-  return { method, submit };
+  return { method, submit, isPending };
 }

@@ -1,11 +1,10 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 
-
+import type { FormStep } from '../type/form-step';
+import type { KeyOf } from '../type/types';
 import MultiStepFormItem from './multi-step-form-item';
 import ProgressPagination from './progress-pagination';
 import { Separator } from './separator';
-import type { FormStep } from '../type/form-step';
-import type { KeyOf } from '../type/types';
 
 type MultiStepFormProps<T extends Record<string, unknown>> = {
   currentStep: number;
@@ -14,6 +13,7 @@ type MultiStepFormProps<T extends Record<string, unknown>> = {
   canMoveNext: (name: KeyOf<T> | Array<KeyOf<T>>) => boolean;
   onSubmit: (values: T) => void;
   lastStepButtonLabel: string;
+  isSubmitting?: boolean;
 };
 
 export default function MultiStepForm<T extends Record<string, unknown>>({
@@ -23,6 +23,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
   canMoveNext,
   onSubmit,
   lastStepButtonLabel,
+  isSubmitting = false,
 }: MultiStepFormProps<T>) {
   const step = steps[currentStep - 1];
 
@@ -33,7 +34,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
   useWatch({ control: method.control });
 
   const handleNextButtonClick = () => {
-    if (!isLastStep) return;
+    if (!isLastStep || isSubmitting) return;
 
     onSubmit(method.getValues());
   };
@@ -41,9 +42,12 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
   const disabledToNext = () => {
     if (Array.isArray(step)) {
       const requiredSteps = step.filter((step) => step.required);
-      return requiredSteps.length > 0 && !requiredSteps.every((step) => canMoveNext(step.name));
+      return (
+        isSubmitting ||
+        (requiredSteps.length > 0 && !requiredSteps.every((step) => canMoveNext(step.name)))
+      );
     }
-    return step.required && !canMoveNext(step.name);
+    return isSubmitting || (step.required && !canMoveNext(step.name));
   };
 
   return (
@@ -72,6 +76,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
           disabledToNext={disabledToNext()}
           nextButtonLabel={isLastStep ? lastStepButtonLabel : undefined}
           onNextButtonClick={handleNextButtonClick}
+          isSubmitting={isSubmitting && isLastStep}
         />
       </div>
     </>

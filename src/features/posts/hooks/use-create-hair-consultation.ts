@@ -120,13 +120,21 @@ export function useCreateHairConsultation() {
           ? `${treatmentSummary} / ${detailText}`
           : treatmentSummary ?? detailText ?? undefined;
 
-      const treatment = data.treatments.map((item) => ({
-        treatmentType: item.treatmentType,
-        treatmentDate: format(subMonths(new Date(), item.monthsAgo), 'yyyy-MM'),
-        isSelf: item.isSelf,
-        treatmentArea: item.treatmentArea ?? null,
-        decolorizationCount: item.decolorizationCount ?? null,
-      }));
+      const treatment = data.treatments.map((item) => {
+        const request = {
+          treatmentType: item.treatmentType,
+          treatmentDate: format(subMonths(new Date(), item.monthsAgo), 'yyyy-MM'),
+          isSelf: item.isSelf,
+        } as const;
+
+        return {
+          ...request,
+          ...(item.treatmentArea ? { treatmentArea: item.treatmentArea } : {}),
+          ...(item.decolorizationCount !== null && item.decolorizationCount !== undefined
+            ? { decolorizationCount: item.decolorizationCount }
+            : {}),
+        };
+      });
 
       const desiredCostPrice = data.price.maxPaymentPrice ?? 0;
 
