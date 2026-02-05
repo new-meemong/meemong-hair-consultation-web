@@ -3,6 +3,7 @@ import CommentIcon from '@/assets/icons/comment.svg';
 import EyeIcon from '@/assets/icons/eye.svg';
 import { LikeButton } from '@/features/likes/ui/like-button';
 import PostDetailConsultingContent from './post-detail-consulting-content';
+import PostDetailConsultingContentNew from './post-detail-consulting-content-new';
 import PostDetailContent from './post-detail-content';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { usePostDetail } from '../../context/post-detail-context';
@@ -14,7 +15,11 @@ function PostDetailItem() {
   return (
     <>
       {isConsultingPost ? (
-        <PostDetailConsultingContent postDetail={postDetail} />
+        postSource === 'new' ? (
+          <PostDetailConsultingContentNew postDetail={postDetail} />
+        ) : (
+          <PostDetailConsultingContent postDetail={postDetail} />
+        )
       ) : (
         <PostDetailContent postDetail={postDetail} />
       )}
