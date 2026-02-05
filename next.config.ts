@@ -5,12 +5,13 @@ const nextConfig: NextConfig = {
   images: {
     domains: [
       'picsum.photos',
+      's3.ap-northeast-2.amazonaws.com',
       'meemong-job-storage.s3.ap-northeast-2.amazonaws.com',
       'meemong-uploads.s3.ap-northeast-2.amazonaws.com',
       'k.kakaocdn.net',
       'lh3.googleusercontent.com',
       'example.com',
-      'https://storage.meemong.com',
+      'storage.meemong.com',
       'img1.kakaocdn.net',
       'job-storage.meemong.com',
     ],
