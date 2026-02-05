@@ -27,7 +27,7 @@ export default function MultiStepFormItem<T extends Record<string, unknown>>({
     <>
       <div
         className={cn(
-          'flex flex-col flex-1 min-h-0 px-5 pt-10 gap-7 relative',
+          'flex flex-col flex-1 min-h-0 px-5 pt-7 gap-7 relative',
           containerClassName,
           className,
         )}
@@ -39,8 +39,8 @@ export default function MultiStepFormItem<T extends Record<string, unknown>>({
                 <>
                   <p
                     className={cn(
-                      'typo-title-3-semibold text-label-default title',
-                      questionClassName,
+                      'title',
+                      questionClassName ?? 'typo-title-3-semibold text-label-default',
                     )}
                   >
                     {question}

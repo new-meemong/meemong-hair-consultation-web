@@ -120,7 +120,7 @@ export function useCreateHairConsultation() {
           ? `${treatmentSummary} / ${detailText}`
           : treatmentSummary ?? detailText ?? undefined;
 
-      const treatment = data.treatments.map((item) => {
+      const treatments = data.treatments.map((item) => {
         const request = {
           treatmentType: item.treatmentType,
           treatmentDate: format(subMonths(new Date(), item.monthsAgo), 'yyyy-MM'),
@@ -160,7 +160,7 @@ export function useCreateHairConsultation() {
         desiredCostPrice,
         aspirationImages,
         myImages: myImageList,
-        treatment,
+        treatments,
       };
 
       createHairConsultation(request, { onSuccess });

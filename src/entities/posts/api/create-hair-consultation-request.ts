@@ -126,7 +126,7 @@ export type CreateHairConsultationRequest = {
   desiredDateType?: HairConsultationDesiredDateType;
   desiredDate?: string | null;
   desiredCostPrice: number;
-  treatment?: HairConsultationTreatmentRequest[];
+  treatments?: HairConsultationTreatmentRequest[];
   aspirationImages?: HairConsultationAspirationImageRequest[];
   myImages?: HairConsultationMyImageRequest[];
 };

@@ -4,7 +4,9 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import Image, { type StaticImageData } from 'next/image';
 import { XIcon } from 'lucide-react';
 
+import CameraIcon from '@/assets/icons/camera.svg';
 import PlusIcon from '@/assets/icons/plus.svg';
+import PictureIcon from '@/assets/icons/picture.svg';
 import guideBodyO from '@/assets/hair-photo-guide/guide_body_o.png';
 import guideBodyX from '@/assets/hair-photo-guide/guide_body_x.png';
 import guideCurrentO from '@/assets/hair-photo-guide/guide_current_o.png';
@@ -166,7 +168,7 @@ export default function HairConsultationFormStepMyImages() {
     return (
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
-          <span className={`${AppTypography.body2Medium} text-label-default`}>
+          <span className={`${AppTypography.headlineSemiBold} text-label-default`}>
             {guide.title}
           </span>
           <span className="typo-body-2-semibold text-cautionary">
@@ -191,7 +193,7 @@ export default function HairConsultationFormStepMyImages() {
           />
         </div>
 
-        <div className="mt-3 flex flex-col gap-1 text-label-sub">
+        <div className="mt-3 flex flex-col text-label-sub text-center">
           {guide.descriptions.map((description, index) => (
             <p key={index} className="typo-body-2-long-regular">
               {description}
@@ -200,12 +202,22 @@ export default function HairConsultationFormStepMyImages() {
         </div>
 
         <div className="mt-7 flex flex-col gap-3">
-          <Button size="lg" onClick={handleUploadClick}>
+          <button
+            type="button"
+            className="flex items-center justify-center gap-2 w-full px-3 py-3 rounded-4 border border-border-default bg-white typo-body-2-medium text-label-sub"
+            onClick={handleUploadClick}
+          >
+            <PictureIcon className="w-5 h-5" />
             사진 업로드
-          </Button>
-          <Button size="lg" theme="white" onClick={handleCaptureClick}>
+          </button>
+          <button
+            type="button"
+            className="flex items-center justify-center gap-2 w-full px-3 py-3 rounded-4 border border-border-default bg-white typo-body-2-medium text-label-sub"
+            onClick={handleCaptureClick}
+          >
+            <CameraIcon className="w-5 h-5" />
             사진 촬영
-          </Button>
+          </button>
         </div>
 
         <input
@@ -266,6 +278,17 @@ export default function HairConsultationFormStepMyImages() {
 
   return (
     <div className="flex flex-col gap-7">
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center justify-between">
+          <p className={`${AppTypography.headlineSemiBold} text-label-default`}>
+            사진을 업로드해주세요
+          </p>
+          <span className="typo-body-2-semibold text-cautionary">필수</span>
+        </div>
+        <p className={`${AppTypography.body2LongRegular} text-label-info`}>
+          내 머리와 이미지가 잘 드러나는 사진을 업로드해주세요
+        </p>
+      </div>
       <div className="flex flex-col gap-5 items-center justify-center">
         <div className="grid grid-cols-2 gap-6">
           {renderUploadSlot(MY_IMAGE_TYPE.FRONT, '정면 (필수)')}
