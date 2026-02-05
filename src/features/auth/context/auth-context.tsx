@@ -1,13 +1,23 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 
 import { isDesigner, isModel } from '@/entities/user/lib/user-role';
 import { useWebviewLogin } from '@/features/auth/api/use-webview-login';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import {
+  decodeJWTPayload,
   getCurrentUser,
   getDefaultUserData,
   setUserData,
@@ -32,7 +42,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [user, setUser] = useState<UserData | null>(() => getCurrentUser());
 
-  const { mutate: login, isError } = useWebviewLogin({
+  const loginInFlightRef = useRef<Promise<unknown> | null>(null);
+  const lastRefreshAtRef = useRef(0);
+  const lastUserIdRef = useRef<string | null>(null);
+
+  const { mutateAsync: loginAsync, isError } = useWebviewLogin({
     onSuccess: (response) => {
       const userResponseData = response.data;
       if (userResponseData.token) {
@@ -45,6 +59,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
   });
 
+  const tokenExpiryMs = useMemo(() => {
+    if (!user?.token) return null;
+    const payload = decodeJWTPayload(user.token);
+    return payload?.exp ? payload.exp * 1000 : null;
+  }, [user?.token]);
+
+  const shouldRefreshToken = useMemo(() => {
+    if (!user?.token) return false;
+    if (!tokenExpiryMs) return true;
+    const refreshThresholdMs = 10 * 60 * 1000;
+    return tokenExpiryMs - Date.now() < refreshThresholdMs;
+  }, [tokenExpiryMs, user?.token]);
+
+  const refreshToken = useCallback(async (_reason: string) => {
+    if (!userId) return;
+    if (loginInFlightRef.current) {
+      await loginInFlightRef.current;
+      return;
+    }
+    const now = Date.now();
+    if (now - lastRefreshAtRef.current < 1000) return;
+
+    loginInFlightRef.current = loginAsync({ userId }).finally(() => {
+      loginInFlightRef.current = null;
+      lastRefreshAtRef.current = Date.now();
+    });
+    await loginInFlightRef.current;
+  }, [loginAsync, userId]);
+
   const updateUser = (userData: Partial<UserData>) => {
     setUser((prev) => {
       if (!prev) return prev;
@@ -55,31 +98,79 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (isInitialized) return;
-
-    const isSameUser = user?.id === Number(userId);
-    if (isSameUser) {
-      setIsInitialized(true);
-      return;
-    }
-
     if (!userId) {
       return;
     }
+    const hasUserIdChanged = lastUserIdRef.current !== userId;
+    if (hasUserIdChanged) {
+      lastUserIdRef.current = userId;
+      setIsInitialized(false);
+    }
+    const isSameUser = user?.id === Number(userId);
+    if (!isSameUser) {
+      void refreshToken('user-change');
+      return;
+    }
 
-    login({ userId });
-  }, [login, isInitialized, userId, user?.id]);
+    if (!isInitialized) {
+      setIsInitialized(true);
+    }
+  }, [isInitialized, refreshToken, userId, user?.id]);
+
+  useEffect(() => {
+    if (!userId || !user?.token) return;
+    if (!shouldRefreshToken) return;
+    void refreshToken('initial-refresh');
+  }, [refreshToken, shouldRefreshToken, user?.token, userId]);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible' && shouldRefreshToken) {
+        void refreshToken('visibility');
+      }
+    };
+    const handleFocus = () => {
+      if (shouldRefreshToken) {
+        void refreshToken('focus');
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [refreshToken, shouldRefreshToken, userId]);
+
+  useEffect(() => {
+    if (!userId) return;
+    const interval = setInterval(() => {
+      if (shouldRefreshToken) {
+        void refreshToken('interval');
+      }
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [refreshToken, shouldRefreshToken, userId]);
 
   if (userId === null) return <div>유저아이디가 누락되었습니다</div>;
 
-  if (!user || !isInitialized) return null;
+  const isSameUser = user?.id === Number(userId);
+
+  if (!user || !isInitialized || !isSameUser) {
+    return isError ? <div>로그인 실패</div> : null;
+  }
 
   const isUserModel = isModel(user);
   const isUserDesigner = isDesigner(user);
 
   return (
     <AuthContext.Provider value={{ user, isUserModel, isUserDesigner, updateUser }}>
-      {isError ? <div>로그인 실패</div> : children}
+      {children}
     </AuthContext.Provider>
   );
 }
