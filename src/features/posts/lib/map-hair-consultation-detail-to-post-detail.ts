@@ -36,14 +36,28 @@ export default function mapHairConsultationDetailToPostDetail(
   const hairConcernDetail =
     detail.hairConcerns.length > 1 ? detail.hairConcerns.slice(1).join(', ') : null;
 
-  const treatments: Treatment[] | undefined = detail.treatment
-    ? [
-        {
-          treatmentName: detail.treatment.treatmentType,
-          treatmentDate: detail.treatment.treatmentDate ?? '',
-        },
-      ]
-    : undefined;
+  const treatments: Treatment[] | undefined =
+    detail.treatments && detail.treatments.length > 0
+      ? [...detail.treatments]
+          .sort((a, b) => a.displayOrder - b.displayOrder)
+          .map((treatment) => ({
+            treatmentName: treatment.treatmentType,
+            treatmentDate: treatment.treatmentDate ?? '',
+          }))
+      : undefined;
+
+  const creatorName =
+    detail.user?.displayName ??
+    detail.hairConsultationCreateUser?.name ??
+    detail.hairConsultationCreateUserName ??
+    '';
+  const creatorProfileImageUrl =
+    detail.user?.profilePictureURL ??
+    detail.hairConsultationCreateUser?.profilePictureURL ??
+    detail.hairConsultationCreateUserProfileImageUrl ??
+    null;
+  const creatorRegion = detail.user?.address ?? detail.hairConsultationCreateUserRegion ?? null;
+  const creatorId = detail.user?.id ?? detail.hairConsultationCreateUserId ?? 0;
 
   return {
     id: detail.id,
@@ -57,12 +71,12 @@ export default function mapHairConsultationDetailToPostDetail(
     viewCount: detail.viewCount,
     isPhotoVisibleToDesigner: true,
     consultType: CONSULT_TYPE.CONSULTING,
-    hairConsultPostingCreateUserName: '익명',
-    hairConsultPostingCreateUserProfileImageUrl: null,
-    hairConsultPostingCreateUserRegion: detail.hairConsultationCreateUserRegion,
+    hairConsultPostingCreateUserName: creatorName,
+    hairConsultPostingCreateUserProfileImageUrl: creatorProfileImageUrl,
+    hairConsultPostingCreateUserRegion: creatorRegion,
     hairConsultPostingCreateUserSex: USER_SEX.FEMALE,
     hairConsultPostingCreateUserRole: USER_ROLE.MODEL,
-    hairConsultPostingCreateUserId: detail.hairConsultationCreateUserId,
+    hairConsultPostingCreateUserId: creatorId,
     hairConcern,
     hairConcernDetail,
     treatments,

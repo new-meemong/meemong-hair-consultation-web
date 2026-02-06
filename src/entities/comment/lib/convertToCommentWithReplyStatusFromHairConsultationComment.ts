@@ -14,8 +14,8 @@ export default function convertToCommentWithReplyStatusFromHairConsultationComme
     createdAt: comment.createdAt,
     updatedAt: comment.updatedAt,
     user: {
-      userId: comment.user.userId,
-      displayName: comment.user.name,
+      userId: comment.user.id,
+      displayName: comment.user.displayName,
       profilePictureURL: comment.user.profilePictureURL,
       address: comment.user.address ?? undefined,
       companyName: comment.user.companyName ?? null,

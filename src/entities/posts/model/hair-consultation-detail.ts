@@ -1,9 +1,11 @@
 export type HairConsultationTreatment = {
+  id: number;
   treatmentType: string;
   treatmentDate: string | null;
-  isSelf: boolean;
+  isSelf: boolean | number;
   treatmentArea: string | null;
   decolorizationCount: number | null;
+  displayOrder: number;
 };
 
 export type HairConsultationImage = {
@@ -36,11 +38,26 @@ export type HairConsultationDetail = {
   aspirationImageTypes: string[];
   aspirationImageDescription: string | null;
   hairConsultTreatmentDescription: string | null;
-  treatment: HairConsultationTreatment | null;
+  treatments: HairConsultationTreatment[];
   aspirationImages: HairConsultationImage[];
   myImages: HairConsultationMyImage[];
   isFavorited: boolean;
   isRead: boolean;
-  hairConsultationCreateUserRegion: string | null;
-  hairConsultationCreateUserId: number;
+  user: {
+    id: number;
+    address: string | null;
+    displayName: string;
+    profilePictureURL: string | null;
+  };
+
+  // Legacy-compatible fallback fields (optional)
+  hairConsultationCreateUserRegion?: string | null;
+  hairConsultationCreateUserId?: number;
+  hairConsultationCreateUserName?: string | null;
+  hairConsultationCreateUserProfileImageUrl?: string | null;
+  hairConsultationCreateUser?: {
+    userId: number;
+    name: string;
+    profilePictureURL: string | null;
+  } | null;
 };

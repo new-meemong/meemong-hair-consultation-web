@@ -2,8 +2,8 @@ import type { USER_ROLE } from '@/entities/user/constants/user-role';
 import type { ValueOf } from '@/shared/type/types';
 
 export type HairConsultationCommentUser = {
-  userId: number;
-  name: string;
+  id: number;
+  displayName: string;
   profilePictureURL: string | null;
   address: string | null;
   companyName: string | null;

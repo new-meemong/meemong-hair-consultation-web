@@ -41,8 +41,7 @@ export default function ConsultingPostListContainer({
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
       isFavorited: item.isFavorited,
-      hairConsultPostingCreateUserName: '',
-      hairConsultPostingCreateUserRegion: item.hairConsultationCreateUserRegion ?? '',
+      userAddress: item.user.address ?? '',
       minPaymentPrice: null,
       maxPaymentPrice: item.desiredCostPrice,
       isRead: item.isRead,
@@ -68,8 +67,13 @@ export default function ConsultingPostListContainer({
   );
 
   const legacyPosts = legacyData?.pages.flatMap((page) => page.dataList);
+  const normalizedLegacyPosts =
+    legacyPosts?.map((post) => ({
+      ...post,
+      userAddress: post.userAddress ?? post.hairConsultPostingCreateUserRegion ?? '',
+    })) ?? [];
 
-  const posts = [...(newPosts ?? []), ...(legacyPosts ?? [])];
+  const posts = [...(newPosts ?? []), ...normalizedLegacyPosts];
 
   const handleFetchNextPage = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {

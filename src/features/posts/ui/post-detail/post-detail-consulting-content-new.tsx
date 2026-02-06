@@ -64,7 +64,9 @@ export default function PostDetailConsultingContentNew({
   const myImageUrls = myImageList?.map(({ imageUrl }) => imageUrl) ?? [];
 
   const isWriter = authorId === user.id;
-
+  const shouldShowAuthorInfo = isWriter || isUserDesigner;
+  const displayName = shouldShowAuthorInfo ? authorName || '익명' : '익명';
+  const displayImageUrl = shouldShowAuthorInfo ? authorImageUrl : null;
   const hiddenImages = !isWriter && !isUserDesigner;
   const concern = hairConcern === HAIR_CONCERN_OPTION.etc.label ? hairConcernDetail : hairConcern;
 
@@ -75,8 +77,8 @@ export default function PostDetailConsultingContentNew({
     <div className="flex flex-col py-6">
       <div className="flex flex-col gap-5 px-5 mb-6">
         <PostDetailAuthorProfile
-          imageUrl={authorImageUrl}
-          name={authorName}
+          imageUrl={displayImageUrl}
+          name={displayName}
           region={authorRegion}
           createdAt={formattedCreatedAt}
           authorId={authorId}

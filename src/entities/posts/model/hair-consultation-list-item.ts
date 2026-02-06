@@ -1,3 +1,13 @@
+type HairConsultationListTreatment = {
+  id: number;
+  treatmentType: string;
+  treatmentDate: string | null;
+  isSelf: boolean | number;
+  treatmentArea: string | null;
+  decolorizationCount: number | null;
+  displayOrder: number;
+};
+
 export type HairConsultationListItem = {
   id: number;
   title: string;
@@ -9,8 +19,11 @@ export type HairConsultationListItem = {
   createdAt: string;
   updatedAt: string;
   contentUpdatedAt: string;
+  treatments: HairConsultationListTreatment[];
   isFavorited: boolean;
   isRead: boolean;
-  hairConsultationCreateUserRegion: string;
-  hairConsultationCreateUserId: number;
+  user: {
+    id: number;
+    address: string | null;
+  };
 };

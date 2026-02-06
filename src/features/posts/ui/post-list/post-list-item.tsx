@@ -17,7 +17,6 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 
 type PostListItemProps = {
   createdAt: string;
-  hairConsultPostingCreateUserRegion?: string;
   userAddress?: string;
   price: number | null;
   isConsultingPost: boolean;
@@ -34,20 +33,19 @@ type PostListItemProps = {
 
 const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function PostListItem(
   {
-  createdAt,
-  hairConsultPostingCreateUserRegion,
-  userAddress,
-  price,
-  isConsultingPost,
-  title,
-  content,
-  repImageUrl,
-  onClick,
-  viewCount,
-  // likeCount,
-  commentCount,
-  isRead,
-  priceType,
+    createdAt,
+    userAddress,
+    price,
+    isConsultingPost,
+    title,
+    content,
+    repImageUrl,
+    onClick,
+    viewCount,
+    // likeCount,
+    commentCount,
+    isRead,
+    priceType,
   },
   ref,
 ) {
@@ -98,13 +96,7 @@ const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function Post
                 </>
               )}
               <p>{formatDateTime(createdAt)}</p>
-              {isUserDesigner && hairConsultPostingCreateUserRegion && (
-                <>
-                  <Dot size="1" />
-                  <p>{formatAddress(hairConsultPostingCreateUserRegion)}</p>
-                </>
-              )}
-              {isUserDesigner && !isConsultingPost && userAddress && (
+              {isUserDesigner && userAddress && (
                 <>
                   <Dot size="1" />
                   <p>{formatAddress(userAddress)}</p>

@@ -15,8 +15,9 @@ export type Post = {
   createdAt: string;
   updatedAt: string;
   isFavorited: boolean;
-  hairConsultPostingCreateUserName: string;
-  hairConsultPostingCreateUserRegion: string;
+  userAddress?: string;
+  hairConsultPostingCreateUserName?: string;
+  hairConsultPostingCreateUserRegion?: string;
   minPaymentPrice: number | null;
   maxPaymentPrice: number | null;
   isRead: boolean;

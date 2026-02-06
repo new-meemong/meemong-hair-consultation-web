@@ -63,7 +63,7 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
         <PostListItem
           key={post.id}
           createdAt={post.createdAt}
-          hairConsultPostingCreateUserRegion={post.hairConsultPostingCreateUserRegion}
+          userAddress={post.userAddress}
           price={post.maxPaymentPrice}
           isConsultingPost={true}
           title={post.title}
