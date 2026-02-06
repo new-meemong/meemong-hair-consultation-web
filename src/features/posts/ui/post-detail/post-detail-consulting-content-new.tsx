@@ -2,6 +2,7 @@ import {
   FEMALE_HAIR_LENGTH_OPTIONS,
   MALE_HAIR_LENGTH_OPTIONS,
 } from '../../constants/hair-length-options';
+import { useMemo, useState } from 'react';
 
 import { HAIR_CONCERN_OPTION } from '../../constants/hair-concern-option';
 import LockIcon from '@/assets/icons/lock.svg';
@@ -10,7 +11,6 @@ import PostDetailAuthorProfile from './post-detail-author-profile';
 import PostDetailImage from './post-detail-image';
 import { format } from 'date-fns';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import { useState } from 'react';
 
 function Separator() {
   return <div className="bg-alternative h-1.5" />;
@@ -24,6 +24,15 @@ function HiddenImageAlertBox() {
     </div>
   );
 }
+
+const PERSONAL_COLOR_BASE_COLOR_MAP: Record<string, string> = {
+  봄웜: '#FAC4A8',
+  여름쿨: '#F1D0E3',
+  가을웜: '#EBB295',
+  겨울쿨: '#E6447A',
+};
+
+const formatPersonalColorDetailLabel = (value: string) => value.replace(/^(봄|여름|가을|겨울)/, '');
 
 function ImageList({ images, size }: { images: string[]; size: 'small' | 'large' }) {
   return (
@@ -84,12 +93,26 @@ export default function PostDetailConsultingContentNew({
 
   const formattedCreatedAt = formatCreatedAt(createdAt);
   const hairConcernText = [hairConcern, hairConcernDetail].filter(Boolean).join(', ');
-  const skinDataChips = [skinBrightness, personalColor].filter(Boolean) as string[];
   const hairLengthDescription =
     [...FEMALE_HAIR_LENGTH_OPTIONS, ...MALE_HAIR_LENGTH_OPTIONS].find(
       (option) => option.value === hairLength,
     )?.description ?? '';
   const hasTreatments = Boolean(treatments && treatments.length > 0);
+  const personalColorChip = useMemo(() => {
+    if (!personalColor || personalColor === '잘모름') return null;
+
+    const [tone = '', detail = ''] = personalColor.split(',').map((value) => value.trim());
+    if (!tone) return null;
+
+    const isUnknownDetail = !detail || detail === '상세분류모름';
+
+    const normalizedDetail = formatPersonalColorDetailLabel(detail);
+
+    return {
+      text: isUnknownDetail ? tone : `${tone} ${normalizedDetail}`,
+      backgroundColor: PERSONAL_COLOR_BASE_COLOR_MAP[tone],
+    };
+  }, [personalColor]);
 
   return (
     <div className="flex flex-col py-6">
@@ -126,14 +149,31 @@ export default function PostDetailConsultingContentNew({
         <div className="mt-7 flex items-center">
           <p className="typo-body-1-semibold text-label-default shrink-0">피부</p>
           <div className="ml-3 flex flex-wrap gap-2">
-            {skinDataChips.map((chip) => (
+            {skinBrightness && (
               <span
-                key={chip}
+                key="skin-brightness"
                 className="px-3 py-1 rounded-full bg-alternative typo-body-2-regular text-label-default"
               >
-                {chip}
+                {skinBrightness}
               </span>
-            ))}
+            )}
+            {personalColorChip && (
+              <span
+                key="personal-color"
+                style={
+                  personalColorChip.backgroundColor
+                    ? { backgroundColor: personalColorChip.backgroundColor }
+                    : undefined
+                }
+                className={`px-3 py-1 rounded-full bg-alternative ${
+                  personalColorChip.backgroundColor
+                    ? 'text-white typo-body-2-semibold'
+                    : 'text-label-default typo-body-2-regular'
+                }`}
+              >
+                {personalColorChip.text}
+              </span>
+            )}
           </div>
         </div>
         <div className="mt-7 flex items-start">

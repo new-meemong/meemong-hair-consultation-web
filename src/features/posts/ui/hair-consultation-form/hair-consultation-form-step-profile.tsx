@@ -37,6 +37,9 @@ const PERSONAL_COLOR_BASE_COLOR_MAP: Record<string, string> = {
   겨울쿨: '#E6447A',
 };
 
+const formatPersonalColorDetailLabel = (value: string) =>
+  value.replace(/^(봄|여름|가을|겨울)/, '');
+
 export default function HairConsultationFormStepProfile() {
   const { control, getValues } = useFormContext<HairConsultationFormValues>();
   const { user } = useAuthContext();
@@ -92,7 +95,7 @@ export default function HairConsultationFormStepProfile() {
     const [type = '', detail = ''] = (selectedPersonalColor ?? '')
       .split(',')
       .map((value) => value.trim());
-    return [type, detail];
+    return [type, formatPersonalColorDetailLabel(detail)];
   }, [selectedPersonalColor]);
   const personalColorBaseColor = PERSONAL_COLOR_BASE_COLOR_MAP[personalColorType];
 
@@ -310,9 +313,13 @@ export default function HairConsultationFormStepProfile() {
               }
               className={[
                 'rounded-full px-4 py-2.5 h-auto',
-                'bg-alternative text-label-sub border-0',
-                'data-[state=off]:bg-alternative data-[state=off]:text-label-sub data-[state=off]:border-0',
-                'typo-body-2-regular',
+                personalColorBaseColor
+                  ? 'bg-alternative text-white border-0'
+                  : 'bg-alternative text-label-sub border-0',
+                personalColorBaseColor
+                  ? 'data-[state=off]:bg-alternative data-[state=off]:text-white data-[state=off]:border-0'
+                  : 'data-[state=off]:bg-alternative data-[state=off]:text-label-sub data-[state=off]:border-0',
+                personalColorBaseColor ? 'typo-body-2-semibold' : 'typo-body-2-regular',
                 'disabled:opacity-100',
               ].join(' ')}
             >
