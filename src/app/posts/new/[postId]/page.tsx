@@ -87,6 +87,7 @@ function NewPostDetailPageContent({ postId, isFromMain }: NewPostDetailPageConte
         textareaRef={textareaRef}
         isConsulting={true}
         isAnsweredByDesigner={postDetail.isAnsweredByDesigner ?? false}
+        postSource='new'
       />
     </div>
   );

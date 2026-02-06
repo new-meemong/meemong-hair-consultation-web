@@ -87,6 +87,7 @@ function PostDetailPageContent({ postId, isFromMain }: PostDetailPageContentProp
         textareaRef={textareaRef}
         isConsulting={true}
         isAnsweredByDesigner={postDetail.isAnsweredByDesigner ?? false}
+        postSource='legacy'
       />
     </div>
   );

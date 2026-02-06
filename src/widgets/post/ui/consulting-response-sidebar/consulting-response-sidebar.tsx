@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import CloseIcon from '@/assets/icons/close.svg';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
-import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
+import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import {
   HAIR_CONCERN_OPTION_LABEL,
   HAIR_CONCERN_OPTION_VALUE,
@@ -49,19 +49,15 @@ const getSidebarTab = (post?: PostDetail) => {
 };
 
 type ConsultingResponseSidebarProps = {
-  postId: string;
   isOpen: boolean;
   onOpenChange?: (open: boolean) => void;
 };
 
 export default function ConsultingResponseSidebar({
-  postId,
   isOpen,
   onOpenChange,
 }: ConsultingResponseSidebarProps) {
-  const { data: postDetail } = useGetPostDetail(postId);
-
-  const consultingPost = postDetail?.data;
+  const { postDetail: consultingPost } = usePostDetail();
 
   const sidebarTabs = getSidebarTab(consultingPost);
 

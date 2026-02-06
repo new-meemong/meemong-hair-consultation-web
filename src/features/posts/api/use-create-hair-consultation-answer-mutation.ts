@@ -35,6 +35,7 @@ export default function useCreateHairConsultationAnswerMutation(hairConsultation
 
   return {
     mutate,
+    mutateAsync: mutation.mutateAsync,
     isPending: mutation.isPending,
     error: mutation.error,
     isSuccess: mutation.isSuccess,
