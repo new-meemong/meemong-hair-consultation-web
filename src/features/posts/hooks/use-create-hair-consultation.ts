@@ -82,7 +82,7 @@ export function useCreateHairConsultation() {
 
   const handleCreateHairConsultation = async (
     data: HairConsultationFormValues,
-    { onSuccess }: { onSuccess: () => void },
+    { onSuccess, onError }: { onSuccess: () => void; onError?: (error: unknown) => void },
   ) => {
     setIsUploadingImages(true);
     try {
@@ -118,7 +118,7 @@ export function useCreateHairConsultation() {
       const treatmentDescription =
         treatmentSummary && detailText
           ? `${treatmentSummary} / ${detailText}`
-          : treatmentSummary ?? detailText ?? undefined;
+          : (treatmentSummary ?? detailText ?? undefined);
 
       const treatments = data.treatments.map((item) => {
         const request = {
@@ -140,9 +140,7 @@ export function useCreateHairConsultation() {
 
       const desiredDateType = data.desiredDateType ?? undefined;
       const desiredDate =
-        data.desiredDateType === '원하는 날짜 있음'
-          ? data.desiredDate?.trim() || null
-          : null;
+        data.desiredDateType === '원하는 날짜 있음' ? data.desiredDate?.trim() || null : null;
 
       const request: CreateHairConsultationRequest = {
         title: data.title,
@@ -163,7 +161,9 @@ export function useCreateHairConsultation() {
         treatments,
       };
 
-      createHairConsultation(request, { onSuccess });
+      await createHairConsultation(request, { onSuccess, onError });
+    } catch (error) {
+      onError?.(error);
     } finally {
       setIsUploadingImages(false);
     }

@@ -10,6 +10,7 @@ export default function useCreateHairConsultationMutation() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
+    meta: { skipGlobalError: true },
     mutationFn: (data: CreateHairConsultationRequest) =>
       apiClient.post<CreateHairConsultationResponse>(`${HAIR_CONSULTATION_API_PREFIX}`, data),
     onSuccess: () => {
@@ -17,13 +18,16 @@ export default function useCreateHairConsultationMutation() {
     },
   });
 
-  const mutate = (
+  const mutate = async (
     data: CreateHairConsultationRequest,
-    { onSuccess }: { onSuccess: () => void },
+    { onSuccess, onError }: { onSuccess: () => void; onError?: (error: unknown) => void },
   ) => {
-    mutation.mutate(data, {
-      onSuccess,
-    });
+    try {
+      await mutation.mutateAsync(data);
+      onSuccess();
+    } catch (error) {
+      onError?.(error);
+    }
   };
 
   return {

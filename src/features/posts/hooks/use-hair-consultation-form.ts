@@ -12,6 +12,7 @@ import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useGetUser } from '@/features/auth/api/use-get-user';
 import type { UserDetail } from '@/entities/user/model/user-detail';
+import { getErrorMessage } from '@/shared/lib/error-handler';
 
 import { useCreateHairConsultation } from './use-create-hair-consultation';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '../constants/hair-consultation-form-field-name';
@@ -54,7 +55,9 @@ export default function useHairConsultationForm() {
   const { showSnackBar } = useOverlayContext();
   const { user } = useAuthContext();
 
-  const { saveContent, savedContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
+  const { saveContent, savedContent } = useWritingContent(
+    USER_WRITING_CONTENT_KEYS.hairConsultation,
+  );
   const { data: userResponse } = useGetUser(user.id.toString());
   const userDetail = userResponse?.data;
 
@@ -116,6 +119,12 @@ export default function useHairConsultationForm() {
           message: '업로드가 완료되었습니다!',
         });
         replace(ROUTES.POSTS);
+      },
+      onError: (error) => {
+        showSnackBar({
+          type: 'error',
+          message: getErrorMessage(error),
+        });
       },
     });
   };

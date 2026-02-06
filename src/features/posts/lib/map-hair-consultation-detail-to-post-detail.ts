@@ -43,6 +43,8 @@ export default function mapHairConsultationDetailToPostDetail(
           .map((treatment) => ({
             treatmentName: treatment.treatmentType,
             treatmentDate: treatment.treatmentDate ?? '',
+            treatmentArea: treatment.treatmentArea,
+            decolorizationCount: treatment.decolorizationCount,
           }))
       : undefined;
 
@@ -79,6 +81,10 @@ export default function mapHairConsultationDetailToPostDetail(
     hairConsultPostingCreateUserId: creatorId,
     hairConcern,
     hairConcernDetail,
+    hairLength: detail.hairLength,
+    hairTexture: detail.hairTexture,
+    skinBrightness: detail.skinBrightness,
+    personalColor: detail.personalColor,
     treatments,
     myImageList: (detail.myImages ?? []).map(({ imageUrl, subType }) => ({
       type: mapMyImageType(subType),

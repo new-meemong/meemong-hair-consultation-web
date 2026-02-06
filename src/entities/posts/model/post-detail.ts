@@ -1,14 +1,15 @@
-import type { USER_ROLE } from '@/entities/user/constants/user-role';
-import type { USER_SEX } from '@/entities/user/constants/user-sex';
+import type { CONSULT_TYPE } from '../constants/consult-type';
 import type { MY_IMAGE_TYPE } from '@/features/posts/constants/my-image-type';
 import type { SKIN_TONE_OPTION_LABEL } from '@/features/posts/constants/skin-tone';
+import type { USER_ROLE } from '@/entities/user/constants/user-role';
+import type { USER_SEX } from '@/entities/user/constants/user-sex';
 import type { ValueOf } from '@/shared/type/types';
-
-import type { CONSULT_TYPE } from '../constants/consult-type';
 
 export type Treatment = {
   treatmentName: string;
   treatmentDate: string;
+  treatmentArea?: string | null;
+  decolorizationCount?: number | null;
 };
 
 type MyImage = {
@@ -41,6 +42,10 @@ export type PostDetail = {
   hairConsultPostingCreateUserId: number;
   hairConcern?: string;
   hairConcernDetail?: string | null;
+  hairLength?: string | null;
+  hairTexture?: string | null;
+  skinBrightness?: string | null;
+  personalColor?: string | null;
   hasNoRecentTreatment?: boolean;
   skinTone?: ValueOf<typeof SKIN_TONE_OPTION_LABEL> | null;
   treatments?: Treatment[];

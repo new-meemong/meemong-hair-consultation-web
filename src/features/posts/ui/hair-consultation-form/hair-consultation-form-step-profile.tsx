@@ -17,6 +17,26 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
+const SKIN_BRIGHTNESS_DESCRIPTION_MAP: Record<string, string> = {
+  '18호 이하': '매우 하얗고 투명한 피부',
+  '19~21호': '화사하고 밝은 피부',
+  '22~23호': '자연스럽고 차분한 피부',
+  '24~25호': '건강하고 생기있는 피부',
+  '26호 이상': '탄력있고 깊이감 있는 피부',
+  '매우 밝은/하얀 피부': '22호 이하',
+  '밝은 피부': '22~23호',
+  '보통 피부': '24~25호',
+  '까만 피부': '26~27호',
+  '매우 어두운/까만 피부': '28호 이상',
+};
+
+const PERSONAL_COLOR_BASE_COLOR_MAP: Record<string, string> = {
+  봄웜: '#FAC4A8',
+  여름쿨: '#F1D0E3',
+  가을웜: '#EBB295',
+  겨울쿨: '#E6447A',
+};
+
 export default function HairConsultationFormStepProfile() {
   const { control, getValues } = useFormContext<HairConsultationFormValues>();
   const { user } = useAuthContext();
@@ -62,6 +82,19 @@ export default function HairConsultationFormStepProfile() {
       );
     return option ?? null;
   }, [hairLengthOptions, selectedHairLength]);
+
+  const skinBrightnessDescription = useMemo(
+    () => SKIN_BRIGHTNESS_DESCRIPTION_MAP[selectedSkinBrightness ?? ''] ?? '',
+    [selectedSkinBrightness],
+  );
+
+  const [personalColorType, personalColorDetail] = useMemo(() => {
+    const [type = '', detail = ''] = (selectedPersonalColor ?? '')
+      .split(',')
+      .map((value) => value.trim());
+    return [type, detail];
+  }, [selectedPersonalColor]);
+  const personalColorBaseColor = PERSONAL_COLOR_BASE_COLOR_MAP[personalColorType];
 
   const handleHairLengthEdit = useCallback(() => {
     const writingContent = {
@@ -230,7 +263,7 @@ export default function HairConsultationFormStepProfile() {
           </button>
         </div>
         {selectedSkinBrightness && (
-          <ToggleChipGroup className="flex flex-wrap gap-2">
+          <ToggleChipGroup className="flex flex-wrap items-center gap-2">
             <ToggleChip
               pressed={false}
               disabled
@@ -244,6 +277,11 @@ export default function HairConsultationFormStepProfile() {
             >
               {selectedSkinBrightness}
             </ToggleChip>
+            {skinBrightnessDescription && (
+              <p className={`${AppTypography.body2Regular} text-label-default`}>
+                {skinBrightnessDescription}
+              </p>
+            )}
           </ToggleChipGroup>
         )}
       </div>
@@ -263,10 +301,13 @@ export default function HairConsultationFormStepProfile() {
           </button>
         </div>
         {selectedPersonalColor && (
-          <ToggleChipGroup className="flex flex-wrap gap-2">
+          <ToggleChipGroup className="flex flex-wrap items-center gap-2">
             <ToggleChip
               pressed={false}
               disabled
+              style={
+                personalColorBaseColor ? { backgroundColor: personalColorBaseColor } : undefined
+              }
               className={[
                 'rounded-full px-4 py-2.5 h-auto',
                 'bg-alternative text-label-sub border-0',
@@ -275,8 +316,13 @@ export default function HairConsultationFormStepProfile() {
                 'disabled:opacity-100',
               ].join(' ')}
             >
-              {selectedPersonalColor}
+              {personalColorType || selectedPersonalColor}
             </ToggleChip>
+            {personalColorDetail && (
+              <p className={`${AppTypography.body2Regular} text-label-default`}>
+                {personalColorDetail}
+              </p>
+            )}
           </ToggleChipGroup>
         )}
       </div>

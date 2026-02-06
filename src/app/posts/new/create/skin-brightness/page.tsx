@@ -8,6 +8,7 @@ import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constant
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '@/features/posts/constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
 import type { HairConsultationSkinBrightness } from '@/entities/posts/api/create-hair-consultation-request';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -16,7 +17,7 @@ import useWritingContent from '@/shared/hooks/use-writing-content';
 import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 
-const SKIN_BRIGHTNESS_OPTIONS: Array<{
+const FEMALE_SKIN_BRIGHTNESS_OPTIONS: Array<{
   value: HairConsultationSkinBrightness;
   label: string;
   description: string;
@@ -28,7 +29,20 @@ const SKIN_BRIGHTNESS_OPTIONS: Array<{
   { value: '26호 이상', label: '26호 이상', description: '탄력있고 깊이감 있는 피부' },
 ];
 
+const MALE_SKIN_BRIGHTNESS_OPTIONS: Array<{
+  value: HairConsultationSkinBrightness;
+  label: string;
+  description: string;
+}> = [
+  { value: '매우 밝은/하얀 피부', label: '매우 밝은/하얀 피부', description: '22호 이하' },
+  { value: '밝은 피부', label: '밝은 피부', description: '22~23호' },
+  { value: '보통 피부', label: '보통 피부', description: '24~25호' },
+  { value: '까만 피부', label: '까만 피부', description: '26~27호' },
+  { value: '매우 어두운/까만 피부', label: '매우 어두운/까만 피부', description: '28호 이상' },
+];
+
 export default function SkinBrightnessSelectPage() {
+  const { user } = useAuthContext();
   const { replace } = useRouterWithUser();
   const searchParams = useSearchParams();
   const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
@@ -42,6 +56,10 @@ export default function SkinBrightnessSelectPage() {
 
   const [selectedBrightness, setSelectedBrightness] =
     useState<HairConsultationSkinBrightness>(initialValue);
+  const skinBrightnessOptions = useMemo(
+    () => (user.sex === '남자' ? MALE_SKIN_BRIGHTNESS_OPTIONS : FEMALE_SKIN_BRIGHTNESS_OPTIONS),
+    [user.sex],
+  );
 
   const handleSelect = (value: HairConsultationSkinBrightness) => {
     setSelectedBrightness(value);
@@ -88,7 +106,7 @@ export default function SkinBrightnessSelectPage() {
         </div>
 
         <div className="flex flex-col gap-3">
-          {SKIN_BRIGHTNESS_OPTIONS.map((option) => {
+          {skinBrightnessOptions.map((option) => {
             const checked = selectedBrightness === option.value;
             return (
               <button
