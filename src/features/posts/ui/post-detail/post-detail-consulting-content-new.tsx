@@ -105,12 +105,11 @@ export default function PostDetailConsultingContentNew({
     )?.description ?? '';
   const hasTreatments = Boolean(treatments && treatments.length > 0);
   const hasAspirationImages = aspirationImageUrls.length > 0;
-  const payableCostText =
-    maxPaymentPrice != null ? `${maxPaymentPrice.toLocaleString()}원` : '-';
+  const payableCostText = maxPaymentPrice != null ? `${maxPaymentPrice.toLocaleString()}원` : '-';
   const desiredDateText =
     desiredDateType === '원하는 날짜 있음'
       ? (desiredDate ?? '').trim() || desiredDateType
-      : desiredDateType ?? '-';
+      : (desiredDateType ?? '-');
   const personalColorChip = useMemo(() => {
     if (!personalColor || personalColor === '잘모름') return null;
 
@@ -250,14 +249,16 @@ export default function PostDetailConsultingContentNew({
         </div>
         <div className="mt-7">
           <p className="typo-body-1-semibold text-label-default">원하는 이미지</p>
-          {hasAspirationImages && (
+          {hiddenImages ? (
             <div className="mt-3">
-              {hiddenImages ? (
-                <HiddenImageAlertBox />
-              ) : (
-                <ImageList images={aspirationImageUrls} size="small" />
-              )}
+              <HiddenImageAlertBox />
             </div>
+          ) : (
+            hasAspirationImages && (
+              <div className="mt-3">
+                <ImageList images={aspirationImageUrls} size="small" />
+              </div>
+            )
           )}
           {aspirationDescription && (
             <p className="mt-3 typo-body-1-long-regular text-label-default whitespace-pre-wrap">
