@@ -11,7 +11,7 @@ import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';
 
 import ConsultingResponseFormStepBangsRecommendation from './consulting-response-form-step-bangs-recommendation';
-import ConsultingResponseFormStepFaceShape from './consulting-response-form-step-face-shape';
+import ConsultingResponseFormStepFaceShapeNew from './consulting-response-form-step-face-shape-new';
 import ConsultingResponseFormStepHairType from './consulting-response-form-step-hair-type';
 import ConsultingResponseFormStepTreatments from './consulting-response-form-step-treatments';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
@@ -22,7 +22,7 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE,
     question: '고객님의 얼굴형을 골라주세요',
     required: true,
-    children: <ConsultingResponseFormStepFaceShape />,
+    children: <ConsultingResponseFormStepFaceShapeNew />,
   },
   {
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION,
