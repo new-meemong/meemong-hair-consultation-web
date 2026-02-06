@@ -76,12 +76,18 @@ export default function PostDetailConsultingContentNew({
     hairTexture,
     skinBrightness,
     personalColor,
+    maxPaymentPrice,
+    desiredDateType,
+    desiredDate,
     createdAt,
     myImageList,
     treatments,
+    aspirations,
   } = postDetail;
 
   const myImageUrls = myImageList?.map(({ imageUrl }) => imageUrl) ?? [];
+  const aspirationImageUrls = aspirations?.aspirationImages ?? [];
+  const aspirationDescription = aspirations?.aspirationDescription?.trim() ?? '';
   const [isTreatmentsExpanded, setIsTreatmentsExpanded] = useState(false);
 
   const isWriter = authorId === user.id;
@@ -98,6 +104,13 @@ export default function PostDetailConsultingContentNew({
       (option) => option.value === hairLength,
     )?.description ?? '';
   const hasTreatments = Boolean(treatments && treatments.length > 0);
+  const hasAspirationImages = aspirationImageUrls.length > 0;
+  const payableCostText =
+    maxPaymentPrice != null ? `${maxPaymentPrice.toLocaleString()}원` : '-';
+  const desiredDateText =
+    desiredDateType === '원하는 날짜 있음'
+      ? (desiredDate ?? '').trim() || desiredDateType
+      : desiredDateType ?? '-';
   const personalColorChip = useMemo(() => {
     if (!personalColor || personalColor === '잘모름') return null;
 
@@ -206,9 +219,7 @@ export default function PostDetailConsultingContentNew({
               }`}
             >
               {treatments?.map((treatment, index) => {
-                const decolorizationCountLabel = String(
-                  treatment.decolorizationCount ?? 0,
-                ).padStart(2, '0');
+                const decolorizationCountLabel = String(treatment.decolorizationCount ?? 0);
                 const treatmentAreaLabel = treatment.treatmentArea ?? '-';
 
                 return (
@@ -233,6 +244,38 @@ export default function PostDetailConsultingContentNew({
               })}
             </div>
           )}
+        </div>
+        <div className="mt-7">
+          <div className="h-px bg-border-default" />
+        </div>
+        <div className="mt-7">
+          <p className="typo-body-1-semibold text-label-default">원하는 이미지</p>
+          {hasAspirationImages && (
+            <div className="mt-3">
+              {hiddenImages ? (
+                <HiddenImageAlertBox />
+              ) : (
+                <ImageList images={aspirationImageUrls} size="small" />
+              )}
+            </div>
+          )}
+          {aspirationDescription && (
+            <p className="mt-3 typo-body-1-long-regular text-label-default whitespace-pre-wrap">
+              {aspirationDescription}
+            </p>
+          )}
+          <div className="mt-7 -mx-5 h-1.5 bg-alternative" />
+          <div className="mt-7">
+            <p className="typo-headline-semibold text-label-default">시술관련 정보</p>
+            <div className="mt-7 flex items-center justify-between gap-3">
+              <p className="typo-body-1-semibold text-label-default">지불 가능한 시술비용</p>
+              <p className="typo-body-2-long-regular text-label-default">{payableCostText}</p>
+            </div>
+            <div className="mt-7 flex items-center justify-between gap-3">
+              <p className="typo-body-1-semibold text-label-default">희망 시술일</p>
+              <p className="typo-body-2-long-regular text-label-default">{desiredDateText}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

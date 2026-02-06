@@ -98,5 +98,7 @@ export default function mapHairConsultationDetailToPostDetail(
     isAnsweredByDesigner: false,
     minPaymentPrice: detail.desiredCostPrice,
     maxPaymentPrice: detail.desiredCostPrice,
+    desiredDateType: detail.desiredDateType,
+    desiredDate: detail.desiredDate,
   };
 }

@@ -54,4 +54,6 @@ export type PostDetail = {
   isAnsweredByDesigner?: boolean;
   minPaymentPrice: number | null;
   maxPaymentPrice: number | null;
+  desiredDateType?: string | null;
+  desiredDate?: string | null;
 };
