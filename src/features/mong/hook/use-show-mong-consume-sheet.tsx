@@ -23,6 +23,7 @@ type ShowMongConsumeSheetParams = {
   answerId: number;
   postId: string;
   postListTab: string;
+  postSource?: 'new' | 'legacy';
 };
 
 export default function useShowMongConsumeSheet() {
@@ -33,7 +34,18 @@ export default function useShowMongConsumeSheet() {
   const { push } = useRouterWithUser();
 
   const showMongConsumeSheet = useCallback(
-    async ({ designerName, answerId, postId, postListTab }: ShowMongConsumeSheetParams) => {
+    async ({
+      designerName,
+      answerId,
+      postId,
+      postListTab,
+      postSource = 'legacy',
+    }: ShowMongConsumeSheetParams) => {
+      const targetRoute =
+        postSource === 'new'
+          ? ROUTES.POSTS_NEW_CONSULTING_RESPONSE(postId, answerId.toString())
+          : ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString());
+
       // 먼저 몽 차감 유무 조회 API 호출 (자동결제 처리)
       let isMongConsumeDisabled = false;
       try {
@@ -50,7 +62,7 @@ export default function useShowMongConsumeSheet() {
 
         // 이미 결제한 적이 있으면 바텀시트를 열지 않고 바로 답변 페이지로 이동
         if (withdrawResponse?.data?.isPaid === true) {
-          push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString()), {
+          push(targetRoute, {
             [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
           });
           return { alreadyPaid: true };
@@ -76,7 +88,7 @@ export default function useShowMongConsumeSheet() {
 
       // 몽 소비가 비활성화된 경우 바로 답변 페이지로 이동
       if (isMongConsumeDisabled) {
-        push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString()), {
+        push(targetRoute, {
           [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
         });
         return { alreadyPaid: false, mongConsumeDisabled: true };
@@ -124,7 +136,7 @@ export default function useShowMongConsumeSheet() {
                     onClick={() => {
                       // 자동결제이므로 GET 요청에서 이미 결제 처리됨
                       // 바로 답변 페이지로 이동
-                      push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString()), {
+                      push(targetRoute, {
                         [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
                       });
                     }}

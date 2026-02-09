@@ -7,6 +7,7 @@ import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observe
 interface CommentListProps {
   comments: CommentWithReplyStatus[];
   postId: string;
+  postSource?: 'new' | 'legacy';
   postWriterId: number;
   fetchNextPage: () => void;
   onReplyClick: (commentId: number) => void;
@@ -20,6 +21,7 @@ interface CommentListProps {
 export function CommentList({
   comments,
   postId,
+  postSource = 'legacy',
   postWriterId,
   fetchNextPage,
   onReplyClick,
@@ -42,6 +44,7 @@ export function CommentList({
           <CommentListItem
             comment={comment}
             postId={postId}
+            postSource={postSource}
             postWriterId={postWriterId}
             onReplyClick={onReplyClick}
             isFocused={isFocused(comment.id)}

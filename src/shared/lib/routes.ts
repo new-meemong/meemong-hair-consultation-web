@@ -22,6 +22,8 @@ export const ROUTES = {
     `/posts/${postId}/consulting/${responseId}/edit`,
   POSTS_CONSULTING_RESPONSE: (postId: string, responseId: string) =>
     `/posts/${postId}/consulting/${responseId}`,
+  POSTS_NEW_CONSULTING_RESPONSE: (postId: string, responseId: string) =>
+    `/posts/new/${postId}/consulting/${responseId}`,
   POSTS_SELECT_REGION: '/posts/select-region',
   POSTS_EXPERIENCE_GROUP_DETAIL: (id: string) => `/posts/experience-groups/${id}`,
   POSTS_EXPERIENCE_GROUP_EDIT: (id: string) => `/posts/experience-groups/${id}/edit`,

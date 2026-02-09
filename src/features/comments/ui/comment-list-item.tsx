@@ -25,6 +25,7 @@ const MORE_ACTION = {
 type CommentListItemProps = {
   comment: CommentWithReplyStatus;
   postId: string;
+  postSource?: 'new' | 'legacy';
   postWriterId: number;
   onReplyClick: (commentId: number) => void;
   isFocused: boolean;
@@ -38,6 +39,7 @@ type CommentListItemProps = {
 export default function CommentListItem({
   comment,
   postId,
+  postSource = 'legacy',
   postWriterId,
   onReplyClick,
   isFocused,
@@ -53,9 +55,14 @@ export default function CommentListItem({
   const { user, isUserDesigner, isUserModel } = useAuthContext();
   const { push } = useRouterWithUser();
   const showMongConsumeSheet = useShowMongConsumeSheet();
+  const consultingResponsePath = comment.answerId
+    ? postSource === 'new'
+      ? ROUTES.POSTS_NEW_CONSULTING_RESPONSE(postId, comment.answerId.toString())
+      : ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString())
+    : null;
 
   const handleConsultingResponseClick = async () => {
-    if (comment.answerId) {
+    if (comment.answerId && consultingResponsePath) {
       if (isUserModel) {
         // 내가 작성한 글의 컨설팅 답변을 볼 때만 몽 차감 결제 로직 적용
         if (isPostWriter) {
@@ -65,10 +72,11 @@ export default function CommentListItem({
             answerId: comment.answerId,
             postId,
             postListTab,
+            postSource,
           });
           // 결제 이력이 있으면 바로 답변 페이지로 이동
           if (result?.alreadyPaid) {
-            push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
+            push(consultingResponsePath, {
               [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
             });
           }
@@ -77,14 +85,14 @@ export default function CommentListItem({
         } else {
           // 다른 사람 글의 컨설팅 답변을 볼 때는 구글 애드몹 광고 표시
           showAdIfAllowed({ adType: AD_TYPE.VIEW_HAIR_CONSULTING_ANSWER });
-          push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
+          push(consultingResponsePath, {
             [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
           });
           return;
         }
       }
       // 디자이너인 경우 바로 답변 페이지로 이동
-      push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString()), {
+      push(consultingResponsePath, {
         [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
       });
     }
