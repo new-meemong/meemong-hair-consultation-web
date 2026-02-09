@@ -166,7 +166,7 @@ export default function CommentListItem({
               />
             </div>
             <div className="flex items-center gap-1.5">
-              {!isReply && (
+              {!isReply && !isConsultingAnswer && (
                 <Button variant="text" theme="text" size="text" onClick={handleReplyClick}>
                   답글달기
                 </Button>

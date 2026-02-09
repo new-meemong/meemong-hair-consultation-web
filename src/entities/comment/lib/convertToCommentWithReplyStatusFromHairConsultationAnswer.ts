@@ -1,0 +1,43 @@
+import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
+import type { HairConsultationAnswer } from '@/entities/posts/model/hair-consultation-answer';
+import type { ApiListResponse } from '@/shared/api/client';
+import type { InfiniteData } from '@tanstack/react-query';
+
+export default function convertToCommentWithReplyStatusFromHairConsultationAnswer(
+  data: InfiniteData<ApiListResponse<HairConsultationAnswer>> | undefined,
+): CommentWithReplyStatus[] {
+  if (!data) return [];
+
+  const seenAnswerIds = new Set<number>();
+  const results: CommentWithReplyStatus[] = [];
+
+  data.pages.forEach((page) => {
+    page.dataList.forEach((answer) => {
+      if (seenAnswerIds.has(answer.id)) return;
+      seenAnswerIds.add(answer.id);
+
+      results.push({
+        // Prevent id collisions with comment ids in a mixed list.
+        id: -answer.id,
+        content: answer.title,
+        isVisibleToModel: false,
+        createdAt: answer.createdAt,
+        updatedAt: answer.updatedAt,
+        user: {
+          userId: answer.user.id,
+          displayName: answer.user.displayName,
+          profilePictureURL: answer.user.profilePictureURL,
+          companyName: null,
+          role: answer.user.role,
+        },
+        isReply: false,
+        isAnonymous: false,
+        answerId: answer.id,
+        isConsultingAnswer: true,
+        hasAnswerImages: (answer.styleImages?.length ?? 0) > 0,
+      });
+    });
+  });
+
+  return results;
+}
