@@ -48,10 +48,11 @@ export default function useCreateHairConsultationAnswer(hairConsultationId: stri
 
     const title = data.style.description?.trim() || data.comment?.trim() || '컨설팅 답변';
     const description = data.comment?.trim() || data.style.description?.trim() || undefined;
+    const isFaceShapeAdvice = data.isFaceShapeAdvice ?? false;
 
     const request: CreateHairConsultationAnswerRequest = {
-      faceShape: FACE_SHAPE_LABEL[data.faceShape],
-      isFaceShapeAdvice: false,
+      faceShape: isFaceShapeAdvice ? undefined : FACE_SHAPE_LABEL[data.faceShape],
+      isFaceShapeAdvice,
       bangsTypes: bangsType ? [bangsType] : undefined,
       isBangsTypeAdvice: data.bangsRecommendation.needStoreConsulting,
       hairCurls: selectedHairCurl ? [selectedHairCurl] : undefined,

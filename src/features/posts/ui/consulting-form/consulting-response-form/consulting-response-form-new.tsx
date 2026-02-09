@@ -87,8 +87,12 @@ export default function ConsultingResponseFormNew({
     name: KeyOf<ConsultingResponseFormValues> | Array<KeyOf<ConsultingResponseFormValues>>,
   ) => {
     if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE) {
-      const value = method.getValues(name);
-      return !!value;
+      const faceShape = method.getValues(name);
+      const isFaceShapeAdvice = method.getValues(
+        CONSULTING_RESPONSE_FORM_FIELD_NAME.IS_FACE_SHAPE_ADVICE,
+      );
+
+      return !!faceShape || !!isFaceShapeAdvice;
     }
     if (
       name === CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE ||

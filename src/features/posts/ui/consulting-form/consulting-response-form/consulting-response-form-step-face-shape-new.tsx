@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { FACE_TYPE_OPTIONS_NEW, type FACE_SHAPE } from '@/features/posts/constants/face-shape';
@@ -49,15 +48,39 @@ function FaceTypeOption({ option, selected, onClick }: FaceTypeOptionProps) {
 export default function ConsultingResponseFormStepFaceShapeNew() {
   const { control, setValue } = useFormContext<ConsultingResponseFormValues>();
 
-  const [isNeedConsultation, setIsNeedConsultation] = useState(false);
-
   const selectedFaceType = useWatch({
     control,
     name: CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE,
   });
+  const isFaceShapeAdvice = useWatch({
+    control,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.IS_FACE_SHAPE_ADVICE,
+  });
 
   const handleSelect = (faceType: ValueOf<typeof FACE_SHAPE>) => {
     setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE, faceType, { shouldDirty: true });
+
+    if (isFaceShapeAdvice) {
+      setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.IS_FACE_SHAPE_ADVICE, false, {
+        shouldDirty: true,
+      });
+    }
+  };
+
+  const handleNeedConsultationChange = () => {
+    const nextValue = !isFaceShapeAdvice;
+
+    setValue(CONSULTING_RESPONSE_FORM_FIELD_NAME.IS_FACE_SHAPE_ADVICE, nextValue, {
+      shouldDirty: true,
+    });
+
+    if (nextValue) {
+      setValue(
+        CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE,
+        undefined as unknown as ConsultingResponseFormValues[typeof CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE],
+        { shouldDirty: true, shouldValidate: true },
+      );
+    }
   };
 
   return (
@@ -67,21 +90,24 @@ export default function ConsultingResponseFormStepFaceShapeNew() {
           <FaceTypeOption
             key={option.value}
             option={option}
-            selected={selectedFaceType === option.value}
+            selected={!isFaceShapeAdvice && selectedFaceType === option.value}
             onClick={() => handleSelect(option.value)}
           />
         ))}
       </div>
 
       <div className="mt-7 flex items-center justify-end gap-2">
-        <Label htmlFor="face-shape-new-need-consultation" className="typo-body-3-regular text-label-sub">
+        <Label
+          htmlFor="face-shape-new-need-consultation"
+          className="typo-body-3-regular text-label-sub"
+        >
           매장 상담이 필요해요
         </Label>
         <Checkbox
           id="face-shape-new-need-consultation"
           shape="round"
-          checked={isNeedConsultation}
-          onChange={() => setIsNeedConsultation((prev) => !prev)}
+          checked={!!isFaceShapeAdvice}
+          onChange={handleNeedConsultationChange}
         />
       </div>
     </div>

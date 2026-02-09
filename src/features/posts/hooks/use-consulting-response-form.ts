@@ -1,9 +1,9 @@
-import { useForm } from 'react-hook-form';
-
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../types/consulting-response-form-values';
+import { useForm } from 'react-hook-form';
 
 const DEFAULT_FORM_VALUES: Partial<ConsultingResponseFormValues> = {
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.IS_FACE_SHAPE_ADVICE]: false,
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE]: {
     value: null,
     needStoreConsulting: false,

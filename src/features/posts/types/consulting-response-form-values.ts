@@ -1,9 +1,8 @@
-import { z } from 'zod';
-
 import { BANG_STYLE } from '../constants/bang-style';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../constants/consulting-response-form-field-name';
 import { FACE_SHAPE } from '../constants/face-shape';
 import { HAIR_TYPE } from '../constants/hair-type';
+import { z } from 'zod';
 
 const FACE_SHAPE_VALUES = [
   FACE_SHAPE.OVAL,
@@ -36,6 +35,7 @@ const BANG_TYLE_VALUES = [
 export const consultingResponseFormSchema = z.object({
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.POST_ID]: z.string(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.FACE_SHAPE]: z.enum(FACE_SHAPE_VALUES),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.IS_FACE_SHAPE_ADVICE]: z.boolean().optional(),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_TYPE]: z.object({
     value: z.enum(HAIR_TYPE_VALUES).nullable(),
     needStoreConsulting: z.boolean(),
