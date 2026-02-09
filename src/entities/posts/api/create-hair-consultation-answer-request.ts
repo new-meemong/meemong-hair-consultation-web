@@ -30,18 +30,28 @@ export type HairConsultationAnswerHairCurl = '스트레이트' | 'J컬' | 'C컬'
 export type HairConsultationAnswerPriceType = 'RANGE' | 'SINGLE';
 
 export type CreateHairConsultationAnswerRequest = {
-  faceShape: HairConsultationAnswerFaceShape;
-  bangsTypes: string[];
-  hairLengths: HairConsultationAnswerHairLength[];
+  faceShape?: HairConsultationAnswerFaceShape;
+  isFaceShapeAdvice?: boolean;
+
+  bangsTypes?: string[];
+  isBangsTypeAdvice?: boolean;
+
+  hairLengths?: HairConsultationAnswerHairLength[];
   isHairLengthAdvice?: boolean;
+
   hairLayers?: HairConsultationAnswerHairLayer[];
   isHairLayerAdvice?: boolean;
-  hairCurls: HairConsultationAnswerHairCurl[];
+
+  hairCurls?: HairConsultationAnswerHairCurl[];
   isHairCurlAdvice?: boolean;
+
   title: string;
   styleImages?: string[];
+
   priceType: HairConsultationAnswerPriceType;
   minPrice?: number;
   maxPrice?: number;
   price?: number;
+
+  description?: string;
 };

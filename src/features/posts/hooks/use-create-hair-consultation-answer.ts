@@ -2,13 +2,13 @@ import type {
   CreateHairConsultationAnswerRequest,
   HairConsultationAnswerHairCurl,
 } from '@/entities/posts/api/create-hair-consultation-answer-request';
+
 import { BANG_STYLE_LABEL } from '../constants/bang-style';
+import type { ConsultingResponseFormValues } from '../types/consulting-response-form-values';
 import { FACE_SHAPE_LABEL } from '../constants/face-shape';
 import { HAIR_TYPE } from '../constants/hair-type';
-
 import useCreateHairConsultationAnswerMutation from '../api/use-create-hair-consultation-answer-mutation';
 import useUploadPostImageMutation from '../api/use-upload-post-image';
-import type { ConsultingResponseFormValues } from '../types/consulting-response-form-values';
 
 const HAIR_TYPE_TO_HAIR_CURL_MAP: Record<string, HairConsultationAnswerHairCurl> = {
   [HAIR_TYPE.STRAIGHT]: '스트레이트',
@@ -17,9 +17,7 @@ const HAIR_TYPE_TO_HAIR_CURL_MAP: Record<string, HairConsultationAnswerHairCurl>
   [HAIR_TYPE.MALIGNANT_CURLY]: 'SS컬',
 };
 
-export default function useCreateHairConsultationAnswer(
-  hairConsultationId: string,
-) {
+export default function useCreateHairConsultationAnswer(hairConsultationId: string) {
   const { mutateAsync: uploadImages, isPending: isUploadingImages } = useUploadPostImageMutation();
   const { mutateAsync: createHairConsultationAnswer, isPending: isCreatingHairConsultationAnswer } =
     useCreateHairConsultationAnswerMutation(hairConsultationId);
@@ -49,19 +47,21 @@ export default function useCreateHairConsultationAnswer(
     const maxPrice = Math.max(...treatmentMaxPrices);
 
     const title = data.style.description?.trim() || data.comment?.trim() || '컨설팅 답변';
+    const description = data.comment?.trim() || data.style.description?.trim() || undefined;
 
     const request: CreateHairConsultationAnswerRequest = {
       faceShape: FACE_SHAPE_LABEL[data.faceShape],
-      bangsTypes: bangsType ? [bangsType] : [],
-      hairLengths: [],
-      isHairLengthAdvice: false,
-      hairCurls: selectedHairCurl ? [selectedHairCurl] : [],
-      isHairCurlAdvice: selectedHairCurl != null,
+      isFaceShapeAdvice: false,
+      bangsTypes: bangsType ? [bangsType] : undefined,
+      isBangsTypeAdvice: data.bangsRecommendation.needStoreConsulting,
+      hairCurls: selectedHairCurl ? [selectedHairCurl] : undefined,
+      isHairCurlAdvice: data.hairType.needStoreConsulting,
       title,
-      styleImages,
+      styleImages: styleImages.length > 0 ? styleImages : undefined,
       priceType: 'RANGE',
       minPrice,
       maxPrice,
+      description,
     };
 
     const response = await createHairConsultationAnswer(request);
