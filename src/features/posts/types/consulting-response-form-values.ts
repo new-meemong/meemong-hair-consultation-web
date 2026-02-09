@@ -22,14 +22,49 @@ const HAIR_TYPE_VALUES = [
   HAIR_TYPE.STRAIGHT,
 ] as const;
 
+const HAIR_LENGTH_RECOMMENDATION_VALUES = [
+  '크롭',
+  '숏',
+  '미디엄',
+  '미디엄롱',
+  '롱',
+  '장발',
+  '숏컷',
+  '단발',
+  '중단발',
+] as const;
+
+const HAIR_LAYER_RECOMMENDATION_VALUES = [
+  '원랭스',
+  '로우 레이어드',
+  '미디엄 레이어드',
+  '하이 레이어드',
+] as const;
+
+const HAIR_CURL_RECOMMENDATION_VALUES = [
+  '스트레이트',
+  'J컬',
+  'C컬',
+  'CS컬',
+  'S컬',
+  'SS컬',
+] as const;
+
 const BANG_TYLE_VALUES = [
+  BANG_STYLE.MALE_COVERED,
+  BANG_STYLE.MALE_PARTED,
+  BANG_STYLE.MALE_SWEPT_BACK,
+  BANG_STYLE.MALE_UP,
+  BANG_STYLE.FEMALE_NO_BANGS,
+  BANG_STYLE.FEMALE_SIDE_CURTAIN,
+  BANG_STYLE.FEMALE_SEE_THROUGH,
+  BANG_STYLE.FEMALE_FULL,
   BANG_STYLE.ALL,
   BANG_STYLE.COVERED_FOREHEAD,
   BANG_STYLE.EXPOSED_FOREHEAD,
   BANG_STYLE.NO_BANGS,
   BANG_STYLE.SIDE_SWEPT_BANGS,
   BANG_STYLE.STRAIGHT_BANGS,
-  BANG_STYLE.ALL,
 ] as const;
 
 export const consultingResponseFormSchema = z.object({
@@ -40,12 +75,25 @@ export const consultingResponseFormSchema = z.object({
     value: z.enum(HAIR_TYPE_VALUES).nullable(),
     needStoreConsulting: z.boolean(),
   }),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_LENGTHS_RECOMMENDATION]: z.object({
+    values: z.array(z.enum(HAIR_LENGTH_RECOMMENDATION_VALUES)),
+    needStoreConsulting: z.boolean(),
+  }),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_LAYERS_RECOMMENDATION]: z.object({
+    values: z.array(z.enum(HAIR_LAYER_RECOMMENDATION_VALUES)),
+    needStoreConsulting: z.boolean(),
+  }),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_CURLS_RECOMMENDATION]: z.object({
+    values: z.array(z.enum(HAIR_CURL_RECOMMENDATION_VALUES)),
+    needStoreConsulting: z.boolean(),
+  }),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL]: z.object({
     value: z.number().nullable(),
     needStoreConsulting: z.boolean(),
   }),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION]: z.object({
     value: z.enum(BANG_TYLE_VALUES).nullable(),
+    values: z.array(z.enum(BANG_TYLE_VALUES)),
     needStoreConsulting: z.boolean(),
   }),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE]: z.object({

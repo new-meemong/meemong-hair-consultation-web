@@ -29,6 +29,61 @@ const mapMyImageType = (subType: string) => {
   }
 };
 
+const MALE_SKIN_BRIGHTNESS_VALUES = new Set([
+  '매우 밝은/하얀 피부',
+  '밝은 피부',
+  '보통 피부',
+  '까만 피부',
+  '매우 어두운/까만 피부',
+]);
+
+const FEMALE_SKIN_BRIGHTNESS_VALUES = new Set([
+  '18호 이하',
+  '19~21호',
+  '22~23호',
+  '24~25호',
+  '26호 이상',
+]);
+
+const MALE_ONLY_HAIR_LENGTH_VALUES = new Set(['크롭', '숏', '장발']);
+const FEMALE_ONLY_HAIR_LENGTH_VALUES = new Set(['숏컷', '단발', '중단발']);
+
+const normalizeUserSex = (sex: string | number | null | undefined) => {
+  if (sex == null) return null;
+
+  if (sex === USER_SEX.MALE || sex === 'MALE' || sex === 'male' || sex === 1 || sex === '1') {
+    return USER_SEX.MALE;
+  }
+
+  if (sex === USER_SEX.FEMALE || sex === 'FEMALE' || sex === 'female' || sex === 2 || sex === '2') {
+    return USER_SEX.FEMALE;
+  }
+
+  return null;
+};
+
+const inferUserSex = (detail: HairConsultationDetail) => {
+  if (detail.skinBrightness) {
+    if (MALE_SKIN_BRIGHTNESS_VALUES.has(detail.skinBrightness)) {
+      return USER_SEX.MALE;
+    }
+    if (FEMALE_SKIN_BRIGHTNESS_VALUES.has(detail.skinBrightness)) {
+      return USER_SEX.FEMALE;
+    }
+  }
+
+  if (detail.hairLength) {
+    if (MALE_ONLY_HAIR_LENGTH_VALUES.has(detail.hairLength)) {
+      return USER_SEX.MALE;
+    }
+    if (FEMALE_ONLY_HAIR_LENGTH_VALUES.has(detail.hairLength)) {
+      return USER_SEX.FEMALE;
+    }
+  }
+
+  return null;
+};
+
 export default function mapHairConsultationDetailToPostDetail(
   detail: HairConsultationDetail,
 ): PostDetail {
@@ -60,6 +115,14 @@ export default function mapHairConsultationDetailToPostDetail(
     null;
   const creatorRegion = detail.user?.address ?? detail.hairConsultationCreateUserRegion ?? null;
   const creatorId = detail.user?.id ?? detail.hairConsultationCreateUserId ?? 0;
+  const creatorSex =
+    normalizeUserSex(
+      detail.user?.sex ??
+        detail.hairConsultationCreateUserSex ??
+        detail.hairConsultationCreateUser?.sex,
+    ) ??
+    inferUserSex(detail) ??
+    USER_SEX.FEMALE;
 
   return {
     id: detail.id,
@@ -76,7 +139,7 @@ export default function mapHairConsultationDetailToPostDetail(
     hairConsultPostingCreateUserName: creatorName,
     hairConsultPostingCreateUserProfileImageUrl: creatorProfileImageUrl,
     hairConsultPostingCreateUserRegion: creatorRegion,
-    hairConsultPostingCreateUserSex: USER_SEX.FEMALE,
+    hairConsultPostingCreateUserSex: creatorSex,
     hairConsultPostingCreateUserRole: USER_ROLE.MODEL,
     hairConsultPostingCreateUserId: creatorId,
     hairConcern,

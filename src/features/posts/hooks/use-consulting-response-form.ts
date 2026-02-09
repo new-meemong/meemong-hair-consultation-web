@@ -8,12 +8,25 @@ const DEFAULT_FORM_VALUES: Partial<ConsultingResponseFormValues> = {
     value: null,
     needStoreConsulting: false,
   },
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_LENGTHS_RECOMMENDATION]: {
+    values: [],
+    needStoreConsulting: false,
+  },
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_LAYERS_RECOMMENDATION]: {
+    values: [],
+    needStoreConsulting: false,
+  },
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_CURLS_RECOMMENDATION]: {
+    values: [],
+    needStoreConsulting: false,
+  },
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL]: {
     value: 1,
     needStoreConsulting: false,
   },
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION]: {
     value: null,
+    values: [],
     needStoreConsulting: false,
   },
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE]: {

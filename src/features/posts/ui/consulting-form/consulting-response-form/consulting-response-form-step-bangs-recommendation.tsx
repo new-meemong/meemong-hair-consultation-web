@@ -28,7 +28,7 @@ export default function ConsultingResponseFormStepBangsRecommendation() {
   const handleNeedStoreConsultingChange = () => {
     setValue(
       CONSULTING_RESPONSE_FORM_FIELD_NAME.BANGS_RECOMMENDATION,
-      { value: null, needStoreConsulting: !needStoreConsulting },
+      { value: null, values: [], needStoreConsulting: !needStoreConsulting },
       {
         shouldDirty: true,
       },

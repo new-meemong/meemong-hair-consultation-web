@@ -48,16 +48,19 @@ export type HairConsultationDetail = {
     address: string | null;
     displayName: string;
     profilePictureURL: string | null;
+    sex?: string | number | null;
   };
 
   // Legacy-compatible fallback fields (optional)
   hairConsultationCreateUserRegion?: string | null;
   hairConsultationCreateUserId?: number;
+  hairConsultationCreateUserSex?: string | number | null;
   hairConsultationCreateUserName?: string | null;
   hairConsultationCreateUserProfileImageUrl?: string | null;
   hairConsultationCreateUser?: {
     userId: number;
     name: string;
     profilePictureURL: string | null;
+    sex?: string | number | null;
   } | null;
 };
