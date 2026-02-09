@@ -15,6 +15,7 @@ type ProgressPaginationProps = {
   onNextButtonClick?: () => void;
   onPreviousButtonClick?: () => void;
   isSubmitting?: boolean;
+  isLoading?: boolean;
 };
 
 type PageButtonProps = {
@@ -65,7 +66,9 @@ export default function ProgressPagination({
   onNextButtonClick,
   onPreviousButtonClick,
   isSubmitting = false,
+  isLoading = false,
 }: ProgressPaginationProps) {
+  const submitLoading = isSubmitting || isLoading;
   const progressPercentage = (current / total) * 100;
 
   const handleNextButtonClick = () => {
@@ -112,7 +115,7 @@ export default function ProgressPagination({
             isActive={current <= total && !disabledToNext}
             onClick={handleNextButtonClick}
             label={nextButtonLabel}
-            isLoading={isSubmitting}
+            isLoading={submitLoading}
           />
         </div>
       </div>

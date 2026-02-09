@@ -50,6 +50,7 @@ export type PostDetail = {
   skinTone?: ValueOf<typeof SKIN_TONE_OPTION_LABEL> | null;
   treatments?: Treatment[];
   myImageList?: MyImage[];
+  modelImageList?: string[];
   aspirations?: Aspirations;
   isAnsweredByDesigner?: boolean;
   minPaymentPrice: number | null;

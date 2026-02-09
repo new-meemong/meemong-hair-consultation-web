@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+
 import type { FormStep } from '../type/form-step';
 import { cn } from '../lib';
 
@@ -12,7 +14,10 @@ export default function MultiStepFormItem<T extends Record<string, unknown>>({
   step,
   className,
 }: MultiStepFormItemProps<T>) {
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const {
+    name,
     question,
     required,
     description,
@@ -22,6 +27,11 @@ export default function MultiStepFormItem<T extends Record<string, unknown>>({
     descriptionClassName,
     hideRequired,
   } = step;
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+    contentRef.current.scrollTop = 0;
+  }, [name]);
 
   return (
     <>
@@ -65,7 +75,9 @@ export default function MultiStepFormItem<T extends Record<string, unknown>>({
             )}
           </div>
         )}
-        <div className="flex-1 overflow-y-auto scrollbar-hide pb-7">{children}</div>
+        <div ref={contentRef} className="flex-1 overflow-y-auto scrollbar-hide pb-7">
+          {children}
+        </div>
       </div>
       <div id={MULTI_STEP_FORM_PORTAL_ID} />
     </>

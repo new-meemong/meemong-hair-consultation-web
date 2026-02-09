@@ -81,11 +81,13 @@ export default function PostDetailConsultingContentNew({
     desiredDate,
     createdAt,
     myImageList,
+    modelImageList,
     treatments,
     aspirations,
   } = postDetail;
 
   const myImageUrls = myImageList?.map(({ imageUrl }) => imageUrl) ?? [];
+  const profileImageUrls = modelImageList ?? [];
   const aspirationImageUrls = aspirations?.aspirationImages ?? [];
   const aspirationDescription = aspirations?.aspirationDescription?.trim() ?? '';
   const [isTreatmentsExpanded, setIsTreatmentsExpanded] = useState(false);
@@ -140,12 +142,29 @@ export default function PostDetailConsultingContentNew({
           <p className="typo-title-3-semibold text-label-default">{title}</p>
           {concern && <p className="typo-body-1-long-regular text-label-default">{concern}</p>}
         </div>
-        {myImageUrls &&
-          (hiddenImages ? (
-            <HiddenImageAlertBox />
-          ) : (
-            <ImageList images={myImageUrls} size="large" />
-          ))}
+        <div>
+          <p className="typo-body-1-semibold text-label-default">참고 사진</p>
+          <p className="mt-1 typo-body-2-long-regular text-label-info">
+            첫번째 사진은 최근 7일 내 사진입니다
+          </p>
+          <div className="mt-3">
+            {hiddenImages ? (
+              <HiddenImageAlertBox />
+            ) : (
+              <ImageList images={myImageUrls} size="large" />
+            )}
+          </div>
+          <div className="mt-5">
+            <p className="typo-body-1-semibold text-label-default">프로필사진</p>
+            <div className="mt-3">
+              {hiddenImages ? (
+                <HiddenImageAlertBox />
+              ) : (
+                <ImageList images={profileImageUrls} size="large" />
+              )}
+            </div>
+          </div>
+        </div>
       </div>
       <Separator />
       <div className="flex flex-col px-5 mt-7">

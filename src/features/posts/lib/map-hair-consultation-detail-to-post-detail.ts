@@ -153,6 +153,7 @@ export default function mapHairConsultationDetailToPostDetail(
       type: mapMyImageType(subType),
       imageUrl,
     })),
+    modelImageList: (detail.modelImages ?? []).map(({ imageURL }) => imageURL),
     aspirations: {
       aspirationImages: (detail.aspirationImages ?? []).map(({ imageUrl }) => imageUrl),
       aspirationDescription: detail.aspirationImageDescription,

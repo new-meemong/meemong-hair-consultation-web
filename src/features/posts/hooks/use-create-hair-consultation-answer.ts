@@ -1,4 +1,5 @@
-import { BANG_STYLE_LABEL } from '../constants/bang-style';
+import { BANG_STYLE, BANG_STYLE_LABEL } from '../constants/bang-style';
+
 import type { ConsultingResponseFormValues } from '../types/consulting-response-form-values';
 import type { CreateHairConsultationAnswerRequest } from '@/entities/posts/api/create-hair-consultation-answer-request';
 import { FACE_SHAPE_LABEL } from '../constants/face-shape';
@@ -14,6 +15,12 @@ export default function useCreateHairConsultationAnswer(hairConsultationId: stri
     data: ConsultingResponseFormValues,
     { onSuccess }: { onSuccess: () => void },
   ) => {
+    const bangStyleServerLabelMap: Record<keyof typeof BANG_STYLE_LABEL, string> = {
+      ...BANG_STYLE_LABEL,
+      [BANG_STYLE.FEMALE_NO_BANGS]: '노 뱅',
+      [BANG_STYLE.FEMALE_FULL]: '풀 뱅',
+    };
+
     const uploadedStyleImageUrls =
       data.style.imageFiles.length > 0 ? await uploadImages(data.style.imageFiles) : null;
     const styleImages = [
@@ -22,13 +29,13 @@ export default function useCreateHairConsultationAnswer(hairConsultationId: stri
     ];
 
     const bangsTypesFromValues = data.bangsRecommendation.values.map(
-      (value) => BANG_STYLE_LABEL[value],
+      (value) => bangStyleServerLabelMap[value],
     );
     const bangsTypes =
       bangsTypesFromValues.length > 0
         ? bangsTypesFromValues
         : data.bangsRecommendation.value != null
-          ? [BANG_STYLE_LABEL[data.bangsRecommendation.value]]
+          ? [bangStyleServerLabelMap[data.bangsRecommendation.value]]
           : undefined;
 
     const title = data.answerTreatmentName.trim() || '컨설팅 답변';

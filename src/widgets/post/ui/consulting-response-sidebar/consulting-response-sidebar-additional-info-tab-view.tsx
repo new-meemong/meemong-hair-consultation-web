@@ -13,6 +13,10 @@ type ConsultingResponseSidebarAdditionalInfoTabViewProps = {
   treatments: Treatment[];
   minPaymentPrice: number | null;
   maxPaymentPrice: number | null;
+  showHairConcern?: boolean;
+  showTreatments?: boolean;
+  showSkinTone?: boolean;
+  showPaymentPrice?: boolean;
 };
 
 export default function ConsultingResponseSidebarAdditionalInfoTabView({
@@ -21,19 +25,31 @@ export default function ConsultingResponseSidebarAdditionalInfoTabView({
   treatments,
   minPaymentPrice,
   maxPaymentPrice,
+  showHairConcern = true,
+  showTreatments = true,
+  showSkinTone = true,
+  showPaymentPrice = true,
 }: ConsultingResponseSidebarAdditionalInfoTabViewProps) {
+  const hasVisibleSection =
+    (showHairConcern && !!hairConcern) ||
+    (showTreatments && treatments.length > 0) ||
+    (showSkinTone && !!skinToneValue) ||
+    (showPaymentPrice && !!minPaymentPrice && !!maxPaymentPrice);
+
+  if (!hasVisibleSection) return null;
+
   return (
     <div className="flex flex-col py-8 gap-5">
-      {hairConcern && (
+      {showHairConcern && hairConcern && (
         <ConsultingResponseSidebarItem label="고민 내용">
           <p className="typo-body-2-long-regular text-label-info whitespace-pre-line">
             {hairConcern}
           </p>
         </ConsultingResponseSidebarItem>
       )}
-      {treatments.length > 0 && (
+      {showTreatments && treatments.length > 0 && (
         <>
-          <Separator />
+          {(showHairConcern && !!hairConcern) && <Separator />}
           <ConsultingResponseSidebarItem label="최근 2년간 받은 시술">
             {treatments.map(({ treatmentName, treatmentDate }, index) => (
               <ConsultingInputResultListItem
@@ -45,9 +61,11 @@ export default function ConsultingResponseSidebarAdditionalInfoTabView({
           </ConsultingResponseSidebarItem>
         </>
       )}
-      {skinToneValue && (
+      {showSkinTone && skinToneValue && (
         <>
-          <Separator />
+          {(showHairConcern && !!hairConcern) || (showTreatments && treatments.length > 0) ? (
+            <Separator />
+          ) : null}
           <ConsultingResponseSidebarItem
             label="피부톤"
             className="flex flex-row items-center justify-between"
@@ -56,9 +74,13 @@ export default function ConsultingResponseSidebarAdditionalInfoTabView({
           </ConsultingResponseSidebarItem>
         </>
       )}
-      {minPaymentPrice && maxPaymentPrice && (
+      {showPaymentPrice && minPaymentPrice && maxPaymentPrice && (
         <>
-          <Separator />
+          {(showHairConcern && !!hairConcern) ||
+          (showTreatments && treatments.length > 0) ||
+          (showSkinTone && !!skinToneValue) ? (
+            <Separator />
+          ) : null}
           <ConsultingResponseSidebarItem label="원하는 시술 가격대">
             <p className="typo-body-2-long-regular text-label-sub">
               {minPaymentPrice.toLocaleString()}원~{maxPaymentPrice.toLocaleString()}원

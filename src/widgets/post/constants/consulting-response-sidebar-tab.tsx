@@ -1,28 +1,26 @@
-import ArticleIcon from '@/assets/icons/article.svg';
-import GalleryIcon from '@/assets/icons/gallery.svg';
-import StarIcon from '@/assets/icons/star.svg';
-
 export const CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE = {
-  CURRENT_STATE: 'currentState',
-  DESIRED_STYLE: 'desiredStyle',
-  ADDITIONAL_INFO: 'additionalInfo',
+  PHOTOS: 'photos',
+  TREATMENTS: 'treatments',
+  PREFERRED_STYLE: 'preferredStyle',
+  ETC: 'etc',
 } as const;
 
 export const CONSULTING_RESPONSE_SIDEBAR_TAB = {
-  [CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.CURRENT_STATE]: {
-    label: '현재 상태',
-    value: CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.CURRENT_STATE,
-    icon: <GalleryIcon className="size-4 fill-label-info group-data-[state=on]:fill-white" />,
+  [CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.PHOTOS]: {
+    label: '사진',
+    value: CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.PHOTOS,
   },
-  [CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.DESIRED_STYLE]: {
-    label: '추구미',
-    value: CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.DESIRED_STYLE,
-    icon: <StarIcon className="size-4 fill-label-info group-data-[state=on]:fill-white" />,
+  [CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.TREATMENTS]: {
+    label: '시술이력',
+    value: CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.TREATMENTS,
   },
-  [CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.ADDITIONAL_INFO]: {
-    label: '추가 정보',
-    value: CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.ADDITIONAL_INFO,
-    icon: <ArticleIcon className="size-4 fill-label-info group-data-[state=on]:fill-white" />,
+  [CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.PREFERRED_STYLE]: {
+    label: '선호스타일',
+    value: CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.PREFERRED_STYLE,
+  },
+  [CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.ETC]: {
+    label: '기타',
+    value: CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.ETC,
   },
 } as const;
 

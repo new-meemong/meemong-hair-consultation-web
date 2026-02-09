@@ -17,6 +17,11 @@ export type HairConsultationMyImage = {
   subType: string;
 };
 
+export type HairConsultationModelImage = {
+  id: number;
+  imageURL: string;
+};
+
 export type HairConsultationDetail = {
   id: number;
   title: string;
@@ -41,6 +46,7 @@ export type HairConsultationDetail = {
   treatments: HairConsultationTreatment[];
   aspirationImages: HairConsultationImage[];
   myImages: HairConsultationMyImage[];
+  modelImages: HairConsultationModelImage[];
   isFavorited: boolean;
   isRead: boolean;
   user: {
