@@ -15,6 +15,7 @@ type ImageUploaderListProps = {
   setImageUrls?: (newImageUrls: string[]) => void;
   setImageFiles: (newImageFiles: File[]) => void;
   maxImageCount: number;
+  itemSize?: number;
 };
 
 export default function ImageUploaderList({
@@ -24,6 +25,7 @@ export default function ImageUploaderList({
   setImageUrls,
   setImageFiles,
   maxImageCount,
+  itemSize = 120,
 }: ImageUploaderListProps) {
   const images = getImages(imageFiles, imageUrls);
 
@@ -62,6 +64,7 @@ export default function ImageUploaderList({
           currentImage={null}
           multiple={true}
           validateImageCount={validateImageCount}
+          size={itemSize}
         />
       )}
       {images.map((image, index) => (
@@ -69,6 +72,7 @@ export default function ImageUploaderList({
           key={`${image.name}-${index}`}
           image={image}
           handleImageDelete={handleImageDelete}
+          size={itemSize}
         />
       ))}
     </div>

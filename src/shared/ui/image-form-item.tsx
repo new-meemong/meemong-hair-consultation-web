@@ -16,11 +16,16 @@ export type Image = {
 type ImageFormItemProps = {
   image: Image;
   handleImageDelete: (image: Image) => void;
+  size?: number;
 };
 
-export default function ImageFormItem({ image, handleImageDelete }: ImageFormItemProps) {
+export default function ImageFormItem({
+  image,
+  handleImageDelete,
+  size = 120,
+}: ImageFormItemProps) {
   return (
-    <div className="relative w-[120px] h-[120px] flex-shrink-0">
+    <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
       <Image
         src={image.src}
         alt={`업로드 이미지 ${image.name}`}

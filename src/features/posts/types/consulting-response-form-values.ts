@@ -87,6 +87,13 @@ export const consultingResponseFormSchema = z.object({
     values: z.array(z.enum(HAIR_CURL_RECOMMENDATION_VALUES)),
     needStoreConsulting: z.boolean(),
   }),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.ANSWER_TREATMENT_NAME]: z.string(),
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.ANSWER_PRICE_INFO]: z.object({
+    priceType: z.enum(['SINGLE', 'RANGE']),
+    singlePrice: z.number().nullable(),
+    minPrice: z.number().nullable(),
+    maxPrice: z.number().nullable(),
+  }),
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL]: z.object({
     value: z.number().nullable(),
     needStoreConsulting: z.boolean(),

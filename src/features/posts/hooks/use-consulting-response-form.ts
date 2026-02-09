@@ -20,6 +20,13 @@ const DEFAULT_FORM_VALUES: Partial<ConsultingResponseFormValues> = {
     values: [],
     needStoreConsulting: false,
   },
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.ANSWER_TREATMENT_NAME]: '',
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.ANSWER_PRICE_INFO]: {
+    priceType: 'SINGLE',
+    singlePrice: null,
+    minPrice: null,
+    maxPrice: null,
+  },
   [CONSULTING_RESPONSE_FORM_FIELD_NAME.DAMAGE_LEVEL]: {
     value: 1,
     needStoreConsulting: false,
@@ -34,6 +41,7 @@ const DEFAULT_FORM_VALUES: Partial<ConsultingResponseFormValues> = {
     imageUrls: [],
     description: '',
   },
+  [CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS]: [],
 };
 
 export default function useConsultingResponseForm({ postId }: { postId: string }) {

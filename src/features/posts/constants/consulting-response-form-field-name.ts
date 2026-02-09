@@ -6,6 +6,8 @@ export const CONSULTING_RESPONSE_FORM_FIELD_NAME = {
   HAIR_LENGTHS_RECOMMENDATION: 'hairLengthsRecommendation',
   HAIR_LAYERS_RECOMMENDATION: 'hairLayersRecommendation',
   HAIR_CURLS_RECOMMENDATION: 'hairCurlsRecommendation',
+  ANSWER_TREATMENT_NAME: 'answerTreatmentName',
+  ANSWER_PRICE_INFO: 'answerPriceInfo',
   DAMAGE_LEVEL: 'damageLevel',
   BANGS_RECOMMENDATION: 'bangsRecommendation',
   STYLE: 'style',

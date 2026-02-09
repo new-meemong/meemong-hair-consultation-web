@@ -15,7 +15,7 @@ import MultiStepForm from '@/shared/ui/multi-step-form';
 import ConsultingResponseFormStepBangsRecommendationNew from './consulting-response-form-step-bangs-recommendation-new';
 import ConsultingResponseFormStepFaceShapeNew from './consulting-response-form-step-face-shape-new';
 import ConsultingResponseFormStepHairRecommendationNew from './consulting-response-form-step-hair-recommendation-new';
-import ConsultingResponseFormStepTreatments from './consulting-response-form-step-treatments';
+import ConsultingResponseFormStepTreatmentsNew from './consulting-response-form-step-treatments-new';
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
 
@@ -44,11 +44,11 @@ const CONSULTING_RESPONSE_FORM_STEPS: FormStep<ConsultingResponseFormValues>[] =
     children: <ConsultingResponseFormStepHairRecommendationNew />,
   },
   {
-    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS,
+    name: CONSULTING_RESPONSE_FORM_FIELD_NAME.ANSWER_TREATMENT_NAME,
     question: '추천 시술과 가격정보를 알려주세요',
     questionClassName: 'typo-headline-semibold text-label-default',
     required: true,
-    children: <ConsultingResponseFormStepTreatments />,
+    children: <ConsultingResponseFormStepTreatmentsNew />,
   },
 ];
 
@@ -126,9 +126,19 @@ export default function ConsultingResponseFormNew({
         ? isHairLengthsAnswered && isHairCurlsAnswered
         : isHairLengthsAnswered && isHairLayersAnswered && isHairCurlsAnswered;
     }
-    if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.TREATMENTS) {
-      const value = method.getValues(name);
-      return value && value.length > 0;
+    if (name === CONSULTING_RESPONSE_FORM_FIELD_NAME.ANSWER_TREATMENT_NAME) {
+      const treatmentName = method
+        .getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.ANSWER_TREATMENT_NAME)
+        .trim();
+      const priceInfo = method.getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.ANSWER_PRICE_INFO);
+
+      if (!treatmentName) return false;
+
+      if (priceInfo.priceType === 'SINGLE') {
+        return priceInfo.singlePrice != null;
+      }
+
+      return priceInfo.minPrice != null && priceInfo.maxPrice != null;
     }
     return !isCreatingHairConsultationAnswer;
   };

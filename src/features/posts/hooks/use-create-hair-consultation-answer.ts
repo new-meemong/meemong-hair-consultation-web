@@ -1,9 +1,6 @@
-import type {
-  CreateHairConsultationAnswerRequest,
-} from '@/entities/posts/api/create-hair-consultation-answer-request';
-
 import { BANG_STYLE_LABEL } from '../constants/bang-style';
 import type { ConsultingResponseFormValues } from '../types/consulting-response-form-values';
+import type { CreateHairConsultationAnswerRequest } from '@/entities/posts/api/create-hair-consultation-answer-request';
 import { FACE_SHAPE_LABEL } from '../constants/face-shape';
 import useCreateHairConsultationAnswerMutation from '../api/use-create-hair-consultation-answer-mutation';
 import useUploadPostImageMutation from '../api/use-upload-post-image';
@@ -34,13 +31,8 @@ export default function useCreateHairConsultationAnswer(hairConsultationId: stri
           ? [BANG_STYLE_LABEL[data.bangsRecommendation.value]]
           : undefined;
 
-    const treatmentMinPrices = data.treatments.map((treatment) => treatment.minPrice);
-    const treatmentMaxPrices = data.treatments.map((treatment) => treatment.maxPrice);
-    const minPrice = Math.min(...treatmentMinPrices);
-    const maxPrice = Math.max(...treatmentMaxPrices);
-
-    const title = data.style.description?.trim() || data.comment?.trim() || '컨설팅 답변';
-    const description = data.comment?.trim() || data.style.description?.trim() || undefined;
+    const title = data.answerTreatmentName.trim() || '컨설팅 답변';
+    const description = data.comment?.trim() || undefined;
     const isFaceShapeAdvice = data.isFaceShapeAdvice ?? false;
     const hasHairLengthAdvice =
       data.hairLengthsRecommendation.values.length > 0 ||
@@ -49,7 +41,8 @@ export default function useCreateHairConsultationAnswer(hairConsultationId: stri
       data.hairLayersRecommendation.values.length > 0 ||
       data.hairLayersRecommendation.needStoreConsulting;
     const hasHairCurlAdvice =
-      data.hairCurlsRecommendation.values.length > 0 || data.hairCurlsRecommendation.needStoreConsulting;
+      data.hairCurlsRecommendation.values.length > 0 ||
+      data.hairCurlsRecommendation.needStoreConsulting;
 
     const request: CreateHairConsultationAnswerRequest = {
       faceShape: isFaceShapeAdvice ? undefined : FACE_SHAPE_LABEL[data.faceShape],
@@ -82,9 +75,19 @@ export default function useCreateHairConsultationAnswer(hairConsultationId: stri
         : undefined,
       title,
       styleImages: styleImages.length > 0 ? styleImages : undefined,
-      priceType: 'RANGE',
-      minPrice,
-      maxPrice,
+      priceType: data.answerPriceInfo.priceType,
+      price:
+        data.answerPriceInfo.priceType === 'SINGLE'
+          ? (data.answerPriceInfo.singlePrice ?? undefined)
+          : undefined,
+      minPrice:
+        data.answerPriceInfo.priceType === 'RANGE'
+          ? (data.answerPriceInfo.minPrice ?? undefined)
+          : undefined,
+      maxPrice:
+        data.answerPriceInfo.priceType === 'RANGE'
+          ? (data.answerPriceInfo.maxPrice ?? undefined)
+          : undefined,
       description,
     };
 

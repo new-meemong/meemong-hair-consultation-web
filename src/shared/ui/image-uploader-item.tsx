@@ -14,6 +14,7 @@ type ImageUploaderProps = {
   onDelete?: (image: Image) => void;
   multiple?: boolean;
   validateImageCount?: (newImageLength?: number) => boolean;
+  size?: number;
 };
 
 export default function ImageUploaderItem({
@@ -23,6 +24,7 @@ export default function ImageUploaderItem({
   onDelete,
   multiple = false,
   validateImageCount,
+  size = 120,
 }: ImageUploaderProps) {
   const imageUploaderRef = useRef<ImageUploaderRef>(null);
 
@@ -41,10 +43,11 @@ export default function ImageUploaderItem({
   return (
     <div className="flex flex-col gap-2">
       {currentImage && onDelete ? (
-        <ImageFormItem image={currentImage} handleImageDelete={onDelete} />
+        <ImageFormItem image={currentImage} handleImageDelete={onDelete} size={size} />
       ) : (
         <button
-          className="w-[120px] h-[120px] rounded-6 bg-alternative flex items-center justify-center overflow-hidden"
+          className="rounded-6 bg-alternative flex items-center justify-center overflow-hidden"
+          style={{ width: size, height: size }}
           onClick={handleClick}
           type="button"
         >
