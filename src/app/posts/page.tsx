@@ -45,12 +45,6 @@ export default function PostsPage() {
   const listTabs = getPostListTabs(user.role);
 
   const handleWriteButtonClick = useCallback(() => {
-    router.push(ROUTES.POSTS_CREATE, {
-      [SEARCH_PARAMS.POST_TAB]: activePostTab,
-    });
-  }, [router, activePostTab]);
-
-  const handleNewWriteButtonClick = useCallback(() => {
     router.push(ROUTES.POSTS_NEW_CREATE, {
       [SEARCH_PARAMS.POST_TAB]: activePostTab,
     });
@@ -141,18 +135,8 @@ export default function PostsPage() {
 
       {/* 글쓰기 버튼 */}
       {isUserModel && (
-        <div className="fixed bottom-5 right-5 flex items-center gap-3">
-          <div className="relative">
-            <WritePostButton
-              onClick={handleNewWriteButtonClick}
-              className="bg-[#4A4A4A] hover:bg-[#5A5A5A]"
-              aria-label="신규 글쓰기"
-            />
-            <span className="absolute -top-1 -right-1 text-[10px] leading-none bg-white text-[#222222] px-1 py-0.5 rounded-full border border-[#222222]">
-              NEW
-            </span>
-          </div>
-          <WritePostButton onClick={handleWriteButtonClick} aria-label="기존 글쓰기" />
+        <div className="fixed bottom-5 right-5">
+          <WritePostButton onClick={handleWriteButtonClick} aria-label="글쓰기" />
         </div>
       )}
     </div>
