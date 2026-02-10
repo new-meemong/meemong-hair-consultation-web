@@ -196,7 +196,7 @@ export default function HairConsultationFormStepPrice() {
         {desiredDateType === '원하는 날짜 있음' && (
           <div className="border-b-1 border-border-strong mt-3">
             <Input
-              type="date"
+              type="text"
               ref={desiredDateInputRef}
               value={desiredDate ?? ''}
               onChange={(e) => {
@@ -208,6 +208,7 @@ export default function HairConsultationFormStepPrice() {
                 );
               }}
               aria-label="원하는 시술일"
+              placeholder="원하는 시술일을 설명해주세요"
               className="h-9"
             />
           </div>
