@@ -410,7 +410,7 @@ export default function HairConsultationFormStepTreatments() {
           {cardTreatments.map(({ item, index }) => {
             const cardType = getCardType(item.treatmentType);
             const itemKey = `${item.treatmentType}-${index}`;
-            const isOpen = openCards[index] ?? true;
+            const isOpen = openCards[index] ?? false;
             const isIncomplete = cardType !== 'TYPE3' && !item.treatmentArea;
             return (
               <div key={itemKey} className="rounded-6 bg-alternative p-4">
@@ -433,7 +433,7 @@ export default function HairConsultationFormStepTreatments() {
                       onClick={() =>
                         setOpenCards((prev) => {
                           const next = [...prev];
-                          next[index] = !(next[index] ?? true);
+                          next[index] = !(next[index] ?? false);
                           return next;
                         })
                       }
