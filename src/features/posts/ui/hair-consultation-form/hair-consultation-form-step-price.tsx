@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { AppTypography } from '@/shared/styles/typography';
@@ -14,6 +15,7 @@ const QUICK_ADD_AMOUNTS = [30000, 50000, 100000];
 
 export default function HairConsultationFormStepPrice() {
   const { control, setValue } = useFormContext<HairConsultationFormValues>();
+  const desiredDateInputRef = useRef<HTMLInputElement | null>(null);
 
   const price = useWatch({
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.PRICE,
@@ -71,8 +73,29 @@ export default function HairConsultationFormStepPrice() {
       setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE, null, {
         shouldDirty: true,
       });
+      return;
     }
+    requestAnimationFrame(() => {
+      desiredDateInputRef.current?.focus();
+      desiredDateInputRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      setTimeout(() => {
+        desiredDateInputRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }, 200);
+    });
   };
+
+  useEffect(() => {
+    if (desiredDateType !== '원하는 날짜 있음') return;
+    const visualViewport = window.visualViewport;
+    if (!visualViewport) return;
+
+    const handleResize = () => {
+      desiredDateInputRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    };
+
+    visualViewport.addEventListener('resize', handleResize);
+    return () => visualViewport.removeEventListener('resize', handleResize);
+  }, [desiredDateType]);
 
   return (
     <div className="flex flex-col">
@@ -89,9 +112,7 @@ export default function HairConsultationFormStepPrice() {
           -
         </button>
         <span className="flex-1 text-center">
-          <span className={`${AppTypography.body2Regular} text-label-default`}>
-            {displayPrice}
-          </span>
+          <span className={`${AppTypography.body2Regular} text-label-default`}>{displayPrice}</span>
           <span className={`${AppTypography.body2Medium} text-label-sub`}> 만원</span>
         </span>
         <button
@@ -175,13 +196,18 @@ export default function HairConsultationFormStepPrice() {
         {desiredDateType === '원하는 날짜 있음' && (
           <div className="border-b-1 border-border-strong mt-3">
             <Input
+              type="date"
+              ref={desiredDateInputRef}
               value={desiredDate ?? ''}
-              onChange={(e) =>
-                setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE, e.target.value, {
-                  shouldDirty: true,
-                })
-              }
-              placeholder="원하는 시술일을 설명해주세요"
+              onChange={(e) => {
+                const nextValue = e.target.value.trim();
+                setValue(
+                  HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE,
+                  nextValue ? nextValue : null,
+                  { shouldDirty: true },
+                );
+              }}
+              aria-label="원하는 시술일"
               className="h-9"
             />
           </div>
