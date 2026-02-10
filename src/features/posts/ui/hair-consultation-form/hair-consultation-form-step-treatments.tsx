@@ -1,11 +1,5 @@
 import { Button, Textarea } from '@/shared';
-import {
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/shared/ui/drawer';
-import { ToggleChip, ToggleChipGroup } from '@/shared/ui';
+import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer';
 import { format, subMonths } from 'date-fns';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useMemo, useState } from 'react';
@@ -212,13 +206,11 @@ export default function HairConsultationFormStepTreatments() {
   }, []);
 
   const getTreatmentAreaLabel = (value: string | null | undefined) =>
-    value ? treatmentAreaLabelMap.get(value) ?? value : '시술부위 선택';
+    value ? (treatmentAreaLabelMap.get(value) ?? value) : '시술부위 선택';
 
   const treatmentList = treatments ?? [];
 
-  const hasSpecialTreatment = treatmentList.some(
-    (item) => item.treatmentType === specialTreatment,
-  );
+  const hasSpecialTreatment = treatmentList.some((item) => item.treatmentType === specialTreatment);
 
   const createTreatment = (
     treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
@@ -227,7 +219,9 @@ export default function HairConsultationFormStepTreatments() {
     monthsAgo: 0,
     isSelf: false,
     treatmentArea: null,
-    decolorizationCount: TYPE1_TREATMENTS.includes(treatmentType as (typeof TYPE1_TREATMENTS)[number])
+    decolorizationCount: TYPE1_TREATMENTS.includes(
+      treatmentType as (typeof TYPE1_TREATMENTS)[number],
+    )
       ? 0
       : null,
   });
@@ -260,32 +254,22 @@ export default function HairConsultationFormStepTreatments() {
       return;
     }
 
-    const exists = treatmentList.some((item) => item.treatmentType === value);
-    if (exists) {
-      setTreatments(treatmentList.filter((item) => item.treatmentType !== value));
-      return;
-    }
-
     const nextList = treatmentList.filter((item) => item.treatmentType !== specialTreatment);
     setTreatments([...nextList, createTreatment(value)]);
   };
 
   const updateTreatment = (
-    treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
+    targetIndex: number,
     updater: (
       item: HairConsultationFormValues['treatments'][number],
     ) => HairConsultationFormValues['treatments'][number],
   ) => {
-    const next = treatmentList.map((item) =>
-      item.treatmentType === treatmentType ? updater(item) : item,
-    );
+    const next = treatmentList.map((item, index) => (index === targetIndex ? updater(item) : item));
     setTreatments(next);
   };
 
-  const removeTreatment = (
-    treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
-  ) => {
-    const next = treatmentList.filter((item) => item.treatmentType !== treatmentType);
+  const removeTreatment = (targetIndex: number) => {
+    const next = treatmentList.filter((_, index) => index !== targetIndex);
     setTreatments(next);
   };
 
@@ -300,9 +284,7 @@ export default function HairConsultationFormStepTreatments() {
         return 'TYPE2';
       }
       if (
-        TYPE3_FEMALE_TREATMENTS.includes(
-          treatmentType as (typeof TYPE3_FEMALE_TREATMENTS)[number],
-        )
+        TYPE3_FEMALE_TREATMENTS.includes(treatmentType as (typeof TYPE3_FEMALE_TREATMENTS)[number])
       ) {
         return 'TYPE3';
       }
@@ -313,64 +295,54 @@ export default function HairConsultationFormStepTreatments() {
 
   const cardTreatments = useMemo(
     () =>
-      treatmentList.filter((item) => item.treatmentType !== specialTreatment),
+      treatmentList
+        .map((item, index) => ({ item, index }))
+        .filter(({ item }) => item.treatmentType !== specialTreatment),
     [treatmentList, specialTreatment],
   );
 
-  const handleMonthAdjust = (
-    treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
-    delta: number,
-  ) => {
-    updateTreatment(treatmentType, (item) => ({
+  const handleMonthAdjust = (targetIndex: number, delta: number) => {
+    updateTreatment(targetIndex, (item) => ({
       ...item,
       monthsAgo: Math.max(0, item.monthsAgo + delta),
     }));
   };
 
-  const handleMonthQuickAdd = (
-    treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
-    delta: number,
-  ) => {
-    updateTreatment(treatmentType, (item) => ({
+  const handleMonthQuickAdd = (targetIndex: number, delta: number) => {
+    updateTreatment(targetIndex, (item) => ({
       ...item,
       monthsAgo: Math.max(0, item.monthsAgo + delta),
     }));
   };
 
-  const handleMonthReset = (
-    treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
-  ) => {
-    updateTreatment(treatmentType, (item) => ({ ...item, monthsAgo: 0 }));
+  const handleMonthReset = (targetIndex: number) => {
+    updateTreatment(targetIndex, (item) => ({ ...item, monthsAgo: 0 }));
   };
 
-  const handleDecolorizationAdjust = (
-    treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
-    delta: number,
-  ) => {
-    updateTreatment(treatmentType, (item) => ({
+  const handleDecolorizationAdjust = (targetIndex: number, delta: number) => {
+    updateTreatment(targetIndex, (item) => ({
       ...item,
       decolorizationCount: Math.max(0, (item.decolorizationCount ?? 0) + delta),
     }));
   };
 
-  const handleSelfToggle = (
-    treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
-  ) => {
-    updateTreatment(treatmentType, (item) => ({ ...item, isSelf: !item.isSelf }));
+  const handleSelfToggle = (targetIndex: number) => {
+    updateTreatment(targetIndex, (item) => ({ ...item, isSelf: !item.isSelf }));
   };
 
-  const handleAreaSelect = (
-    treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
-  ) => {
-    const sheetId = `treatment-area-${treatmentType}`;
+  const handleAreaSelect = (targetIndex: number) => {
+    const treatmentType = treatmentList[targetIndex]?.treatmentType;
+    if (!treatmentType) return;
+
+    const sheetId = `treatment-area-${treatmentType}-${targetIndex}`;
     showBottomSheet({
       id: sheetId,
       children: (
         <TreatmentAreaSheet
           sheetId={sheetId}
-          selected={treatmentList.find((item) => item.treatmentType === treatmentType)?.treatmentArea}
+          selected={treatmentList[targetIndex]?.treatmentArea}
           onConfirm={(value) => {
-            updateTreatment(treatmentType, (item) => ({
+            updateTreatment(targetIndex, (item) => ({
               ...item,
               treatmentArea: value,
             }));
@@ -390,26 +362,23 @@ export default function HairConsultationFormStepTreatments() {
 
   return (
     <div className="flex flex-col gap-7">
-      <ToggleChipGroup className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
         {treatmentOptions.map((option) => {
-          const checked = treatmentList.some((item) => item.treatmentType === option.value);
           return (
-            <ToggleChip
+            <button
               key={option.value}
-              pressed={checked}
-              onPressedChange={() => handleToggle(option.value)}
+              type="button"
+              onClick={() => handleToggle(option.value)}
               className={[
-                'rounded-full px-4 py-2.5 h-auto',
-                'data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-border-default data-[state=off]:text-label-sub',
-                'data-[state=on]:bg-label-default data-[state=on]:text-white data-[state=on]:border-transparent',
-                'typo-body-2-regular data-[state=on]:typo-body-2-medium',
+                'rounded-full px-4 py-2.5 h-auto border border-border-default bg-white text-label-sub',
+                'typo-body-2-regular active:bg-alternative',
               ].join(' ')}
             >
               {option.label}
-            </ToggleChip>
+            </button>
           );
         })}
-      </ToggleChipGroup>
+      </div>
 
       <div className="flex items-center justify-end gap-3">
         <label
@@ -428,12 +397,13 @@ export default function HairConsultationFormStepTreatments() {
 
       {cardTreatments.length > 0 && (
         <div className="flex flex-col gap-4">
-        {cardTreatments.map((item) => {
+          {cardTreatments.map(({ item, index }) => {
             const cardType = getCardType(item.treatmentType);
-            const isOpen = openCards[item.treatmentType] ?? true;
+            const itemKey = `${item.treatmentType}-${index}`;
+            const isOpen = openCards[itemKey] ?? true;
             const isIncomplete = cardType !== 'TYPE3' && !item.treatmentArea;
             return (
-              <div key={item.treatmentType} className="rounded-6 bg-alternative p-4">
+              <div key={itemKey} className="rounded-6 bg-alternative p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <span className={`${AppTypography.body2SemiBold} text-label-sub`}>
@@ -453,7 +423,7 @@ export default function HairConsultationFormStepTreatments() {
                       onClick={() =>
                         setOpenCards((prev) => ({
                           ...prev,
-                          [item.treatmentType]: !(prev[item.treatmentType] ?? true),
+                          [itemKey]: !(prev[itemKey] ?? true),
                         }))
                       }
                     >
@@ -466,7 +436,7 @@ export default function HairConsultationFormStepTreatments() {
                     <button
                       type="button"
                       className="w-6 h-6 flex items-center justify-center"
-                      onClick={() => removeTreatment(item.treatmentType)}
+                      onClick={() => removeTreatment(index)}
                     >
                       <CloseIcon className="w-4 h-4 text-negative" />
                     </button>
@@ -484,7 +454,7 @@ export default function HairConsultationFormStepTreatments() {
                             'w-8 h-8 rounded-4 text-white flex items-center justify-center',
                             item.monthsAgo > 0 ? 'bg-label-default' : 'bg-label-disable',
                           ].join(' ')}
-                          onClick={() => handleMonthAdjust(item.treatmentType, -1)}
+                          onClick={() => handleMonthAdjust(index, -1)}
                         >
                           -
                         </button>
@@ -499,7 +469,7 @@ export default function HairConsultationFormStepTreatments() {
                         <button
                           type="button"
                           className="w-8 h-8 rounded-4 bg-label-default text-white flex items-center justify-center"
-                          onClick={() => handleMonthAdjust(item.treatmentType, 1)}
+                          onClick={() => handleMonthAdjust(index, 1)}
                         >
                           +
                         </button>
@@ -514,7 +484,7 @@ export default function HairConsultationFormStepTreatments() {
                               key={months}
                               type="button"
                               className="px-3 py-1.5 rounded-full border border-border-default bg-white text-label-sub typo-body-3-regular"
-                              onClick={() => handleMonthQuickAdd(item.treatmentType, months)}
+                              onClick={() => handleMonthQuickAdd(index, months)}
                             >
                               {months === 12 ? '+1년전' : `+${months}개월`}
                             </button>
@@ -524,7 +494,7 @@ export default function HairConsultationFormStepTreatments() {
                           type="button"
                           className="w-[34px] h-[34px] rounded-full border border-border-default bg-white flex items-center justify-center"
                           aria-label="개월수 초기화"
-                          onClick={() => handleMonthReset(item.treatmentType)}
+                          onClick={() => handleMonthReset(index)}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -549,9 +519,7 @@ export default function HairConsultationFormStepTreatments() {
                       </div>
                     )}
 
-                    {cardType === 'TYPE1' && (
-                      <div className="border-t border-border-default" />
-                    )}
+                    {cardType === 'TYPE1' && <div className="border-t border-border-default" />}
 
                     {cardType === 'TYPE1' && (
                       <div className="flex items-center justify-between">
@@ -562,7 +530,7 @@ export default function HairConsultationFormStepTreatments() {
                           <button
                             type="button"
                             className="w-8 h-8 rounded-6 border border-border-default bg-white"
-                            onClick={() => handleDecolorizationAdjust(item.treatmentType, -1)}
+                            onClick={() => handleDecolorizationAdjust(index, -1)}
                           >
                             -
                           </button>
@@ -574,7 +542,7 @@ export default function HairConsultationFormStepTreatments() {
                           <button
                             type="button"
                             className="w-8 h-8 rounded-6 border border-border-default bg-white"
-                            onClick={() => handleDecolorizationAdjust(item.treatmentType, 1)}
+                            onClick={() => handleDecolorizationAdjust(index, 1)}
                           >
                             +
                           </button>
@@ -582,9 +550,7 @@ export default function HairConsultationFormStepTreatments() {
                       </div>
                     )}
 
-                    {cardType !== 'TYPE3' && (
-                      <div className="border-t border-border-default" />
-                    )}
+                    {cardType !== 'TYPE3' && <div className="border-t border-border-default" />}
 
                     {cardType !== 'TYPE3' && (
                       <div className="flex items-center justify-between">
@@ -592,14 +558,16 @@ export default function HairConsultationFormStepTreatments() {
                         <button
                           type="button"
                           className="flex items-center justify-between w-[186px] px-3 py-2 border border-border-default rounded-6 bg-white"
-                          onClick={() => handleAreaSelect(item.treatmentType)}
+                          onClick={() => handleAreaSelect(index)}
                         >
                           <span
                             className={`typo-body-2-regular ${
                               item.treatmentArea ? 'text-label-sub' : 'text-label-placeholder'
                             }`}
                           >
-                            {item.treatmentArea ? getTreatmentAreaLabel(item.treatmentArea) : '시술부위를 선택하세요'}
+                            {item.treatmentArea
+                              ? getTreatmentAreaLabel(item.treatmentArea)
+                              : '시술부위를 선택하세요'}
                           </span>
                           <ChevronRightIcon className="w-4 h-4 text-label-sub rotate-90" />
                         </button>
@@ -609,16 +577,16 @@ export default function HairConsultationFormStepTreatments() {
                     {cardType !== 'TYPE3' && (
                       <div className="flex items-center justify-end gap-3">
                         <label
-                          htmlFor={`self-treatment-${item.treatmentType}`}
+                          htmlFor={`self-treatment-${item.treatmentType}-${index}`}
                           className={`${AppTypography.body2Regular} text-label-sub cursor-pointer`}
                         >
                           셀프시술 했어요
                         </label>
                         <Checkbox
-                          id={`self-treatment-${item.treatmentType}`}
+                          id={`self-treatment-${item.treatmentType}-${index}`}
                           shape="round"
                           checked={item.isSelf}
-                          onChange={() => handleSelfToggle(item.treatmentType)}
+                          onChange={() => handleSelfToggle(index)}
                         />
                       </div>
                     )}
