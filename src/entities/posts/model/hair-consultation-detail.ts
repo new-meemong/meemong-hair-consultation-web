@@ -35,18 +35,18 @@ export type HairConsultationDetail = {
   viewCount: number;
   likeCount: number;
   commentCount: number;
-  hairConcerns: string[];
+  hairConcerns: string[] | null;
   hairLength: string | null;
   skinBrightness: string | null;
   hairTexture: string | null;
   personalColor: string | null;
-  aspirationImageTypes: string[];
+  aspirationImageTypes: string[] | null;
   aspirationImageDescription: string | null;
   hairConsultTreatmentDescription: string | null;
-  treatments: HairConsultationTreatment[];
-  aspirationImages: HairConsultationImage[];
-  myImages: HairConsultationMyImage[];
-  modelImages: HairConsultationModelImage[];
+  treatments: HairConsultationTreatment[] | null;
+  aspirationImages: HairConsultationImage[] | null;
+  myImages: HairConsultationMyImage[] | null;
+  modelImages: HairConsultationModelImage[] | null;
   isFavorited: boolean;
   isRead: boolean;
   user: {

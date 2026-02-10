@@ -91,7 +91,7 @@ const DESIGNER_ONBOARDING_PAGES: HairConsultationOnboardingPage[] = [
 function OnboardingImages({ page }: { page: HairConsultationOnboardingPage }) {
   if (page.stackedImages && page.images.length > 1) {
     return (
-      <div className="mt-8 flex w-full flex-col gap-5">
+      <div className="flex w-full flex-col gap-5">
         {page.images.map((image, index) => (
           <Image
             key={`${page.title}-stacked-${index}`}
@@ -106,7 +106,7 @@ function OnboardingImages({ page }: { page: HairConsultationOnboardingPage }) {
   }
 
   return (
-    <div className="mt-8 flex w-full flex-col">
+    <div className="flex w-full flex-col">
       {page.images.map((image, index) => (
         <Image
           key={`${page.title}-${index}`}
@@ -147,24 +147,28 @@ export default function HairConsultationOnboarding({
   return (
     <div className="h-screen w-full bg-white">
       <div className="mx-auto flex h-full w-full max-w-screen-sm flex-col">
-        <SiteHeader title="" />
+        <div className="shrink-0 bg-white pt-[env(safe-area-inset-top)]">
+          <SiteHeader title="" />
+        </div>
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-          <div className="flex min-h-full flex-col justify-center py-8">
+          <div className="flex min-h-full flex-col [justify-content:safe_center] pt-[clamp(10px,4dvh,32px)] pb-[clamp(10px,3dvh,24px)]">
             <div className="px-5">
-              <div className="min-h-[120px]">
+              <div>
                 <p className="whitespace-pre-line text-left typo-title-2-semibold text-label-default">
                   {currentPage.title}
                 </p>
-                <p className="mt-3 whitespace-pre-line text-left typo-body-2-long-regular text-label-sub">
+                <p className="mt-[clamp(6px,1.5dvh,12px)] whitespace-pre-line text-left typo-body-2-long-regular text-label-sub">
                   {currentPage.description}
                 </p>
               </div>
             </div>
-            <OnboardingImages page={currentPage} />
+            <div className="mt-[clamp(12px,4dvh,32px)]">
+              <OnboardingImages page={currentPage} />
+            </div>
           </div>
         </div>
 
-        <div className="px-5 pb-8 pt-6">
+        <div className="shrink-0 px-5 pb-8 pt-6">
           <div className="flex items-center justify-center gap-2">
             {pages.map((_, index) => (
               <span

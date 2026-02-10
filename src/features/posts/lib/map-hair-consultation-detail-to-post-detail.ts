@@ -87,9 +87,9 @@ const inferUserSex = (detail: HairConsultationDetail) => {
 export default function mapHairConsultationDetailToPostDetail(
   detail: HairConsultationDetail,
 ): PostDetail {
-  const hairConcern = detail.hairConcerns[0] ?? '';
-  const hairConcernDetail =
-    detail.hairConcerns.length > 1 ? detail.hairConcerns.slice(1).join(', ') : null;
+  const hairConcerns = detail.hairConcerns ?? [];
+  const hairConcern = hairConcerns[0] ?? '';
+  const hairConcernDetail = hairConcerns.length > 1 ? hairConcerns.slice(1).join(', ') : null;
 
   const treatments: Treatment[] | undefined =
     detail.treatments && detail.treatments.length > 0
