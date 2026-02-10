@@ -20,9 +20,11 @@ export default function useDeleteHairConsultationMutation() {
         queryClient.invalidateQueries({
           queryKey: [getHairConsultationsQueryKeyPrefix()],
         });
-        queryClient.invalidateQueries({
-          queryKey: [getHairConsultationDetailQueryKeyPrefix(hairConsultationId.toString())],
-        });
+        const detailQueryKey = [
+          getHairConsultationDetailQueryKeyPrefix(hairConsultationId.toString()),
+        ];
+        queryClient.cancelQueries({ queryKey: detailQueryKey });
+        queryClient.removeQueries({ queryKey: detailQueryKey });
       },
     });
   };
