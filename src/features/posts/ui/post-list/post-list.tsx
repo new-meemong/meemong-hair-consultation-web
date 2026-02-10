@@ -57,6 +57,8 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
     return <PostListEmptyView tab={tab} />;
   }
 
+  const observerTargetIndex = posts.length === 1 ? 0 : posts.length - 2;
+
   return (
     <>
       {posts.map((post, index) => (
@@ -79,7 +81,7 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
               postSource: post.postSource,
             })
           }
-          ref={index === posts.length - 2 ? observerRef : undefined}
+          ref={index === observerTargetIndex ? observerRef : undefined}
           isRead={post.isRead}
         />
       ))}
