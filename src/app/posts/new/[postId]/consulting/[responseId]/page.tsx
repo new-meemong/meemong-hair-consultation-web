@@ -1,10 +1,25 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
+import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
 import {
   FEMALE_HAIR_LENGTH_OPTIONS,
   MALE_HAIR_LENGTH_OPTIONS,
 } from '@/features/posts/constants/hair-length-options';
+import { useParams, useSearchParams } from 'next/navigation';
+
+import type { ApiError } from '@/shared/api/client';
+import { BANG_STYLE_OPTIONS_NEW } from '@/features/posts/constants/bang-style';
+import type { BangStyleOptionNew } from '@/features/posts/constants/bang-style';
+import type { ComponentProps } from 'react';
+import { FACE_TYPE_OPTIONS_NEW } from '@/features/posts/constants/face-shape';
+import type { HTTPError } from 'ky';
+import type { HairLengthOption } from '@/features/posts/constants/hair-length-options';
+import Image from 'next/image';
+import ProfileIcon from '@/assets/icons/profile.svg';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import { SiteHeader } from '@/widgets/header';
+import { format } from 'date-fns';
+import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 import hairLengthFeedbackF1 from '@/assets/hair-length-feedback/hair_length_feedback_f1.png';
 import hairLengthFeedbackF2 from '@/assets/hair-length-feedback/hair_length_feedback_f2.png';
 import hairLengthFeedbackF3 from '@/assets/hair-length-feedback/hair_length_feedback_f3.png';
@@ -17,20 +32,13 @@ import hairLengthFeedbackM3 from '@/assets/hair-length-feedback/hair_length_feed
 import hairLengthFeedbackM4 from '@/assets/hair-length-feedback/hair_length_feedback_m4.png';
 import hairLengthFeedbackM5 from '@/assets/hair-length-feedback/hair_length_feedback_m5.png';
 import hairLengthFeedbackM6 from '@/assets/hair-length-feedback/hair_length_feedback_m6.png';
-import { useParams, useSearchParams } from 'next/navigation';
-
-import { BANG_STYLE_OPTIONS_NEW } from '@/features/posts/constants/bang-style';
-import type { BangStyleOptionNew } from '@/features/posts/constants/bang-style';
-import type { ComponentProps } from 'react';
-import { FACE_TYPE_OPTIONS_NEW } from '@/features/posts/constants/face-shape';
-import type { HairLengthOption } from '@/features/posts/constants/hair-length-options';
-import Image from 'next/image';
-import ProfileIcon from '@/assets/icons/profile.svg';
-import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-import { SiteHeader } from '@/widgets/header';
-import { format } from 'date-fns';
+import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useEffect } from 'react';
 import useGetHairConsultationAnswerDetail from '@/features/posts/api/use-get-hair-consultation-answer-detail';
 import useGetHairConsultationDetail from '@/features/posts/api/use-get-hair-consultation-detail';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
+import useStartChat from '@/features/chat/hook/use-start-chat';
 
 const formatDateTime = (value: string) => {
   const date = new Date(value);
@@ -106,9 +114,7 @@ const getHairLengthFeedbackImage = (value: string, isMale: boolean) => {
     ? MALE_HAIR_LENGTH_FEEDBACK_IMAGE_MAP
     : FEMALE_HAIR_LENGTH_FEEDBACK_IMAGE_MAP;
 
-  const matchedKey = Object.keys(imageMap).find(
-    (key) => normalizeText(key) === normalizedValue,
-  );
+  const matchedKey = Object.keys(imageMap).find((key) => normalizeText(key) === normalizedValue);
 
   return matchedKey ? imageMap[matchedKey] : undefined;
 };
@@ -160,15 +166,78 @@ function RecommendationPreviewRows({ items }: { items: RecommendationPreviewItem
 export default function NewConsultingResponsePage() {
   const { postId, responseId } = useParams();
   const searchParams = useSearchParams();
+  const { push, back } = useRouterWithUser();
+  const { user, isUserModel } = useAuthContext();
+  const { startChat } = useStartChat();
+  const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const postIdString = postId?.toString() ?? '';
   const responseIdString = responseId?.toString() ?? '';
+  const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
 
-  const { data: response } = useGetHairConsultationAnswerDetail(postIdString, responseIdString);
+  const { data: response, error } = useGetHairConsultationAnswerDetail(
+    postIdString,
+    responseIdString,
+  );
   const { data: consultationDetailResponse } = useGetHairConsultationDetail(postIdString);
+
+  useEffect(() => {
+    if (error && 'response' in error) {
+      const httpError = error as HTTPError & {
+        response?: { data?: { error?: ApiError }; status?: number };
+      };
+
+      if (httpError.response?.status === 409) {
+        showMongInsufficientSheet();
+        back();
+        return;
+      }
+
+      const apiError = httpError.response?.data?.error;
+      if (
+        httpError.response?.status === 400 &&
+        apiError?.fieldErrors &&
+        apiError.fieldErrors.length > 0
+      ) {
+        console.error('Validation error:', apiError.fieldErrors);
+        back();
+      }
+    }
+  }, [error, back, showMongInsufficientSheet]);
+
   const answer = response?.data;
   const consultationDetail = consultationDetailResponse?.data;
 
   if (!answer) return null;
+
+  const postWriterId =
+    consultationDetail?.user?.id ??
+    consultationDetail?.hairConsultationCreateUserId ??
+    consultationDetail?.hairConsultationCreateUser?.userId;
+  const isResponseWriter = user.id === answer.user.id;
+  const isPostWriter = postWriterId != null && user.id === postWriterId;
+  const shouldShowBottomModelActions = isUserModel && !isResponseWriter;
+
+  const handleDesignerProfileClick = () => {
+    goDesignerProfilePage(answer.user.id.toString());
+  };
+
+  const handleOriginalPostClick = () => {
+    push(ROUTES.POSTS_NEW_DETAIL(postIdString), {
+      [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+    });
+  };
+
+  const handleChatClick = async () => {
+    const finalPostId = isPostWriter ? postIdString : undefined;
+    const finalAnswerId = isPostWriter ? responseIdString : undefined;
+
+    await startChat({
+      receiverId: answer.user.id,
+      postId: finalPostId,
+      answerId: finalAnswerId,
+      entrySource: 'CONSULTING_RESPONSE',
+    });
+  };
 
   const postWriterSex = searchParams.get(SEARCH_PARAMS.POST_WRITER_SEX);
   const isMale =
@@ -226,7 +295,14 @@ export default function NewConsultingResponsePage() {
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen bg-white">
       <SiteHeader title="컨설팅 답변" showBackButton />
-      <div className="overflow-y-auto">
+      <div
+        className="overflow-y-auto"
+        style={
+          shouldShowBottomModelActions
+            ? { paddingBottom: 'calc(100px + env(safe-area-inset-bottom))' }
+            : undefined
+        }
+      >
         <div className="flex w-full flex-col items-start gap-4 bg-label-default px-5 py-8">
           <Avatar className="size-12 items-center justify-center rounded-full overflow-hidden">
             {answer.user.profilePictureURL ? (
@@ -245,6 +321,22 @@ export default function NewConsultingResponsePage() {
               {`${formatDateTime(answer.createdAt)} 작성`}
             </p>
           </div>
+
+          {!isResponseWriter && !shouldShowBottomModelActions ? (
+            <div className="mt-8 flex w-full flex-col gap-3">
+              <Button theme="whiteBorder" onClick={handleChatClick}>
+                채팅하기
+              </Button>
+              <Button theme="whiteBorder" onClick={handleDesignerProfileClick}>
+                디자이너 프로필 보기
+              </Button>
+              {isPostWriter && (
+                <Button theme="whiteBorder" onClick={handleOriginalPostClick}>
+                  원글 보기
+                </Button>
+              )}
+            </div>
+          ) : null}
         </div>
 
         <div className="px-5 pt-7">
@@ -402,6 +494,24 @@ export default function NewConsultingResponsePage() {
           </div>
         </div>
       </div>
+
+      {shouldShowBottomModelActions && (
+        <div className="fixed inset-x-0 bottom-0 z-20 border-t-1 border-border-default bg-white">
+          <div className="mx-auto flex min-w-[375px] w-full gap-2 px-5 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))]">
+            <Button
+              theme="white"
+              size="lg"
+              className="flex-1 rounded-4"
+              onClick={handleDesignerProfileClick}
+            >
+              디자이너 프로필 보기
+            </Button>
+            <Button size="lg" className="flex-1 rounded-4" onClick={handleChatClick}>
+              추가 상담하기
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

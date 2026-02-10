@@ -13,6 +13,8 @@ export interface UserGuideData {
   [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: boolean;
   [USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide]: boolean;
   [USER_GUIDE_KEYS.hasSeenConsultingResponseSidebarGuide]: boolean;
+  [USER_GUIDE_KEYS.hasSeenHairConsultationOnboardingModel]: boolean;
+  [USER_GUIDE_KEYS.hasSeenHairConsultationOnboardingDesigner]: boolean;
 }
 
 export type UserData = User & UserWritingContent;
@@ -91,6 +93,8 @@ const getDefaultUserGuideData = (): UserGuideData => {
     [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: false,
     [USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide]: false,
     [USER_GUIDE_KEYS.hasSeenConsultingResponseSidebarGuide]: false,
+    [USER_GUIDE_KEYS.hasSeenHairConsultationOnboardingModel]: false,
+    [USER_GUIDE_KEYS.hasSeenHairConsultationOnboardingDesigner]: false,
   };
 };
 

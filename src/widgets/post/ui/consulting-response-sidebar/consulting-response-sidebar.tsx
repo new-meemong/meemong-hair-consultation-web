@@ -5,21 +5,21 @@ import {
 import { Drawer } from '@/shared';
 import { DrawerClose, DrawerContent, DrawerTitle, DrawerTrigger } from '@/shared/ui/drawer';
 import {
-  HAIR_CONCERN_OPTION_LABEL,
-  HAIR_CONCERN_OPTION_VALUE,
-} from '@/features/posts/constants/hair-concern-option';
+  FEMALE_HAIR_LENGTH_OPTIONS,
+  MALE_HAIR_LENGTH_OPTIONS,
+} from '@/features/posts/constants/hair-length-options';
 import { useRef, useState } from 'react';
 
 import CloseIcon from '@/assets/icons/close.svg';
-import ConsultingResponseSidebarAdditionalInfoTabView from './consulting-response-sidebar-additional-info-tab-view';
 import ConsultingResponseSidebarButton from '@/features/posts/ui/consulting-form/consulting-response-form/consulting-response-sidebar/consulting-response-sidebar-button';
 import ConsultingResponseSidebarCurrentStateTabView from './consulting-response-sidebar-current-state-tab-view';
 import ConsultingResponseSidebarDesiredStyleTabView from './consulting-response-sidebar-desired-style-tab-view';
+import ConsultingResponseSidebarEtcTabView from './consulting-response-sidebar-etc-tab-view';
 import ConsultingResponseSidebarGuideTooltip from '../consulting-response/consulting-response-sidebar-guide-tooltip';
+import ConsultingResponseSidebarTreatmentsTabView from './consulting-response-sidebar-treatments-tab-view';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import type { ValueOf } from '@/shared/type/types';
 import { cn } from '@/lib/utils';
-import getSkinToneValue from '@/features/posts/lib/get-skin-tone-value';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 
@@ -27,6 +27,35 @@ type ConsultingResponseSidebarProps = {
   isOpen: boolean;
   onOpenChange?: (open: boolean) => void;
 };
+
+const PERSONAL_COLOR_BASE_COLOR_MAP: Record<string, string> = {
+  봄웜: '#FAC4A8',
+  여름쿨: '#F1D0E3',
+  가을웜: '#EBB295',
+  겨울쿨: '#E6447A',
+};
+
+const formatPriceText = (minPrice: number | null, maxPrice: number | null) => {
+  if (minPrice == null && maxPrice == null) return '-';
+  if (minPrice != null && maxPrice != null && minPrice !== maxPrice) {
+    return `${minPrice.toLocaleString()}원~${maxPrice.toLocaleString()}원`;
+  }
+
+  const basePrice = maxPrice ?? minPrice;
+  return basePrice != null ? `${basePrice.toLocaleString()}원` : '-';
+};
+
+const formatDesiredDateText = (
+  desiredDateType: string | null | undefined,
+  desiredDate: string | null | undefined,
+) => {
+  if (desiredDateType === '원하는 날짜 있음') {
+    return (desiredDate ?? '').trim() || desiredDateType;
+  }
+  return desiredDateType ?? '-';
+};
+
+const formatPersonalColorDetailLabel = (value: string) => value.replace(/^(봄|여름|가을|겨울)/, '');
 
 export default function ConsultingResponseSidebar({
   isOpen,
@@ -56,57 +85,73 @@ export default function ConsultingResponseSidebar({
 
   if (!consultingPost) return null;
 
-  const myImages = consultingPost.myImageList
-    ? consultingPost.myImageList.map(({ imageUrl }) => imageUrl)
-    : null;
-
+  const referenceImageUrls = consultingPost.myImageList?.map(({ imageUrl }) => imageUrl) ?? [];
+  const profileImageUrls = consultingPost.modelImageList ?? [];
   const aspirationImageUrls = consultingPost.aspirations?.aspirationImages ?? [];
   const aspirationImagesDescription = consultingPost.aspirations?.aspirationDescription ?? null;
+  const hairConcernText = [consultingPost.hairConcern, consultingPost.hairConcernDetail]
+    .filter((value): value is string => !!value && value.trim().length > 0)
+    .join(', ');
+  const preferredCostText = formatPriceText(
+    consultingPost.minPaymentPrice,
+    consultingPost.maxPaymentPrice,
+  );
+  const desiredDateText = formatDesiredDateText(
+    consultingPost.desiredDateType,
+    consultingPost.desiredDate,
+  );
+  const hairLengthDescription =
+    [...FEMALE_HAIR_LENGTH_OPTIONS, ...MALE_HAIR_LENGTH_OPTIONS].find(
+      (option) => option.value === consultingPost.hairLength,
+    )?.description ?? '';
+  const personalColorChip = (() => {
+    if (!consultingPost.personalColor || consultingPost.personalColor === '잘모름') return null;
 
-  const hairConcern =
-    consultingPost.hairConcern === HAIR_CONCERN_OPTION_LABEL[HAIR_CONCERN_OPTION_VALUE.ETC]
-      ? (consultingPost.hairConcernDetail ?? '')
-      : consultingPost.hairConcern;
+    const [tone = '', detail = ''] = consultingPost.personalColor
+      .split(',')
+      .map((value) => value.trim());
+    if (!tone) return null;
 
-  const skinToneValue = getSkinToneValue(consultingPost.skinTone);
+    const isUnknownDetail = !detail || detail === '상세분류모름';
+    const normalizedDetail = formatPersonalColorDetailLabel(detail);
+
+    return {
+      text: isUnknownDetail ? tone : `${tone} ${normalizedDetail}`,
+      backgroundColor: PERSONAL_COLOR_BASE_COLOR_MAP[tone],
+    };
+  })();
 
   const renderTabView = () => {
     switch (activeTab) {
       case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.PHOTOS:
-        return myImages ? <ConsultingResponseSidebarCurrentStateTabView images={myImages} /> : null;
-      case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.TREATMENTS:
         return (
-          <ConsultingResponseSidebarAdditionalInfoTabView
-            hairConcern={hairConcern}
-            skinToneValue={skinToneValue}
-            treatments={consultingPost.treatments ?? []}
-            minPaymentPrice={consultingPost.minPaymentPrice}
-            maxPaymentPrice={consultingPost.maxPaymentPrice}
-            showHairConcern={false}
-            showTreatments={true}
-            showSkinTone={false}
-            showPaymentPrice={false}
+          <ConsultingResponseSidebarCurrentStateTabView
+            referenceImages={referenceImageUrls}
+            profileImages={profileImageUrls}
           />
         );
+      case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.TREATMENTS:
+        return <ConsultingResponseSidebarTreatmentsTabView treatments={consultingPost.treatments ?? []} />;
       case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.PREFERRED_STYLE:
-        return aspirationImageUrls || aspirationImagesDescription ? (
+        return (
           <ConsultingResponseSidebarDesiredStyleTabView
             images={aspirationImageUrls}
             description={aspirationImagesDescription}
           />
-        ) : null;
+        );
       case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.ETC:
         return (
-          <ConsultingResponseSidebarAdditionalInfoTabView
-            hairConcern={hairConcern}
-            skinToneValue={skinToneValue}
-            treatments={consultingPost.treatments ?? []}
-            minPaymentPrice={consultingPost.minPaymentPrice}
-            maxPaymentPrice={consultingPost.maxPaymentPrice}
-            showHairConcern={true}
-            showTreatments={false}
-            showSkinTone={true}
-            showPaymentPrice={true}
+          <ConsultingResponseSidebarEtcTabView
+            title={consultingPost.title}
+            content={consultingPost.content}
+            preferredCostText={preferredCostText}
+            desiredDateText={desiredDateText}
+            hairConcernText={hairConcernText}
+            hairTexture={consultingPost.hairTexture}
+            skinBrightness={consultingPost.skinBrightness}
+            personalColorChip={personalColorChip}
+            hairLength={consultingPost.hairLength}
+            hairLengthDescription={hairLengthDescription}
           />
         );
     }
@@ -167,7 +212,7 @@ export default function ConsultingResponseSidebar({
         <div
           ref={contentRef}
           className={`
-               px-5 overflow-y-auto scrollbar-hide
+               px-5 pt-8 pb-8 overflow-y-auto scrollbar-hide
              `}
           onScroll={handleScroll}
         >

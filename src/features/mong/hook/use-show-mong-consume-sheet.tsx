@@ -154,7 +154,13 @@ export default function useShowMongConsumeSheet() {
 
       return { alreadyPaid: false };
     },
-    [showBottomSheet, push, presetsData, mongCurrentData, showMongInsufficientSheet],
+    [
+      showBottomSheet,
+      push,
+      presetsData,
+      mongCurrentData,
+      showMongInsufficientSheet,
+    ],
   );
 
   return showMongConsumeSheet;

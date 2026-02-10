@@ -30,6 +30,8 @@ function useShowGuide(
     [USER_GUIDE_KEYS.hasSeenCreatePostGuide]: null, // showCreatePostGuideSheet,
     [USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide]: null, // showDesignerOnboardingSheet,
     [USER_GUIDE_KEYS.hasSeenConsultingResponseSidebarGuide]: null,
+    [USER_GUIDE_KEYS.hasSeenHairConsultationOnboardingModel]: null,
+    [USER_GUIDE_KEYS.hasSeenHairConsultationOnboardingDesigner]: null,
   };
 
   const showGuide = showGuideMapper[key];

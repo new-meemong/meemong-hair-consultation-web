@@ -83,11 +83,8 @@ export default function CommentListItem({
             postSource,
             postWriterSex,
           });
-          // 결제 이력이 있으면 바로 답변 페이지로 이동
-          if (result?.alreadyPaid) {
-            push(consultingResponsePath, responseNavigationParams);
-          }
-          // 결제 이력이 없으면 바텀시트가 표시됨 (버튼 클릭 동작은 아직 연결하지 않음)
+          // 결제 관련 이동/표시는 showMongConsumeSheet 내부에서 처리
+          void result;
           return;
         } else {
           // 다른 사람 글의 컨설팅 답변을 볼 때는 구글 애드몹 광고 표시
