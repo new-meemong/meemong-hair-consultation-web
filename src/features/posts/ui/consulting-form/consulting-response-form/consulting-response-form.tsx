@@ -170,7 +170,7 @@ export default function ConsultingResponseForm({
 
     const response = await createEventMong({
       createType: 'HAIR_CONSULT_ANSWER_EVENT',
-      refType: 'hairConsultPostingsAnswers',
+      refType: 'HairConsultationsAnswers',
       refId: answerId,
     });
 

@@ -62,7 +62,7 @@ export default function useShowMongConsumeSheet() {
           {
             searchParams: {
               createType: 'VIEW_MY_HAIR_CONSULTING_ANSWER_MODEL',
-              refType: 'hairConsultPostingsAnswers',
+              refType: 'HairConsultationsAnswers',
               refId: answerId.toString(),
             },
           },
@@ -154,13 +154,7 @@ export default function useShowMongConsumeSheet() {
 
       return { alreadyPaid: false };
     },
-    [
-      showBottomSheet,
-      push,
-      presetsData,
-      mongCurrentData,
-      showMongInsufficientSheet,
-    ],
+    [showBottomSheet, push, presetsData, mongCurrentData, showMongInsufficientSheet],
   );
 
   return showMongConsumeSheet;
