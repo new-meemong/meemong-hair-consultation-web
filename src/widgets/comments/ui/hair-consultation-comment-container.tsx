@@ -29,14 +29,42 @@ export default function HairConsultationCommentContainer({
 
   const comments = convertToCommentWithReplyStatusFromHairConsultationComment(data);
   const answers = convertToCommentWithReplyStatusFromHairConsultationAnswer(answersData);
+
+  const normalizedAnswers = useMemo(() => {
+    const profileImageByUserId = new Map<number, string>();
+
+    comments.forEach((comment) => {
+      if (comment.user.profilePictureURL) {
+        profileImageByUserId.set(comment.user.userId, comment.user.profilePictureURL);
+      }
+    });
+
+    return answers.map((answer) => {
+      const normalizedProfileImage =
+        profileImageByUserId.get(answer.user.userId) ?? answer.user.profilePictureURL;
+
+      if (normalizedProfileImage === answer.user.profilePictureURL) {
+        return answer;
+      }
+
+      return {
+        ...answer,
+        user: {
+          ...answer.user,
+          profilePictureURL: normalizedProfileImage,
+        },
+      };
+    });
+  }, [answers, comments]);
+
   const mergedComments = useMemo(
     () =>
-      [...comments, ...answers].sort((a, b) => {
+      [...comments, ...normalizedAnswers].sort((a, b) => {
         const timeDiff = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         if (!Number.isNaN(timeDiff) && timeDiff !== 0) return timeDiff;
         return b.id - a.id;
       }),
-    [comments, answers],
+    [comments, normalizedAnswers],
   );
 
   const { postDetail } = usePostDetail();
@@ -95,6 +123,7 @@ export default function HairConsultationCommentContainer({
       postId={postDetail.id.toString()}
       postSource="new"
       postWriterId={postDetail.hairConsultPostingCreateUserId}
+      postWriterSex={postDetail.hairConsultPostingCreateUserSex}
       fetchNextPage={handleFetchNextPage}
       onReplyClick={handlers.handleReplyClick}
       focusedCommentId={commentFormState.commentId}

@@ -2,6 +2,8 @@
 
 import CommentListItem from './comment-list-item';
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
+import type { USER_SEX } from '@/entities/user/constants/user-sex';
+import type { ValueOf } from '@/shared/type/types';
 import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observer';
 
 interface CommentListProps {
@@ -9,6 +11,7 @@ interface CommentListProps {
   postId: string;
   postSource?: 'new' | 'legacy';
   postWriterId: number;
+  postWriterSex?: ValueOf<typeof USER_SEX>;
   fetchNextPage: () => void;
   onReplyClick: (commentId: number) => void;
   focusedCommentId: number | null;
@@ -23,6 +26,7 @@ export function CommentList({
   postId,
   postSource = 'legacy',
   postWriterId,
+  postWriterSex,
   fetchNextPage,
   onReplyClick,
   focusedCommentId,
@@ -46,6 +50,7 @@ export function CommentList({
             postId={postId}
             postSource={postSource}
             postWriterId={postWriterId}
+            postWriterSex={postWriterSex}
             onReplyClick={onReplyClick}
             isFocused={isFocused(comment.id)}
             onDelete={() => onDelete(comment.id)}

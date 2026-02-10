@@ -7,6 +7,8 @@ import ConsultingResponseButton from './consulting-response-button';
 import MoreIcon from '@/assets/icons/more-vertical.svg';
 import ReplyIcon from '@/assets/icons/reply.svg';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import type { USER_SEX } from '@/entities/user/constants/user-sex';
+import type { ValueOf } from '@/shared/type/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
@@ -27,6 +29,7 @@ type CommentListItemProps = {
   postId: string;
   postSource?: 'new' | 'legacy';
   postWriterId: number;
+  postWriterSex?: ValueOf<typeof USER_SEX>;
   onReplyClick: (commentId: number) => void;
   isFocused: boolean;
   onDelete: () => void;
@@ -41,6 +44,7 @@ export default function CommentListItem({
   postId,
   postSource = 'legacy',
   postWriterId,
+  postWriterSex,
   onReplyClick,
   isFocused,
   onDelete,
@@ -60,6 +64,10 @@ export default function CommentListItem({
       ? ROUTES.POSTS_NEW_CONSULTING_RESPONSE(postId, comment.answerId.toString())
       : ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString())
     : null;
+  const responseNavigationParams = {
+    [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+    ...(postWriterSex ? { [SEARCH_PARAMS.POST_WRITER_SEX]: postWriterSex } : {}),
+  };
 
   const handleConsultingResponseClick = async () => {
     if (comment.answerId && consultingResponsePath) {
@@ -73,28 +81,23 @@ export default function CommentListItem({
             postId,
             postListTab,
             postSource,
+            postWriterSex,
           });
           // 결제 이력이 있으면 바로 답변 페이지로 이동
           if (result?.alreadyPaid) {
-            push(consultingResponsePath, {
-              [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
-            });
+            push(consultingResponsePath, responseNavigationParams);
           }
           // 결제 이력이 없으면 바텀시트가 표시됨 (버튼 클릭 동작은 아직 연결하지 않음)
           return;
         } else {
           // 다른 사람 글의 컨설팅 답변을 볼 때는 구글 애드몹 광고 표시
           showAdIfAllowed({ adType: AD_TYPE.VIEW_HAIR_CONSULTING_ANSWER });
-          push(consultingResponsePath, {
-            [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
-          });
+          push(consultingResponsePath, responseNavigationParams);
           return;
         }
       }
       // 디자이너인 경우 바로 답변 페이지로 이동
-      push(consultingResponsePath, {
-        [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
-      });
+      push(consultingResponsePath, responseNavigationParams);
     }
   };
 

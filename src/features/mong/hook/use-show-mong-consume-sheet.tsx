@@ -10,6 +10,8 @@ import {
 import type { GetMongWithdrawResponse } from '@/entities/mong/api/get-mong-withdraw-response';
 import type { HTTPError } from 'ky';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import type { USER_SEX } from '@/entities/user/constants/user-sex';
+import type { ValueOf } from '@/shared/type/types';
 import { apiClient } from '@/shared/api/client';
 import { useCallback } from 'react';
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
@@ -24,6 +26,7 @@ type ShowMongConsumeSheetParams = {
   postId: string;
   postListTab: string;
   postSource?: 'new' | 'legacy';
+  postWriterSex?: ValueOf<typeof USER_SEX>;
 };
 
 export default function useShowMongConsumeSheet() {
@@ -40,11 +43,16 @@ export default function useShowMongConsumeSheet() {
       postId,
       postListTab,
       postSource = 'legacy',
+      postWriterSex,
     }: ShowMongConsumeSheetParams) => {
       const targetRoute =
         postSource === 'new'
           ? ROUTES.POSTS_NEW_CONSULTING_RESPONSE(postId, answerId.toString())
           : ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString());
+      const responseNavigationParams = {
+        [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+        ...(postWriterSex ? { [SEARCH_PARAMS.POST_WRITER_SEX]: postWriterSex } : {}),
+      };
 
       // 먼저 몽 차감 유무 조회 API 호출 (자동결제 처리)
       let isMongConsumeDisabled = false;
@@ -62,9 +70,7 @@ export default function useShowMongConsumeSheet() {
 
         // 이미 결제한 적이 있으면 바텀시트를 열지 않고 바로 답변 페이지로 이동
         if (withdrawResponse?.data?.isPaid === true) {
-          push(targetRoute, {
-            [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
-          });
+          push(targetRoute, responseNavigationParams);
           return { alreadyPaid: true };
         }
       } catch (error) {
@@ -88,9 +94,7 @@ export default function useShowMongConsumeSheet() {
 
       // 몽 소비가 비활성화된 경우 바로 답변 페이지로 이동
       if (isMongConsumeDisabled) {
-        push(targetRoute, {
-          [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
-        });
+        push(targetRoute, responseNavigationParams);
         return { alreadyPaid: false, mongConsumeDisabled: true };
       }
 
@@ -136,9 +140,7 @@ export default function useShowMongConsumeSheet() {
                     onClick={() => {
                       // 자동결제이므로 GET 요청에서 이미 결제 처리됨
                       // 바로 답변 페이지로 이동
-                      push(targetRoute, {
-                        [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
-                      });
+                      push(targetRoute, responseNavigationParams);
                     }}
                   >
                     {price}몽 사용

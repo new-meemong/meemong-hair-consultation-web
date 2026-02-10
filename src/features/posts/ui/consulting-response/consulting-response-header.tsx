@@ -69,7 +69,7 @@ export default function ConsultingResponseHeader({
   return (
     <div className="flex flex-col px-5 py-8 bg-label-default gap-8">
       <div className="flex flex-col gap-4">
-        <Avatar className="size-12 rounded-full overflow-hidden">
+        <Avatar className="size-12 rounded-full overflow-hidden items-center justify-center">
           {profileImageUrl ? (
             <AvatarImage src={profileImageUrl} className="size-12 rounded-full" />
           ) : (
@@ -79,10 +79,10 @@ export default function ConsultingResponseHeader({
           )}
         </Avatar>
         <div className="flex flex-col gap-2">
-          <p className="typo-title-3-bold text-white whitespace-pre-line">
-            {`${name} 디자이너님이 보낸\n컨설팅 답변입니다`}
+          <p className="typo-title-3-semibold text-white whitespace-pre-line">
+            {`${name} 디자이너가 보낸\n컨설팅 답변입니다`}
           </p>
-          <p className="typo-body-3-regular text-label-placeholder">{`${format(createdAt, 'MM/dd hh:mm')} 작성`}</p>
+          <p className="typo-body-2-regular text-label-placeholder">{`${format(createdAt, 'MM/dd hh:mm')} 작성`}</p>
         </div>
       </div>
 
