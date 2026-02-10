@@ -23,7 +23,9 @@ export interface ApiError {
   httpCode: number;
   fieldErrors?: Array<{
     field: string;
-    message: string;
+    message?: string;
+    reason?: string;
+    value?: unknown;
   }>;
 }
 

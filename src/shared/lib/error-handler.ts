@@ -54,6 +54,11 @@ export function isTokenExpiredError(error: unknown): boolean {
 export function getErrorMessage(error: unknown): string {
   const apiError = getApiError(error);
 
+  const fieldErrorReason = apiError?.fieldErrors
+    ?.map((fieldError) => fieldError.reason ?? fieldError.message)
+    .find((message): message is string => Boolean(message?.trim()));
+  if (fieldErrorReason) return fieldErrorReason;
+
   const apiMessage = apiError?.message;
   if (apiMessage) return apiMessage;
 
