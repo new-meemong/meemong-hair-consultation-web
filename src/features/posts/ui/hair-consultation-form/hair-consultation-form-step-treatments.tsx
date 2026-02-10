@@ -169,7 +169,7 @@ export default function HairConsultationFormStepTreatments() {
   const { control, setValue } = useFormContext<HairConsultationFormValues>();
   const { user } = useAuthContext();
   const { showBottomSheet } = useOverlayContext();
-  const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
+  const [openCards, setOpenCards] = useState<boolean[]>([]);
 
   const treatments = useWatch({
     control,
@@ -244,6 +244,7 @@ export default function HairConsultationFormStepTreatments() {
               label={specialTreatment}
               onConfirm={() => {
                 setTreatments([createTreatment(specialTreatment)]);
+                setOpenCards([]);
               }}
             />
           ),
@@ -251,11 +252,19 @@ export default function HairConsultationFormStepTreatments() {
         return;
       }
       setTreatments(hasSpecialTreatment ? [] : [createTreatment(specialTreatment)]);
+      setOpenCards([]);
       return;
     }
 
     const nextList = treatmentList.filter((item) => item.treatmentType !== specialTreatment);
-    setTreatments([...nextList, createTreatment(value)]);
+    setTreatments([createTreatment(value), ...nextList]);
+    setOpenCards((prev) => {
+      const filtered = prev.filter((_, index) => {
+        const item = treatmentList[index];
+        return item && item.treatmentType !== specialTreatment;
+      });
+      return [false, ...filtered];
+    });
   };
 
   const updateTreatment = (
@@ -271,6 +280,7 @@ export default function HairConsultationFormStepTreatments() {
   const removeTreatment = (targetIndex: number) => {
     const next = treatmentList.filter((_, index) => index !== targetIndex);
     setTreatments(next);
+    setOpenCards((prev) => prev.filter((_, index) => index !== targetIndex));
   };
 
   const getCardType = (
@@ -400,7 +410,7 @@ export default function HairConsultationFormStepTreatments() {
           {cardTreatments.map(({ item, index }) => {
             const cardType = getCardType(item.treatmentType);
             const itemKey = `${item.treatmentType}-${index}`;
-            const isOpen = openCards[itemKey] ?? true;
+            const isOpen = openCards[index] ?? true;
             const isIncomplete = cardType !== 'TYPE3' && !item.treatmentArea;
             return (
               <div key={itemKey} className="rounded-6 bg-alternative p-4">
@@ -421,10 +431,11 @@ export default function HairConsultationFormStepTreatments() {
                       aria-label={isOpen ? '카드 접기' : '카드 펼치기'}
                       className="w-6 h-6 flex items-center justify-center"
                       onClick={() =>
-                        setOpenCards((prev) => ({
-                          ...prev,
-                          [itemKey]: !(prev[itemKey] ?? true),
-                        }))
+                        setOpenCards((prev) => {
+                          const next = [...prev];
+                          next[index] = !(next[index] ?? true);
+                          return next;
+                        })
                       }
                     >
                       <ChevronRightIcon
@@ -476,7 +487,7 @@ export default function HairConsultationFormStepTreatments() {
                       </div>
                     </div>
 
-                    {cardType === 'TYPE1' && (
+                    {(cardType === 'TYPE1' || cardType === 'TYPE3') && (
                       <div className="flex items-center justify-between">
                         <div className="flex gap-2">
                           {[3, 6, 12].map((months) => (
