@@ -122,6 +122,7 @@ export default function HairConsultationForm({
       case '미디엄':
       case '미디엄롱':
       case '롱':
+      case '장발':
         return '3년';
       default:
         return 'N개월';
