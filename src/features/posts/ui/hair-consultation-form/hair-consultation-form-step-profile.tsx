@@ -37,8 +37,7 @@ const PERSONAL_COLOR_BASE_COLOR_MAP: Record<string, string> = {
   겨울쿨: '#E6447A',
 };
 
-const formatPersonalColorDetailLabel = (value: string) =>
-  value.replace(/^(봄|여름|가을|겨울)/, '');
+const formatPersonalColorDetailLabel = (value: string) => value.replace(/^(봄|여름|가을|겨울)/, '');
 
 export default function HairConsultationFormStepProfile() {
   const { control, getValues } = useFormContext<HairConsultationFormValues>();
@@ -78,11 +77,7 @@ export default function HairConsultationFormStepProfile() {
 
   const selectedHairLengthOption = useMemo(() => {
     if (!selectedHairLength) return null;
-    const option =
-      hairLengthOptions.find((item) => item.value === selectedHairLength) ??
-      [...MALE_HAIR_LENGTH_OPTIONS, ...FEMALE_HAIR_LENGTH_OPTIONS].find(
-        (item) => item.value === selectedHairLength,
-      );
+    const option = hairLengthOptions.find((item) => item.value === selectedHairLength);
     return option ?? null;
   }, [hairLengthOptions, selectedHairLength]);
 

@@ -6,6 +6,7 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 
+import useDeleteHairConsultationMutation from '../api/use-delete-hair-consultation-mutation';
 import useDeletePostMutation from '../api/use-delete-post-mutation';
 import { usePostDetail } from '../context/post-detail-context';
 
@@ -13,15 +14,16 @@ export default function useDeletePost(postId: string) {
   const showModal = useShowModal();
   const { push } = useRouterWithUser();
 
-  const { postDetail } = usePostDetail();
+  const { postDetail, postSource } = usePostDetail();
 
-  const { mutate: deletePost } = useDeletePostMutation();
+  const { mutate: deleteLegacyPost } = useDeletePostMutation();
+  const { mutate: deleteNewPost } = useDeleteHairConsultationMutation();
 
   const activePostTab = postDetail.consultType;
 
   const handleDeleteConfirm = useCallback(
     () =>
-      deletePost(Number(postId), {
+      (postSource === 'new' ? deleteNewPost : deleteLegacyPost)(Number(postId), {
         onSuccess: () => {
           showModal({
             id: 'delete-post-confirm-modal',
@@ -39,7 +41,7 @@ export default function useDeletePost(postId: string) {
           });
         },
       }),
-    [deletePost, postId, showModal, push, activePostTab],
+    [deleteLegacyPost, deleteNewPost, postId, postSource, showModal, push, activePostTab],
   );
 
   const handleDeletePost = useCallback(() => {

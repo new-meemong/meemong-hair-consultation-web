@@ -15,6 +15,7 @@ import hairConsultationOnboadingModel3_1 from '@/assets/hair-consultation-onboar
 import hairConsultationOnboadingModel3_2 from '@/assets/hair-consultation-onboarding/hair_consultation_onboading_model_3_2.png';
 import hairConsultationOnboadingModel4 from '@/assets/hair-consultation-onboarding/hair_consultation_onboading_model_4.png';
 import { Button } from '@/shared';
+import { SiteHeader } from '@/widgets/header';
 
 type HairConsultationOnboardingRole = 'model' | 'designer';
 
@@ -146,6 +147,7 @@ export default function HairConsultationOnboarding({
   return (
     <div className="h-screen w-full bg-white">
       <div className="mx-auto flex h-full w-full max-w-screen-sm flex-col">
+        <SiteHeader title="" />
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           <div className="flex min-h-full flex-col justify-center py-8">
             <div className="px-5">

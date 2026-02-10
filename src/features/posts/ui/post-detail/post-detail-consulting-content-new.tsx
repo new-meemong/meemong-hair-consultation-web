@@ -10,6 +10,7 @@ import type { PostDetail } from '@/entities/posts/model/post-detail';
 import PostDetailAuthorProfile from './post-detail-author-profile';
 import PostDetailImage from './post-detail-image';
 import { format } from 'date-fns';
+import { isUserMale } from '@/entities/user/lib/user-sex';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 
 function Separator() {
@@ -69,6 +70,7 @@ export default function PostDetailConsultingContentNew({
     hairConsultPostingCreateUserName: authorName,
     hairConsultPostingCreateUserRegion: authorRegion,
     hairConsultPostingCreateUserId: authorId,
+    hairConsultPostingCreateUserSex: authorSex,
     title,
     hairConcern,
     hairConcernDetail,
@@ -101,10 +103,11 @@ export default function PostDetailConsultingContentNew({
 
   const formattedCreatedAt = formatCreatedAt(createdAt);
   const hairConcernText = [hairConcern, hairConcernDetail].filter(Boolean).join(', ');
+  const hairLengthOptions = isUserMale(authorSex)
+    ? MALE_HAIR_LENGTH_OPTIONS
+    : FEMALE_HAIR_LENGTH_OPTIONS;
   const hairLengthDescription =
-    [...FEMALE_HAIR_LENGTH_OPTIONS, ...MALE_HAIR_LENGTH_OPTIONS].find(
-      (option) => option.value === hairLength,
-    )?.description ?? '';
+    hairLengthOptions.find((option) => option.value === hairLength)?.description ?? '';
   const hasTreatments = Boolean(treatments && treatments.length > 0);
   const hasAspirationImages = aspirationImageUrls.length > 0;
   const payableCostText = maxPaymentPrice != null ? `${maxPaymentPrice.toLocaleString()}원` : '-';

@@ -55,7 +55,6 @@ const isMaleSex = (sex: string | number | null | undefined) =>
   sex === '남자' || sex === 'MALE' || sex === 'male' || sex === 1 || sex === '1';
 
 const ALL_BANG_STYLE_OPTIONS = [...BANG_STYLE_OPTIONS_NEW.MALE, ...BANG_STYLE_OPTIONS_NEW.FEMALE];
-const ALL_HAIR_LENGTH_OPTIONS = [...MALE_HAIR_LENGTH_OPTIONS, ...FEMALE_HAIR_LENGTH_OPTIONS];
 const MALE_HAIR_LENGTH_FEEDBACK_IMAGE_MAP: Record<string, ImageSource> = {
   크롭: hairLengthFeedbackM1,
   숏: hairLengthFeedbackM2,
@@ -85,17 +84,10 @@ const findBangStyleOption = (label: string, primaryOptions: BangStyleOptionNew[]
 const findHairLengthOption = (value: string, primaryOptions: HairLengthOption[]) => {
   const normalizedValue = normalizeText(value);
 
-  return (
-    primaryOptions.find(
-      (option) =>
-        normalizeText(option.value) === normalizedValue ||
-        normalizeText(option.label) === normalizedValue,
-    ) ??
-    ALL_HAIR_LENGTH_OPTIONS.find(
-      (option) =>
-        normalizeText(option.value) === normalizedValue ||
-        normalizeText(option.label) === normalizedValue,
-    )
+  return primaryOptions.find(
+    (option) =>
+      normalizeText(option.value) === normalizedValue ||
+      normalizeText(option.label) === normalizedValue,
   );
 };
 

@@ -2,7 +2,6 @@ import {
   CONSULTING_RESPONSE_SIDEBAR_TABS,
   CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE,
 } from '@/widgets/post/constants/consulting-response-sidebar-tab';
-import { Drawer } from '@/shared';
 import { DrawerClose, DrawerContent, DrawerTitle, DrawerTrigger } from '@/shared/ui/drawer';
 import {
   FEMALE_HAIR_LENGTH_OPTIONS,
@@ -17,9 +16,11 @@ import ConsultingResponseSidebarDesiredStyleTabView from './consulting-response-
 import ConsultingResponseSidebarEtcTabView from './consulting-response-sidebar-etc-tab-view';
 import ConsultingResponseSidebarGuideTooltip from '../consulting-response/consulting-response-sidebar-guide-tooltip';
 import ConsultingResponseSidebarTreatmentsTabView from './consulting-response-sidebar-treatments-tab-view';
+import { Drawer } from '@/shared';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import type { ValueOf } from '@/shared/type/types';
 import { cn } from '@/lib/utils';
+import { isUserMale } from '@/entities/user/lib/user-sex';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 
@@ -100,10 +101,12 @@ export default function ConsultingResponseSidebar({
     consultingPost.desiredDateType,
     consultingPost.desiredDate,
   );
+  const hairLengthOptions = isUserMale(consultingPost.hairConsultPostingCreateUserSex)
+    ? MALE_HAIR_LENGTH_OPTIONS
+    : FEMALE_HAIR_LENGTH_OPTIONS;
   const hairLengthDescription =
-    [...FEMALE_HAIR_LENGTH_OPTIONS, ...MALE_HAIR_LENGTH_OPTIONS].find(
-      (option) => option.value === consultingPost.hairLength,
-    )?.description ?? '';
+    hairLengthOptions.find((option) => option.value === consultingPost.hairLength)?.description ??
+    '';
   const personalColorChip = (() => {
     if (!consultingPost.personalColor || consultingPost.personalColor === '잘모름') return null;
 
@@ -131,7 +134,11 @@ export default function ConsultingResponseSidebar({
           />
         );
       case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.TREATMENTS:
-        return <ConsultingResponseSidebarTreatmentsTabView treatments={consultingPost.treatments ?? []} />;
+        return (
+          <ConsultingResponseSidebarTreatmentsTabView
+            treatments={consultingPost.treatments ?? []}
+          />
+        );
       case CONSULTING_RESPONSE_SIDEBAR_TAB_VALUE.PREFERRED_STYLE:
         return (
           <ConsultingResponseSidebarDesiredStyleTabView
