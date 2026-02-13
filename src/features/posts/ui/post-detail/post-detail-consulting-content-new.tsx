@@ -2,7 +2,7 @@ import {
   FEMALE_HAIR_LENGTH_OPTIONS,
   MALE_HAIR_LENGTH_OPTIONS,
 } from '../../constants/hair-length-options';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { HAIR_CONCERN_OPTION } from '../../constants/hair-concern-option';
 import LockIcon from '@/assets/icons/lock.svg';
@@ -93,6 +93,8 @@ export default function PostDetailConsultingContentNew({
   const aspirationImageUrls = aspirations?.aspirationImages ?? [];
   const aspirationDescription = aspirations?.aspirationDescription?.trim() ?? '';
   const [isTreatmentsExpanded, setIsTreatmentsExpanded] = useState(false);
+  const [canExpandTreatments, setCanExpandTreatments] = useState(false);
+  const treatmentsListRef = useRef<HTMLDivElement | null>(null);
 
   const isWriter = authorId === user.id;
   const shouldShowAuthorInfo = isWriter || isUserDesigner;
@@ -130,6 +132,16 @@ export default function PostDetailConsultingContentNew({
       backgroundColor: PERSONAL_COLOR_BASE_COLOR_MAP[tone],
     };
   }, [personalColor]);
+
+  useEffect(() => {
+    if (!treatmentsListRef.current) {
+      setCanExpandTreatments(false);
+      return;
+    }
+
+    const maxCollapsedHeight = 240;
+    setCanExpandTreatments(treatmentsListRef.current.scrollHeight > maxCollapsedHeight);
+  }, [treatments]);
 
   return (
     <div className="flex flex-col py-6">
@@ -225,7 +237,7 @@ export default function PostDetailConsultingContentNew({
         <div className="mt-7">
           <div className="flex items-center justify-between">
             <p className="typo-body-1-semibold text-label-default">시술 이력</p>
-            {hasTreatments && (
+            {hasTreatments && canExpandTreatments && (
               <button
                 type="button"
                 className="typo-body-2-medium text-label-sub"
@@ -237,8 +249,9 @@ export default function PostDetailConsultingContentNew({
           </div>
           {hasTreatments && (
             <div
+              ref={treatmentsListRef}
               className={`mt-3 flex flex-col gap-2 ${
-                isTreatmentsExpanded ? '' : 'max-h-[240px] overflow-hidden'
+                isTreatmentsExpanded || !canExpandTreatments ? '' : 'max-h-[240px] overflow-hidden'
               }`}
             >
               {treatments?.map((treatment, index) => {

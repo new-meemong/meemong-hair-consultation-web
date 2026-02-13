@@ -201,6 +201,7 @@ export default function HairConsultationForm({
       if (!hasValidPrice) return false;
 
       const desiredDateType = method.getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE_TYPE);
+      if (!desiredDateType) return false;
       if (desiredDateType !== '원하는 날짜 있음') return true;
 
       const desiredDate = method.getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE);

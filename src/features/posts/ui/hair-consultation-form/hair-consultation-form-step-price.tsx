@@ -167,7 +167,7 @@ export default function HairConsultationFormStepPrice() {
 
       <div className="mt-10">
         <div className="flex items-center justify-between">
-          <span className={`${AppTypography.body2Medium} text-label-default`}>
+          <span className={`${AppTypography.headlineSemiBold} text-label-default`}>
             언제 시술 받고 싶으신가요?
           </span>
           <span className="typo-body-2-semibold text-cautionary">선택</span>
