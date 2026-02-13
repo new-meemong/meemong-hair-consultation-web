@@ -193,8 +193,13 @@ export default function CommentListItem({
           </div>
           <div className="flex flex-col gap-2">
             {isSecret ? (
-              <span className="typo-body-1-long-regular text-label-info">
-                {`타 디자이너의 ${isReply ? '답글' : '댓글'}은 볼 수 없습니다`}
+              <span
+                className={cn(
+                  'typo-body-1-long-regular',
+                  isReply ? 'text-label-info' : 'text-label-placeholder',
+                )}
+              >
+                타 디자이너의 댓글은 볼 수 없습니다
               </span>
             ) : !isConsultingAnswer ? (
               <div className="typo-body-1-long-regular">{content}</div>
