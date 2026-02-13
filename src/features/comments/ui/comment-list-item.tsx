@@ -7,6 +7,7 @@ import ConsultingResponseButton from './consulting-response-button';
 import MoreIcon from '@/assets/icons/more-vertical.svg';
 import ReplyIcon from '@/assets/icons/reply.svg';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import { USER_ROLE } from '@/entities/user/constants/user-role';
 import type { USER_SEX } from '@/entities/user/constants/user-sex';
 import type { ValueOf } from '@/shared/type/types';
 import { cn } from '@/lib/utils';
@@ -145,9 +146,23 @@ export default function CommentListItem({
     return [moreOption[MORE_ACTION.REPORT]];
   };
 
+  const isOtherDesignerGeneralCommentInNewPost =
+    postSource === 'new' &&
+    isUserDesigner &&
+    !isPostWriter &&
+    !isCommentWriter &&
+    !isConsultingAnswer &&
+    author.role === USER_ROLE.DESIGNER;
   const isSecret =
-    isUserDesigner && !isPostWriter && !isCommentWriter && !isConsultingAnswer && isVisibleToModel;
-  const lockIconShown = isUserDesigner && !isConsultingAnswer && isVisibleToModel;
+    isOtherDesignerGeneralCommentInNewPost ||
+    (isUserDesigner &&
+      !isPostWriter &&
+      !isCommentWriter &&
+      !isConsultingAnswer &&
+      isVisibleToModel);
+  const lockIconShown =
+    isOtherDesignerGeneralCommentInNewPost ||
+    (isUserDesigner && !isConsultingAnswer && isVisibleToModel);
 
   return (
     <div
