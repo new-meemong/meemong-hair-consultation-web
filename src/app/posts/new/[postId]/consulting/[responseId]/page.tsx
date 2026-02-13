@@ -1,6 +1,7 @@
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
+import { BANG_STYLE_LABEL, BANG_STYLE_OPTIONS_NEW } from '@/features/posts/constants/bang-style';
 import {
   FEMALE_HAIR_LENGTH_OPTIONS,
   MALE_HAIR_LENGTH_OPTIONS,
@@ -8,7 +9,6 @@ import {
 import { useParams, useSearchParams } from 'next/navigation';
 
 import type { ApiError } from '@/shared/api/client';
-import { BANG_STYLE_OPTIONS_NEW } from '@/features/posts/constants/bang-style';
 import type { BangStyleOptionNew } from '@/features/posts/constants/bang-style';
 import type { ComponentProps } from 'react';
 import { FACE_TYPE_OPTIONS_NEW } from '@/features/posts/constants/face-shape';
@@ -49,7 +49,12 @@ const formatDateTime = (value: string) => {
 const isAdviceRequired = (advice: boolean | number | null | undefined) =>
   advice === true || advice === 1;
 
-const normalizeText = (value: string) => value.replace(/\s+/g, '').toLowerCase();
+const normalizeText = (value: string) =>
+  value
+    .normalize('NFKC')
+    .replace(/[\s\u200B-\u200D\uFEFF]/g, '')
+    .replace(/[^\p{L}\p{N}]/gu, '')
+    .toLowerCase();
 
 const isMaleSex = (sex: string | number | null | undefined) =>
   sex === '남자' || sex === 'MALE' || sex === 'male' || sex === 1 || sex === '1';
@@ -76,8 +81,16 @@ const findBangStyleOption = (label: string, primaryOptions: BangStyleOptionNew[]
   const normalizedLabel = normalizeText(label);
 
   return (
-    primaryOptions.find((option) => normalizeText(option.title) === normalizedLabel) ??
-    ALL_BANG_STYLE_OPTIONS.find((option) => normalizeText(option.title) === normalizedLabel)
+    primaryOptions.find(
+      (option) =>
+        normalizeText(option.title) === normalizedLabel ||
+        normalizeText(BANG_STYLE_LABEL[option.value]) === normalizedLabel,
+    ) ??
+    ALL_BANG_STYLE_OPTIONS.find(
+      (option) =>
+        normalizeText(option.title) === normalizedLabel ||
+        normalizeText(BANG_STYLE_LABEL[option.value]) === normalizedLabel,
+    )
   );
 };
 
