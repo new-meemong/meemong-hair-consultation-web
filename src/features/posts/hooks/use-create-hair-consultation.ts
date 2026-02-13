@@ -109,6 +109,7 @@ export function useCreateHairConsultation() {
               })),
             )
           : undefined;
+      const aspirationImageDescription = data.aspirationImages.description.trim() || undefined;
 
       const treatmentSummary =
         data.treatments && data.treatments.length > 0
@@ -139,7 +140,7 @@ export function useCreateHairConsultation() {
       const desiredCostPrice = data.price.maxPaymentPrice ?? 0;
 
       const desiredDateType = data.desiredDateType ?? undefined;
-      const desiredDate =
+      const desiredDateDescription =
         data.desiredDateType === '원하는 날짜 있음' ? data.desiredDate?.trim() || null : null;
 
       const request: CreateHairConsultationRequest = {
@@ -151,14 +152,13 @@ export function useCreateHairConsultation() {
         skinBrightness: data.skinBrightness,
         hairTexture: data.hairTexture,
         personalColor: data.personalColor,
-        aspirationImageTypes: [],
-        aspirationImageDescription: data.aspirationImages.description,
         desiredDateType,
-        desiredDate,
+        desiredDateDescription,
         desiredCostPrice,
         aspirationImages,
         myImages: myImageList,
         treatments,
+        ...(aspirationImageDescription ? { aspirationImageDescription } : {}),
       };
 
       await createHairConsultation(request, { onSuccess, onError });

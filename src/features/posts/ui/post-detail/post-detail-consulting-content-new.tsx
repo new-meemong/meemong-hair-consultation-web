@@ -80,7 +80,7 @@ export default function PostDetailConsultingContentNew({
     personalColor,
     maxPaymentPrice,
     desiredDateType,
-    desiredDate,
+    desiredDateDescription,
     createdAt,
     myImageList,
     modelImageList,
@@ -113,7 +113,7 @@ export default function PostDetailConsultingContentNew({
   const payableCostText = maxPaymentPrice != null ? `${maxPaymentPrice.toLocaleString()}원` : '-';
   const desiredDateText =
     desiredDateType === '원하는 날짜 있음'
-      ? (desiredDate ?? '').trim() || desiredDateType
+      ? (desiredDateDescription ?? '').trim() || desiredDateType
       : (desiredDateType ?? '-');
   const personalColorChip = useMemo(() => {
     if (!personalColor || personalColor === '잘모름') return null;
@@ -157,16 +157,18 @@ export default function PostDetailConsultingContentNew({
               <ImageList images={myImageUrls} size="large" />
             )}
           </div>
-          <div className="mt-5">
-            <p className="typo-body-1-semibold text-label-default">프로필사진</p>
-            <div className="mt-3">
-              {hiddenImages ? (
-                <HiddenImageAlertBox />
-              ) : (
-                <ImageList images={profileImageUrls} size="large" />
-              )}
+          {isUserDesigner && (
+            <div className="mt-5">
+              <p className="typo-body-1-semibold text-label-default">프로필사진</p>
+              <div className="mt-3">
+                {hiddenImages ? (
+                  <HiddenImageAlertBox />
+                ) : (
+                  <ImageList images={profileImageUrls} size="large" />
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <Separator />

@@ -31,7 +31,8 @@ export type HairConsultationDetail = {
   contentUpdatedAt: string;
   desiredCostPrice: number;
   desiredDateType: string | null;
-  desiredDate: string | null;
+  desiredDateDescription: string | null;
+  desiredDate?: string | null;
   viewCount: number;
   likeCount: number;
   commentCount: number;

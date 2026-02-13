@@ -121,10 +121,10 @@ export type CreateHairConsultationRequest = {
   skinBrightness: HairConsultationSkinBrightness;
   hairTexture: HairConsultationHairTexture;
   personalColor: HairConsultationPersonalColor;
-  aspirationImageTypes: HairConsultationAspirationImageType[];
-  aspirationImageDescription: string;
+  aspirationImageTypes?: HairConsultationAspirationImageType[];
+  aspirationImageDescription?: string;
   desiredDateType?: HairConsultationDesiredDateType;
-  desiredDate?: string | null;
+  desiredDateDescription?: string | null;
   desiredCostPrice: number;
   treatments?: HairConsultationTreatmentRequest[];
   aspirationImages?: HairConsultationAspirationImageRequest[];

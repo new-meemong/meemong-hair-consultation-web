@@ -196,7 +196,15 @@ export default function HairConsultationForm({
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.PRICE) {
       const formValue = method.getValues(name);
-      return formValue.maxPaymentPrice !== null && formValue.maxPaymentPrice >= 10000;
+      const hasValidPrice =
+        formValue.maxPaymentPrice !== null && formValue.maxPaymentPrice >= 10000;
+      if (!hasValidPrice) return false;
+
+      const desiredDateType = method.getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE_TYPE);
+      if (desiredDateType !== '원하는 날짜 있음') return true;
+
+      const desiredDate = method.getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE);
+      return !!desiredDate?.trim();
     }
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.TITLE) {

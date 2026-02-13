@@ -163,6 +163,6 @@ export default function mapHairConsultationDetailToPostDetail(
     minPaymentPrice: detail.desiredCostPrice,
     maxPaymentPrice: detail.desiredCostPrice,
     desiredDateType: detail.desiredDateType,
-    desiredDate: detail.desiredDate,
+    desiredDateDescription: detail.desiredDateDescription ?? detail.desiredDate,
   };
 }

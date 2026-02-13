@@ -56,5 +56,6 @@ export type PostDetail = {
   minPaymentPrice: number | null;
   maxPaymentPrice: number | null;
   desiredDateType?: string | null;
+  desiredDateDescription?: string | null;
   desiredDate?: string | null;
 };
