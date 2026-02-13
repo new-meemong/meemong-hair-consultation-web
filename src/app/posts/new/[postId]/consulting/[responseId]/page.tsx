@@ -336,9 +336,11 @@ export default function NewConsultingResponsePage() {
 
           <div className="mt-7">
             <p className="typo-body-1-semibold text-label-default">얼굴형</p>
-            <p className="mt-1 typo-body-2-regular text-label-info">
-              올려주신 사진을 바탕으로 얼굴형을 진단했어요.
-            </p>
+            {!needsFaceShapeConsulting && (
+              <p className="mt-1 typo-body-2-regular text-label-info">
+                올려주신 사진을 바탕으로 얼굴형을 진단했어요.
+              </p>
+            )}
             {needsFaceShapeConsulting ? (
               <StoreConsultingNotice />
             ) : faceTypeOption ? (
@@ -366,9 +368,11 @@ export default function NewConsultingResponsePage() {
 
           <div className="mt-7">
             <p className="typo-body-1-semibold text-label-default">추천 앞머리 스타일</p>
-            <p className="mt-1 typo-body-2-regular text-label-info">
-              사진 속 스타일은 예시입니다. 전체 스타일이 아닌 앞머리 연출법만 확인해주세요.
-            </p>
+            {!needsBangStyleConsulting && (
+              <p className="mt-1 typo-body-2-regular text-label-info">
+                사진 속 스타일은 예시입니다. 전체 스타일이 아닌 앞머리 연출법만 확인해주세요.
+              </p>
+            )}
             {needsBangStyleConsulting ? (
               <StoreConsultingNotice />
             ) : (
@@ -378,9 +382,11 @@ export default function NewConsultingResponsePage() {
 
           <div className="mt-7">
             <p className="typo-body-1-semibold text-label-default">추천 기장</p>
-            <p className="mt-1 typo-body-2-regular text-label-info">
-              사진 속 스타일은 예시입니다. 전체 스타일이 아닌 기장만 확인해주세요.
-            </p>
+            {!needsHairLengthConsulting && (
+              <p className="mt-1 typo-body-2-regular text-label-info">
+                사진 속 스타일은 예시입니다. 전체 스타일이 아닌 기장만 확인해주세요.
+              </p>
+            )}
             {needsHairLengthConsulting ? (
               <StoreConsultingNotice />
             ) : (
