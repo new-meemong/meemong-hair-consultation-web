@@ -110,6 +110,7 @@ export default function mapHairConsultationDetailToPostDetail(
           .map((treatment) => ({
             treatmentName: treatment.treatmentType,
             treatmentDate: formatTreatmentYearMonth(treatment.treatmentDate),
+            isSelf: Boolean(treatment.isSelf),
             treatmentArea: treatment.treatmentArea,
             decolorizationCount: treatment.decolorizationCount,
           }))

@@ -33,7 +33,16 @@ const PERSONAL_COLOR_BASE_COLOR_MAP: Record<string, string> = {
   겨울쿨: '#E6447A',
 };
 
+const TYPE1_TREATMENTS = new Set(['일반염색', '블랙염색', '블랙빼기']);
+const TYPE2_TREATMENTS = new Set(['일반펌', '열펌/셋팅펌', '매직', '탈색']);
+
 const formatPersonalColorDetailLabel = (value: string) => value.replace(/^(봄|여름|가을|겨울)/, '');
+
+const getTreatmentCardType = (treatmentName: string, isMale: boolean) => {
+  if (TYPE1_TREATMENTS.has(treatmentName)) return 'TYPE1';
+  if (!isMale && TYPE2_TREATMENTS.has(treatmentName)) return 'TYPE2';
+  return 'TYPE3';
+};
 
 function ImageList({ images, size }: { images: string[]; size: 'small' | 'large' }) {
   return (
@@ -92,7 +101,7 @@ export default function PostDetailConsultingContentNew({
   const profileImageUrls = modelImageList ?? [];
   const aspirationImageUrls = aspirations?.aspirationImages ?? [];
   const aspirationDescription = aspirations?.aspirationDescription?.trim() ?? '';
-  const [isTreatmentsExpanded, setIsTreatmentsExpanded] = useState(false);
+  const [isTreatmentsExpanded, setIsTreatmentsExpanded] = useState(true);
   const [canExpandTreatments, setCanExpandTreatments] = useState(false);
   const treatmentsListRef = useRef<HTMLDivElement | null>(null);
 
@@ -255,25 +264,19 @@ export default function PostDetailConsultingContentNew({
               }`}
             >
               {treatments?.map((treatment, index) => {
-                const hasTreatmentArea = !!treatment.treatmentArea;
-                const hasDecolorizationCount =
-                  treatment.decolorizationCount !== null &&
-                  treatment.decolorizationCount !== undefined;
-                const treatmentDetailText = (() => {
-                  if (hasTreatmentArea && hasDecolorizationCount) {
-                    return `탈색횟수 ${treatment.decolorizationCount}회 · 시술부위 - ${treatment.treatmentArea}`;
-                  }
-
-                  if (hasTreatmentArea) {
-                    return `시술부위 - ${treatment.treatmentArea}`;
-                  }
-
-                  if (hasDecolorizationCount) {
-                    return `탈색횟수 ${treatment.decolorizationCount}회`;
-                  }
-
-                  return null;
-                })();
+                const cardType = getTreatmentCardType(
+                  treatment.treatmentName,
+                  isUserMale(authorSex),
+                );
+                const decolorizationCount = treatment.decolorizationCount ?? 0;
+                const decolorizationText =
+                  decolorizationCount === 0 ? '탈색 안함' : `탈색횟수 ${decolorizationCount}회`;
+                const treatmentDetailText =
+                  cardType === 'TYPE1'
+                    ? `${decolorizationText} · 시술부위 - ${treatment.treatmentArea ?? '-'}`
+                    : cardType === 'TYPE2'
+                      ? `시술부위 - ${treatment.treatmentArea ?? '-'}`
+                      : null;
 
                 return (
                   <div
@@ -286,6 +289,7 @@ export default function PostDetailConsultingContentNew({
                       </p>
                       <p className="typo-body-2-semibold text-label-default">
                         {treatment.treatmentName}
+                        {treatment.isSelf ? ' (셀프)' : ''}
                       </p>
                     </div>
                     {treatmentDetailText && (

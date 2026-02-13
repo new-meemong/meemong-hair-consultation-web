@@ -12,6 +12,8 @@ import { resizeImageFile } from '@/shared/lib/resize-image-file';
 import useCreateHairConsultationMutation from '../api/use-create-hair-consultation-mutation';
 import { useState } from 'react';
 
+const DECOLORIZATION_COUNT_TREATMENT_TYPES = new Set(['일반염색', '블랙염색', '블랙빼기']);
+
 const mapMyImageTypeToRequestSubType = (
   type: ValueOf<typeof MY_IMAGE_TYPE>,
 ): HairConsultationMyImageRequest['subType'] => {
@@ -120,18 +122,20 @@ export function useCreateHairConsultation() {
             )
           : undefined;
       const aspirationImageDescription = data.aspirationImages.description.trim() || undefined;
-
       const treatmentSummary =
         data.treatments && data.treatments.length > 0
           ? data.treatments.map((item) => item.treatmentType).join(', ')
           : undefined;
       const detailText = data.treatmentDetail?.trim();
-      const treatmentDescription =
+      const hairConsultTreatmentDescription =
         treatmentSummary && detailText
           ? `${treatmentSummary} / ${detailText}`
           : (treatmentSummary ?? detailText ?? undefined);
 
       const treatments = data.treatments.map((item) => {
+        const shouldSendDecolorizationCount = DECOLORIZATION_COUNT_TREATMENT_TYPES.has(
+          item.treatmentType,
+        );
         const request = {
           treatmentType: item.treatmentType,
           treatmentDate: format(subMonths(new Date(), item.monthsAgo), 'yyyy-MM'),
@@ -141,8 +145,8 @@ export function useCreateHairConsultation() {
         return {
           ...request,
           ...(item.treatmentArea ? { treatmentArea: item.treatmentArea } : {}),
-          ...(item.decolorizationCount !== null && item.decolorizationCount !== undefined
-            ? { decolorizationCount: item.decolorizationCount }
+          ...(shouldSendDecolorizationCount
+            ? { decolorizationCount: item.decolorizationCount ?? 0 }
             : {}),
         };
       });
@@ -151,23 +155,27 @@ export function useCreateHairConsultation() {
 
       const desiredDateType = data.desiredDateType ?? undefined;
       const desiredDateDescription =
-        data.desiredDateType === '원하는 날짜 있음' ? data.desiredDate?.trim() || null : null;
+        data.desiredDateType === '원하는 날짜 있음' &&
+        data.desiredDate !== null &&
+        data.desiredDate !== ''
+          ? data.desiredDate
+          : undefined;
 
       const request: CreateHairConsultationRequest = {
         title: data.title,
         content: data.content,
-        hairConsultTreatmentDescription: treatmentDescription,
+        hairConsultTreatmentDescription,
         hairConcerns: data.hairConcerns,
         hairLength: data.hairLength,
         skinBrightness: data.skinBrightness,
         hairTexture: data.hairTexture,
         personalColor: data.personalColor,
         desiredDateType,
-        desiredDateDescription,
         desiredCostPrice,
         aspirationImages,
         myImages: myImageList,
         treatments,
+        ...(desiredDateDescription !== undefined ? { desiredDateDescription } : {}),
         ...(aspirationImageDescription ? { aspirationImageDescription } : {}),
       };
 

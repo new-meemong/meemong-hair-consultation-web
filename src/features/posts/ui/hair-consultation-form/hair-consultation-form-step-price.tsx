@@ -200,10 +200,10 @@ export default function HairConsultationFormStepPrice() {
               ref={desiredDateInputRef}
               value={desiredDate ?? ''}
               onChange={(e) => {
-                const nextValue = e.target.value.trim();
+                const nextValue = e.target.value;
                 setValue(
                   HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE,
-                  nextValue ? nextValue : null,
+                  nextValue === '' ? null : nextValue,
                   { shouldDirty: true },
                 );
               }}

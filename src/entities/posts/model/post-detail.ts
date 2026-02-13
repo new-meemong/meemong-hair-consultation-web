@@ -8,6 +8,7 @@ import type { ValueOf } from '@/shared/type/types';
 export type Treatment = {
   treatmentName: string;
   treatmentDate: string;
+  isSelf?: boolean;
   treatmentArea?: string | null;
   decolorizationCount?: number | null;
 };
