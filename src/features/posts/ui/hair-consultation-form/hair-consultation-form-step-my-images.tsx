@@ -15,7 +15,7 @@ import guideFrontO from '@/assets/hair-photo-guide/guide_front_o.png';
 import guideFrontX from '@/assets/hair-photo-guide/guide_front_x.png';
 import guideSideO from '@/assets/hair-photo-guide/guide_side_o.png';
 import guideSideX from '@/assets/hair-photo-guide/guide_side_x.png';
-import { Button } from '@/shared';
+import { BottomSheet, Button } from '@/shared';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '../../constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '../../types/hair-consultation-form-values';
 import { IMAGE_TYPE } from '@/shared/constants/image-type';
@@ -28,8 +28,9 @@ export default function HairConsultationFormStepMyImages() {
   const { setValue, getValues, control } = useFormContext<HairConsultationFormValues>();
   const { showSnackBar } = useOverlayContext();
 
-  const [activeGuideType, setActiveGuideType] =
-    useState<ValueOf<typeof MY_IMAGE_TYPE> | null>(null);
+  const [activeGuideType, setActiveGuideType] = useState<ValueOf<typeof MY_IMAGE_TYPE> | null>(
+    null,
+  );
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const captureInputRef = useRef<HTMLInputElement>(null);
 
@@ -53,10 +54,7 @@ export default function HairConsultationFormStepMyImages() {
         required: true,
         goodImage: guideFrontO,
         badImage: guideFrontX,
-        descriptions: [
-          '얼굴형 파악에 꼭 필요해요',
-          '너무 작은 사진은 안돼요',
-        ],
+        descriptions: ['얼굴형 파악에 꼭 필요해요', '너무 작은 사진은 안돼요'],
       },
       [MY_IMAGE_TYPE.SIDE]: {
         title: '측면 사진',
@@ -77,12 +75,10 @@ export default function HairConsultationFormStepMyImages() {
         badImage: guideCurrentX,
         descriptions: [
           <>
-            <span className="typo-body-2-long-semibold">최근 일주일</span> 내 사진이면
-            가능해요
+            <span className="typo-body-2-long-semibold">최근 일주일</span> 내 사진이면 가능해요
           </>,
           <>
-            반드시 <span className="typo-body-2-long-semibold">머리길이</span>가
-            보여야 해요
+            반드시 <span className="typo-body-2-long-semibold">머리길이</span>가 보여야 해요
           </>,
         ],
       },
@@ -161,83 +157,7 @@ export default function HairConsultationFormStepMyImages() {
   const handleCaptureClick = () => {
     captureInputRef.current?.click();
   };
-
-  if (activeGuideType) {
-    const guide = guideConfig[activeGuideType];
-
-    return (
-      <div className="flex flex-col">
-        <div className="flex items-center justify-between">
-          <span className={`${AppTypography.headlineSemiBold} text-label-default`}>
-            {guide.title}
-          </span>
-          <span className="typo-body-2-semibold text-cautionary">
-            {guide.required ? '필수' : '선택'}
-          </span>
-        </div>
-
-        <div className="mt-7 flex items-center justify-between">
-          <Image
-            src={guide.goodImage}
-            alt={`${guide.title} 올바른 예시`}
-            width={163}
-            height={163}
-            className="rounded-6"
-          />
-          <Image
-            src={guide.badImage}
-            alt={`${guide.title} 잘못된 예시`}
-            width={163}
-            height={163}
-            className="rounded-6"
-          />
-        </div>
-
-        <div className="mt-3 flex flex-col text-label-sub text-center">
-          {guide.descriptions.map((description, index) => (
-            <p key={index} className="typo-body-2-long-regular">
-              {description}
-            </p>
-          ))}
-        </div>
-
-        <div className="mt-7 flex flex-col gap-3">
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2 w-full px-3 py-3 rounded-4 border border-border-default bg-white typo-body-2-medium text-label-sub"
-            onClick={handleUploadClick}
-          >
-            <PictureIcon className="w-5 h-5" />
-            사진 업로드
-          </button>
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2 w-full px-3 py-3 rounded-4 border border-border-default bg-white typo-body-2-medium text-label-sub"
-            onClick={handleCaptureClick}
-          >
-            <CameraIcon className="w-5 h-5" />
-            사진 촬영
-          </button>
-        </div>
-
-        <input
-          ref={uploadInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleInputChange(activeGuideType)}
-        />
-        <input
-          ref={captureInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          className="hidden"
-          onChange={handleInputChange(activeGuideType)}
-        />
-      </div>
-    );
-  }
+  const activeGuide = activeGuideType ? guideConfig[activeGuideType] : null;
 
   const renderUploadSlot = (type: ValueOf<typeof MY_IMAGE_TYPE>, label: string) => {
     const currentImage = getCurrentImage(type);
@@ -245,19 +165,28 @@ export default function HairConsultationFormStepMyImages() {
       <div className="flex flex-col gap-2 items-center">
         {currentImage ? (
           <div className="relative w-[120px] h-[120px] flex-shrink-0">
-            <Image
-              src={currentImage.src}
-              alt={currentImage.name}
-              fill
-              className="object-cover rounded-6"
-              sizes="120px"
-            />
+            <button
+              type="button"
+              className="w-full h-full"
+              onClick={() => setActiveGuideType(type)}
+            >
+              <Image
+                src={currentImage.src}
+                alt={currentImage.name}
+                fill
+                className="object-cover rounded-6"
+                sizes="120px"
+              />
+            </button>
             <Button
               type="button"
               variant="icon"
               size="icon"
               className="absolute top-1 right-1 bg-label-default text-white"
-              onClick={() => handleImageDelete({ type })}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleImageDelete({ type });
+              }}
             >
               <XIcon className="w-4 h-4 text-white" />
             </Button>
@@ -299,6 +228,91 @@ export default function HairConsultationFormStepMyImages() {
           {renderUploadSlot(MY_IMAGE_TYPE.WHOLE_BODY, '전신 (선택)')}
         </div>
       </div>
+      <BottomSheet
+        id="hair-consultation-image-guide-sheet"
+        open={!!activeGuide}
+        onClose={() => setActiveGuideType(null)}
+      >
+        {activeGuide && (
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between">
+              <span className={`${AppTypography.headlineSemiBold} text-label-default`}>
+                {activeGuide.title}
+              </span>
+              <span className="typo-body-2-semibold text-cautionary">
+                {activeGuide.required ? '필수' : '선택'}
+              </span>
+            </div>
+
+            <div className="mt-7 flex items-center justify-between">
+              <Image
+                src={activeGuide.goodImage}
+                alt={`${activeGuide.title} 올바른 예시`}
+                width={163}
+                height={163}
+                className="rounded-6"
+              />
+              <Image
+                src={activeGuide.badImage}
+                alt={`${activeGuide.title} 잘못된 예시`}
+                width={163}
+                height={163}
+                className="rounded-6"
+              />
+            </div>
+
+            <div className="mt-3 flex flex-col text-label-sub text-center">
+              {activeGuide.descriptions.map((description, index) => (
+                <p key={index} className="typo-body-2-long-regular">
+                  {description}
+                </p>
+              ))}
+            </div>
+
+            <div className="mt-7 flex flex-col gap-3">
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 w-full px-3 py-3 rounded-4 border border-border-default bg-white typo-body-2-medium text-label-sub"
+                onClick={handleUploadClick}
+              >
+                <PictureIcon className="w-5 h-5" />
+                사진 업로드
+              </button>
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 w-full px-3 py-3 rounded-4 border border-border-default bg-white typo-body-2-medium text-label-sub"
+                onClick={handleCaptureClick}
+              >
+                <CameraIcon className="w-5 h-5" />
+                사진 촬영
+              </button>
+              <button
+                type="button"
+                className="w-full px-3 py-3 rounded-4 bg-alternative typo-body-2-medium text-label-info"
+                onClick={() => setActiveGuideType(null)}
+              >
+                닫기
+              </button>
+            </div>
+
+            <input
+              ref={uploadInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={activeGuideType ? handleInputChange(activeGuideType) : undefined}
+            />
+            <input
+              ref={captureInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={activeGuideType ? handleInputChange(activeGuideType) : undefined}
+            />
+          </div>
+        )}
+      </BottomSheet>
     </div>
   );
 }
