@@ -202,6 +202,11 @@ export default function CommentListItem({
               <ConsultingResponseButton
                 isCommentWriter={isCommentWriter}
                 hasAnswerImages={comment.hasAnswerImages ?? false}
+                analysisFaceShape={comment.analysisFaceShape}
+                analysisBangs={comment.analysisBangs}
+                analysisHairLength={comment.analysisHairLength}
+                analysisHairCurl={comment.analysisHairCurl}
+                recommendedTreatment={comment.recommendedTreatment ?? comment.content}
                 onClick={handleConsultingResponseClick}
               />
             )}

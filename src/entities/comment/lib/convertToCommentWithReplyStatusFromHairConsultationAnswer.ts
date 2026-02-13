@@ -8,6 +8,11 @@ export default function convertToCommentWithReplyStatusFromHairConsultationAnswe
 ): CommentWithReplyStatus[] {
   if (!data) return [];
 
+  const STORE_CONSULTING_TEXT = '매장상담이 필요합니다';
+  const isStoreConsulting = (value: boolean | number | null | undefined) => value === true || value === 1;
+  const joinOrNull = (values: string[] | null | undefined) =>
+    values && values.length > 0 ? values.join(', ') : null;
+
   const seenAnswerIds = new Set<number>();
   const results: CommentWithReplyStatus[] = [];
 
@@ -35,6 +40,19 @@ export default function convertToCommentWithReplyStatusFromHairConsultationAnswe
         answerId: answer.id,
         isConsultingAnswer: true,
         hasAnswerImages: (answer.styleImages?.length ?? 0) > 0,
+        analysisFaceShape: isStoreConsulting(answer.isFaceShapeAdvice)
+          ? STORE_CONSULTING_TEXT
+          : (answer.faceShape ?? null),
+        analysisBangs: isStoreConsulting(answer.isBangsTypeAdvice)
+          ? STORE_CONSULTING_TEXT
+          : joinOrNull(answer.bangsTypes),
+        analysisHairLength: isStoreConsulting(answer.isHairLengthAdvice)
+          ? STORE_CONSULTING_TEXT
+          : joinOrNull(answer.hairLengths),
+        analysisHairCurl: isStoreConsulting(answer.isHairCurlAdvice)
+          ? STORE_CONSULTING_TEXT
+          : joinOrNull(answer.hairCurls),
+        recommendedTreatment: answer.title ?? null,
       });
     });
   });

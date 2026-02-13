@@ -21,6 +21,11 @@ export type Comment = {
   answerId?: number;
   isConsultingAnswer?: boolean;
   hasAnswerImages?: boolean;
+  analysisFaceShape?: string | null;
+  analysisBangs?: string | null;
+  analysisHairLength?: string | null;
+  analysisHairCurl?: string | null;
+  recommendedTreatment?: string | null;
 };
 
 export type CommentWithReplies = Comment & {
