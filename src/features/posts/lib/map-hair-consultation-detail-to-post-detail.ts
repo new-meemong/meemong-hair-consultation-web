@@ -84,6 +84,18 @@ const inferUserSex = (detail: HairConsultationDetail) => {
   return null;
 };
 
+const formatTreatmentYearMonth = (value: string | null) => {
+  if (!value) return '';
+
+  const normalized = value.trim();
+  const match = normalized.match(/^(\d{4})[-.](\d{2})/);
+  if (match) {
+    return `${match[1]}.${match[2]}`;
+  }
+
+  return normalized;
+};
+
 export default function mapHairConsultationDetailToPostDetail(
   detail: HairConsultationDetail,
 ): PostDetail {
@@ -97,7 +109,7 @@ export default function mapHairConsultationDetailToPostDetail(
           .sort((a, b) => a.displayOrder - b.displayOrder)
           .map((treatment) => ({
             treatmentName: treatment.treatmentType,
-            treatmentDate: treatment.treatmentDate ?? '',
+            treatmentDate: formatTreatmentYearMonth(treatment.treatmentDate),
             treatmentArea: treatment.treatmentArea,
             decolorizationCount: treatment.decolorizationCount,
           }))

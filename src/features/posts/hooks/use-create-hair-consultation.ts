@@ -86,8 +86,18 @@ export function useCreateHairConsultation() {
   ) => {
     setIsUploadingImages(true);
     try {
+      const myImageOrder: ValueOf<typeof MY_IMAGE_TYPE>[] = [
+        MY_IMAGE_TYPE.RECENT,
+        MY_IMAGE_TYPE.FRONT,
+        MY_IMAGE_TYPE.SIDE,
+        MY_IMAGE_TYPE.WHOLE_BODY,
+      ];
+      const orderedMyImages = [...data.myImages].sort(
+        (a, b) => myImageOrder.indexOf(a.type) - myImageOrder.indexOf(b.type),
+      );
+
       const myImageList = await Promise.all(
-        data.myImages.map(async ({ type, image }) => {
+        orderedMyImages.map(async ({ type, image }) => {
           const resizedImage = await resizeImageFile(image, 1024);
           const imageUrl = await uploadImageWithPresignedUrl(resizedImage);
           return {

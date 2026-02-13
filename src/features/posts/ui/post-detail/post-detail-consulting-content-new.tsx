@@ -242,8 +242,25 @@ export default function PostDetailConsultingContentNew({
               }`}
             >
               {treatments?.map((treatment, index) => {
-                const decolorizationCountLabel = String(treatment.decolorizationCount ?? 0);
-                const treatmentAreaLabel = treatment.treatmentArea ?? '-';
+                const hasTreatmentArea = !!treatment.treatmentArea;
+                const hasDecolorizationCount =
+                  treatment.decolorizationCount !== null &&
+                  treatment.decolorizationCount !== undefined;
+                const treatmentDetailText = (() => {
+                  if (hasTreatmentArea && hasDecolorizationCount) {
+                    return `탈색횟수 ${treatment.decolorizationCount}회 · 시술부위 - ${treatment.treatmentArea}`;
+                  }
+
+                  if (hasTreatmentArea) {
+                    return `시술부위 - ${treatment.treatmentArea}`;
+                  }
+
+                  if (hasDecolorizationCount) {
+                    return `탈색횟수 ${treatment.decolorizationCount}회`;
+                  }
+
+                  return null;
+                })();
 
                 return (
                   <div
@@ -258,10 +275,14 @@ export default function PostDetailConsultingContentNew({
                         {treatment.treatmentName}
                       </p>
                     </div>
-                    <div className="mt-3 h-px bg-border-default" />
-                    <p className="mt-3 typo-body-2-regular text-label-info">
-                      탈색횟수 {decolorizationCountLabel}회 · 시술부위 - {treatmentAreaLabel}
-                    </p>
+                    {treatmentDetailText && (
+                      <>
+                        <div className="mt-3 h-px bg-border-default" />
+                        <p className="mt-3 typo-body-2-regular text-label-info">
+                          {treatmentDetailText}
+                        </p>
+                      </>
+                    )}
                   </div>
                 );
               })}
