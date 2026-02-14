@@ -4,7 +4,6 @@ import {
 } from '../../constants/hair-length-options';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { HAIR_CONCERN_OPTION } from '../../constants/hair-concern-option';
 import LockIcon from '@/assets/icons/lock.svg';
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 import PostDetailAuthorProfile from './post-detail-author-profile';
@@ -81,6 +80,7 @@ export default function PostDetailConsultingContentNew({
     hairConsultPostingCreateUserId: authorId,
     hairConsultPostingCreateUserSex: authorSex,
     title,
+    content,
     hairConcern,
     hairConcernDetail,
     hairLength,
@@ -110,8 +110,6 @@ export default function PostDetailConsultingContentNew({
   const displayName = shouldShowAuthorInfo ? authorName || '익명' : '익명';
   const displayImageUrl = shouldShowAuthorInfo ? authorImageUrl : null;
   const hiddenImages = !isWriter && !isUserDesigner;
-  const concern = hairConcern === HAIR_CONCERN_OPTION.etc.label ? hairConcernDetail : hairConcern;
-
   const formattedCreatedAt = formatCreatedAt(createdAt);
   const hairConcernText = [hairConcern, hairConcernDetail].filter(Boolean).join(', ');
   const hairLengthOptions = isUserMale(authorSex)
@@ -164,7 +162,11 @@ export default function PostDetailConsultingContentNew({
         />
         <div className="flex flex-col gap-3">
           <p className="typo-title-3-semibold text-label-default">{title}</p>
-          {concern && <p className="typo-body-1-long-regular text-label-default">{concern}</p>}
+          {content && (
+            <p className="typo-body-1-long-regular text-label-default whitespace-pre-wrap">
+              {content}
+            </p>
+          )}
         </div>
         <div>
           <p className="typo-body-1-semibold text-label-default">참고 사진</p>
