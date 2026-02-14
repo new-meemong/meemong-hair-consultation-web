@@ -94,12 +94,12 @@ const findBangStyleOption = (label: string, primaryOptions: BangStyleOptionNew[]
   );
 };
 
-const findHairLengthOption = (value: string, primaryOptions: HairLengthOption[]) => {
-  const normalizedValue = normalizeText(value);
+const findHairLengthOption = (value: string | null, primaryOptions: HairLengthOption[]) => {
+  const normalizedValue = normalizeText(value ?? '');
 
   return primaryOptions.find(
     (option) =>
-      normalizeText(option.value) === normalizedValue ||
+      normalizeText(option.value ?? '') === normalizedValue ||
       normalizeText(option.label) === normalizedValue,
   );
 };
@@ -113,8 +113,8 @@ type RecommendationPreviewItem = {
   imageSrc?: ImageSource;
 };
 
-const getHairLengthFeedbackImage = (value: string, isMale: boolean) => {
-  const normalizedValue = normalizeText(value);
+const getHairLengthFeedbackImage = (value: string | null, isMale: boolean) => {
+  const normalizedValue = normalizeText(value ?? '');
   const imageMap = isMale
     ? MALE_HAIR_LENGTH_FEEDBACK_IMAGE_MAP
     : FEMALE_HAIR_LENGTH_FEEDBACK_IMAGE_MAP;

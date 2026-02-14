@@ -38,6 +38,7 @@ const PERSONAL_COLOR_BASE_COLOR_MAP: Record<string, string> = {
 };
 
 const formatPersonalColorDetailLabel = (value: string) => value.replace(/^(봄|여름|가을|겨울)/, '');
+const EMPTY_FIELD_MESSAGE = '정보를 입력해주세요';
 
 export default function HairConsultationFormStepProfile() {
   const { control, getValues } = useFormContext<HairConsultationFormValues>();
@@ -139,23 +140,46 @@ export default function HairConsultationFormStepProfile() {
     push(ROUTES.POSTS_NEW_CREATE_PERSONAL_COLOR, { skipReload: '1' });
   }, [getValues, push, saveContent]);
 
+  const renderEditHeader = (
+    title: string,
+    ariaLabel: string,
+    onClick: () => void,
+    hasValue: boolean,
+    isRequired = false,
+  ) => (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-1.5">
+        <p className={`${AppTypography.body1SemiBold} text-label-default`}>{title}</p>
+        {isRequired && <span className="w-1 h-1 rounded-full bg-negative-light" />}
+      </div>
+      <div className="flex items-center gap-2">
+        {!hasValue && (
+          <span className={`${AppTypography.body2Regular} text-label-placeholder`}>
+            {EMPTY_FIELD_MESSAGE}
+          </span>
+        )}
+        <button
+          type="button"
+          aria-label={ariaLabel}
+          className="flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 overflow-visible"
+          onClick={onClick}
+        >
+          <EditIcon className="block w-[22px] h-[22px] text-label-info" />
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-col gap-4 mt-7">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <p className={`${AppTypography.body1SemiBold} text-label-default`}>머리기장</p>
-            <span className="w-1 h-1 rounded-full bg-negative-light" />
-          </div>
-          <button
-            type="button"
-            aria-label="머리기장 수정"
-            className="flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 overflow-visible"
-            onClick={handleHairLengthEdit}
-          >
-            <EditIcon className="block w-[22px] h-[22px] text-label-info" />
-          </button>
-        </div>
+        {renderEditHeader(
+          '머리기장',
+          '머리기장 수정',
+          handleHairLengthEdit,
+          !!selectedHairLengthOption,
+          true,
+        )}
         {selectedHairLengthOption && (
           <div className="flex items-center gap-4">
             <div className="relative w-[100px] h-[100px] flex-shrink-0 rounded-6 overflow-hidden bg-alternative">
@@ -181,17 +205,12 @@ export default function HairConsultationFormStepProfile() {
       <div className="border-t border-border-default" />
 
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <p className={`${AppTypography.body1SemiBold} text-label-default`}>헤어 고민</p>
-          <button
-            type="button"
-            aria-label="헤어 고민 수정"
-            className="flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 overflow-visible"
-            onClick={handleHairConcernEdit}
-          >
-            <EditIcon className="block w-[22px] h-[22px] text-label-info" />
-          </button>
-        </div>
+        {renderEditHeader(
+          '헤어 고민',
+          '헤어 고민 수정',
+          handleHairConcernEdit,
+          Array.isArray(selectedConcerns) && selectedConcerns.length > 0,
+        )}
         {selectedConcerns && selectedConcerns.length > 0 && (
           <ToggleChipGroup className="flex flex-wrap gap-2">
             {selectedConcerns.map((option) => (
@@ -216,17 +235,12 @@ export default function HairConsultationFormStepProfile() {
       <div className="border-t border-border-default" />
 
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <p className={`${AppTypography.body1SemiBold} text-label-default`}>모발 타입</p>
-          <button
-            type="button"
-            aria-label="모발 타입 수정"
-            className="flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 overflow-visible"
-            onClick={handleHairTextureEdit}
-          >
-            <EditIcon className="block w-[22px] h-[22px] text-label-info" />
-          </button>
-        </div>
+        {renderEditHeader(
+          '모발 타입',
+          '모발 타입 수정',
+          handleHairTextureEdit,
+          !!selectedHairTexture,
+        )}
         {selectedHairTexture && (
           <ToggleChipGroup className="flex flex-wrap gap-2">
             <ToggleChip
@@ -249,17 +263,12 @@ export default function HairConsultationFormStepProfile() {
       <div className="border-t border-border-default" />
 
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <p className={`${AppTypography.body1SemiBold} text-label-default`}>피부톤</p>
-          <button
-            type="button"
-            aria-label="피부톤 수정"
-            className="flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 overflow-visible"
-            onClick={handleSkinBrightnessEdit}
-          >
-            <EditIcon className="block w-[22px] h-[22px] text-label-info" />
-          </button>
-        </div>
+        {renderEditHeader(
+          '피부톤',
+          '피부톤 수정',
+          handleSkinBrightnessEdit,
+          !!selectedSkinBrightness,
+        )}
         {selectedSkinBrightness && (
           <ToggleChipGroup className="flex flex-wrap items-center gap-2">
             <ToggleChip
@@ -287,17 +296,12 @@ export default function HairConsultationFormStepProfile() {
       <div className="border-t border-border-default" />
 
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <p className={`${AppTypography.body1SemiBold} text-label-default`}>퍼스널 컬러</p>
-          <button
-            type="button"
-            aria-label="퍼스널 컬러 수정"
-            className="flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 overflow-visible"
-            onClick={handlePersonalColorEdit}
-          >
-            <EditIcon className="block w-[22px] h-[22px] text-label-info" />
-          </button>
-        </div>
+        {renderEditHeader(
+          '퍼스널 컬러',
+          '퍼스널 컬러 수정',
+          handlePersonalColorEdit,
+          !!selectedPersonalColor,
+        )}
         {selectedPersonalColor && (
           <ToggleChipGroup className="flex flex-wrap items-center gap-2">
             <ToggleChip

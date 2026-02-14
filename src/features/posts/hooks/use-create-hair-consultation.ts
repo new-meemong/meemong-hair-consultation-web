@@ -161,6 +161,16 @@ export function useCreateHairConsultation() {
           ? data.desiredDate
           : undefined;
 
+      if (
+        data.hairConcerns.length === 0 ||
+        !data.hairLength ||
+        !data.skinBrightness ||
+        !data.hairTexture ||
+        !data.personalColor
+      ) {
+        throw new Error('프로필 정보를 먼저 입력해주세요.');
+      }
+
       const request: CreateHairConsultationRequest = {
         title: data.title,
         content: data.content,

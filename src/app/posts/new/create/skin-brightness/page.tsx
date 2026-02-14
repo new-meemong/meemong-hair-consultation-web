@@ -8,14 +8,14 @@ import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constant
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '@/features/posts/constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
 import type { HairConsultationSkinBrightness } from '@/entities/posts/api/create-hair-consultation-request';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
+import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { useSearchParams } from 'next/navigation';
 import useWritingContent from '@/shared/hooks/use-writing-content';
-import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
-import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 
 const FEMALE_SKIN_BRIGHTNESS_OPTIONS: Array<{
   value: HairConsultationSkinBrightness;
@@ -45,17 +45,16 @@ export default function SkinBrightnessSelectPage() {
   const { user } = useAuthContext();
   const { replace } = useRouterWithUser();
   const searchParams = useSearchParams();
-  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
+  const { savedContent, saveContent } = useWritingContent(
+    USER_WRITING_CONTENT_KEYS.hairConsultation,
+  );
 
   const initialValue = useMemo(() => {
-    return (
-      savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS] ??
-      DEFAULT_HAIR_CONSULTATION_FORM_VALUES[HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS]
-    );
+    return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS] ?? null;
   }, [savedContent]);
 
   const [selectedBrightness, setSelectedBrightness] =
-    useState<HairConsultationSkinBrightness>(initialValue);
+    useState<HairConsultationSkinBrightness | null>(initialValue);
   const skinBrightnessOptions = useMemo(
     () => (user.sex === '남자' ? MALE_SKIN_BRIGHTNESS_OPTIONS : FEMALE_SKIN_BRIGHTNESS_OPTIONS),
     [user.sex],
@@ -66,6 +65,8 @@ export default function SkinBrightnessSelectPage() {
   };
 
   const handleComplete = () => {
+    if (!selectedBrightness) return;
+
     const baseContent = savedContent?.content ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES;
     const nextContent: HairConsultationFormValues = {
       ...baseContent,
@@ -136,7 +137,12 @@ export default function SkinBrightnessSelectPage() {
         </div>
       </div>
       <div className="px-5 py-3 border-t border-1 border-border-default">
-        <Button className="w-full" size="lg" onClick={handleComplete}>
+        <Button
+          className="w-full"
+          size="lg"
+          onClick={handleComplete}
+          disabled={!selectedBrightness}
+        >
           완료
         </Button>
       </div>

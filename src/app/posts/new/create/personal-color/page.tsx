@@ -77,16 +77,18 @@ const PERSONAL_COLOR_GROUPS: PersonalColorGroup[] = [
   },
 ];
 
-const findGroupByValue = (value: HairConsultationPersonalColor) => {
+const findGroupByValue = (value: HairConsultationPersonalColor | null) => {
+  if (!value) return null;
   for (const group of PERSONAL_COLOR_GROUPS) {
     if (group.value === value) return group;
     const matched = group.subOptions?.find((option) => option.value === value);
     if (matched) return group;
   }
-  return PERSONAL_COLOR_GROUPS.find((group) => group.key === 'UNKNOWN') ?? PERSONAL_COLOR_GROUPS[0];
+  return null;
 };
 
-const findSubOptionByValue = (value: HairConsultationPersonalColor) => {
+const findSubOptionByValue = (value: HairConsultationPersonalColor | null) => {
+  if (!value) return null;
   for (const group of PERSONAL_COLOR_GROUPS) {
     const matched = group.subOptions?.find((option) => option.value === value);
     if (matched) return matched;
@@ -97,17 +99,16 @@ const findSubOptionByValue = (value: HairConsultationPersonalColor) => {
 export default function PersonalColorSelectPage() {
   const { replace } = useRouterWithUser();
   const searchParams = useSearchParams();
-  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
+  const { savedContent, saveContent } = useWritingContent(
+    USER_WRITING_CONTENT_KEYS.hairConsultation,
+  );
 
   const initialValue = useMemo(() => {
-    return (
-      savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR] ??
-      DEFAULT_HAIR_CONSULTATION_FORM_VALUES[HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR]
-    );
+    return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR] ?? null;
   }, [savedContent]);
 
-  const [selectedGroupKey, setSelectedGroupKey] = useState<PersonalColorGroup['key']>(() => {
-    return findGroupByValue(initialValue).key;
+  const [selectedGroupKey, setSelectedGroupKey] = useState<PersonalColorGroup['key'] | null>(() => {
+    return findGroupByValue(initialValue)?.key ?? null;
   });
   const [selectedSubValue, setSelectedSubValue] = useState<HairConsultationPersonalColor | null>(
     () => findSubOptionByValue(initialValue)?.value ?? null,
@@ -128,11 +129,15 @@ export default function PersonalColorSelectPage() {
   };
 
   const handleComplete = () => {
+    if (!selectedGroupKey) return;
+
     const baseContent = savedContent?.content ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES;
     const selectedGroup = PERSONAL_COLOR_GROUPS.find((group) => group.key === selectedGroupKey);
+    if (!selectedGroup) return;
+
     const nextPersonalColor =
       selectedGroup?.key === 'UNKNOWN'
-        ? selectedGroup.value ?? '잘모름'
+        ? (selectedGroup.value ?? '잘모름')
         : (selectedSubValue ?? selectedGroup?.subOptions?.[2]?.value ?? '잘모름');
 
     const nextContent: HairConsultationFormValues = {
@@ -147,6 +152,9 @@ export default function PersonalColorSelectPage() {
 
     replace(ROUTES.POSTS_NEW_CREATE, { skipReload: '1' });
   };
+
+  const canComplete =
+    selectedGroupKey !== null && (selectedGroupKey === 'UNKNOWN' || selectedSubValue !== null);
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col bg-white">
@@ -200,14 +208,14 @@ export default function PersonalColorSelectPage() {
                       {group.label}
                     </span>
                   </div>
-                <div className="flex items-center justify-center">
-                  {checked ? (
-                    <RoundCheckboxIcon className="text-label-default" />
-                  ) : (
-                    <RoundCheckboxEmptyIcon />
-                  )}
-                </div>
-              </button>
+                  <div className="flex items-center justify-center">
+                    {checked ? (
+                      <RoundCheckboxIcon className="text-label-default" />
+                    ) : (
+                      <RoundCheckboxEmptyIcon />
+                    )}
+                  </div>
+                </button>
 
                 {checked && group.subOptions && (
                   <div className="flex gap-3 justify-center">
@@ -226,7 +234,9 @@ export default function PersonalColorSelectPage() {
                           ].join(' ')}
                           onClick={() => handleSubSelect(option.value)}
                         >
-                          {subChecked && <CheckIcon className="block w-[14px] h-[14px] text-white" />}
+                          {subChecked && (
+                            <CheckIcon className="block w-[14px] h-[14px] text-white" />
+                          )}
                           {option.label}
                         </button>
                       );
@@ -239,7 +249,7 @@ export default function PersonalColorSelectPage() {
         </div>
       </div>
       <div className="px-5 py-3 border-t border-1 border-border-default">
-        <Button className="w-full" size="lg" onClick={handleComplete}>
+        <Button className="w-full" size="lg" onClick={handleComplete} disabled={!canComplete}>
           완료
         </Button>
       </div>

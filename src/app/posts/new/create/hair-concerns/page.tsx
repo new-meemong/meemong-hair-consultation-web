@@ -6,9 +6,7 @@ import { useMemo, useState } from 'react';
 import { AppTypography } from '@/shared/styles/typography';
 import Checkbox from '@/shared/ui/checkbox';
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
-import {
-  HAIR_CONSULTATION_CONCERN_OPTIONS,
-} from '@/features/posts/constants/hair-consultation-create-options';
+import { HAIR_CONSULTATION_CONCERN_OPTIONS } from '@/features/posts/constants/hair-consultation-create-options';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '@/features/posts/constants/hair-consultation-form-field-name';
 import type { HairConsultationConcern } from '@/entities/posts/api/create-hair-consultation-request';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
@@ -23,17 +21,15 @@ const SPECIAL_CONCERN = '특별한 문제는 없어요';
 export default function HairConcernSelectPage() {
   const { replace } = useRouterWithUser();
   const searchParams = useSearchParams();
-  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
+  const { savedContent, saveContent } = useWritingContent(
+    USER_WRITING_CONTENT_KEYS.hairConsultation,
+  );
 
   const initialValue = useMemo(() => {
-    return (
-      savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS] ??
-      DEFAULT_HAIR_CONSULTATION_FORM_VALUES[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS]
-    );
+    return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS] ?? [];
   }, [savedContent]);
 
-  const [selectedConcerns, setSelectedConcerns] =
-    useState<HairConsultationConcern[]>(initialValue);
+  const [selectedConcerns, setSelectedConcerns] = useState<HairConsultationConcern[]>(initialValue);
 
   const handleToggle = (value: HairConsultationConcern) => {
     setSelectedConcerns((prev) => {

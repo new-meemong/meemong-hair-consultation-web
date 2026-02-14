@@ -8,13 +8,13 @@ import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constant
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '@/features/posts/constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
 import type { HairConsultationHairTexture } from '@/entities/posts/api/create-hair-consultation-request';
+import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
+import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { useSearchParams } from 'next/navigation';
 import useWritingContent from '@/shared/hooks/use-writing-content';
-import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
-import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 
 const HAIR_TEXTURE_OPTIONS: Array<{
   value: HairConsultationHairTexture;
@@ -29,29 +29,35 @@ const HAIR_TEXTURE_OPTIONS: Array<{
     description: '습하면 부스스해지고, C컬 정도로 휘어지는 모발',
   },
   { value: '곱슬', label: '곱슬', description: 'S컬 형태로 뚜렷하게 웨이브가 지며 붕 뜨는 모발' },
-  { value: '강한 곱슬', label: '강한 곱슬', description: '뿌리부터 회전하며 자라는 꼬불거리는 모발' },
+  {
+    value: '강한 곱슬',
+    label: '강한 곱슬',
+    description: '뿌리부터 회전하며 자라는 꼬불거리는 모발',
+  },
 ];
 
 export default function HairTextureSelectPage() {
   const { replace } = useRouterWithUser();
   const searchParams = useSearchParams();
-  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
+  const { savedContent, saveContent } = useWritingContent(
+    USER_WRITING_CONTENT_KEYS.hairConsultation,
+  );
 
   const initialValue = useMemo(() => {
-    return (
-      savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE] ??
-      DEFAULT_HAIR_CONSULTATION_FORM_VALUES[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE]
-    );
+    return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE] ?? null;
   }, [savedContent]);
 
-  const [selectedTexture, setSelectedTexture] =
-    useState<HairConsultationHairTexture>(initialValue);
+  const [selectedTexture, setSelectedTexture] = useState<HairConsultationHairTexture | null>(
+    initialValue,
+  );
 
   const handleSelect = (value: HairConsultationHairTexture) => {
     setSelectedTexture(value);
   };
 
   const handleComplete = () => {
+    if (!selectedTexture) return;
+
     const baseContent = savedContent?.content ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES;
     const nextContent: HairConsultationFormValues = {
       ...baseContent,
@@ -122,7 +128,7 @@ export default function HairTextureSelectPage() {
         </div>
       </div>
       <div className="px-5 py-3 border-t border-1 border-border-default">
-        <Button className="w-full" size="lg" onClick={handleComplete}>
+        <Button className="w-full" size="lg" onClick={handleComplete} disabled={!selectedTexture}>
           완료
         </Button>
       </div>

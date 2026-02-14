@@ -32,7 +32,7 @@ import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '../constants/hair-consult
 const normalizeEnumValue = <T extends readonly string[]>(
   value: unknown,
   options: T,
-  fallback: T[number],
+  fallback: T[number] | null,
 ) => {
   if (typeof value !== 'string') return fallback;
   return options.includes(value as T[number]) ? (value as T[number]) : fallback;
