@@ -96,7 +96,7 @@ export default function ConsultingResponseFormStepFaceShapeNew() {
         ))}
       </div>
 
-      <div className="mt-7 flex items-center justify-end gap-2">
+      <div className="mt-7 flex items-center justify-start gap-2">
         <Label
           htmlFor="face-shape-new-need-consultation"
           className="typo-body-3-regular text-label-sub"

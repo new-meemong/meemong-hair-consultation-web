@@ -13,7 +13,7 @@ export default function ConsultingResponseFormOptionNeedConsultation({
   id,
 }: ConsultingResponseFormOptionNeedConsultationProps) {
   return (
-    <div className="flex gap-2 items-center justify-end">
+    <div className="flex gap-2 items-center justify-start">
       <Label htmlFor={id} className="typo-body-3-regular text-label-sub">
         매장 상담이 필요해요
       </Label>
