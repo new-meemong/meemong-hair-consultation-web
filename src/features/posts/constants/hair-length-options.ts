@@ -56,5 +56,5 @@ export const FEMALE_HAIR_LENGTH_OPTIONS: HairLengthOption[] = [
     description: '쇄골과 가슴 사이 기장',
     image: wHair5,
   },
-  { value: '장발', label: '장발', description: '가슴 아래보다 긴 기장', image: wHair6 },
+  { value: '롱', label: '롱', description: '가슴 아래보다 긴 기장', image: wHair6 },
 ];

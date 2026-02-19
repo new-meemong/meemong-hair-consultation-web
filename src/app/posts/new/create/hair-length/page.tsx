@@ -31,8 +31,11 @@ export default function HairLengthSelectPage() {
   const isMale = user.sex === '남자';
 
   const currentValue = useMemo(() => {
-    return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH] ?? null;
-  }, [savedContent]);
+    const savedHairLength =
+      savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH] ?? null;
+    if (!isMale && savedHairLength === '장발') return '롱';
+    return savedHairLength;
+  }, [isMale, savedContent]);
 
   const options = useMemo(
     () => (isMale ? MALE_HAIR_LENGTH_OPTIONS : FEMALE_HAIR_LENGTH_OPTIONS),

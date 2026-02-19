@@ -78,9 +78,11 @@ export default function HairConsultationFormStepProfile() {
 
   const selectedHairLengthOption = useMemo(() => {
     if (!selectedHairLength) return null;
-    const option = hairLengthOptions.find((item) => item.value === selectedHairLength);
+    const normalizedSelectedHairLength =
+      user.sex !== '남자' && selectedHairLength === '장발' ? '롱' : selectedHairLength;
+    const option = hairLengthOptions.find((item) => item.value === normalizedSelectedHairLength);
     return option ?? null;
-  }, [hairLengthOptions, selectedHairLength]);
+  }, [hairLengthOptions, selectedHairLength, user.sex]);
 
   const skinBrightnessDescription = useMemo(
     () => SKIN_BRIGHTNESS_DESCRIPTION_MAP[selectedSkinBrightness ?? ''] ?? '',

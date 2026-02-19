@@ -1,14 +1,13 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
+import Checkbox from '@/shared/ui/checkbox';
+import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
+import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
+import { Label } from '@/shared/ui/label';
+import { cn } from '@/lib/utils';
 import { isUserMale } from '@/entities/user/lib/user-sex';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
-import { cn } from '@/lib/utils';
-import Checkbox from '@/shared/ui/checkbox';
-import { Label } from '@/shared/ui/label';
-
-import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
-import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
-import ConsultingResponseFormOptionNeedConsultation from './consulting-response-form-option-need-consultation';
 
 type HairLengthRecommendationValue =
   ConsultingResponseFormValues[typeof CONSULTING_RESPONSE_FORM_FIELD_NAME.HAIR_LENGTHS_RECOMMENDATION]['values'][number];
@@ -23,23 +22,25 @@ type RecommendationRowOption<T extends string> = {
   description: string;
 };
 
-const MALE_HAIR_LENGTH_OPTIONS: readonly RecommendationRowOption<HairLengthRecommendationValue>[] = [
-  { value: '크롭', label: '크롭', description: '3mm~1cm, 반삭 등' },
-  { value: '숏', label: '숏', description: '세워지는 머리, 가일컷 등' },
-  { value: '미디엄', label: '미디엄', description: '눈썹에 닿는 기장, 댄디컷 등' },
-  { value: '미디엄롱', label: '미디엄롱', description: '눈에 닿는 기장, 리프컷 등' },
-  { value: '롱', label: '롱', description: '어깨에 닿는 머리' },
-  { value: '장발', label: '장발', description: '어깨에 닿는 머리' },
-] as const;
+const MALE_HAIR_LENGTH_OPTIONS: readonly RecommendationRowOption<HairLengthRecommendationValue>[] =
+  [
+    { value: '크롭', label: '크롭', description: '3mm~1cm, 반삭 등' },
+    { value: '숏', label: '숏', description: '세워지는 머리, 가일컷 등' },
+    { value: '미디엄', label: '미디엄', description: '눈썹에 닿는 기장, 댄디컷 등' },
+    { value: '미디엄롱', label: '미디엄롱', description: '눈에 닿는 기장, 리프컷 등' },
+    { value: '롱', label: '롱', description: '어깨에 닿는 머리' },
+    { value: '장발', label: '장발', description: '어깨에 닿는 머리' },
+  ] as const;
 
-const FEMALE_HAIR_LENGTH_OPTIONS: readonly RecommendationRowOption<HairLengthRecommendationValue>[] = [
-  { value: '숏컷', label: '숏컷', description: '귀 라인 끝보다 짧은 기장' },
-  { value: '단발', label: '단발', description: '귀와 턱 사이 기장' },
-  { value: '중단발', label: '중단발', description: '턱과 어깨 사이 기장' },
-  { value: '미디엄', label: '미디엄', description: '어깨와 쇄골 사이 기장' },
-  { value: '미디엄롱', label: '미디엄롱', description: '쇄골과 가슴 사이 기장' },
-  { value: '장발', label: '장발', description: '가슴 아래보다 긴 기장' },
-] as const;
+const FEMALE_HAIR_LENGTH_OPTIONS: readonly RecommendationRowOption<HairLengthRecommendationValue>[] =
+  [
+    { value: '숏컷', label: '숏컷', description: '귀 라인 끝보다 짧은 기장' },
+    { value: '단발', label: '단발', description: '귀와 턱 사이 기장' },
+    { value: '중단발', label: '중단발', description: '턱과 어깨 사이 기장' },
+    { value: '미디엄', label: '미디엄', description: '어깨와 쇄골 사이 기장' },
+    { value: '미디엄롱', label: '미디엄롱', description: '쇄골과 가슴 사이 기장' },
+    { value: '롱', label: '롱', description: '가슴 아래보다 긴 기장' },
+  ] as const;
 
 const HAIR_LAYER_OPTIONS: readonly HairLayerRecommendationValue[] = [
   '원랭스',
@@ -77,10 +78,7 @@ function RecommendationRows({
 
         return (
           <div key={option.value} className="flex items-center gap-3">
-            <Label
-              htmlFor={id}
-              className="flex flex-1 items-center gap-1 cursor-pointer min-w-0"
-            >
+            <Label htmlFor={id} className="flex flex-1 items-center gap-1 cursor-pointer min-w-0">
               <span className="typo-body-2-semibold text-label-sub whitespace-nowrap">
                 {option.label}
               </span>

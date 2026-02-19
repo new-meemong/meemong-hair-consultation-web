@@ -101,12 +101,12 @@ export default function ConsultingResponseSidebar({
     consultingPost.desiredDateType,
     consultingPost.desiredDate,
   );
-  const hairLengthOptions = isUserMale(consultingPost.hairConsultPostingCreateUserSex)
-    ? MALE_HAIR_LENGTH_OPTIONS
-    : FEMALE_HAIR_LENGTH_OPTIONS;
+  const isMale = isUserMale(consultingPost.hairConsultPostingCreateUserSex);
+  const displayHairLength =
+    !isMale && consultingPost.hairLength === '장발' ? '롱' : consultingPost.hairLength;
+  const hairLengthOptions = isMale ? MALE_HAIR_LENGTH_OPTIONS : FEMALE_HAIR_LENGTH_OPTIONS;
   const hairLengthDescription =
-    hairLengthOptions.find((option) => option.value === consultingPost.hairLength)?.description ??
-    '';
+    hairLengthOptions.find((option) => option.value === displayHairLength)?.description ?? '';
   const personalColorChip = (() => {
     if (!consultingPost.personalColor || consultingPost.personalColor === '잘모름') return null;
 
@@ -157,7 +157,7 @@ export default function ConsultingResponseSidebar({
             hairTexture={consultingPost.hairTexture}
             skinBrightness={consultingPost.skinBrightness}
             personalColorChip={personalColorChip}
-            hairLength={consultingPost.hairLength}
+            hairLength={displayHairLength}
             hairLengthDescription={hairLengthDescription}
           />
         );

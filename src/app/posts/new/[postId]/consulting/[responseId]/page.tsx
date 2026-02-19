@@ -94,6 +94,8 @@ const FEMALE_HAIR_LENGTH_FEEDBACK_IMAGE_MAP: Record<string, ImageSource> = {
   중단발: hairLengthFeedbackF3,
   미디엄: hairLengthFeedbackF4,
   미디엄롱: hairLengthFeedbackF5,
+  롱: hairLengthFeedbackF6,
+  // Backward compatibility for legacy female values.
   장발: hairLengthFeedbackF6,
 };
 const BANG_STYLE_FEEDBACK_IMAGE_MAP: Record<string, ImageSource> = {
@@ -162,6 +164,15 @@ const getHairLengthFeedbackImage = (value: string | null, isMale: boolean) => {
   const matchedKey = Object.keys(imageMap).find((key) => normalizeText(key) === normalizedValue);
 
   return matchedKey ? imageMap[matchedKey] : undefined;
+};
+
+const normalizeHairLengthBySex = (
+  value: string | null | undefined,
+  isMale: boolean,
+): string | null => {
+  if (!value) return null;
+  if (!isMale && value === '장발') return '롱';
+  return value;
 };
 
 const getBangStyleFeedbackImage = (value: string | null | undefined) => {
@@ -327,13 +338,14 @@ export default function NewConsultingResponsePage() {
 
   const hairLengthItems: RecommendationPreviewItem[] = (answer.hairLengths ?? []).map(
     (hairLength, index) => {
-      const option = findHairLengthOption(hairLength, hairLengthOptions);
+      const normalizedHairLength = normalizeHairLengthBySex(hairLength, isMale);
+      const option = findHairLengthOption(normalizedHairLength, hairLengthOptions);
 
       return {
         key: `${hairLength}-${index}`,
-        label: option?.label ?? hairLength,
+        label: option?.label ?? normalizedHairLength ?? hairLength,
         description: option?.description ?? '기장 설명 정보가 없습니다.',
-        imageSrc: getHairLengthFeedbackImage(hairLength, isMale) ?? option?.image,
+        imageSrc: getHairLengthFeedbackImage(normalizedHairLength, isMale) ?? option?.image,
       };
     },
   );

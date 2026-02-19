@@ -112,11 +112,11 @@ export default function PostDetailConsultingContentNew({
   const hiddenImages = !isWriter && !isUserDesigner;
   const formattedCreatedAt = formatCreatedAt(createdAt);
   const hairConcernText = [hairConcern, hairConcernDetail].filter(Boolean).join(', ');
-  const hairLengthOptions = isUserMale(authorSex)
-    ? MALE_HAIR_LENGTH_OPTIONS
-    : FEMALE_HAIR_LENGTH_OPTIONS;
+  const isMale = isUserMale(authorSex);
+  const hairLengthOptions = isMale ? MALE_HAIR_LENGTH_OPTIONS : FEMALE_HAIR_LENGTH_OPTIONS;
+  const displayHairLength = !isMale && hairLength === '장발' ? '롱' : hairLength;
   const hairLengthDescription =
-    hairLengthOptions.find((option) => option.value === hairLength)?.description ?? '';
+    hairLengthOptions.find((option) => option.value === displayHairLength)?.description ?? '';
   const hasTreatments = Boolean(treatments && treatments.length > 0);
   const hasAspirationImages = aspirationImageUrls.length > 0;
   const payableCostText = maxPaymentPrice != null ? `${maxPaymentPrice.toLocaleString()}원` : '-';
@@ -238,7 +238,7 @@ export default function PostDetailConsultingContentNew({
         <div className="mt-7 flex items-start">
           <p className="typo-body-1-semibold text-label-default shrink-0">기장</p>
           <div className="ml-3 flex flex-col">
-            <p className="typo-body-1-medium text-label-default">{hairLength ?? '-'}</p>
+            <p className="typo-body-1-medium text-label-default">{displayHairLength ?? '-'}</p>
             <p className="typo-body-2-long-regular text-label-default">{hairLengthDescription}</p>
           </div>
         </div>
@@ -266,10 +266,7 @@ export default function PostDetailConsultingContentNew({
               }`}
             >
               {treatments?.map((treatment, index) => {
-                const cardType = getTreatmentCardType(
-                  treatment.treatmentName,
-                  isUserMale(authorSex),
-                );
+                const cardType = getTreatmentCardType(treatment.treatmentName, isMale);
                 const decolorizationCount = treatment.decolorizationCount ?? 0;
                 const decolorizationText =
                   decolorizationCount === 0 ? '탈색 안함' : `탈색횟수 ${decolorizationCount}회`;
