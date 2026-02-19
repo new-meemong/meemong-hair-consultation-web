@@ -1,7 +1,12 @@
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
-import { BANG_STYLE_LABEL, BANG_STYLE_OPTIONS_NEW } from '@/features/posts/constants/bang-style';
+import {
+  BANG_STYLE,
+  BANG_STYLE_LABEL,
+  BANG_STYLE_OPTIONS_NEW,
+} from '@/features/posts/constants/bang-style';
+import { FACE_SHAPE, FACE_TYPE_OPTIONS_NEW } from '@/features/posts/constants/face-shape';
 import {
   FEMALE_HAIR_LENGTH_OPTIONS,
   MALE_HAIR_LENGTH_OPTIONS,
@@ -11,15 +16,30 @@ import { useParams, useSearchParams } from 'next/navigation';
 import type { ApiError } from '@/shared/api/client';
 import type { BangStyleOptionNew } from '@/features/posts/constants/bang-style';
 import type { ComponentProps } from 'react';
-import { FACE_TYPE_OPTIONS_NEW } from '@/features/posts/constants/face-shape';
 import type { HTTPError } from 'ky';
 import type { HairLengthOption } from '@/features/posts/constants/hair-length-options';
 import Image from 'next/image';
 import ProfileIcon from '@/assets/icons/profile.svg';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { SiteHeader } from '@/widgets/header';
+import faceTypeFeedback1 from '@/assets/face-type-feedback/face_type_feedback1.png';
+import faceTypeFeedback2 from '@/assets/face-type-feedback/face_type_feedback2.png';
+import faceTypeFeedback3 from '@/assets/face-type-feedback/face_type_feedback3.png';
+import faceTypeFeedback4 from '@/assets/face-type-feedback/face_type_feedback4.png';
+import faceTypeFeedback5 from '@/assets/face-type-feedback/face_type_feedback5.png';
+import faceTypeFeedback6 from '@/assets/face-type-feedback/face_type_feedback6.png';
+import faceTypeFeedback7 from '@/assets/face-type-feedback/face_type_feedback7.png';
+import faceTypeFeedback8 from '@/assets/face-type-feedback/face_type_feedback8.png';
 import { format } from 'date-fns';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
+import hairBangStyleFeedbackF1 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f1.png';
+import hairBangStyleFeedbackF2 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f2.png';
+import hairBangStyleFeedbackF3 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f3.png';
+import hairBangStyleFeedbackF4 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f4.png';
+import hairBangStyleFeedbackM1 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_m1.png';
+import hairBangStyleFeedbackM2 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_m2.png';
+import hairBangStyleFeedbackM3 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_m3.png';
+import hairBangStyleFeedbackM4 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_m4.png';
 import hairLengthFeedbackF1 from '@/assets/hair-length-feedback/hair_length_feedback_f1.png';
 import hairLengthFeedbackF2 from '@/assets/hair-length-feedback/hair_length_feedback_f2.png';
 import hairLengthFeedbackF3 from '@/assets/hair-length-feedback/hair_length_feedback_f3.png';
@@ -76,6 +96,26 @@ const FEMALE_HAIR_LENGTH_FEEDBACK_IMAGE_MAP: Record<string, ImageSource> = {
   미디엄롱: hairLengthFeedbackF5,
   장발: hairLengthFeedbackF6,
 };
+const BANG_STYLE_FEEDBACK_IMAGE_MAP: Record<string, ImageSource> = {
+  [BANG_STYLE.MALE_COVERED]: hairBangStyleFeedbackM1,
+  [BANG_STYLE.MALE_PARTED]: hairBangStyleFeedbackM2,
+  [BANG_STYLE.MALE_SWEPT_BACK]: hairBangStyleFeedbackM3,
+  [BANG_STYLE.MALE_UP]: hairBangStyleFeedbackM4,
+  [BANG_STYLE.FEMALE_NO_BANGS]: hairBangStyleFeedbackF1,
+  [BANG_STYLE.FEMALE_SIDE_CURTAIN]: hairBangStyleFeedbackF2,
+  [BANG_STYLE.FEMALE_SEE_THROUGH]: hairBangStyleFeedbackF3,
+  [BANG_STYLE.FEMALE_FULL]: hairBangStyleFeedbackF4,
+};
+const FACE_TYPE_FEEDBACK_IMAGE_MAP: Record<string, ImageSource> = {
+  [FACE_SHAPE.OVAL]: faceTypeFeedback1,
+  [FACE_SHAPE.DIAMOND]: faceTypeFeedback2,
+  [FACE_SHAPE.LONG]: faceTypeFeedback3,
+  [FACE_SHAPE.ROUND]: faceTypeFeedback4,
+  [FACE_SHAPE.SQUARE]: faceTypeFeedback5,
+  [FACE_SHAPE.HEART]: faceTypeFeedback6,
+  [FACE_SHAPE.PEANUT]: faceTypeFeedback7,
+  [FACE_SHAPE.HEXAGONAL]: faceTypeFeedback8,
+};
 
 const findBangStyleOption = (label: string, primaryOptions: BangStyleOptionNew[]) => {
   const normalizedLabel = normalizeText(label);
@@ -122,6 +162,16 @@ const getHairLengthFeedbackImage = (value: string | null, isMale: boolean) => {
   const matchedKey = Object.keys(imageMap).find((key) => normalizeText(key) === normalizedValue);
 
   return matchedKey ? imageMap[matchedKey] : undefined;
+};
+
+const getBangStyleFeedbackImage = (value: string | null | undefined) => {
+  if (!value) return undefined;
+  return BANG_STYLE_FEEDBACK_IMAGE_MAP[value];
+};
+
+const getFaceTypeFeedbackImage = (value: string | null | undefined) => {
+  if (!value) return undefined;
+  return FACE_TYPE_FEEDBACK_IMAGE_MAP[value];
 };
 
 function StoreConsultingNotice() {
@@ -270,7 +320,7 @@ export default function NewConsultingResponsePage() {
         key: `${bangType}-${index}`,
         label: option?.title ?? bangType,
         description: option?.description ?? '스타일 설명 정보가 없습니다.',
-        imageSrc: option?.unselectedImage,
+        imageSrc: getBangStyleFeedbackImage(option?.value) ?? option?.unselectedImage,
       };
     },
   );
@@ -358,9 +408,11 @@ export default function NewConsultingResponsePage() {
               <StoreConsultingNotice />
             ) : faceTypeOption ? (
               <div className="mt-2 flex items-center gap-4">
-                <div className="size-[162px] shrink-0 overflow-hidden rounded-6 bg-label-default">
+                <div className="size-[162px] shrink-0 overflow-hidden rounded-6 border-1 border-border-default bg-label-default">
                   <Image
-                    src={faceTypeOption.emptyImage}
+                    src={
+                      getFaceTypeFeedbackImage(faceTypeOption.value) ?? faceTypeOption.emptyImage
+                    }
                     alt={faceTypeOption.label}
                     width={162}
                     height={162}

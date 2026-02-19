@@ -1,21 +1,21 @@
 import type { StaticImageData } from 'next/image';
 import type { ValueOf } from '@/shared/type/types';
-import hairStyleF1Select from '@/assets/hair-style/hair_style_f1_select.png';
-import hairStyleF1Unselect from '@/assets/hair-style/hair_style_f1_unselect.png';
-import hairStyleF2Select from '@/assets/hair-style/hair_style_f2_select.png';
-import hairStyleF2Unselect from '@/assets/hair-style/hair_style_f2_unselect.png';
-import hairStyleF3Select from '@/assets/hair-style/hair_style_f3_select.png';
-import hairStyleF3Unselect from '@/assets/hair-style/hair_style_f3_unselect.png';
-import hairStyleF4Select from '@/assets/hair-style/hair_style_f4_select.png';
-import hairStyleF4Unselect from '@/assets/hair-style/hair_style_f4_unselect.png';
-import hairStyleM1Select from '@/assets/hair-style/hair_style_m1_select.png';
-import hairStyleM1Unselect from '@/assets/hair-style/hair_style_m1_unselect.png';
-import hairStyleM2Select from '@/assets/hair-style/hair_style_m2_select.png';
-import hairStyleM2Unselect from '@/assets/hair-style/hair_style_m2_unselect.png';
-import hairStyleM3Select from '@/assets/hair-style/hair_style_m3_select.png';
-import hairStyleM3Unselect from '@/assets/hair-style/hair_style_m3_unselect.png';
-import hairStyleM4Select from '@/assets/hair-style/hair_style_m4_select.png';
-import hairStyleM4Unselect from '@/assets/hair-style/hair_style_m4_unselect.png';
+import hairStyleF1Select from '@/assets/hair-bang-style/hair_style_f1_select.png';
+import hairStyleF1Unselect from '@/assets/hair-bang-style/hair_style_f1_unselect.png';
+import hairStyleF2Select from '@/assets/hair-bang-style/hair_style_f2_select.png';
+import hairStyleF2Unselect from '@/assets/hair-bang-style/hair_style_f2_unselect.png';
+import hairStyleF3Select from '@/assets/hair-bang-style/hair_style_f3_select.png';
+import hairStyleF3Unselect from '@/assets/hair-bang-style/hair_style_f3_unselect.png';
+import hairStyleF4Select from '@/assets/hair-bang-style/hair_style_f4_select.png';
+import hairStyleF4Unselect from '@/assets/hair-bang-style/hair_style_f4_unselect.png';
+import hairStyleM1Select from '@/assets/hair-bang-style/hair_style_m1_select.png';
+import hairStyleM1Unselect from '@/assets/hair-bang-style/hair_style_m1_unselect.png';
+import hairStyleM2Select from '@/assets/hair-bang-style/hair_style_m2_select.png';
+import hairStyleM2Unselect from '@/assets/hair-bang-style/hair_style_m2_unselect.png';
+import hairStyleM3Select from '@/assets/hair-bang-style/hair_style_m3_select.png';
+import hairStyleM3Unselect from '@/assets/hair-bang-style/hair_style_m3_unselect.png';
+import hairStyleM4Select from '@/assets/hair-bang-style/hair_style_m4_select.png';
+import hairStyleM4Unselect from '@/assets/hair-bang-style/hair_style_m4_unselect.png';
 
 export const BANG_STYLE = {
   MALE_COVERED: 'maleCovered',
