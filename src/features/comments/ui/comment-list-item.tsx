@@ -8,7 +8,7 @@ import MoreIcon from '@/assets/icons/more-vertical.svg';
 import ReplyIcon from '@/assets/icons/reply.svg';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
-import type { USER_SEX } from '@/entities/user/constants/user-sex';
+import { USER_SEX } from '@/entities/user/constants/user-sex';
 import type { ValueOf } from '@/shared/type/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -221,10 +221,12 @@ export default function CommentListItem({
             ) : (
               <ConsultingResponseButton
                 isCommentWriter={isCommentWriter}
+                isFemalePostWriter={postWriterSex === USER_SEX.FEMALE}
                 hasAnswerImages={comment.hasAnswerImages ?? false}
                 analysisFaceShape={comment.analysisFaceShape}
                 analysisBangs={comment.analysisBangs}
                 analysisHairLength={comment.analysisHairLength}
+                analysisHairLayer={comment.analysisHairLayer}
                 analysisHairCurl={comment.analysisHairCurl}
                 recommendedTreatment={comment.recommendedTreatment ?? comment.content}
                 onClick={handleConsultingResponseClick}

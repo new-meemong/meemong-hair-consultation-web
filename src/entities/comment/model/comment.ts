@@ -24,6 +24,7 @@ export type Comment = {
   analysisFaceShape?: string | null;
   analysisBangs?: string | null;
   analysisHairLength?: string | null;
+  analysisHairLayer?: string | null;
   analysisHairCurl?: string | null;
   recommendedTreatment?: string | null;
 };

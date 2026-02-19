@@ -1,6 +1,6 @@
+import type { ApiListResponse } from '@/shared/api/client';
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
 import type { HairConsultationAnswer } from '@/entities/posts/model/hair-consultation-answer';
-import type { ApiListResponse } from '@/shared/api/client';
 import type { InfiniteData } from '@tanstack/react-query';
 
 export default function convertToCommentWithReplyStatusFromHairConsultationAnswer(
@@ -9,7 +9,8 @@ export default function convertToCommentWithReplyStatusFromHairConsultationAnswe
   if (!data) return [];
 
   const STORE_CONSULTING_TEXT = '매장상담이 필요합니다';
-  const isStoreConsulting = (value: boolean | number | null | undefined) => value === true || value === 1;
+  const isStoreConsulting = (value: boolean | number | null | undefined) =>
+    value === true || value === 1;
   const joinOrNull = (values: string[] | null | undefined) =>
     values && values.length > 0 ? values.join(', ') : null;
 
@@ -49,6 +50,9 @@ export default function convertToCommentWithReplyStatusFromHairConsultationAnswe
         analysisHairLength: isStoreConsulting(answer.isHairLengthAdvice)
           ? STORE_CONSULTING_TEXT
           : joinOrNull(answer.hairLengths),
+        analysisHairLayer: isStoreConsulting(answer.isHairLayerAdvice)
+          ? STORE_CONSULTING_TEXT
+          : joinOrNull(answer.hairLayers),
         analysisHairCurl: isStoreConsulting(answer.isHairCurlAdvice)
           ? STORE_CONSULTING_TEXT
           : joinOrNull(answer.hairCurls),

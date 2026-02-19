@@ -3,10 +3,12 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 
 type ConsultingResponseButtonProps = {
   isCommentWriter: boolean;
+  isFemalePostWriter: boolean;
   hasAnswerImages: boolean;
   analysisFaceShape?: string | null;
   analysisBangs?: string | null;
   analysisHairLength?: string | null;
+  analysisHairLayer?: string | null;
   analysisHairCurl?: string | null;
   recommendedTreatment?: string | null;
   onClick: () => void;
@@ -14,10 +16,12 @@ type ConsultingResponseButtonProps = {
 
 export default function ConsultingResponseButton({
   isCommentWriter,
+  isFemalePostWriter,
   hasAnswerImages: _hasAnswerImages,
   analysisFaceShape,
   analysisBangs,
   analysisHairLength,
+  analysisHairLayer,
   analysisHairCurl,
   recommendedTreatment,
   onClick,
@@ -30,6 +34,7 @@ export default function ConsultingResponseButton({
     { label: '얼굴형', value: analysisFaceShape },
     { label: '앞머리', value: analysisBangs },
     { label: '기장', value: analysisHairLength },
+    ...(isFemalePostWriter ? [{ label: '레이어', value: analysisHairLayer }] : []),
     { label: '컬', value: analysisHairCurl },
   ].map((chip) => ({
     ...chip,
@@ -44,12 +49,13 @@ export default function ConsultingResponseButton({
         <p className="typo-body-2-semibold text-label-info">분석 완료 항목</p>
         <div className="mt-[6px]">
           {hasAnyAnalyzed ? (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex items-center justify-between">
               {analysisChips.map((chip) => (
                 <span
                   key={chip.label}
                   className={cn(
-                    'w-[68px] text-center rounded-6 px-[10px] py-[5px] typo-body-1-medium',
+                    'inline-flex items-center justify-center rounded-6 py-[5px] typo-body-2-medium whitespace-nowrap',
+                    isFemalePostWriter ? 'w-[54px]' : 'w-[68px]',
                     chip.analyzed
                       ? 'bg-focused text-negative-light'
                       : 'bg-white text-label-disable',
@@ -69,19 +75,15 @@ export default function ConsultingResponseButton({
         <p className="mt-[6px] typo-body-2-regular text-label-default whitespace-nowrap overflow-hidden text-ellipsis">
           {treatmentText || '-'}
         </p>
-        <button
-          type="button"
-          className={cn(
-            'mt-4 w-full px-4 py-2 rounded-4 typo-body-2-medium',
-            hidden
-              ? 'bg-label-disable text-white cursor-not-allowed'
-              : 'bg-label-default text-white',
-          )}
-          onClick={onClick}
-          disabled={hidden}
-        >
-          컨설팅 결과 보러가기
-        </button>
+        {!hidden && (
+          <button
+            type="button"
+            className="mt-4 w-full px-4 py-2 rounded-4 typo-body-2-medium bg-label-default text-white"
+            onClick={onClick}
+          >
+            컨설팅 결과 보러가기
+          </button>
+        )}
       </div>
     </div>
   );
