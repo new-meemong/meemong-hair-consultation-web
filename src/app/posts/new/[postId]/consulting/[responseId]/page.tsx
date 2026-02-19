@@ -118,11 +118,19 @@ const FACE_TYPE_FEEDBACK_IMAGE_MAP: Record<string, ImageSource> = {
   [FACE_SHAPE.PEANUT]: faceTypeFeedback7,
   [FACE_SHAPE.HEXAGONAL]: faceTypeFeedback8,
 };
+const LEGACY_BANG_STYLE_ALIAS_MAP: Record<string, BangStyleOptionNew['value']> = {
+  [normalizeText('이마를 가리는 스타일')]: BANG_STYLE.MALE_COVERED,
+  [normalizeText('이마가 보이는 스타일')]: BANG_STYLE.MALE_PARTED,
+  [normalizeText('이마가 살짝 보이는 스타일')]: BANG_STYLE.MALE_PARTED,
+  [normalizeText('이마를 드러내는 스타일')]: BANG_STYLE.MALE_UP,
+  [normalizeText('앞머리 없는 스타일')]: BANG_STYLE.FEMALE_NO_BANGS,
+  [normalizeText('앞머리 넘기는 스타일')]: BANG_STYLE.FEMALE_SIDE_CURTAIN,
+  [normalizeText('앞머리 내리는 스타일')]: BANG_STYLE.FEMALE_SEE_THROUGH,
+};
 
 const findBangStyleOption = (label: string, primaryOptions: BangStyleOptionNew[]) => {
   const normalizedLabel = normalizeText(label);
-
-  return (
+  const matchedOption =
     primaryOptions.find(
       (option) =>
         normalizeText(option.title) === normalizedLabel ||
@@ -132,7 +140,16 @@ const findBangStyleOption = (label: string, primaryOptions: BangStyleOptionNew[]
       (option) =>
         normalizeText(option.title) === normalizedLabel ||
         normalizeText(BANG_STYLE_LABEL[option.value]) === normalizedLabel,
-    )
+    );
+
+  if (matchedOption) return matchedOption;
+
+  const aliasValue = LEGACY_BANG_STYLE_ALIAS_MAP[normalizedLabel];
+  if (!aliasValue) return undefined;
+
+  return (
+    primaryOptions.find((option) => option.value === aliasValue) ??
+    ALL_BANG_STYLE_OPTIONS.find((option) => option.value === aliasValue)
   );
 };
 
