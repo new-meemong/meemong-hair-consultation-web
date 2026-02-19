@@ -1,20 +1,38 @@
 import type { ApiError } from '../api/client';
 import type { HTTPError } from 'ky';
 
+const UNKNOWN_ERROR_MESSAGE = '알 수 없는 오류가 발생했습니다.';
+
+const getNonEmptyMessage = (value: unknown): string | null => {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
 export function getApiError(error: unknown): ApiError {
   // HTTPError인 경우 response.data에서 ApiError 추출
   if (error && typeof error === 'object' && 'response' in error) {
     const httpError = error as HTTPError & {
-      response?: { data?: { error?: ApiError }; status?: number };
+      response?: { data?: { error?: ApiError; message?: string }; status?: number };
     };
+
+    const responseData = httpError.response?.data;
+    const serverMessage =
+      getNonEmptyMessage(responseData?.error?.message) ??
+      getNonEmptyMessage(responseData?.message) ??
+      getNonEmptyMessage(httpError.message);
+
     if (httpError.response?.data?.error) {
-      return httpError.response.data.error;
+      return {
+        ...httpError.response.data.error,
+        message: serverMessage ?? UNKNOWN_ERROR_MESSAGE,
+      };
     }
     // response.data가 없지만 status가 있는 경우
     if (httpError.response?.status) {
       return {
         code: 'HTTP_ERROR',
-        message: httpError.message || '알 수 없는 오류가 발생했습니다.',
+        message: serverMessage ?? UNKNOWN_ERROR_MESSAGE,
         httpCode: httpError.response.status,
       };
     }
@@ -26,10 +44,21 @@ export function getApiError(error: unknown): ApiError {
     return apiError;
   }
 
+  const fallbackMessage =
+    getNonEmptyMessage((error as { message?: unknown } | null | undefined)?.message) ??
+    (error instanceof Error ? getNonEmptyMessage(error.message) : null);
+  if (fallbackMessage) {
+    return {
+      code: 'UNKNOWN_ERROR',
+      message: fallbackMessage,
+      httpCode: 500,
+    };
+  }
+
   // 기본 에러
   return {
     code: 'UNKNOWN_ERROR',
-    message: '알 수 없는 오류가 발생했습니다.',
+    message: UNKNOWN_ERROR_MESSAGE,
     httpCode: 500,
   };
 }
@@ -59,7 +88,7 @@ export function getErrorMessage(error: unknown): string {
     .find((message): message is string => Boolean(message?.trim()));
   if (fieldErrorReason) return fieldErrorReason;
 
-  const apiMessage = apiError?.message;
+  const apiMessage = apiError?.message?.trim();
   if (apiMessage) return apiMessage;
 
   const status = apiError?.httpCode;
@@ -77,6 +106,6 @@ export function getErrorMessage(error: unknown): string {
     case 500:
       return '서버 오류가 발생했습니다.';
     default:
-      return '알 수 없는 오류가 발생했습니다.';
+      return UNKNOWN_ERROR_MESSAGE;
   }
 }
