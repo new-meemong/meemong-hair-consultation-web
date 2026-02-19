@@ -24,18 +24,28 @@ export function useIntersectionObserver({
 
     if (!target) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting) {
-          onIntersect();
-        }
-      },
-      {
-        threshold,
-        rootMargin,
-      },
-    );
+    if (typeof window === 'undefined' || typeof window.IntersectionObserver !== 'function') {
+      return;
+    }
+
+    let observer: IntersectionObserver;
+
+    try {
+      observer = new window.IntersectionObserver(
+        (entries) => {
+          const [entry] = entries;
+          if (entry.isIntersecting) {
+            onIntersect();
+          }
+        },
+        {
+          threshold,
+          rootMargin,
+        },
+      );
+    } catch {
+      return;
+    }
 
     observer.observe(target);
 
