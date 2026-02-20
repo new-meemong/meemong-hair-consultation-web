@@ -44,7 +44,7 @@ export default function useExperienceGroupForm() {
       onSuccess: () => {
         // 모델이 체험단 신청 글 작성을 완료하면 광고 표시
         if (isUserModel) {
-          showAdIfAllowed({ adType: AD_TYPE.creatingExperienceGroup });
+          showAdIfAllowed({ adType: AD_TYPE.CREATING_EXPERIENCE_GROUP });
         }
         saveContent(null);
         showSnackBar({
