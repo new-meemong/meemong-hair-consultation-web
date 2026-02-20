@@ -102,9 +102,10 @@ export default function useShowMongConsumeSheet() {
       // 모든 프리셋을 가져온 후 클라이언트에서 HAIR_CONSULTING 관련 프리셋만 필터링
       const hairConsultingPresets =
         presetsData?.dataList?.filter((p) => p.type === 'HAIR_CONSULTING') ?? [];
-      // subType이 VIEW_MY_HAIR_CONSULTING_ANSWER_MODEL이거나 title로 찾기
+      // subType이 최신/레거시 답변 조회 키이거나 title로 찾기
       const preset = hairConsultingPresets.find(
         (p) =>
+          p.subType === 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL' ||
           p.subType === 'VIEW_MY_HAIR_CONSULTING_ANSWER_MODEL' ||
           p.title === '내가 쓴 게시물 헤어컨설팅 답변 보기',
       );
