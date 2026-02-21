@@ -83,7 +83,7 @@ export default function CommentAuthorProfile({
 
   return (
     <div
-      className={cn('flex gap-2 items-center', isCommentAuthorDesigner && 'cursor-pointer')}
+      className={cn('flex gap-2 items-center min-w-0', isCommentAuthorDesigner && 'cursor-pointer')}
       onClick={handleClick}
     >
       <Avatar className="size-8">
@@ -95,10 +95,10 @@ export default function CommentAuthorProfile({
           </AvatarFallback>
         )}
       </Avatar>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 min-w-0">
         <p
           className={cn(
-            'typo-body-1-semibold',
+            'typo-body-1-semibold truncate',
             isWriter ? 'text-negative-light' : 'text-label-default',
           )}
         >

@@ -177,8 +177,8 @@ export default function CommentListItem({
       <>
         {isReply && <ReplyIcon className="size-4.5 fill-label-strong" />}
         <div className="flex flex-col gap-3 flex-1">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex-1 min-w-0">
               <CommentAuthorProfile
                 author={comment.user}
                 lockIconShown={lockIconShown}
@@ -188,7 +188,7 @@ export default function CommentListItem({
                 allComments={allComments}
               />
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               {!isReply && !isConsultingAnswer && (
                 <Button variant="text" theme="text" size="text" onClick={handleReplyClick}>
                   답글달기
