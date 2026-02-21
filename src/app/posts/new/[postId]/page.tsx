@@ -58,7 +58,7 @@ function NewPostDetailPageContent({ postId, isFromMain }: NewPostDetailPageConte
   }, [isFromMain, back]);
 
   return (
-    <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
+    <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen overflow-x-hidden">
       <SiteHeader
         title="헤어상담"
         showBackButton
@@ -67,7 +67,10 @@ function NewPostDetailPageContent({ postId, isFromMain }: NewPostDetailPageConte
           isWriter && <PostDetailMoreButton postId={postId.toString()} isConsultingPost={true} />
         }
       />
-      <div className="flex-1 overflow-y-auto" onClick={handleContainerClick}>
+      <div
+        className="flex-1 overflow-y-auto overflow-x-hidden touch-pan-y"
+        onClick={handleContainerClick}
+      >
         <PostDetailContainer>
           <HairConsultationCommentContainer
             hairConsultationId={postId.toString()}
@@ -87,7 +90,7 @@ function NewPostDetailPageContent({ postId, isFromMain }: NewPostDetailPageConte
         textareaRef={textareaRef}
         isConsulting={true}
         isAnsweredByDesigner={postDetail.isAnsweredByDesigner ?? false}
-        postSource='new'
+        postSource="new"
       />
     </div>
   );
