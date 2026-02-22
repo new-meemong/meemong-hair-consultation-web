@@ -1,5 +1,5 @@
-import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import type { Post } from '@/entities/posts';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import PostList from '@/features/posts/ui/post-list/post-list';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import type { SelectedRegion } from '@/features/region/types/selected-region';
@@ -17,6 +17,8 @@ export default function ConsultingPostListContainer({
   activePostListTab,
   userSelectedRegionData,
 }: ConsultingPostListContainerProps) {
+  const { isUserDesigner } = useAuthContext();
+
   const listFilterParams =
     activePostListTab === 'my'
       ? { isMine: true }
@@ -25,6 +27,7 @@ export default function ConsultingPostListContainer({
         : {};
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetHairConsultations({
+    __orderColumn: isUserDesigner ? 'contentUpdatedAt' : 'comment36LastUpdatedAt',
     ...listFilterParams,
     addresses: convertToAddresses(userSelectedRegionData),
   });
@@ -58,7 +61,6 @@ export default function ConsultingPostListContainer({
   } = useGetPosts(
     {
       filter: activePostListTab,
-      consultType: CONSULT_TYPE.CONSULTING,
       selectedRegion: userSelectedRegionData,
     },
     {
