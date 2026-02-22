@@ -1,12 +1,13 @@
+import { useCallback, useMemo } from 'react';
+
 import type { CommentActionHandlers } from '@/entities/comment/model/comment-action-handlers';
 import type { CommentFormState } from '@/features/comments/types/comment-form-state';
 import { CommentList } from '@/features/comments/ui/comment-list';
 import convertToCommentWithReplyStatusFromHairConsultationAnswer from '@/entities/comment/lib/convertToCommentWithReplyStatusFromHairConsultationAnswer';
 import convertToCommentWithReplyStatusFromHairConsultationComment from '@/entities/comment/lib/convertToCommentWithReplyStatusFromHairConsultationComment';
-import { useCallback, useMemo } from 'react';
-import useGetHairConsultationComments from '@/features/comments/api/use-get-hair-consultation-comments';
-import useGetHairConsultationAnswers from '@/features/posts/api/use-get-hair-consultation-answers';
 import useDeleteHairConsultationAnswerMutation from '@/features/posts/api/use-delete-hair-consultation-answer-mutation';
+import useGetHairConsultationAnswers from '@/features/posts/api/use-get-hair-consultation-answers';
+import useGetHairConsultationComments from '@/features/comments/api/use-get-hair-consultation-comments';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
@@ -57,15 +58,52 @@ export default function HairConsultationCommentContainer({
     });
   }, [answers, comments]);
 
-  const mergedComments = useMemo(
-    () =>
-      [...comments, ...normalizedAnswers].sort((a, b) => {
-        const timeDiff = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        if (!Number.isNaN(timeDiff) && timeDiff !== 0) return timeDiff;
-        return b.id - a.id;
-      }),
-    [comments, normalizedAnswers],
-  );
+  const groupedComments = useMemo(() => {
+    const groups: (typeof comments)[] = [];
+    let currentGroup: typeof comments = [];
+
+    comments.forEach((comment) => {
+      if (!comment.isReply) {
+        if (currentGroup.length > 0) {
+          groups.push(currentGroup);
+        }
+        currentGroup = [comment];
+        return;
+      }
+
+      if (currentGroup.length === 0) {
+        currentGroup = [comment];
+        return;
+      }
+
+      currentGroup.push(comment);
+    });
+
+    if (currentGroup.length > 0) {
+      groups.push(currentGroup);
+    }
+
+    return groups;
+  }, [comments]);
+
+  const mergedComments = useMemo(() => {
+    const items: Array<{
+      sortTarget: (typeof comments)[number];
+      group: (typeof comments)[number][];
+    }> = [
+      ...groupedComments.map((group) => ({ sortTarget: group[0], group })),
+      ...normalizedAnswers.map((answer) => ({ sortTarget: answer, group: [answer] })),
+    ];
+
+    items.sort((a, b) => {
+      const timeDiff =
+        new Date(b.sortTarget.createdAt).getTime() - new Date(a.sortTarget.createdAt).getTime();
+      if (!Number.isNaN(timeDiff) && timeDiff !== 0) return timeDiff;
+      return b.sortTarget.id - a.sortTarget.id;
+    });
+
+    return items.flatMap((item) => item.group);
+  }, [groupedComments, normalizedAnswers]);
 
   const { postDetail } = usePostDetail();
   const { mutate: deleteHairConsultationAnswerMutate } = useDeleteHairConsultationAnswerMutation();
@@ -108,13 +146,7 @@ export default function HairConsultationCommentContainer({
 
       handlers.handleDeleteComment(commentId);
     },
-    [
-      mergedComments,
-      showModal,
-      deleteHairConsultationAnswerMutate,
-      hairConsultationId,
-      handlers,
-    ],
+    [mergedComments, showModal, deleteHairConsultationAnswerMutate, hairConsultationId, handlers],
   );
 
   return (
