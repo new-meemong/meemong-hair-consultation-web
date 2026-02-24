@@ -31,7 +31,7 @@ export type CreateMongWithdrawRequest =
     }
   | {
       // 헤어 컨설팅 답변 보기 차감
-      createType: 'VIEW_MY_HAIR_CONSULTING_ANSWER_MODEL';
+      createType: 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL';
       mongType?: 'event' | 'default';
       refId: number; // HairConsultationsAnswers.id
       refType: 'HairConsultationsAnswers';

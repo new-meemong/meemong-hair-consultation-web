@@ -9,7 +9,7 @@ import type { UserHairConsultationChatChannelType } from '../type/user-hair-cons
 import { cn } from '@/shared/lib/utils';
 import openUrlInApp from '@/shared/lib/open-url-in-app';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import useGetPostDetail from '@/features/posts/api/use-get-post-detail';
+import useGetHairConsultationDetail from '@/features/posts/api/use-get-hair-consultation-detail';
 import { useMemo } from 'react';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
@@ -33,8 +33,12 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
   // postId가 없으면 모든 버튼 비활성화
   const hasPostId = !!postId;
 
-  // 게시물 정보 조회 (postId가 있을 때만, useGetPostDetail 내부에서 enabled: !!id로 처리됨)
-  const { data: postDetailResponse, isError, isLoading } = useGetPostDetail(postId || '');
+  // 게시물 정보 조회 (postId가 있을 때만, useGetHairConsultationDetail 내부에서 enabled: !!id로 처리됨)
+  const {
+    data: postDetailResponse,
+    isError,
+    isLoading,
+  } = useGetHairConsultationDetail(postId || '');
   const postDetail = postDetailResponse?.data;
 
   // 게시물이 삭제되었거나 찾을 수 없는 경우를 감지
@@ -44,31 +48,27 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
   // 작성자 확인 (게시물이 있을 때만)
   const isPostWriter = useMemo(() => {
     if (isPostNotFound || !postDetail) return false;
-    return postDetail.hairConsultPostingCreateUserId === user.id;
+    const postWriterId =
+      postDetail.user?.id ??
+      postDetail.hairConsultationCreateUserId ??
+      postDetail.hairConsultationCreateUser?.userId;
+    return postWriterId === user.id;
   }, [postDetail, user.id, isPostNotFound]);
 
   // answerId는 userChannel에서도 확인 (props로 전달된 answerId가 없을 수 있음)
   const actualAnswerId = answerId || userChannel?.answerId || '';
 
   // 컨설팅 답변 존재 여부 확인
-  // answerId가 있으면 답변이 존재한다고 간주 (userChannel에 answerId가 저장되어 있으므로)
-  // 또는 postDetail에서 isAnsweredByDesigner 확인
+  // 채팅방에서는 answerId가 있으면 답변이 존재한다고 간주
   const hasConsultingResponse = useMemo(() => {
-    // answerId가 있으면 답변이 존재한다고 간주
-    if (actualAnswerId) return true;
-    // postDetail이 있으면 그 값을 사용
-    return postDetail?.isAnsweredByDesigner ?? false;
-  }, [actualAnswerId, postDetail?.isAnsweredByDesigner]);
+    return !!actualAnswerId;
+  }, [actualAnswerId]);
 
   // answerId 유효성 체크
-  // answerId가 있고, 컨설팅 답변이 존재하는 경우 유효한 것으로 간주
+  // answerId가 있으면 유효한 것으로 간주
   const isValidAnswerId = useMemo(() => {
-    if (isPostNotFound || !postDetail) {
-      // postDetail이 없어도 answerId가 있으면 유효하다고 간주
-      return !!actualAnswerId;
-    }
-    return !!actualAnswerId && hasConsultingResponse;
-  }, [actualAnswerId, hasConsultingResponse, isPostNotFound, postDetail]);
+    return !!actualAnswerId;
+  }, [actualAnswerId]);
 
   // 모델인 경우 버튼 활성화 조건
   const isModelOriginalPostEnabled = !isPostNotFound && isPostWriter; // 내 질문
@@ -129,13 +129,13 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
   // 첫 번째 버튼 클릭 핸들러
   const handleFirstButtonClick = () => {
     if (!isFirstButtonEnabled || !postId) return;
-    push(ROUTES.POSTS_DETAIL(postId));
+    push(ROUTES.POSTS_NEW_DETAIL(postId));
   };
 
   // 두 번째 버튼 클릭 핸들러
   const handleSecondButtonClick = () => {
     if (!isSecondButtonEnabled || !postId || !actualAnswerId) return;
-    push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, actualAnswerId));
+    push(ROUTES.POSTS_NEW_CONSULTING_RESPONSE(postId, actualAnswerId));
   };
 
   // 매장예약 클릭 핸들러

@@ -53,43 +53,58 @@ export default function useShowMongConsumeSheet() {
         [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
         ...(postWriterSex ? { [SEARCH_PARAMS.POST_WRITER_SEX]: postWriterSex } : {}),
       };
+      const withdrawQueryCandidates = [
+        {
+          createType: 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL',
+          refType: 'HairConsultationsAnswers',
+          refId: answerId.toString(),
+        },
+      ] as const;
 
       // 먼저 몽 차감 유무 조회 API 호출 (자동결제 처리)
       let isMongConsumeDisabled = false;
-      try {
-        const withdrawResponse = await apiClient.get<GetMongWithdrawResponse>(
-          'mong-moneys/withdraw',
-          {
-            searchParams: {
-              createType: 'VIEW_MY_HAIR_CONSULTING_ANSWER_MODEL',
-              refType: 'HairConsultationsAnswers',
-              refId: answerId.toString(),
-            },
-          },
-        );
+      let withdrawResponse: GetMongWithdrawResponse = null;
+      let withdrawError: unknown = null;
+      let hasNotFoundPresetError = false;
 
-        // 이미 결제한 적이 있으면 바텀시트를 열지 않고 바로 답변 페이지로 이동
-        if (withdrawResponse?.data?.isPaid === true) {
-          push(targetRoute, responseNavigationParams);
-          return { alreadyPaid: true };
-        }
-      } catch (error) {
-        // 404 에러는 몽 소비 비활성화 상태
-        if (error && typeof error === 'object' && 'response' in error) {
-          const httpError = error as HTTPError;
-          if (httpError.response?.status === 404) {
-            isMongConsumeDisabled = true;
-            console.log('몽 소비 비활성화 상태');
-          }
-          // 409 에러: 몽 부족
-          if (httpError.response?.status === 409) {
-            showMongInsufficientSheet();
-            return { alreadyPaid: false, mongInsufficient: true };
+      for (const query of withdrawQueryCandidates) {
+        try {
+          const response = await apiClient.get<GetMongWithdrawResponse>('mong-moneys/withdraw', {
+            searchParams: query,
+          });
+          withdrawResponse = response.data;
+          break;
+        } catch (error) {
+          withdrawError = error;
+
+          if (error && typeof error === 'object' && 'response' in error) {
+            const httpError = error as HTTPError;
+            if (httpError.response?.status === 404) {
+              hasNotFoundPresetError = true;
+              continue;
+            }
+            if (httpError.response?.status === 409) {
+              showMongInsufficientSheet();
+              return { alreadyPaid: false, mongInsufficient: true };
+            }
           }
         }
+      }
 
-        // API 호출 실패 시에도 바텀시트를 표시하도록 진행
-        console.error('몽 차감 조회 API 호출 실패:', error);
+      // 이미 결제한 적이 있으면 바텀시트를 열지 않고 바로 답변 페이지로 이동
+      if (withdrawResponse?.isPaid === true) {
+        push(targetRoute, responseNavigationParams);
+        return { alreadyPaid: true };
+      }
+
+      // API 호출 실패 시에도 바텀시트를 표시하도록 진행
+      if (!withdrawResponse && !isMongConsumeDisabled && withdrawError) {
+        console.error('몽 차감 조회 API 호출 실패:', withdrawError);
+      }
+
+      if (!withdrawResponse && hasNotFoundPresetError) {
+        isMongConsumeDisabled = true;
+        console.log('몽 소비 비활성화 상태');
       }
 
       // 몽 소비가 비활성화된 경우 바로 답변 페이지로 이동
@@ -106,7 +121,6 @@ export default function useShowMongConsumeSheet() {
       const preset = hairConsultingPresets.find(
         (p) =>
           p.subType === 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL' ||
-          p.subType === 'VIEW_MY_HAIR_CONSULTING_ANSWER_MODEL' ||
           p.title === '내가 쓴 게시물 헤어컨설팅 답변 보기',
       );
       const price = preset?.price ?? 0;
