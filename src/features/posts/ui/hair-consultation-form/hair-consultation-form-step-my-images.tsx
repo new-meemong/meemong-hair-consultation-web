@@ -155,20 +155,7 @@ export default function HairConsultationFormStepMyImages() {
   };
 
   const handleCaptureClick = () => {
-    const captureInput = captureInputRef.current;
-    if (!captureInput) return;
-
-    const isAndroid = /Android/i.test(window.navigator.userAgent);
-
-    if (isAndroid) {
-      captureInput.setAttribute('accept', 'image/*;capture=camera');
-      captureInput.setAttribute('capture', 'camera');
-    } else {
-      captureInput.setAttribute('accept', 'image/*');
-      captureInput.setAttribute('capture', 'environment');
-    }
-
-    captureInput.click();
+    captureInputRef.current?.click();
   };
   const activeGuide = activeGuideType ? guideConfig[activeGuideType] : null;
 
