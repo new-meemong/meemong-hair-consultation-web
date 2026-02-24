@@ -1,4 +1,5 @@
 import Dot from '@/shared/ui/dot';
+import { EXPERIENCE_GROUP_LINK_CLICK_STORAGE_KEY } from '../../constants/experience-group-link-click-storage-key';
 import { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
 import type { ExperienceGroupDetail } from '@/entities/posts/model/experience-group-detail';
 import PostDetailAuthorProfile from '../post-detail/post-detail-author-profile';
@@ -39,6 +40,18 @@ function SnsLink({
 
     // 디자이너인 경우
     if (isUserDesigner) {
+      try {
+        sessionStorage.setItem(
+          EXPERIENCE_GROUP_LINK_CLICK_STORAGE_KEY,
+          JSON.stringify({
+            experienceGroupId,
+            clickedAt: Date.now(),
+          }),
+        );
+      } catch {
+        // Ignore storage failures and continue opening the link.
+      }
+
       await showExperienceGroupLinkSheet({
         designerName,
         experienceGroupId,
