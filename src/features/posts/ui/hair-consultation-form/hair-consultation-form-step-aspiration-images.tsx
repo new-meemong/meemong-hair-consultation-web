@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import FormItem from '@/shared/ui/form-item';
@@ -15,6 +15,12 @@ const getFileKey = (file: File) => `${file.name}-${file.lastModified}`;
 export default function HairConsultationFormStepAspirationImages() {
   const { setValue, control, register, getValues } = useFormContext<HairConsultationFormValues>();
   const resizingKeysRef = useRef(new Set<string>());
+  const aspirationDescriptionRef = useRef<HTMLTextAreaElement | null>(null);
+  const [isAspirationDescriptionFocused, setIsAspirationDescriptionFocused] = useState(false);
+
+  const aspirationDescriptionField = register(
+    `${HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`,
+  );
 
   const watchedImages = useWatch({
     name: `${HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES}.images`,
@@ -50,9 +56,7 @@ export default function HairConsultationFormStepAspirationImages() {
           resizingKeysRef.current.add(key);
           try {
             const resizedFile = await resizeImageFile(imageFile, RESIZE_MAX_SIZE);
-            const latestValue = getValues(
-              HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES,
-            );
+            const latestValue = getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES);
             const latestImages = latestValue?.images ?? [];
 
             if (!latestImages.some((item) => getFileKey(item) === key)) {
@@ -105,6 +109,36 @@ export default function HairConsultationFormStepAspirationImages() {
     [setValue, getValues],
   );
 
+  const scrollAspirationDescriptionIntoView = useCallback(() => {
+    aspirationDescriptionRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }, []);
+
+  const handleAspirationDescriptionFocus = useCallback(() => {
+    setIsAspirationDescriptionFocused(true);
+    requestAnimationFrame(() => {
+      scrollAspirationDescriptionIntoView();
+      setTimeout(() => scrollAspirationDescriptionIntoView(), 200);
+      setTimeout(() => scrollAspirationDescriptionIntoView(), 450);
+    });
+  }, [scrollAspirationDescriptionIntoView]);
+
+  useEffect(() => {
+    if (!isAspirationDescriptionFocused) return;
+
+    const handleResize = () => {
+      scrollAspirationDescriptionIntoView();
+    };
+
+    const visualViewport = window.visualViewport;
+    visualViewport?.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      visualViewport?.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isAspirationDescriptionFocused, scrollAspirationDescriptionIntoView]);
+
   return (
     <div className="flex flex-col gap-7">
       <FormItem label="이미지" description="원하는 머리 사진을 업로드해주세요 (최대 3개)">
@@ -117,10 +151,19 @@ export default function HairConsultationFormStepAspirationImages() {
       </FormItem>
       <FormItem label="상세 설명">
         <Textarea
-          {...register(`${HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`)}
+          {...aspirationDescriptionField}
+          ref={(node) => {
+            aspirationDescriptionField.ref(node);
+            aspirationDescriptionRef.current = node;
+          }}
           placeholder="추구하는 스타일에 대해 구체적으로 설명해주세요"
           className="min-h-38 typo-body-2-long-regular"
           hasBorder
+          onFocus={handleAspirationDescriptionFocus}
+          onBlur={(e) => {
+            setIsAspirationDescriptionFocused(false);
+            aspirationDescriptionField.onBlur(e);
+          }}
         />
       </FormItem>
     </div>
