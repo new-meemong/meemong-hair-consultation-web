@@ -20,7 +20,10 @@ const firebaseConfig = {
 
 // Firebase 초기화
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-const db = getFirestore(app, 'meemong-chat');
+const normalizedApiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, '') ?? '';
+const firestoreDatabaseId =
+  normalizedApiUrl === 'https://api.meemong.com' ? 'meemong-chat' : 'meemong-dev';
+const db = getFirestore(app, firestoreDatabaseId);
 
 // Analytics는 클라이언트 사이드에서만 초기화
 let analytics: Analytics | null = null;
