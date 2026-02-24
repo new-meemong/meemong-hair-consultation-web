@@ -493,7 +493,12 @@ export default function HairConsultationFormStepTreatments() {
               : 'text-positive';
             return (
               <div key={itemKey} className="rounded-6 bg-alternative p-4">
-                <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  aria-label={isOpen ? '카드 접기' : '카드 펼치기'}
+                  className="w-full flex items-center justify-between text-left"
+                  onClick={() => toggleCard(index)}
+                >
                   <div className="flex items-center">
                     <span className={`${AppTypography.body2SemiBold} text-label-sub`}>
                       {getTreatmentLabel(item.treatmentType)}
@@ -504,21 +509,12 @@ export default function HairConsultationFormStepTreatments() {
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      aria-label={isOpen ? '카드 접기' : '카드 펼치기'}
-                      className="w-10 h-6 -mx-2 flex items-center justify-center"
-                      onClick={() => toggleCard(index)}
-                    >
-                      <ChevronRightIcon
-                        className={`w-4 h-4 text-label-info transition-transform ${
-                          isOpen ? '-rotate-90' : 'rotate-90'
-                        }`}
-                      />
-                    </button>
-                  </div>
-                </div>
+                  <ChevronRightIcon
+                    className={`w-4 h-4 text-label-info transition-transform ${
+                      isOpen ? '-rotate-90' : 'rotate-90'
+                    }`}
+                  />
+                </button>
 
                 {isOpen && (
                   <div className="flex flex-col gap-4 mt-4">
