@@ -135,13 +135,24 @@ export default function CommentFormContainer({
         </Button>
       )}
       {canWriteConsultingResponse && commentMode === 'consulting' ? (
-        <div className="bg-white shadow-upper px-5 py-3 flex gap-3 justify-evenly">
-          <Button size="md" theme="white" className="flex-1" onClick={handleNormalCommentClick}>
-            일반 댓글 달기
-          </Button>
-          <Button size="md" className="flex-1" onClick={handleWriteConsultingResponseClick}>
-            {writingResponseButtonText}
-          </Button>
+        <div className="bg-white shadow-upper px-5 py-3">
+          <div className="mx-auto flex w-full max-w-[335px] items-center gap-3">
+            <Button
+              size="md"
+              theme="white"
+              className="w-[68px] rounded-4 border border-border-default bg-white hover:bg-white active:bg-white focus:bg-white"
+              onClick={handleNormalCommentClick}
+            >
+              일반댓글
+            </Button>
+            <Button
+              size="md"
+              className="w-[264px] rounded-4 bg-label-default text-white hover:bg-label-default active:bg-label-default focus:bg-label-default"
+              onClick={handleWriteConsultingResponseClick}
+            >
+              {writingResponseButtonText}
+            </Button>
+          </div>
         </div>
       ) : (
         <div className="bg-white shadow-strong">
