@@ -7,7 +7,6 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { AppTypography } from '@/shared/styles/typography';
 import Checkbox from '@/shared/ui/checkbox';
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
-import CloseIcon from '@/assets/icons/close.svg';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '../../constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '../../types/hair-consultation-form-values';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
@@ -285,6 +284,14 @@ export default function HairConsultationFormStepTreatments() {
     setOpenCards((prev) => prev.filter((_, index) => index !== targetIndex));
   };
 
+  const toggleCard = (targetIndex: number) => {
+    setOpenCards((prev) => {
+      const next = [...prev];
+      next[targetIndex] = !(next[targetIndex] ?? false);
+      return next;
+    });
+  };
+
   const getCardType = (
     treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
   ) => {
@@ -501,27 +508,14 @@ export default function HairConsultationFormStepTreatments() {
                     <button
                       type="button"
                       aria-label={isOpen ? '카드 접기' : '카드 펼치기'}
-                      className="w-6 h-6 flex items-center justify-center"
-                      onClick={() =>
-                        setOpenCards((prev) => {
-                          const next = [...prev];
-                          next[index] = !(next[index] ?? false);
-                          return next;
-                        })
-                      }
+                      className="w-10 h-6 -mx-2 flex items-center justify-center"
+                      onClick={() => toggleCard(index)}
                     >
                       <ChevronRightIcon
                         className={`w-4 h-4 text-label-info transition-transform ${
                           isOpen ? '-rotate-90' : 'rotate-90'
                         }`}
                       />
-                    </button>
-                    <button
-                      type="button"
-                      className="w-6 h-6 flex items-center justify-center"
-                      onClick={() => removeTreatment(index)}
-                    >
-                      <CloseIcon className="w-4 h-4 text-negative" />
                     </button>
                   </div>
                 </div>
@@ -673,6 +667,31 @@ export default function HairConsultationFormStepTreatments() {
                         />
                       </div>
                     )}
+
+                    <div className="border-t border-border-default" />
+
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        className="w-[146px] h-9 rounded-4 border border-border-default bg-white typo-body-2-medium text-label-default"
+                        onClick={() => removeTreatment(index)}
+                      >
+                        삭제
+                      </button>
+                      <button
+                        type="button"
+                        disabled={cardType !== 'TYPE3' && !item.treatmentArea}
+                        className={[
+                          'w-[146px] h-9 rounded-4 typo-body-2-medium',
+                          cardType !== 'TYPE3' && !item.treatmentArea
+                            ? 'bg-label-disable text-label-placeholder'
+                            : 'bg-label-default text-white',
+                        ].join(' ')}
+                        onClick={() => toggleCard(index)}
+                      >
+                        완료
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
