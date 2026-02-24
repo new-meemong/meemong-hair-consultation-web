@@ -11,9 +11,9 @@ import type { ConsultingResponseFormValues } from '@/features/posts/types/consul
 import type { WritingStep } from '@/features/posts/types/user-writing-content';
 import HairConsultationOnboarding from '@/features/posts/ui/hair-consultation-onboarding';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
-import ConsultingResponseFormContainer from '@/widgets/post/ui/consulting-response/consulting-response-form-container';
+import ConsultingResponseFormContainerNew from '@/widgets/post/ui/consulting-response/consulting-response-form-container-new';
 
-export default function CreateConsultingPostPage() {
+export default function CreateConsultingPostNewPage() {
   const { postId } = useParams();
   const { isUserDesigner } = useAuthContext();
 
@@ -60,7 +60,7 @@ export default function CreateConsultingPostPage() {
   }
 
   return (
-    <ConsultingResponseFormContainer
+    <ConsultingResponseFormContainerNew
       method={method}
       onBackClick={handleBackClick}
       currentStep={currentStep}

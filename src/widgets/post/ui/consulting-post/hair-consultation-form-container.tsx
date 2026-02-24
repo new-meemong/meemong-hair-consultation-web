@@ -46,7 +46,7 @@ export default function HairConsultationFormContainer() {
 
   useEffect(() => {
     if (!skipReload) return;
-    replace(ROUTES.POSTS_NEW_CREATE);
+    replace(ROUTES.POSTS_CREATE);
   }, [replace, skipReload]);
 
   return (

@@ -28,7 +28,6 @@ const MORE_ACTION = {
 type CommentListItemProps = {
   comment: CommentWithReplyStatus;
   postId: string;
-  postSource?: 'new' | 'legacy';
   postWriterId: number;
   postWriterSex?: ValueOf<typeof USER_SEX>;
   onReplyClick: (commentId: number) => void;
@@ -43,7 +42,6 @@ type CommentListItemProps = {
 export default function CommentListItem({
   comment,
   postId,
-  postSource = 'legacy',
   postWriterId,
   postWriterSex,
   onReplyClick,
@@ -61,9 +59,7 @@ export default function CommentListItem({
   const { push } = useRouterWithUser();
   const showMongConsumeSheet = useShowMongConsumeSheet();
   const consultingResponsePath = comment.answerId
-    ? postSource === 'new'
-      ? ROUTES.POSTS_NEW_CONSULTING_RESPONSE(postId, comment.answerId.toString())
-      : ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString())
+    ? ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString())
     : null;
   const responseNavigationParams = {
     [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
@@ -81,7 +77,6 @@ export default function CommentListItem({
             answerId: comment.answerId,
             postId,
             postListTab,
-            postSource,
             postWriterSex,
           });
           // 결제 관련 이동/표시는 showMongConsumeSheet 내부에서 처리
@@ -147,7 +142,6 @@ export default function CommentListItem({
   };
 
   const isOtherDesignerGeneralCommentInNewPost =
-    postSource === 'new' &&
     isUserDesigner &&
     !isPostWriter &&
     !isCommentWriter &&

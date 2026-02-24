@@ -6,7 +6,6 @@ import type { SelectedRegion } from '@/features/region/types/selected-region';
 import convertToAddresses from '@/shared/api/lib/convert-to-addresses';
 import { useCallback } from 'react';
 import useGetHairConsultations from '@/features/posts/api/use-get-hair-consultations';
-import useGetPosts from '@/features/posts/api/use-get-posts';
 
 type ConsultingPostListContainerProps = {
   activePostListTab: PostListTab;
@@ -27,7 +26,7 @@ export default function ConsultingPostListContainer({
         : {};
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetHairConsultations({
-    __orderColumn: isUserDesigner ? 'contentUpdatedAt' : 'comment36LastUpdatedAt',
+    __orderColumn: isUserDesigner ? 'createdAt' : 'comment36LastUpdatedAt',
     ...listFilterParams,
     addresses: convertToAddresses(userSelectedRegionData),
   });
@@ -48,51 +47,15 @@ export default function ConsultingPostListContainer({
       minPaymentPrice: null,
       maxPaymentPrice: item.desiredCostPrice,
       isRead: item.isRead,
-      postSource: 'new',
     })),
   );
 
-  const shouldEnableLegacy = data ? !hasNextPage : false;
-  const {
-    data: legacyData,
-    hasNextPage: hasLegacyNextPage,
-    isFetchingNextPage: isFetchingLegacyNextPage,
-    fetchNextPage: fetchLegacyNextPage,
-  } = useGetPosts(
-    {
-      filter: activePostListTab,
-      selectedRegion: userSelectedRegionData,
-    },
-    {
-      enabled: shouldEnableLegacy,
-    },
-  );
-
-  const legacyPosts = legacyData?.pages.flatMap((page) => page.dataList);
-  const normalizedLegacyPosts =
-    legacyPosts?.map((post) => ({
-      ...post,
-      userAddress: post.userAddress ?? post.hairConsultPostingCreateUserRegion ?? '',
-    })) ?? [];
-
-  const posts = [...(newPosts ?? []), ...normalizedLegacyPosts];
+  const posts = newPosts ?? [];
 
   const handleFetchNextPage = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-      return;
-    }
-    if (hasLegacyNextPage && !isFetchingLegacyNextPage) {
-      fetchLegacyNextPage();
-    }
-  }, [
-    fetchLegacyNextPage,
-    fetchNextPage,
-    hasLegacyNextPage,
-    hasNextPage,
-    isFetchingLegacyNextPage,
-    isFetchingNextPage,
-  ]);
+    if (!hasNextPage || isFetchingNextPage) return;
+    fetchNextPage();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   if (posts.length === 0) return null;
 

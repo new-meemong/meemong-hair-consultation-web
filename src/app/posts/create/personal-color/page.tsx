@@ -150,7 +150,7 @@ export default function PersonalColorSelectPage() {
       content: nextContent,
     });
 
-    replace(ROUTES.POSTS_NEW_CREATE, { skipReload: '1' });
+    replace(ROUTES.POSTS_CREATE, { skipReload: '1' });
   };
 
   const canComplete =
@@ -162,7 +162,7 @@ export default function PersonalColorSelectPage() {
         title="퍼스널 컬러"
         showBackButton
         onBackClick={() =>
-          replace(ROUTES.POSTS_NEW_CREATE, {
+          replace(ROUTES.POSTS_CREATE, {
             skipReload: '1',
             ...Object.fromEntries(searchParams.entries()),
           })

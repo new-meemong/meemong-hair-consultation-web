@@ -4,24 +4,24 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
+import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
 import { type CommentFormValues } from '@/features/comments/ui/comment-form';
-import { PostDetailProvider, usePostDetail } from '@/features/posts/context/post-detail-context';
+import { NewPostDetailProvider, usePostDetail } from '@/features/posts/context/post-detail-context';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowGuide from '@/shared/hooks/use-show-guide';
-import { CommentContainer } from '@/widgets/comments/ui/comment-container';
+import HairConsultationCommentContainer from '@/widgets/comments/ui/hair-consultation-comment-container';
 import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
 import { SiteHeader } from '@/widgets/header';
 import { PostDetailContainer } from '@/widgets/post/post-detail-container';
 
-type PostDetailPageContentProps = {
+type NewPostDetailPageContentProps = {
   postId: string;
   isFromMain: boolean;
 };
 
-function PostDetailPageContent({ postId, isFromMain }: PostDetailPageContentProps) {
+function NewPostDetailPageContent({ postId, isFromMain }: NewPostDetailPageContentProps) {
   const { isUserDesigner, user } = useAuthContext();
   const { back } = useRouterWithUser();
 
@@ -31,8 +31,8 @@ function PostDetailPageContent({ postId, isFromMain }: PostDetailPageContentProp
   const isWriter = postDetail.hairConsultPostingCreateUserId === user.id;
 
   const { commentFormState, textareaRef, isCommentCreating, isCommentUpdating, handlers } =
-    useCommentFormState({
-      postId,
+    useHairConsultationCommentFormState({
+      hairConsultationId: postId,
       receiverId: postDetail.hairConsultPostingCreateUserId.toString(),
     });
 
@@ -63,17 +63,15 @@ function PostDetailPageContent({ postId, isFromMain }: PostDetailPageContentProp
         title="헤어상담"
         showBackButton
         onBackClick={handleBackClick}
-        rightComponent={
-          isWriter && <PostDetailMoreButton postId={postId.toString()} isConsultingPost={true} />
-        }
+        rightComponent={isWriter && <PostDetailMoreButton postId={postId.toString()} />}
       />
       <div
         className="flex-1 overflow-y-auto overflow-x-hidden touch-pan-y"
         onClick={handleContainerClick}
       >
         <PostDetailContainer>
-          <CommentContainer
-            postId={postId.toString()}
+          <HairConsultationCommentContainer
+            hairConsultationId={postId.toString()}
             commentFormState={commentFormState}
             handlers={{
               ...handlers,
@@ -90,13 +88,12 @@ function PostDetailPageContent({ postId, isFromMain }: PostDetailPageContentProp
         textareaRef={textareaRef}
         isConsulting={true}
         isAnsweredByDesigner={postDetail.isAnsweredByDesigner ?? false}
-        postSource="legacy"
       />
     </div>
   );
 }
 
-export default function PostDetailPage() {
+export default function NewPostDetailPage() {
   const { postId } = useParams();
   const searchParams = useSearchParams();
 
@@ -105,8 +102,8 @@ export default function PostDetailPage() {
   if (!postId) return null;
 
   return (
-    <PostDetailProvider postId={postId.toString()}>
-      <PostDetailPageContent postId={postId.toString()} isFromMain={isFromMain} />
-    </PostDetailProvider>
+    <NewPostDetailProvider postId={postId.toString()}>
+      <NewPostDetailPageContent postId={postId.toString()} isFromMain={isFromMain} />
+    </NewPostDetailProvider>
   );
 }

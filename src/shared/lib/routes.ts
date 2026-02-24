@@ -7,23 +7,15 @@ export const ROUTES = {
   // 게시글
   POSTS: '/posts',
   POSTS_CREATE: '/posts/create',
-  POSTS_NEW_CREATE: '/posts/new/create',
-  POSTS_NEW_CREATE_HAIR_LENGTH: '/posts/new/create/hair-length',
-  POSTS_NEW_CREATE_HAIR_CONCERNS: '/posts/new/create/hair-concerns',
-  POSTS_NEW_CREATE_HAIR_TEXTURE: '/posts/new/create/hair-texture',
-  POSTS_NEW_CREATE_SKIN_BRIGHTNESS: '/posts/new/create/skin-brightness',
-  POSTS_NEW_CREATE_PERSONAL_COLOR: '/posts/new/create/personal-color',
+  POSTS_CREATE_HAIR_LENGTH: '/posts/create/hair-length',
+  POSTS_CREATE_HAIR_CONCERNS: '/posts/create/hair-concerns',
+  POSTS_CREATE_HAIR_TEXTURE: '/posts/create/hair-texture',
+  POSTS_CREATE_SKIN_BRIGHTNESS: '/posts/create/skin-brightness',
+  POSTS_CREATE_PERSONAL_COLOR: '/posts/create/personal-color',
   POSTS_CREATE_CONSULTING_POST: (postId: string) => `/posts/${postId}/consulting/create`,
-  POSTS_NEW_CREATE_CONSULTING_POST: (postId: string) => `/posts/new/${postId}/consulting/create`,
   POSTS_DETAIL: (postId: string | number) => `/posts/${postId}`,
-  POSTS_NEW_DETAIL: (postId: string | number) => `/posts/new/${postId}`,
-  POSTS_EDIT: (id: string) => `/posts/edit/${id}`,
-  POSTS_CONSULTING_RESPONSE_EDIT: (postId: string, responseId: string) =>
-    `/posts/${postId}/consulting/${responseId}/edit`,
   POSTS_CONSULTING_RESPONSE: (postId: string, responseId: string) =>
     `/posts/${postId}/consulting/${responseId}`,
-  POSTS_NEW_CONSULTING_RESPONSE: (postId: string, responseId: string) =>
-    `/posts/new/${postId}/consulting/${responseId}`,
   POSTS_SELECT_REGION: '/posts/select-region',
   POSTS_EXPERIENCE_GROUP_DETAIL: (id: string) => `/posts/experience-groups/${id}`,
   POSTS_EXPERIENCE_GROUP_EDIT: (id: string) => `/posts/experience-groups/${id}/edit`,

@@ -129,13 +129,13 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
   // 첫 번째 버튼 클릭 핸들러
   const handleFirstButtonClick = () => {
     if (!isFirstButtonEnabled || !postId) return;
-    push(ROUTES.POSTS_NEW_DETAIL(postId));
+    push(ROUTES.POSTS_DETAIL(postId));
   };
 
   // 두 번째 버튼 클릭 핸들러
   const handleSecondButtonClick = () => {
     if (!isSecondButtonEnabled || !postId || !actualAnswerId) return;
-    push(ROUTES.POSTS_NEW_CONSULTING_RESPONSE(postId, actualAnswerId));
+    push(ROUTES.POSTS_CONSULTING_RESPONSE(postId, actualAnswerId));
   };
 
   // 매장예약 클릭 핸들러

@@ -7,42 +7,36 @@ import { AppTypography } from '@/shared/styles/typography';
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '@/features/posts/constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
-import type { HairConsultationSkinBrightness } from '@/entities/posts/api/create-hair-consultation-request';
+import type { HairConsultationHairTexture } from '@/entities/posts/api/create-hair-consultation-request';
 import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
-import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { useSearchParams } from 'next/navigation';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
-const FEMALE_SKIN_BRIGHTNESS_OPTIONS: Array<{
-  value: HairConsultationSkinBrightness;
+const HAIR_TEXTURE_OPTIONS: Array<{
+  value: HairConsultationHairTexture;
   label: string;
   description: string;
 }> = [
-  { value: '18호 이하', label: '18호 이하', description: '매우 하얗고 투명한 피부' },
-  { value: '19~21호', label: '19~21호', description: '화사하고 밝은 피부' },
-  { value: '22~23호', label: '22~23호', description: '자연스럽고 차분한 피부' },
-  { value: '24~25호', label: '24~25호', description: '건강하고 생기있는 피부' },
-  { value: '26호 이상', label: '26호 이상', description: '탄력있고 깊이감 있는 피부' },
+  { value: '강한 직모', label: '강한 직모', description: '곡선이 거의 없고 뻗치는 머리' },
+  { value: '직모', label: '직모', description: '약한 볼륨감이 있는 표준적인 생머리' },
+  {
+    value: '반곱슬',
+    label: '반곱슬',
+    description: '습하면 부스스해지고, C컬 정도로 휘어지는 모발',
+  },
+  { value: '곱슬', label: '곱슬', description: 'S컬 형태로 뚜렷하게 웨이브가 지며 붕 뜨는 모발' },
+  {
+    value: '강한 곱슬',
+    label: '강한 곱슬',
+    description: '뿌리부터 회전하며 자라는 꼬불거리는 모발',
+  },
 ];
 
-const MALE_SKIN_BRIGHTNESS_OPTIONS: Array<{
-  value: HairConsultationSkinBrightness;
-  label: string;
-  description: string;
-}> = [
-  { value: '매우 밝은/하얀 피부', label: '매우 밝은/하얀 피부', description: '22호 이하' },
-  { value: '밝은 피부', label: '밝은 피부', description: '22~23호' },
-  { value: '보통 피부', label: '보통 피부', description: '24~25호' },
-  { value: '까만 피부', label: '까만 피부', description: '26~27호' },
-  { value: '매우 어두운/까만 피부', label: '매우 어두운/까만 피부', description: '28호 이상' },
-];
-
-export default function SkinBrightnessSelectPage() {
-  const { user } = useAuthContext();
+export default function HairTextureSelectPage() {
   const { replace } = useRouterWithUser();
   const searchParams = useSearchParams();
   const { savedContent, saveContent } = useWritingContent(
@@ -50,27 +44,24 @@ export default function SkinBrightnessSelectPage() {
   );
 
   const initialValue = useMemo(() => {
-    return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS] ?? null;
+    return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE] ?? null;
   }, [savedContent]);
 
-  const [selectedBrightness, setSelectedBrightness] =
-    useState<HairConsultationSkinBrightness | null>(initialValue);
-  const skinBrightnessOptions = useMemo(
-    () => (user.sex === '남자' ? MALE_SKIN_BRIGHTNESS_OPTIONS : FEMALE_SKIN_BRIGHTNESS_OPTIONS),
-    [user.sex],
+  const [selectedTexture, setSelectedTexture] = useState<HairConsultationHairTexture | null>(
+    initialValue,
   );
 
-  const handleSelect = (value: HairConsultationSkinBrightness) => {
-    setSelectedBrightness(value);
+  const handleSelect = (value: HairConsultationHairTexture) => {
+    setSelectedTexture(value);
   };
 
   const handleComplete = () => {
-    if (!selectedBrightness) return;
+    if (!selectedTexture) return;
 
     const baseContent = savedContent?.content ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES;
     const nextContent: HairConsultationFormValues = {
       ...baseContent,
-      [HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS]: selectedBrightness,
+      [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE]: selectedTexture,
     };
 
     saveContent({
@@ -78,16 +69,16 @@ export default function SkinBrightnessSelectPage() {
       content: nextContent,
     });
 
-    replace(ROUTES.POSTS_NEW_CREATE, { skipReload: '1' });
+    replace(ROUTES.POSTS_CREATE, { skipReload: '1' });
   };
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col bg-white">
       <SiteHeader
-        title="피부톤"
+        title="모발 타입"
         showBackButton
         onBackClick={() =>
-          replace(ROUTES.POSTS_NEW_CREATE, {
+          replace(ROUTES.POSTS_CREATE, {
             skipReload: '1',
             ...Object.fromEntries(searchParams.entries()),
           })
@@ -97,7 +88,7 @@ export default function SkinBrightnessSelectPage() {
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between gap-2">
             <span className={`${AppTypography.headlineSemiBold} text-label-default`}>
-              피부 밝기를 선택해주세요
+              가장 가까운 모질을 선택해주세요
             </span>
             <span className={`${AppTypography.body2SemiBold} text-cautionary`}>필수</span>
           </div>
@@ -107,8 +98,8 @@ export default function SkinBrightnessSelectPage() {
         </div>
 
         <div className="flex flex-col gap-3">
-          {skinBrightnessOptions.map((option) => {
-            const checked = selectedBrightness === option.value;
+          {HAIR_TEXTURE_OPTIONS.map((option) => {
+            const checked = selectedTexture === option.value;
             return (
               <button
                 key={option.value}
@@ -137,12 +128,7 @@ export default function SkinBrightnessSelectPage() {
         </div>
       </div>
       <div className="px-5 py-3 border-t border-1 border-border-default">
-        <Button
-          className="w-full"
-          size="lg"
-          onClick={handleComplete}
-          disabled={!selectedBrightness}
-        >
+        <Button className="w-full" size="lg" onClick={handleComplete} disabled={!selectedTexture}>
           완료
         </Button>
       </div>

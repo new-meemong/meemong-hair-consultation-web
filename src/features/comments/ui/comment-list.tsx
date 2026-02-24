@@ -9,7 +9,6 @@ import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observe
 interface CommentListProps {
   comments: CommentWithReplyStatus[];
   postId: string;
-  postSource?: 'new' | 'legacy';
   postWriterId: number;
   postWriterSex?: ValueOf<typeof USER_SEX>;
   fetchNextPage: () => void;
@@ -24,7 +23,6 @@ interface CommentListProps {
 export function CommentList({
   comments,
   postId,
-  postSource = 'legacy',
   postWriterId,
   postWriterSex,
   fetchNextPage,
@@ -48,7 +46,6 @@ export function CommentList({
           <CommentListItem
             comment={comment}
             postId={postId}
-            postSource={postSource}
             postWriterId={postWriterId}
             postWriterSex={postWriterSex}
             onReplyClick={onReplyClick}

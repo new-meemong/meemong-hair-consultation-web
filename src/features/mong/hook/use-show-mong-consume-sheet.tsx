@@ -25,7 +25,6 @@ type ShowMongConsumeSheetParams = {
   answerId: number;
   postId: string;
   postListTab: string;
-  postSource?: 'new' | 'legacy';
   postWriterSex?: ValueOf<typeof USER_SEX>;
 };
 
@@ -42,13 +41,9 @@ export default function useShowMongConsumeSheet() {
       answerId,
       postId,
       postListTab,
-      postSource = 'legacy',
       postWriterSex,
     }: ShowMongConsumeSheetParams) => {
-      const targetRoute =
-        postSource === 'new'
-          ? ROUTES.POSTS_NEW_CONSULTING_RESPONSE(postId, answerId.toString())
-          : ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString());
+      const targetRoute = ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString());
       const responseNavigationParams = {
         [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
         ...(postWriterSex ? { [SEARCH_PARAMS.POST_WRITER_SEX]: postWriterSex } : {}),

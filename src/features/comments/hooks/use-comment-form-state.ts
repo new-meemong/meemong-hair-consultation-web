@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Comment } from '@/entities/comment/model/comment';
 import useSendExperienceGroupCommentPushNotification from '@/features/chat/api/use-send-experience-group-comment-push-notification';
-import useSendPostCommentPushNotification from '@/features/chat/api/use-send-post-comment-push-notification';
 
 import useCommentOperations from './use-comment-operations';
 import type { CommentFormState } from '../types/comment-form-state';
@@ -16,13 +15,11 @@ const INITIAL_COMMENT_FORM_STATE: CommentFormState = {
 } as const;
 
 type UseCommentFormStateProps = {
-  postId?: string;
   experienceGroupId?: string;
   receiverId: string;
 };
 
 export const useCommentFormState = ({
-  postId,
   experienceGroupId,
   receiverId,
 }: UseCommentFormStateProps) => {
@@ -33,7 +30,7 @@ export const useCommentFormState = ({
   const shouldFocusRef = useRef(false);
 
   const { handleCreate, handleUpdate, handleDelete, isCommentCreating, isCommentUpdating } =
-    useCommentOperations({ postId, experienceGroupId, commentId: commentFormState.commentId });
+    useCommentOperations({ experienceGroupId, commentId: commentFormState.commentId });
 
   const resetCommentState = useCallback(() => {
     setCommentFormState(INITIAL_COMMENT_FORM_STATE);
@@ -84,7 +81,6 @@ export const useCommentFormState = ({
     }
   }, [commentFormState]);
 
-  const { mutate: sendPostCommentNotification } = useSendPostCommentPushNotification();
   const { mutate: sendExperienceGroupCommentNotification } =
     useSendExperienceGroupCommentPushNotification();
 
@@ -94,11 +90,7 @@ export const useCommentFormState = ({
         options.onSuccess();
         resetCommentState();
 
-        const sendPush = postId
-          ? sendPostCommentNotification
-          : sendExperienceGroupCommentNotification;
-
-        sendPush({
+        sendExperienceGroupCommentNotification({
           userId: receiverId,
           message: data.content,
         });
@@ -114,11 +106,9 @@ export const useCommentFormState = ({
       commentFormState.state,
       handleCreate,
       handleUpdate,
-      postId,
       receiverId,
       resetCommentState,
       sendExperienceGroupCommentNotification,
-      sendPostCommentNotification,
     ],
   );
 

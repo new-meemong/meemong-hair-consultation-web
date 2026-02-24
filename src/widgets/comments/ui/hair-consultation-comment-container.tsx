@@ -153,7 +153,6 @@ export default function HairConsultationCommentContainer({
     <CommentList
       comments={mergedComments}
       postId={postDetail.id.toString()}
-      postSource="new"
       postWriterId={postDetail.hairConsultPostingCreateUserId}
       postWriterSex={postDetail.hairConsultPostingCreateUserSex}
       fetchNextPage={handleFetchNextPage}

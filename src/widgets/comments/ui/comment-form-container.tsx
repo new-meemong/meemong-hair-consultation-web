@@ -26,7 +26,6 @@ type CommentFormContainerProps = {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   isConsulting: boolean;
   isAnsweredByDesigner: boolean;
-  postSource?: 'new' | 'legacy';
 };
 
 export default function CommentFormContainer({
@@ -37,7 +36,6 @@ export default function CommentFormContainer({
   textareaRef,
   isConsulting,
   isAnsweredByDesigner,
-  postSource = 'legacy',
 }: CommentFormContainerProps) {
   const searchParams = useSearchParams();
   const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
@@ -64,10 +62,7 @@ export default function CommentFormContainer({
   const writingResponseButtonText = hasSavedContent ? '이어서 작성하기' : '컨설팅 답변하기';
 
   const handleWriteConsultingResponseClick = () => {
-    const path =
-      postSource === 'new'
-        ? ROUTES.POSTS_NEW_CREATE_CONSULTING_POST(postId.toString())
-        : ROUTES.POSTS_CREATE_CONSULTING_POST(postId.toString());
+    const path = ROUTES.POSTS_CREATE_CONSULTING_POST(postId.toString());
 
     push(path, {
       [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,

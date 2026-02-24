@@ -84,7 +84,7 @@ export default function ConsultingResponseFormNew({
           message: '컨설팅 답변을 보냈습니다!',
         });
 
-        replace(ROUTES.POSTS_NEW_DETAIL(postId), {
+        replace(ROUTES.POSTS_DETAIL(postId), {
           [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
         });
       },

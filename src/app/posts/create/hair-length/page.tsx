@@ -55,7 +55,7 @@ export default function HairLengthSelectPage() {
       content: nextContent,
     });
 
-    replace(ROUTES.POSTS_NEW_CREATE, { skipReload: '1' });
+    replace(ROUTES.POSTS_CREATE, { skipReload: '1' });
   };
 
   return (
@@ -64,7 +64,7 @@ export default function HairLengthSelectPage() {
         title="머리기장"
         showBackButton
         onBackClick={() =>
-          replace(ROUTES.POSTS_NEW_CREATE, {
+          replace(ROUTES.POSTS_CREATE, {
             skipReload: '1',
             ...Object.fromEntries(searchParams.entries()),
           })

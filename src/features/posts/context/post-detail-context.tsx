@@ -2,14 +2,12 @@ import { createContext, useContext, type ReactNode } from 'react';
 
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 
-import useGetPostDetail from '../api/use-get-post-detail';
 import useGetHairConsultationDetail from '../api/use-get-hair-consultation-detail';
 import mapHairConsultationDetailToPostDetail from '../lib/map-hair-consultation-detail-to-post-detail';
 
 type PostDetailContextValue = {
   postDetail: PostDetail;
   isConsultingPost: boolean;
-  postSource: 'new' | 'legacy';
 };
 
 const PostDetailContext = createContext<PostDetailContextValue | null>(null);
@@ -20,21 +18,6 @@ type PostDetailProviderProps = {
 };
 
 export function PostDetailProvider({ children, postId }: PostDetailProviderProps) {
-  const { data: postDetailResponse } = useGetPostDetail(postId.toString());
-  const postDetail = postDetailResponse?.data ?? null;
-
-  if (!postDetail) return null;
-
-  return (
-    <PostDetailContext.Provider
-      value={{ postDetail, isConsultingPost: true, postSource: 'legacy' }}
-    >
-      {children}
-    </PostDetailContext.Provider>
-  );
-}
-
-export function NewPostDetailProvider({ children, postId }: PostDetailProviderProps) {
   const { data: postDetailResponse } = useGetHairConsultationDetail(postId.toString());
   const postDetail = postDetailResponse?.data
     ? mapHairConsultationDetailToPostDetail(postDetailResponse.data)
@@ -42,11 +25,11 @@ export function NewPostDetailProvider({ children, postId }: PostDetailProviderPr
 
   if (!postDetail) return null;
 
-  return (
-    <PostDetailContext.Provider value={{ postDetail, isConsultingPost: true, postSource: 'new' }}>
-      {children}
-    </PostDetailContext.Provider>
-  );
+  return <PostDetailContext.Provider value={{ postDetail, isConsultingPost: true }}>{children}</PostDetailContext.Provider>;
+}
+
+export function NewPostDetailProvider({ children, postId }: PostDetailProviderProps) {
+  return <PostDetailProvider postId={postId}>{children}</PostDetailProvider>;
 }
 
 export function usePostDetail() {

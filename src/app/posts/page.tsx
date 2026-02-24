@@ -45,10 +45,7 @@ export default function PostsPage() {
   const listTabs = getPostListTabs(user.role);
 
   const handleWriteButtonClick = useCallback(() => {
-    const targetRoute =
-      activePostTab === CONSULT_TYPE.EXPERIENCE_GROUP
-        ? ROUTES.POSTS_CREATE
-        : ROUTES.POSTS_NEW_CREATE;
+    const targetRoute = ROUTES.POSTS_CREATE;
 
     router.push(targetRoute, {
       [SEARCH_PARAMS.POST_TAB]: activePostTab,

@@ -10,7 +10,6 @@ import { ROUTES } from '@/shared/lib/routes';
 import PostListEmptyView from './post-list-empty-view';
 import PostListItem from './post-list-item';
 import useCreateHairConsultationReadingMutation from '../../api/use-create-hair-consultation-reading-mutation';
-import useCreatePostReadingMutation from '../../api/use-create-post-reading-mutation';
 
 type PostListProps = {
   posts: Post[];
@@ -23,28 +22,13 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
 
   const { mutate: createHairConsultationReadingMutation } =
     useCreateHairConsultationReadingMutation();
-  const { mutate: createPostReadingMutation } = useCreatePostReadingMutation();
 
-  const handlePostClick = ({
-    postId,
-    isRead,
-    postSource,
-  }: {
-    postId: number;
-    isRead: boolean;
-    postSource?: 'new' | 'legacy';
-  }) => {
-    const isNewPost = postSource === 'new';
-
+  const handlePostClick = ({ postId, isRead }: { postId: number; isRead: boolean }) => {
     if (!isRead) {
-      if (isNewPost) {
-        createHairConsultationReadingMutation(postId, { onSuccess: () => {} });
-      } else {
-        createPostReadingMutation(postId, { onSuccess: () => {} });
-      }
+      createHairConsultationReadingMutation(postId, { onSuccess: () => {} });
     }
 
-    router.push(isNewPost ? ROUTES.POSTS_NEW_DETAIL(postId) : ROUTES.POSTS_DETAIL(postId), {
+    router.push(ROUTES.POSTS_DETAIL(postId), {
       [SEARCH_PARAMS.POST_LIST_TAB]: tab,
     });
   };
@@ -78,7 +62,6 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
             handlePostClick({
               postId: post.id,
               isRead: post.isRead,
-              postSource: post.postSource,
             })
           }
           ref={index === observerTargetIndex ? observerRef : undefined}

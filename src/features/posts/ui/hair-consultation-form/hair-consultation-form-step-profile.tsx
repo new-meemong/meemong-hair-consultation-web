@@ -103,7 +103,7 @@ export default function HairConsultationFormStepProfile() {
       content: getValues(),
     };
     saveContent(writingContent);
-    push(ROUTES.POSTS_NEW_CREATE_HAIR_LENGTH, { skipReload: '1' });
+    push(ROUTES.POSTS_CREATE_HAIR_LENGTH, { skipReload: '1' });
   }, [getValues, push, saveContent]);
 
   const handleHairConcernEdit = useCallback(() => {
@@ -112,7 +112,7 @@ export default function HairConsultationFormStepProfile() {
       content: getValues(),
     };
     saveContent(writingContent);
-    push(ROUTES.POSTS_NEW_CREATE_HAIR_CONCERNS, { skipReload: '1' });
+    push(ROUTES.POSTS_CREATE_HAIR_CONCERNS, { skipReload: '1' });
   }, [getValues, push, saveContent]);
 
   const handleHairTextureEdit = useCallback(() => {
@@ -121,7 +121,7 @@ export default function HairConsultationFormStepProfile() {
       content: getValues(),
     };
     saveContent(writingContent);
-    push(ROUTES.POSTS_NEW_CREATE_HAIR_TEXTURE, { skipReload: '1' });
+    push(ROUTES.POSTS_CREATE_HAIR_TEXTURE, { skipReload: '1' });
   }, [getValues, push, saveContent]);
 
   const handleSkinBrightnessEdit = useCallback(() => {
@@ -130,7 +130,7 @@ export default function HairConsultationFormStepProfile() {
       content: getValues(),
     };
     saveContent(writingContent);
-    push(ROUTES.POSTS_NEW_CREATE_SKIN_BRIGHTNESS, { skipReload: '1' });
+    push(ROUTES.POSTS_CREATE_SKIN_BRIGHTNESS, { skipReload: '1' });
   }, [getValues, push, saveContent]);
 
   const handlePersonalColorEdit = useCallback(() => {
@@ -139,7 +139,7 @@ export default function HairConsultationFormStepProfile() {
       content: getValues(),
     };
     saveContent(writingContent);
-    push(ROUTES.POSTS_NEW_CREATE_PERSONAL_COLOR, { skipReload: '1' });
+    push(ROUTES.POSTS_CREATE_PERSONAL_COLOR, { skipReload: '1' });
   }, [getValues, push, saveContent]);
 
   const renderEditHeader = (
