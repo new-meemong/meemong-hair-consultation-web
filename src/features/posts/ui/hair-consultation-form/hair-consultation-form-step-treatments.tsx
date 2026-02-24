@@ -382,6 +382,25 @@ export default function HairConsultationFormStepTreatments() {
       return `${months}개월전`;
     }
 
+    if (months === 0) {
+      return `${years}년 전`;
+    }
+
+    return `${years}년 ${months}개월 전`;
+  };
+
+  const formatExpandedElapsedLabel = (monthsAgo: number) => {
+    if (monthsAgo < 12) {
+      return `${monthsAgo}개월 전`;
+    }
+
+    const years = Math.floor(monthsAgo / 12);
+    const months = monthsAgo % 12;
+
+    if (months === 0) {
+      return `${years}년 전`;
+    }
+
     return `${years}년 ${months}개월 전`;
   };
 
@@ -492,10 +511,10 @@ export default function HairConsultationFormStepTreatments() {
                         </button>
                         <span className="flex-1 text-center">
                           <span className={`${AppTypography.body2Regular} text-label-default`}>
-                            {item.monthsAgo}
+                            {formatExpandedElapsedLabel(item.monthsAgo)}
                           </span>
                           <span className={`${AppTypography.body2Medium} text-label-sub`}>
-                            개월 전 ({formatMonthLabel(item.monthsAgo)})
+                            ({formatMonthLabel(item.monthsAgo)})
                           </span>
                         </span>
                         <button
