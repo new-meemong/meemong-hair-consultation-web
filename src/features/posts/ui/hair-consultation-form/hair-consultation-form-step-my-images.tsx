@@ -159,7 +159,7 @@ export default function HairConsultationFormStepMyImages() {
   };
   const activeGuide = activeGuideType ? guideConfig[activeGuideType] : null;
 
-  const renderUploadSlot = (type: ValueOf<typeof MY_IMAGE_TYPE>, label: string) => {
+  const renderUploadSlot = (type: ValueOf<typeof MY_IMAGE_TYPE>, label: ReactNode) => {
     const currentImage = getCurrentImage(type);
     return (
       <div className="flex flex-col gap-2 items-center">
@@ -220,11 +220,26 @@ export default function HairConsultationFormStepMyImages() {
       </div>
       <div className="flex flex-col gap-5 items-center justify-center">
         <div className="grid grid-cols-2 gap-6">
-          {renderUploadSlot(MY_IMAGE_TYPE.FRONT, '정면 (필수)')}
-          {renderUploadSlot(MY_IMAGE_TYPE.SIDE, '측면 (필수)')}
+          {renderUploadSlot(
+            MY_IMAGE_TYPE.FRONT,
+            <>
+              정면 <span className="text-primary-deep">(필수)</span>
+            </>,
+          )}
+          {renderUploadSlot(
+            MY_IMAGE_TYPE.SIDE,
+            <>
+              측면 <span className="text-primary-deep">(필수)</span>
+            </>,
+          )}
         </div>
         <div className="grid grid-cols-2 gap-6">
-          {renderUploadSlot(MY_IMAGE_TYPE.RECENT, '현재 내 머리 (필수)')}
+          {renderUploadSlot(
+            MY_IMAGE_TYPE.RECENT,
+            <>
+              현재 내 머리 <span className="text-primary-deep">(필수)</span>
+            </>,
+          )}
           {renderUploadSlot(MY_IMAGE_TYPE.WHOLE_BODY, '전신 (선택)')}
         </div>
       </div>
