@@ -370,6 +370,21 @@ export default function HairConsultationFormStepTreatments() {
     return `약 ${format(targetDate, 'yyyy년 MM월')}`;
   };
 
+  const formatElapsedLabel = (monthsAgo: number) => {
+    if (monthsAgo === 0) {
+      return '이번달';
+    }
+
+    const years = Math.floor(monthsAgo / 12);
+    const months = monthsAgo % 12;
+
+    if (years === 0) {
+      return `${months}개월전`;
+    }
+
+    return `${years}년 ${months}개월 전`;
+  };
+
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-wrap gap-2">
@@ -412,6 +427,12 @@ export default function HairConsultationFormStepTreatments() {
             const itemKey = `${item.treatmentType}-${index}`;
             const isOpen = openCards[index] ?? false;
             const isIncomplete = cardType !== 'TYPE3' && !item.treatmentArea;
+            const collapsedStatusText = isIncomplete
+              ? '내용을 모두 입력하세요'
+              : formatElapsedLabel(item.monthsAgo ?? 0);
+            const collapsedStatusColorClass = isIncomplete
+              ? 'text-negative-light'
+              : 'text-positive';
             return (
               <div key={itemKey} className="rounded-6 bg-alternative p-4">
                 <div className="flex items-center justify-between">
@@ -419,9 +440,9 @@ export default function HairConsultationFormStepTreatments() {
                     <span className={`${AppTypography.body2SemiBold} text-label-sub`}>
                       {getTreatmentLabel(item.treatmentType)}
                     </span>
-                    {!isOpen && isIncomplete && (
-                      <span className="ml-2 typo-body-3-medium text-negative-light">
-                        내용을 모두 입력하세요
+                    {!isOpen && (
+                      <span className={`ml-2 typo-body-3-medium ${collapsedStatusColorClass}`}>
+                        {collapsedStatusText}
                       </span>
                     )}
                   </div>
