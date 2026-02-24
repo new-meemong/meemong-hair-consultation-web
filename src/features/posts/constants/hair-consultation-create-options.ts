@@ -19,11 +19,11 @@ export const HAIR_CONSULTATION_HAIR_LENGTH_VALUES = [
   '숏컷',
   '단발',
   '중단발',
- ] as const satisfies readonly HairConsultationHairLength[];
+] as const satisfies readonly HairConsultationHairLength[];
 
 export const HAIR_CONSULTATION_HAIR_LENGTH_OPTIONS: ConsultingFormOption[] =
   HAIR_CONSULTATION_HAIR_LENGTH_VALUES.map(
-    (value) => ({ label: value, value } as const satisfies ConsultingFormOption),
+    (value) => ({ label: value, value }) as const satisfies ConsultingFormOption,
   );
 
 export const HAIR_CONSULTATION_HAIR_TEXTURE_VALUES = [
@@ -32,11 +32,11 @@ export const HAIR_CONSULTATION_HAIR_TEXTURE_VALUES = [
   '반곱슬',
   '곱슬',
   '강한 곱슬',
- ] as const satisfies readonly HairConsultationHairTexture[];
+] as const satisfies readonly HairConsultationHairTexture[];
 
 export const HAIR_CONSULTATION_HAIR_TEXTURE_OPTIONS: ConsultingFormOption[] =
   HAIR_CONSULTATION_HAIR_TEXTURE_VALUES.map(
-    (value) => ({ label: value, value } as const satisfies ConsultingFormOption),
+    (value) => ({ label: value, value }) as const satisfies ConsultingFormOption,
   );
 
 export const HAIR_CONSULTATION_SKIN_BRIGHTNESS_VALUES = [
@@ -50,11 +50,11 @@ export const HAIR_CONSULTATION_SKIN_BRIGHTNESS_VALUES = [
   '22~23호',
   '24~25호',
   '26호 이상',
- ] as const satisfies readonly HairConsultationSkinBrightness[];
+] as const satisfies readonly HairConsultationSkinBrightness[];
 
 export const HAIR_CONSULTATION_SKIN_BRIGHTNESS_OPTIONS: ConsultingFormOption[] =
   HAIR_CONSULTATION_SKIN_BRIGHTNESS_VALUES.map(
-    (value) => ({ label: value, value } as const satisfies ConsultingFormOption),
+    (value) => ({ label: value, value }) as const satisfies ConsultingFormOption,
   );
 
 export const HAIR_CONSULTATION_PERSONAL_COLOR_VALUES = [
@@ -71,11 +71,11 @@ export const HAIR_CONSULTATION_PERSONAL_COLOR_VALUES = [
   '겨울쿨,겨울브라이트',
   '겨울쿨,겨울딥',
   '겨울쿨,상세분류모름',
- ] as const satisfies readonly HairConsultationPersonalColor[];
+] as const satisfies readonly HairConsultationPersonalColor[];
 
 export const HAIR_CONSULTATION_PERSONAL_COLOR_OPTIONS: ConsultingFormOption[] =
   HAIR_CONSULTATION_PERSONAL_COLOR_VALUES.map(
-    (value) => ({ label: value, value } as const satisfies ConsultingFormOption),
+    (value) => ({ label: value, value }) as const satisfies ConsultingFormOption,
   );
 
 export const HAIR_CONSULTATION_CONCERN_OPTIONS = [

@@ -12,6 +12,7 @@ import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 const PRICE_STEP = 10000;
 const MIN_PRICE = 10000;
 const QUICK_ADD_AMOUNTS = [30000, 50000, 100000];
+const FREE_INPUT_DESIRED_DATE_TYPE = '원하는 날짜 있음';
 
 export default function HairConsultationFormStepPrice() {
   const { control, setValue } = useFormContext<HairConsultationFormValues>();
@@ -69,7 +70,7 @@ export default function HairConsultationFormStepPrice() {
       shouldDirty: true,
     });
 
-    if (value !== '원하는 날짜 있음') {
+    if (value !== FREE_INPUT_DESIRED_DATE_TYPE) {
       setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.DESIRED_DATE, null, {
         shouldDirty: true,
       });
@@ -85,7 +86,7 @@ export default function HairConsultationFormStepPrice() {
   };
 
   useEffect(() => {
-    if (desiredDateType !== '원하는 날짜 있음') return;
+    if (desiredDateType !== FREE_INPUT_DESIRED_DATE_TYPE) return;
     const visualViewport = window.visualViewport;
     if (!visualViewport) return;
 
@@ -96,6 +97,11 @@ export default function HairConsultationFormStepPrice() {
     visualViewport.addEventListener('resize', handleResize);
     return () => visualViewport.removeEventListener('resize', handleResize);
   }, [desiredDateType]);
+
+  const getDesiredDateTypeLabel = (
+    value: (typeof HAIR_CONSULTATION_DESIRED_DATE_TYPE_VALUES)[number],
+  ) =>
+    value === FREE_INPUT_DESIRED_DATE_TYPE ? `${FREE_INPUT_DESIRED_DATE_TYPE}(자유입력)` : value;
 
   return (
     <div className="flex flex-col">
@@ -185,7 +191,7 @@ export default function HairConsultationFormStepPrice() {
                 onClick={() => handleDesiredDateSelect(value)}
               >
                 <span className="flex-1 text-left typo-body-2-long-medium text-label-sub">
-                  {value}
+                  {getDesiredDateTypeLabel(value)}
                 </span>
                 {checked ? <RoundCheckboxIcon /> : <RoundCheckboxEmptyIcon />}
               </button>
@@ -193,7 +199,7 @@ export default function HairConsultationFormStepPrice() {
           })}
         </div>
 
-        {desiredDateType === '원하는 날짜 있음' && (
+        {desiredDateType === FREE_INPUT_DESIRED_DATE_TYPE && (
           <div className="border-b-1 border-border-strong mt-3">
             <Input
               type="text"
