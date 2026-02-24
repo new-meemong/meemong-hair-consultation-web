@@ -1,8 +1,8 @@
 import { Button, Textarea } from '@/shared';
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer';
 import { format, subMonths } from 'date-fns';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { useMemo, useState } from 'react';
 
 import { AppTypography } from '@/shared/styles/typography';
 import Checkbox from '@/shared/ui/checkbox';
@@ -170,6 +170,8 @@ export default function HairConsultationFormStepTreatments() {
   const { user } = useAuthContext();
   const { showBottomSheet } = useOverlayContext();
   const [openCards, setOpenCards] = useState<boolean[]>([]);
+  const treatmentDetailRef = useRef<HTMLTextAreaElement | null>(null);
+  const [isTreatmentDetailFocused, setIsTreatmentDetailFocused] = useState(false);
 
   const treatments = useWatch({
     control,
@@ -403,6 +405,36 @@ export default function HairConsultationFormStepTreatments() {
 
     return `${years}년 ${months}개월 전`;
   };
+
+  const scrollTreatmentDetailIntoView = useCallback(() => {
+    treatmentDetailRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }, []);
+
+  const handleTreatmentDetailFocus = useCallback(() => {
+    setIsTreatmentDetailFocused(true);
+    requestAnimationFrame(() => {
+      scrollTreatmentDetailIntoView();
+      setTimeout(() => scrollTreatmentDetailIntoView(), 200);
+      setTimeout(() => scrollTreatmentDetailIntoView(), 450);
+    });
+  }, [scrollTreatmentDetailIntoView]);
+
+  useEffect(() => {
+    if (!isTreatmentDetailFocused) return;
+
+    const handleResize = () => {
+      scrollTreatmentDetailIntoView();
+    };
+
+    const visualViewport = window.visualViewport;
+    visualViewport?.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      visualViewport?.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isTreatmentDetailFocused, scrollTreatmentDetailIntoView]);
 
   return (
     <div className="flex flex-col gap-7">
@@ -652,11 +684,14 @@ export default function HairConsultationFormStepTreatments() {
       <div className="flex flex-col gap-2">
         <span className={`${AppTypography.body2Medium} text-label-default`}>세부 설명</span>
         <Textarea
+          ref={treatmentDetailRef}
           value={treatmentDetail ?? ''}
           placeholder="내 시술이력에 대해서 더 설명하고픈 내용을 작성해주세요."
           hasBorder
           maxRows={14}
           className="min-h-[150px] rounded-6"
+          onFocus={handleTreatmentDetailFocus}
+          onBlur={() => setIsTreatmentDetailFocused(false)}
           onChange={(e) =>
             setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENT_DETAIL, e.target.value, {
               shouldDirty: true,
