@@ -1,7 +1,9 @@
 import type { HTTPError, SearchParamsOption } from 'ky';
+import { getToken, removeUserData } from '../lib/auth';
+
 import ky from 'ky';
 
-import { getToken } from '../lib/auth';
+export const AUTH_TOKEN_EXPIRED_EVENT = 'auth:token-expired';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -117,6 +119,11 @@ const createApiInstance = () => {
           console.log('Method:', error.request?.method);
           console.log('Status:', response?.status, response?.statusText);
           console.log('Error Message:', error.message);
+
+          if (response?.status === 403 && typeof window !== 'undefined') {
+            removeUserData();
+            window.dispatchEvent(new CustomEvent(AUTH_TOKEN_EXPIRED_EVENT));
+          }
 
           if (response && response.body) {
             try {
