@@ -2,6 +2,15 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: '/posts/new/:postingId',
+        destination: '/posts/:postingId',
+        permanent: false,
+      },
+    ];
+  },
   images: {
     domains: [
       'picsum.photos',
