@@ -18,6 +18,18 @@ type CommentAuthorProfileProps = {
   allComments?: Array<{ user: CommentUser; answerId?: number; isConsultingAnswer?: boolean }>;
 };
 
+const NICKNAME_VISIBLE_LENGTH = 13;
+
+const formatCommentNickname = (nickname: string) => {
+  const chars = Array.from(nickname);
+
+  if (chars.length <= NICKNAME_VISIBLE_LENGTH) {
+    return nickname;
+  }
+
+  return `${chars.slice(0, NICKNAME_VISIBLE_LENGTH).join('')}...`;
+};
+
 export default function CommentAuthorProfile({
   author,
   lockIconShown,
@@ -32,7 +44,9 @@ export default function CommentAuthorProfile({
 
   const { profilePictureURL, displayName } = author;
 
-  const displayedName = isWriter ? `${displayName}(글쓴이)` : displayName;
+  const displayedName = isWriter
+    ? `${formatCommentNickname(displayName)}(글쓴이)`
+    : formatCommentNickname(displayName);
 
   const isCommentAuthorDesigner = author.role === USER_ROLE.DESIGNER;
 
