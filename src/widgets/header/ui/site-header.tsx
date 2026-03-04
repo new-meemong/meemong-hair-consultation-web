@@ -29,7 +29,7 @@ export const SiteHeader = ({
   };
 
   return (
-    <header className="flex items-center border-b border-border-default p-5">
+    <header className="flex h-[50px] items-center border-b border-border-default px-5">
       {showBackButton ? (
         /* 백버튼이 있는 헤더 디자인 (가운데 정렬 제목) */
         <div className="flex items-center justify-between w-full">

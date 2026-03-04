@@ -147,7 +147,7 @@ export default function HairConsultationOnboarding({
   return (
     <div className="h-screen w-full bg-white">
       <div className="mx-auto flex h-full w-full max-w-screen-sm flex-col">
-        <div className="shrink-0 bg-white pt-[env(safe-area-inset-top)]">
+        <div className="shrink-0 bg-white">
           <SiteHeader title="" />
         </div>
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
