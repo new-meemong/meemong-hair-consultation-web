@@ -1,6 +1,8 @@
 'use client';
 
+import { closeAppWebView, normalizeSource } from '@/shared/lib/app-bridge';
 import { useCallback, useEffect, useRef } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
 
 import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
 import type { CommentFormValues } from '@/features/comments/ui/comment-form';
@@ -8,14 +10,15 @@ import { EXPERIENCE_GROUP_LINK_CLICK_STORAGE_KEY } from '@/features/posts/consta
 import ExperienceGroupCommentContainer from '@/widgets/comments/ui/experience-group-comment-container';
 import ExperienceGroupDetailContainer from '@/widgets/post/ui/experience-group/experience-group-detail-container';
 import ExperienceGroupDetailMoreButton from '@/features/posts/ui/experience-group-detail/experience-group-detail-more-button';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { SiteHeader } from '@/widgets/header';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { getGetExperienceGroupCommentsQueryKeyPrefix } from '@/features/comments/api/use-get-experience-group-comments';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
 import useGetExperienceGroupDetail from '@/features/posts/api/use-get-experience-group-detail';
-import { useParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 type ExperienceGroupLinkClickMeta = {
   experienceGroupId: number;
@@ -26,6 +29,9 @@ const EXPERIENCE_GROUP_LINK_CLICK_META_TTL_MS = 10 * 60 * 1000;
 
 export default function ExperienceGroupDetailPage() {
   const { id } = useParams();
+  const searchParams = useSearchParams();
+  const { back } = useRouterWithUser();
+  const source = normalizeSource(searchParams.get(SEARCH_PARAMS.SOURCE));
 
   const { user, isUserDesigner } = useAuthContext();
   const queryClient = useQueryClient();
@@ -159,6 +165,16 @@ export default function ExperienceGroupDetailPage() {
     [handlers],
   );
 
+  const handleBackClick = useCallback(() => {
+    if (source === 'app') {
+      const closed = closeAppWebView('close');
+      if (closed) {
+        return;
+      }
+    }
+    back();
+  }, [source, back]);
+
   if (!id || !experienceGroupDetail) return null;
 
   return (
@@ -166,6 +182,7 @@ export default function ExperienceGroupDetailPage() {
       <SiteHeader
         title="협찬 신청"
         showBackButton
+        onBackClick={handleBackClick}
         rightComponent={
           isWriter && <ExperienceGroupDetailMoreButton experienceGroupId={id.toString()} />
         }

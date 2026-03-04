@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation';
-
 import { ROUTES } from '@/shared';
+import { redirect } from 'next/navigation';
 
 type HomePageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -9,12 +8,15 @@ type HomePageProps = {
 export default async function Home({ searchParams }: HomePageProps) {
   const params = await searchParams;
   const userId = params.userId;
+  const source = params.source;
 
-  // userId가 있으면 쿼리 파라미터를 유지하면서 리디렉션
-  if (userId) {
-    redirect(`${ROUTES.POSTS}?userId=${userId}`);
+  const query = new URLSearchParams();
+  if (typeof userId === 'string' && userId) {
+    query.set('userId', userId);
+  }
+  if (typeof source === 'string' && source) {
+    query.set('source', source);
   }
 
-  // userId가 없으면 기본 리디렉션
-  redirect(ROUTES.POSTS);
+  redirect(query.toString() ? `${ROUTES.POSTS}?${query.toString()}` : ROUTES.POSTS);
 }

@@ -1,3 +1,5 @@
+import { normalizeSource, openInAppWebView } from '@/shared/lib/app-bridge';
+
 import type { ExperienceGroup } from '@/entities/posts/model/experience-group';
 import PostListEmptyView from './post-list-empty-view';
 import PostListItem from './post-list-item';
@@ -20,6 +22,7 @@ export default function ExperienceGroupList({
   fetchNextPage,
 }: ExperienceGroupListProps) {
   const router = useRouterWithUser();
+  const source = normalizeSource(router.source);
 
   const { mutate: createExperienceGroupReadingMutation } =
     useCreateExperienceGroupReadingMutation();
@@ -27,6 +30,13 @@ export default function ExperienceGroupList({
   const handlePostClick = ({ id, isRead }: { id: number; isRead: boolean }) => {
     if (!isRead) {
       createExperienceGroupReadingMutation(id, { onSuccess: () => {} });
+    }
+
+    if (source === 'app') {
+      const opened = openInAppWebView(`/hair-consultation/experience-groups/${id}`);
+      if (opened) {
+        return;
+      }
     }
 
     router.push(ROUTES.POSTS_EXPERIENCE_GROUP_DETAIL(id.toString()), {

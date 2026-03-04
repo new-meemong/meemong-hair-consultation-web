@@ -9,7 +9,9 @@ import { type CommentFormValues } from '@/features/comments/ui/comment-form';
 import { NewPostDetailProvider, usePostDetail } from '@/features/posts/context/post-detail-context';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { closeAppWebView, normalizeSource } from '@/shared/lib/app-bridge';
 import useShowGuide from '@/shared/hooks/use-show-guide';
 import HairConsultationCommentContainer from '@/widgets/comments/ui/hair-consultation-comment-container';
 import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
@@ -18,10 +20,13 @@ import { PostDetailContainer } from '@/widgets/post/post-detail-container';
 
 type NewPostDetailPageContentProps = {
   postId: string;
-  isFromMain: boolean;
+  shouldCloseWebViewOnBack: boolean;
 };
 
-function NewPostDetailPageContent({ postId, isFromMain }: NewPostDetailPageContentProps) {
+function NewPostDetailPageContent({
+  postId,
+  shouldCloseWebViewOnBack,
+}: NewPostDetailPageContentProps) {
   const { isUserDesigner, user } = useAuthContext();
   const { back } = useRouterWithUser();
 
@@ -50,12 +55,14 @@ function NewPostDetailPageContent({ postId, isFromMain }: NewPostDetailPageConte
   );
 
   const handleBackClick = useCallback(() => {
-    if (isFromMain) {
-      window.closeWebview('close');
-    } else {
-      back();
+    if (shouldCloseWebViewOnBack) {
+      const closed = closeAppWebView('close');
+      if (closed) {
+        return;
+      }
     }
-  }, [isFromMain, back]);
+    back();
+  }, [shouldCloseWebViewOnBack, back]);
 
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen overflow-x-hidden">
@@ -97,13 +104,18 @@ export default function NewPostDetailPage() {
   const { postId } = useParams();
   const searchParams = useSearchParams();
 
+  const source = normalizeSource(searchParams.get(SEARCH_PARAMS.SOURCE));
   const isFromMain = searchParams.get('isFromMain') === 'true';
+  const shouldCloseWebViewOnBack = source === 'app' || isFromMain;
 
   if (!postId) return null;
 
   return (
     <NewPostDetailProvider postId={postId.toString()}>
-      <NewPostDetailPageContent postId={postId.toString()} isFromMain={isFromMain} />
+      <NewPostDetailPageContent
+        postId={postId.toString()}
+        shouldCloseWebViewOnBack={shouldCloseWebViewOnBack}
+      />
     </NewPostDetailProvider>
   );
 }
