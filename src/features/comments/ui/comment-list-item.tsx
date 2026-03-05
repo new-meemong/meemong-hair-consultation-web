@@ -178,6 +178,7 @@ export default function CommentListItem({
                 lockIconShown={lockIconShown}
                 postId={postId}
                 answerId={comment.answerId}
+                isConsultingAnswer={isConsultingAnswer}
                 isPostWriter={isPostWriter}
                 allComments={allComments}
               />

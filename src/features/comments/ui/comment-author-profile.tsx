@@ -14,6 +14,7 @@ type CommentAuthorProfileProps = {
   lockIconShown: boolean;
   postId?: string;
   answerId?: number;
+  isConsultingAnswer?: boolean;
   isPostWriter?: boolean;
   allComments?: Array<{ user: CommentUser; answerId?: number; isConsultingAnswer?: boolean }>;
 };
@@ -35,6 +36,7 @@ export default function CommentAuthorProfile({
   lockIconShown,
   postId,
   answerId,
+  isConsultingAnswer = false,
   isPostWriter = false,
   allComments = [],
 }: CommentAuthorProfileProps) {
@@ -44,9 +46,12 @@ export default function CommentAuthorProfile({
 
   const { profilePictureURL, displayName } = author;
 
-  const displayedName = isWriter
-    ? `${formatCommentNickname(displayName)}(글쓴이)`
-    : formatCommentNickname(displayName);
+  const shouldHideConsultingAnswerAuthorName = isConsultingAnswer && isUserDesigner && !isWriter;
+  const displayedName = shouldHideConsultingAnswerAuthorName
+    ? '익명'
+    : isWriter
+      ? `${formatCommentNickname(displayName)}(글쓴이)`
+      : formatCommentNickname(displayName);
 
   const isCommentAuthorDesigner = author.role === USER_ROLE.DESIGNER;
 
