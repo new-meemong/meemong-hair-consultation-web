@@ -4,12 +4,14 @@ import { type ReactNode } from 'react';
 
 import ChevronLeftIcon from '@/assets/icons/chevron-left.svg';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { cn } from '@/shared/lib/utils';
 
 interface SiteHeaderProps {
   title?: string;
   showBackButton?: boolean;
   onBackClick?: () => void;
   rightComponent?: ReactNode;
+  className?: string;
 }
 
 export const SiteHeader = ({
@@ -17,6 +19,7 @@ export const SiteHeader = ({
   showBackButton = false,
   onBackClick,
   rightComponent,
+  className,
 }: SiteHeaderProps) => {
   const router = useRouterWithUser();
 
@@ -29,7 +32,12 @@ export const SiteHeader = ({
   };
 
   return (
-    <header className="flex h-[50px] items-center border-b border-border-default px-5">
+    <header
+      className={cn(
+        'flex h-[50px] shrink-0 items-center border-b border-border-default px-5',
+        className,
+      )}
+    >
       {showBackButton ? (
         /* 백버튼이 있는 헤더 디자인 (가운데 정렬 제목) */
         <div className="flex items-center justify-between w-full">

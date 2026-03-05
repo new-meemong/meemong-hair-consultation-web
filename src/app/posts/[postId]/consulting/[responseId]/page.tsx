@@ -397,7 +397,7 @@ export default function NewConsultingResponsePage() {
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen bg-white">
       <SiteHeader title="컨설팅 답변" showBackButton />
       <div
-        className="overflow-y-auto"
+        className="flex-1 overflow-y-auto"
         style={
           shouldShowBottomModelActions
             ? { paddingBottom: 'calc(100px + env(safe-area-inset-bottom))' }
