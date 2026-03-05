@@ -35,10 +35,12 @@ export default function useStartChat() {
     async ({ receiverId, postId, answerId, entrySource }: UseStartChatParams) => {
       if (!user?.id) {
         console.error('사용자 정보가 없습니다.');
-        return;
+        return false;
       }
 
       try {
+        let chatDetailPath = '';
+
         // 1. 채널 생성 또는 찾기
         // undefined를 null로 변환하여 Firestore에 null로 저장되도록 함
         const result = await findOrCreateChannel({
@@ -51,8 +53,9 @@ export default function useStartChat() {
 
         if (!result.channelId) {
           console.error('채널 생성에 실패했습니다.');
-          return;
+          return false;
         }
+        chatDetailPath = ROUTES.CHAT_HAIR_CONSULTATION_DETAIL(result.channelId);
 
         // 2. 네이티브 앱인 경우 브릿지 호출
         // null을 undefined로 변환하여 네이티브 앱으로 전달 (타입 정의상 undefined만 허용)
@@ -66,14 +69,22 @@ export default function useStartChat() {
           });
 
           if (opened) {
-            return;
+            // 네이티브 브릿지가 응답하지 않는 환경을 대비해 웹 채팅 화면으로 폴백한다.
+            setTimeout(() => {
+              if (document.visibilityState !== 'visible') return;
+              if (window.location.pathname === chatDetailPath) return;
+              push(chatDetailPath);
+            }, 800);
+            return true;
           }
         }
 
         // 3. 웹인 경우 채팅 상세 페이지로 이동
-        push(ROUTES.CHAT_HAIR_CONSULTATION_DETAIL(result.channelId));
+        push(chatDetailPath);
+        return true;
       } catch (error) {
         console.error('채팅 시작 중 오류 발생:', error);
+        return false;
       }
     },
     [user?.id, findOrCreateChannel, isFromApp, push],

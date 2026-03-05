@@ -11,6 +11,7 @@ import {
   FEMALE_HAIR_LENGTH_OPTIONS,
   MALE_HAIR_LENGTH_OPTIONS,
 } from '@/features/posts/constants/hair-length-options';
+import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 
 import type { ApiError } from '@/shared/api/client';
@@ -53,9 +54,9 @@ import hairLengthFeedbackM4 from '@/assets/hair-length-feedback/hair_length_feed
 import hairLengthFeedbackM5 from '@/assets/hair-length-feedback/hair_length_feedback_m5.png';
 import hairLengthFeedbackM6 from '@/assets/hair-length-feedback/hair_length_feedback_m6.png';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import { useEffect } from 'react';
 import useGetHairConsultationAnswerDetail from '@/features/posts/api/use-get-hair-consultation-answer-detail';
 import useGetHairConsultationDetail from '@/features/posts/api/use-get-hair-consultation-detail';
+import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
 import useStartChat from '@/features/chat/hook/use-start-chat';
@@ -252,10 +253,12 @@ export default function NewConsultingResponsePage() {
   const { push, back } = useRouterWithUser();
   const { user, isUserModel } = useAuthContext();
   const { startChat } = useStartChat();
+  const { showSnackBar } = useOverlayContext();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const postIdString = postId?.toString() ?? '';
   const responseIdString = responseId?.toString() ?? '';
   const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
+  const [isStartingChat, setIsStartingChat] = useState(false);
 
   const { data: response, error } = useGetHairConsultationAnswerDetail(
     postIdString,
@@ -311,15 +314,29 @@ export default function NewConsultingResponsePage() {
   };
 
   const handleChatClick = async () => {
+    if (isStartingChat) return;
+
     const finalPostId = isPostWriter ? postIdString : undefined;
     const finalAnswerId = isPostWriter ? responseIdString : undefined;
 
-    await startChat({
-      receiverId: answer.user.id,
-      postId: finalPostId,
-      answerId: finalAnswerId,
-      entrySource: 'CONSULTING_RESPONSE',
-    });
+    setIsStartingChat(true);
+    try {
+      const started = await startChat({
+        receiverId: answer.user.id,
+        postId: finalPostId,
+        answerId: finalAnswerId,
+        entrySource: 'CONSULTING_RESPONSE',
+      });
+
+      if (!started) {
+        showSnackBar({
+          type: 'error',
+          message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+        });
+      }
+    } finally {
+      setIsStartingChat(false);
+    }
   };
 
   const postWriterSex = searchParams.get(SEARCH_PARAMS.POST_WRITER_SEX);
@@ -598,8 +615,13 @@ export default function NewConsultingResponsePage() {
             >
               디자이너 프로필 보기
             </Button>
-            <Button size="lg" className="flex-1 rounded-4" onClick={handleChatClick}>
-              추가 상담하기
+            <Button
+              size="lg"
+              className="flex-1 rounded-4"
+              onClick={handleChatClick}
+              disabled={isStartingChat}
+            >
+              {isStartingChat ? '연결 중...' : '추가 상담하기'}
             </Button>
           </div>
         </div>

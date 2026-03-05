@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import { create } from 'zustand';
 
+import type { User } from '@/entities/user/model/user';
 import { getUser } from '@/features/auth/api/use-get-user';
 import { db } from '@/shared/lib/firebase';
 
@@ -96,6 +97,13 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
   findOrCreateChannel: async ({ senderId, receiverId, postId, answerId, entrySource }) => {
     try {
+      const getFallbackUser = (userId: string): User =>
+        ({
+          id: Number(userId),
+          displayName: '알수없음',
+          profilePictureURL: null,
+        }) as User;
+
       // 참여자 ID 정렬 및 channelKey 생성
       const participantIds = [senderId, receiverId].sort();
       const channelKey = `${ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS}_${participantIds.join('_')}`;
@@ -178,11 +186,20 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           return { channelId: channelRef.id, isCreated: false };
         }
 
-        // 각 참여자의 사용자 정보를 미리 가져옴
-        const [senderData, receiverData] = await Promise.all([
+        // 각 참여자 사용자 정보 조회가 실패해도 채널 생성은 진행한다.
+        const [senderDataResult, receiverDataResult] = await Promise.allSettled([
           getUser(senderId),
           getUser(receiverId),
         ]);
+
+        const senderUserData =
+          senderDataResult.status === 'fulfilled'
+            ? senderDataResult.value.data
+            : getFallbackUser(senderId);
+        const receiverUserData =
+          receiverDataResult.status === 'fulfilled'
+            ? receiverDataResult.value.data
+            : getFallbackUser(receiverId);
 
         // 채널 생성
         // postId나 answerId가 undefined가 아닌 경우에만 포함 (null도 포함)
@@ -203,7 +220,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
         participantIds.forEach((userId) => {
           const userMetaRef = doc(db, getDbPath(userId), channelRef.id);
           const otherUserId = participantIds.filter((id) => id !== userId)[0];
-          const otherUserData = userId === senderId ? receiverData.data : senderData.data;
+          const otherUserData = userId === senderId ? receiverUserData : senderUserData;
 
           const useMeta: UserHairConsultationChatChannelType = {
             channelId: channelRef.id,
