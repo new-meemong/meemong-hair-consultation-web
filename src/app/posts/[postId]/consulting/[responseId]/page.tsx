@@ -606,7 +606,7 @@ export default function NewConsultingResponsePage() {
 
       {shouldShowBottomModelActions && (
         <div className="fixed inset-x-0 bottom-0 z-20 border-t-1 border-border-default bg-white">
-          <div className="mx-auto flex min-w-[375px] w-full gap-2 px-5 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))]">
+          <div className="mx-auto flex min-w-[375px] w-full gap-2 px-5 pt-3 pb-[max(12px,env(safe-area-inset-bottom))]">
             <Button
               theme="white"
               size="lg"
