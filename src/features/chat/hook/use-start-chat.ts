@@ -1,6 +1,7 @@
 'use client';
 
 import { ROUTES } from '@/shared';
+import { openChatChannelInApp } from '@/shared/lib/app-bridge';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCallback } from 'react';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
@@ -55,15 +56,18 @@ export default function useStartChat() {
 
         // 2. 네이티브 앱인 경우 브릿지 호출
         // null을 undefined로 변환하여 네이티브 앱으로 전달 (타입 정의상 undefined만 허용)
-        if (window.openChatChannel && isFromApp) {
-          window.openChatChannel({
+        if (isFromApp) {
+          const opened = openChatChannelInApp({
             userId: user.id.toString(),
             chatChannelId: result.channelId,
             postId: postId ?? undefined,
             answerId: answerId ?? undefined,
             entrySource,
           });
-          return;
+
+          if (opened) {
+            return;
+          }
         }
 
         // 3. 웹인 경우 채팅 상세 페이지로 이동

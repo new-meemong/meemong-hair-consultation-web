@@ -2,8 +2,6 @@ import { format } from 'date-fns';
 import Image from 'next/image';
 import { useState, useEffect, useRef, type ReactNode } from 'react';
 
-
-
 import ChatTrashIcon from '@/assets/icons/chat-trash.svg';
 import PinOffIcon from '@/assets/icons/pin-off.svg';
 import PinIcon from '@/assets/icons/pin.svg';
@@ -12,6 +10,7 @@ import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-
 import type { UserHairConsultationChatChannelType } from '@/features/chat/type/user-hair-consultation-chat-channel-type';
 import { cn } from '@/lib/utils';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { openChatChannelInApp } from '@/shared/lib/app-bridge';
 import { ROUTES } from '@/shared/lib/routes';
 
 import useIsFromApp from '../hook/use-is-from-app';
@@ -124,12 +123,15 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
 
     // if (!userId) return;
 
-    if (window.openChatChannel && isFromApp) {
-      window.openChatChannel({
+    if (isFromApp) {
+      const opened = openChatChannelInApp({
         userId: userId.toString(),
         chatChannelId: chatChannel.channelId,
       });
-      return;
+
+      if (opened) {
+        return;
+      }
     }
 
     // if (!source || source === SourceType.WEB) {

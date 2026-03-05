@@ -7,6 +7,17 @@ type BridgeWindow = Window & {
   GoBack?: {
     postMessage: (value: string) => void;
   };
+  OpenChatChannel?: {
+    postMessage: (value: string) => void;
+  };
+};
+
+type OpenChatChannelMessage = {
+  userId: string;
+  chatChannelId: string;
+  postId?: string;
+  answerId?: string;
+  entrySource?: 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
 };
 
 export function normalizeSource(source: string | null | undefined): AppSource {
@@ -61,6 +72,30 @@ export function closeAppWebView(message: string = 'close'): boolean {
     }
 
     w.GoBack?.postMessage(JSON.stringify(message));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+export function openChatChannelInApp(message: OpenChatChannelMessage): boolean {
+  if (typeof window === 'undefined') return false;
+
+  const w = window as BridgeWindow;
+
+  // window.openChatChannel 래퍼는 웹에서도 항상 주입되므로,
+  // 실제 네이티브 브리지(OpenChatChannel.postMessage) 존재 여부로 판단한다.
+  if (!w.OpenChatChannel || typeof w.OpenChatChannel.postMessage !== 'function') {
+    return false;
+  }
+
+  try {
+    if (typeof w.openChatChannel === 'function') {
+      w.openChatChannel(message);
+      return true;
+    }
+
+    w.OpenChatChannel.postMessage(JSON.stringify(message));
     return true;
   } catch (_) {
     return false;
