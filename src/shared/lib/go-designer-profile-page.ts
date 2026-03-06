@@ -4,6 +4,7 @@ export function goDesignerProfilePage(
     postId?: string;
     answerId?: string;
     entrySource?: 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
+    isTopAdvisorDesigner?: boolean;
   },
 ) {
   if (window.goAppRouter) {
@@ -18,6 +19,9 @@ export function goDesignerProfilePage(
     }
     if (options?.entrySource) {
       params.set('entrySource', options.entrySource);
+    }
+    if (options?.isTopAdvisorDesigner) {
+      params.set('isTopAdvisorDesigner', 'true');
     }
     window.goAppRouter(`/designer/profile/${designerId}?${params.toString()}`);
   }

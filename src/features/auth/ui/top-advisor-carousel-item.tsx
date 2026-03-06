@@ -51,7 +51,10 @@ export default function TopAdvisorCarouselItem({ topAdvisor, rank }: TopAdvisorC
   const handleCarouselClick = () => {
     if (isUserDesigner) return;
 
-    goDesignerProfilePage(userId.toString());
+    goDesignerProfilePage(userId.toString(), {
+      entrySource: 'TOP_ADVISOR',
+      isTopAdvisorDesigner: true,
+    });
   };
 
   const rankTier = getRankTier(rank);
