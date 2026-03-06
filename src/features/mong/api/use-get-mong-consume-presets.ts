@@ -1,7 +1,6 @@
 import type {
+  KnownMongConsumePresetType,
   MongConsumePreset,
-  MongConsumePresetSubType,
-  MongConsumePresetType,
 } from '@/entities/mong/api/mong-consume-preset';
 
 import { apiClient } from '@/shared/api/client';
@@ -11,8 +10,8 @@ const GET_MONG_CONSUME_PRESETS_ENDPOINT = 'mong-consume-presets';
 export const getMongConsumePresetsQueryKeyPrefix = () => GET_MONG_CONSUME_PRESETS_ENDPOINT;
 
 type GetMongConsumePresetsQueryParams = {
-  type?: MongConsumePresetType;
-  subType?: MongConsumePresetSubType;
+  type?: Extract<KnownMongConsumePresetType, 'CHAT' | 'THUNDER_ANNOUNCEMENTS'>;
+  subType?: string;
 };
 
 export default function useGetMongConsumePresets(params?: GetMongConsumePresetsQueryParams) {
