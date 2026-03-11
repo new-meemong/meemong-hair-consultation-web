@@ -13,6 +13,16 @@ import useCreateHairConsultationMutation from '../api/use-create-hair-consultati
 import { useState } from 'react';
 
 const DECOLORIZATION_COUNT_TREATMENT_TYPES = new Set(['일반염색', '블랙염색', '블랙빼기']);
+const PRESIGNED_UPLOAD_ENDPOINTS = [
+  'uploads/images/presigned-url',
+  'uploads/images/s1024/presigned-url',
+] as const;
+
+type PresignedUploadResponseData = {
+  uploadData: { url: string; fields: Record<string, string> };
+  uploadUrlList: string[];
+  requestMethod: string;
+};
 
 const mapMyImageTypeToRequestSubType = (
   type: ValueOf<typeof MY_IMAGE_TYPE>,
@@ -36,18 +46,25 @@ export function useCreateHairConsultation() {
     useCreateHairConsultationMutation();
   const [isUploadingImages, setIsUploadingImages] = useState(false);
 
-  const uploadImageWithPresignedUrl = async (file: File) => {
-    const { data } = await apiClient.get<{
-      uploadData: { url: string; fields: Record<string, string> };
-      uploadUrlList: string[];
-      requestMethod: string;
-    }>('uploads/images/s1024/presigned-url', {
-      searchParams: {
-        filename: file.name,
-      },
-    });
+  const getPresignedUploadData = async (filename: string) => {
+    let lastError: unknown;
 
-    const { uploadData, requestMethod } = data;
+    for (const endpoint of PRESIGNED_UPLOAD_ENDPOINTS) {
+      try {
+        const { data } = await apiClient.get<PresignedUploadResponseData>(endpoint, {
+          searchParams: { filename },
+        });
+        return data;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    throw lastError ?? new Error('이미지 업로드 URL 발급에 실패했습니다.');
+  };
+
+  const uploadImageWithPresignedUrl = async (file: File) => {
+    const { uploadData, requestMethod } = await getPresignedUploadData(file.name);
 
     const formData = new FormData();
     Object.entries(uploadData.fields).forEach(([key, value]) => {
@@ -182,6 +199,7 @@ export function useCreateHairConsultation() {
         personalColor: data.personalColor,
         desiredDateType,
         desiredCostPrice,
+        brandSelectionType: 'ALL',
         aspirationImages,
         myImages: myImageList,
         treatments,

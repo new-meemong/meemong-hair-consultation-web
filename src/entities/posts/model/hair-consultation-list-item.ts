@@ -22,6 +22,11 @@ export type HairConsultationListItem = {
   treatments: HairConsultationListTreatment[];
   isFavorited: boolean;
   isRead: boolean;
+  brandIds?: number[];
+  brands?: {
+    id: number;
+    logoImageURL: string;
+  }[];
   user: {
     id: number;
     address: string | null;

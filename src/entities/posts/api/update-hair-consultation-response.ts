@@ -1,5 +1,3 @@
 export type UpdateHairConsultationResponse = {
-  data: {
-    hairConsultationId: number;
-  };
+  data: null;
 };

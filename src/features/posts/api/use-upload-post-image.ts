@@ -4,6 +4,10 @@ import { type ImageUploadResponse, type UploadedImage } from '@/entities/posts';
 import { apiClient } from '@/shared/api/client';
 
 const STORAGE_HOST = 'https://job-storage.meemong.com';
+const PRESIGNED_UPLOAD_ENDPOINTS = [
+  'uploads/images/presigned-url',
+  'uploads/images/s1024/presigned-url',
+] as const;
 
 type PresignedUploadData = {
   url: string;
@@ -18,13 +22,24 @@ type PresignedUploadResponse = {
   };
 };
 
+const getPresignedUploadResponse = async (filename: string): Promise<PresignedUploadResponse> => {
+  let lastError: unknown;
+
+  for (const endpoint of PRESIGNED_UPLOAD_ENDPOINTS) {
+    try {
+      return await apiClient.get<PresignedUploadResponse['data']>(endpoint, {
+        searchParams: { filename },
+      });
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError ?? new Error('Failed to issue presigned upload URL');
+};
+
 const uploadSingleImage = async (file: File): Promise<UploadedImage> => {
-  const presignedResponse = await apiClient.get<PresignedUploadResponse['data']>(
-    'uploads/images/presigned-url',
-    {
-      searchParams: { filename: file.name },
-    },
-  );
+  const presignedResponse = await getPresignedUploadResponse(file.name);
 
   const { uploadData, requestMethod } = presignedResponse.data;
   const formData = new FormData();

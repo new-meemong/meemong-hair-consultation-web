@@ -12,7 +12,9 @@ type HairConsultationOrderColumn =
   | 'createdAt'
   | 'popular'
   | 'commentCountAndCreatedAt'
-  | 'comment36LastUpdatedAt';
+  | 'comment36LastUpdatedAt'
+  | 'minPaymentPrice'
+  | 'maxPaymentPrice';
 
 type HairConsultationListQueryParams = PagingQueryParams & {
   __orderColumn?: HairConsultationOrderColumn;
@@ -22,10 +24,12 @@ type HairConsultationListQueryParams = PagingQueryParams & {
   lat?: number;
   lng?: number;
   createdInsideDurationDays?: number;
+  createdInsideDurationHours?: number;
   isRead?: boolean;
   isMine?: boolean;
   isMineComment?: boolean;
   isMineFavorite?: boolean;
+  brandIds?: number[];
 };
 
 export default function useGetHairConsultations(params: HairConsultationListQueryParams) {

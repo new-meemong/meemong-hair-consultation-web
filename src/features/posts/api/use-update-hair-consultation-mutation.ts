@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import type { CreateHairConsultationRequest } from '@/entities/posts/api/create-hair-consultation-request';
 import { HAIR_CONSULTATION_API_PREFIX } from '../constants/api';
+import type { UpdateHairConsultationRequest } from '@/entities/posts/api/update-hair-consultation-request';
 import type { UpdateHairConsultationResponse } from '@/entities/posts/api/update-hair-consultation-response';
 import { apiClient } from '@/shared/api/client';
 import { getHairConsultationDetailQueryKeyPrefix } from './use-get-hair-consultation-detail';
@@ -9,7 +9,7 @@ import { getHairConsultationsQueryKeyPrefix } from './use-get-hair-consultations
 
 type MutationParams = {
   hairConsultationId: number;
-  data: CreateHairConsultationRequest;
+  data: UpdateHairConsultationRequest;
 };
 
 export default function useUpdateHairConsultationMutation() {

@@ -50,6 +50,11 @@ export type HairConsultationDetail = {
   modelImages: HairConsultationModelImage[] | null;
   isFavorited: boolean;
   isRead: boolean;
+  brandIds?: number[];
+  brands?: {
+    id: number;
+    logoImageURL: string;
+  }[];
   user: {
     id: number;
     address: string | null;
