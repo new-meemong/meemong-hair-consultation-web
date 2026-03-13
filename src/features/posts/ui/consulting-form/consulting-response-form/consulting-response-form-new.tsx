@@ -2,6 +2,8 @@ import { useSearchParams } from 'next/navigation';
 import { type UseFormReturn } from 'react-hook-form';
 
 import { isUserMale } from '@/entities/user/lib/user-sex';
+import useCreateEventMongMutation from '@/features/mong/api/use-create-event-mong-mutation';
+import { savePendingConsultingAnswerEventMong } from '@/features/mong/lib/consulting-answer-event-mong-storage';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import useCreateHairConsultationAnswer from '@/features/posts/hooks/use-create-hair-consultation-answer';
 import { ROUTES } from '@/shared';
@@ -75,19 +77,37 @@ export default function ConsultingResponseFormNew({
 
   const { handleCreateHairConsultationAnswer, isPending: isCreatingHairConsultationAnswer } =
     useCreateHairConsultationAnswer(postId);
+  const { mutateAsync: createEventMong } = useCreateEventMongMutation();
 
   const submit = async (values: ConsultingResponseFormValues) => {
-    await handleCreateHairConsultationAnswer(values, {
+    const answerId = await handleCreateHairConsultationAnswer(values, {
       onSuccess: () => {
         showSnackBar({
           type: 'success',
           message: '컨설팅 답변을 보냈습니다!',
         });
-
-        replace(ROUTES.POSTS_DETAIL(postId), {
-          [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
-        });
       },
+    });
+
+    try {
+      const eventMongResponse = await createEventMong({
+        createType: 'HAIR_CONSULT_ANSWER_EVENT',
+        refType: 'HairConsultationsAnswers',
+        refId: answerId,
+      });
+
+      if (eventMongResponse.data && eventMongResponse.data.amount > 0) {
+        savePendingConsultingAnswerEventMong({
+          postId,
+          rewardData: eventMongResponse.data,
+        });
+      }
+    } catch {
+      // Do not block answer completion if reward payout call fails.
+    }
+
+    replace(ROUTES.POSTS_DETAIL(postId), {
+      [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
     });
   };
 

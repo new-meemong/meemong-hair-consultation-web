@@ -1,10 +1,12 @@
 'use client';
 
 import { useParams, useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
+import useShowEventMongSheet from '@/features/mong/hook/use-show-event-mong-sheet';
+import { consumePendingConsultingAnswerEventMong } from '@/features/mong/lib/consulting-answer-event-mong-storage';
 import { type CommentFormValues } from '@/features/comments/ui/comment-form';
 import { NewPostDetailProvider, usePostDetail } from '@/features/posts/context/post-detail-context';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
@@ -28,6 +30,7 @@ function NewPostDetailPageContent({
   shouldCloseWebViewOnBack,
 }: NewPostDetailPageContentProps) {
   const { isUserDesigner, user } = useAuthContext();
+  const showEventMongSheet = useShowEventMongSheet();
   const { back } = useRouterWithUser();
 
   useShowGuide(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
@@ -63,6 +66,13 @@ function NewPostDetailPageContent({
     }
     back();
   }, [shouldCloseWebViewOnBack, back]);
+
+  useEffect(() => {
+    const rewardData = consumePendingConsultingAnswerEventMong({ postId });
+    if (rewardData && rewardData.amount > 0) {
+      showEventMongSheet(rewardData);
+    }
+  }, [postId, showEventMongSheet]);
 
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen overflow-x-hidden">
