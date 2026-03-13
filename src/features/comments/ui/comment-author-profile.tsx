@@ -97,6 +97,7 @@ export default function CommentAuthorProfile({
       postId: finalPostId,
       answerId: finalAnswerId,
       entrySource: 'POST_COMMENT',
+      isMyHairConsultationPost: isPostWriter,
     });
   };
 

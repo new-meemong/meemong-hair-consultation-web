@@ -15,6 +15,7 @@ type UseStartChatParams = {
   postId?: string;
   answerId?: string;
   entrySource?: ChatEntrySource;
+  isMyHairConsultationPost?: boolean;
 };
 
 /**
@@ -32,7 +33,13 @@ export default function useStartChat() {
   }));
 
   const startChat = useCallback(
-    async ({ receiverId, postId, answerId, entrySource }: UseStartChatParams) => {
+    async ({
+      receiverId,
+      postId,
+      answerId,
+      entrySource,
+      isMyHairConsultationPost,
+    }: UseStartChatParams) => {
       if (!user?.id) {
         console.error('사용자 정보가 없습니다.');
         return false;
@@ -66,6 +73,7 @@ export default function useStartChat() {
             postId: postId ?? undefined,
             answerId: answerId ?? undefined,
             entrySource,
+            isMyHairConsultationPost,
           });
 
           if (opened) {

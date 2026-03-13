@@ -14,6 +14,8 @@ import type { USER_SEX } from '@/entities/user/constants/user-sex';
 import type { ValueOf } from '@/shared/type/types';
 import { apiClient } from '@/shared/api/client';
 import { useCallback } from 'react';
+import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
+import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
 import { useOverlayContext } from '@/shared/context/overlay-context';
@@ -32,6 +34,7 @@ export default function useShowMongConsumeSheet() {
   const { showBottomSheet } = useOverlayContext();
   const { data: presetsData } = useGetMongConsumePresets();
   const { data: mongCurrentData } = useGetMongCurrent();
+  const { canSkipMong } = useMeemongPassPolicy();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const { push } = useRouterWithUser();
 
@@ -44,13 +47,22 @@ export default function useShowMongConsumeSheet() {
       postWriterSex,
     }: ShowMongConsumeSheetParams) => {
       const targetRoute = ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString());
+      const createType = MEEMONG_PASS_CREATE_TYPES.VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL;
+      if (canSkipMong(createType)) {
+        push(targetRoute, {
+          [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+          ...(postWriterSex ? { [SEARCH_PARAMS.POST_WRITER_SEX]: postWriterSex } : {}),
+        });
+        return { alreadyPaid: false, adBlockActive: true };
+      }
+
       const responseNavigationParams = {
         [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
         ...(postWriterSex ? { [SEARCH_PARAMS.POST_WRITER_SEX]: postWriterSex } : {}),
       };
       const withdrawQueryCandidates = [
         {
-          createType: 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL',
+          createType,
           refType: 'HairConsultationsAnswers',
           refId: answerId.toString(),
         },
@@ -115,7 +127,7 @@ export default function useShowMongConsumeSheet() {
       // subType이 최신/레거시 답변 조회 키이거나 title로 찾기
       const preset = hairConsultingPresets.find(
         (p) =>
-          p.subType === 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL' ||
+          p.subType === MEEMONG_PASS_CREATE_TYPES.VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL ||
           p.title === '내가 쓴 게시물 헤어컨설팅 답변 보기',
       );
       const price = preset?.price ?? 0;
@@ -164,7 +176,7 @@ export default function useShowMongConsumeSheet() {
 
       return { alreadyPaid: false };
     },
-    [showBottomSheet, push, presetsData, mongCurrentData, showMongInsufficientSheet],
+    [showBottomSheet, push, presetsData, mongCurrentData, showMongInsufficientSheet, canSkipMong],
   );
 
   return showMongConsumeSheet;

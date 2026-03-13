@@ -18,6 +18,7 @@ type OpenChatChannelMessage = {
   postId?: string;
   answerId?: string;
   entrySource?: 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
+  isMyHairConsultationPost?: boolean;
 };
 
 export function normalizeSource(source: string | null | undefined): AppSource {

@@ -304,7 +304,12 @@ export default function NewConsultingResponsePage() {
   const shouldShowBottomModelActions = isUserModel && !isResponseWriter;
 
   const handleDesignerProfileClick = () => {
-    goDesignerProfilePage(answer.user.id.toString());
+    goDesignerProfilePage(answer.user.id.toString(), {
+      postId: postIdString,
+      answerId: responseIdString,
+      entrySource: 'CONSULTING_RESPONSE',
+      isMyHairConsultationPost: isPostWriter,
+    });
   };
 
   const handleOriginalPostClick = () => {
@@ -316,8 +321,8 @@ export default function NewConsultingResponsePage() {
   const handleChatClick = async () => {
     if (isStartingChat) return;
 
-    const finalPostId = isPostWriter ? postIdString : undefined;
-    const finalAnswerId = isPostWriter ? responseIdString : undefined;
+    const finalPostId = postIdString;
+    const finalAnswerId = responseIdString;
 
     setIsStartingChat(true);
     try {
@@ -326,6 +331,7 @@ export default function NewConsultingResponsePage() {
         postId: finalPostId,
         answerId: finalAnswerId,
         entrySource: 'CONSULTING_RESPONSE',
+        isMyHairConsultationPost: isPostWriter,
       });
 
       if (!started) {

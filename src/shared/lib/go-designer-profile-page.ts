@@ -5,6 +5,7 @@ export function goDesignerProfilePage(
     answerId?: string;
     entrySource?: 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
     isTopAdvisorDesigner?: boolean;
+    isMyHairConsultationPost?: boolean;
   },
 ) {
   if (window.goAppRouter) {
@@ -22,6 +23,9 @@ export function goDesignerProfilePage(
     }
     if (options?.isTopAdvisorDesigner) {
       params.set('isTopAdvisorDesigner', 'true');
+    }
+    if (options?.isMyHairConsultationPost != null) {
+      params.set('isMyHairConsultationPost', options.isMyHairConsultationPost ? 'true' : 'false');
     }
     window.goAppRouter(`/designer/profile/${designerId}?${params.toString()}`);
   }
