@@ -5,6 +5,9 @@ import type { CommentFormState } from '../types/comment-form-state';
 import type { CommentFormValues } from '../ui/comment-form';
 import useHairConsultationCommentOperations from './use-hair-consultation-comment-operations';
 import useSendPostCommentPushNotification from '@/features/chat/api/use-send-post-comment-push-notification';
+import { useOverlayContext } from '@/shared/context/overlay-context';
+import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
+import { getApiError, getErrorMessage } from '@/shared/lib/error-handler';
 
 const INITIAL_COMMENT_FORM_STATE: CommentFormState = {
   state: 'create',
@@ -21,6 +24,8 @@ export const useHairConsultationCommentFormState = ({
   hairConsultationId,
   receiverId,
 }: UseHairConsultationCommentFormStateProps) => {
+  const { showSnackBar } = useOverlayContext();
+  const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const [commentFormState, setCommentFormState] = useState<CommentFormState>(
     INITIAL_COMMENT_FORM_STATE,
   );
@@ -97,7 +102,31 @@ export const useHairConsultationCommentFormState = ({
       };
 
       if (commentFormState.state === 'create' || commentFormState.state === 'reply') {
-        handleCreate(data, onSuccess);
+        handleCreate(data, {
+          onSuccess: (response) => {
+            onSuccess();
+
+            const paidPreset = response.data.data.mongConsumePreset;
+            if (paidPreset?.isPaidThisTime && paidPreset.price > 0) {
+              showSnackBar({
+                type: 'success',
+                message: `댓글 작성으로 ${paidPreset.price}몽이 차감되었어요.`,
+              });
+            }
+          },
+          onError: (error) => {
+            const apiError = getApiError(error);
+            if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
+              showMongInsufficientSheet();
+              return;
+            }
+
+            showSnackBar({
+              type: 'error',
+              message: getErrorMessage(error),
+            });
+          },
+        });
       } else if (commentFormState.state === 'edit') {
         handleUpdate(data.content, onSuccess);
       }
@@ -109,6 +138,8 @@ export const useHairConsultationCommentFormState = ({
       receiverId,
       resetCommentState,
       sendPostCommentNotification,
+      showMongInsufficientSheet,
+      showSnackBar,
     ],
   );
 

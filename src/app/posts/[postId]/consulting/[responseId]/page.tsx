@@ -54,8 +54,12 @@ import hairLengthFeedbackM4 from '@/assets/hair-length-feedback/hair_length_feed
 import hairLengthFeedbackM5 from '@/assets/hair-length-feedback/hair_length_feedback_m5.png';
 import hairLengthFeedbackM6 from '@/assets/hair-length-feedback/hair_length_feedback_m6.png';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import { getApiError } from '@/shared/lib/error-handler';
 import useGetHairConsultationAnswerDetail from '@/features/posts/api/use-get-hair-consultation-answer-detail';
 import useGetHairConsultationDetail from '@/features/posts/api/use-get-hair-consultation-detail';
+import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
+import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
+import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
@@ -253,6 +257,8 @@ export default function NewConsultingResponsePage() {
   const { push, back } = useRouterWithUser();
   const { user, isUserModel } = useAuthContext();
   const { startChat } = useStartChat();
+  const { canSkipMong } = useMeemongPassPolicy();
+  const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
   const { showSnackBar } = useOverlayContext();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const postIdString = postId?.toString() ?? '';
@@ -309,6 +315,7 @@ export default function NewConsultingResponsePage() {
       answerId: responseIdString,
       entrySource: 'CONSULTING_RESPONSE',
       isMyHairConsultationPost: isPostWriter,
+      isConsultingDetailEntry: true,
     });
   };
 
@@ -326,6 +333,29 @@ export default function NewConsultingResponsePage() {
 
     setIsStartingChat(true);
     try {
+      if (isUserModel && !isPostWriter) {
+        const createType = MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
+        const canOpenForFree = canSkipMong(createType);
+
+        if (!canOpenForFree) {
+          try {
+            await createMongWithdraw({ createType });
+          } catch (error) {
+            const apiError = getApiError(error);
+            if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
+              showMongInsufficientSheet();
+              return;
+            }
+
+            showSnackBar({
+              type: 'error',
+              message: apiError.message || '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+            });
+            return;
+          }
+        }
+      }
+
       const started = await startChat({
         receiverId: answer.user.id,
         postId: finalPostId,

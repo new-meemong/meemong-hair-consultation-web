@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { CreateHairConsultationCommentRequest } from '@/entities/comment/api/create-hair-consultation-comment-request';
 import type { CreateHairConsultationCommentResponse } from '@/entities/comment/api/create-hair-consultation-comment-response';
 import { HAIR_CONSULTATION_API_PREFIX } from '@/features/posts/constants/api';
-import { apiClient } from '@/shared/api/client';
+import { apiClient, type ApiResponse } from '@/shared/api/client';
 import { getHairConsultationCommentsQueryKeyPrefix } from './use-get-hair-consultation-comments';
 import { getHairConsultationDetailQueryKeyPrefix } from '@/features/posts/api/use-get-hair-consultation-detail';
 import { getHairConsultationsQueryKeyPrefix } from '@/features/posts/api/use-get-hair-consultations';
@@ -30,10 +30,19 @@ export default function useCreateHairConsultationCommentMutation(hairConsultatio
 
   const mutate = (
     data: CreateHairConsultationCommentRequest,
-    { onSuccess }: { onSuccess: () => void },
+    {
+      onSuccess,
+      onError,
+    }: {
+      onSuccess: (response: ApiResponse<CreateHairConsultationCommentResponse>) => void;
+      onError?: (error: unknown) => void;
+    },
   ) => {
     mutation.mutate(data, {
-      onSuccess,
+      onSuccess: (response) => {
+        onSuccess(response);
+      },
+      onError,
     });
   };
 

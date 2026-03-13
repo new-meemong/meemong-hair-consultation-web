@@ -3,10 +3,17 @@ import useCreateHairConsultationCommentMutation from '../api/use-create-hair-con
 import useDeleteHairConsultationCommentMutation from '../api/use-delete-hair-consultation-comment-mutation';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import useUpdateHairConsultationCommentMutation from '../api/use-update-hair-consultation-comment-mutation';
+import type { CreateHairConsultationCommentResponse } from '@/entities/comment/api/create-hair-consultation-comment-response';
+import type { ApiResponse } from '@/shared/api/client';
 
 type UseHairConsultationCommentOperationsProps = {
   hairConsultationId: string;
   commentId?: number | null;
+};
+
+type HandleCreateCallbacks = {
+  onSuccess: (response: ApiResponse<CreateHairConsultationCommentResponse>) => void;
+  onError?: (error: unknown) => void;
 };
 
 export default function useHairConsultationCommentOperations({
@@ -22,13 +29,13 @@ export default function useHairConsultationCommentOperations({
 
   const showModal = useShowModal();
 
-  const handleCreate = (data: CommentFormValues, onSuccess: () => void) => {
+  const handleCreate = (data: CommentFormValues, callbacks: HandleCreateCallbacks) => {
     createHairConsultationCommentMutate(
       {
         content: data.content,
         parentCommentId: data.parentCommentId ? Number(data.parentCommentId) : undefined,
       },
-      { onSuccess },
+      callbacks,
     );
   };
 

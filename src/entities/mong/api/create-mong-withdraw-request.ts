@@ -25,6 +25,9 @@ type ChatWithdrawCreateType =
   | 'THUNDER_ANNOUNCEMENTS_DEFAULT_CHAT_MODEL'
   | 'THUNDER_ANNOUNCEMENTS_DEFAULT_CHAT_DESIGNER'
   | 'HAIR_CONSULTATIONS_TOP_ADVISORS_CHAT_MODEL';
+// NOTE:
+// 'HAIR_CONSULTATIONS_COMMENTS_DESIGNER'는 댓글 POST API에서 과금되므로
+// withdraw createType 목록에 포함하지 않습니다.
 
 export type CreateMongWithdrawRequest =
   | {
