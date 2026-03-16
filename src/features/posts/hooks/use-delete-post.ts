@@ -1,17 +1,15 @@
-import { useCallback } from 'react';
+import { ROUTES, closeAppWebView, normalizeSource } from '@/shared';
 
-import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import { useCallback } from 'react';
+import useDeleteHairConsultationMutation from '../api/use-delete-hair-consultation-mutation';
+import { usePostDetail } from '../context/post-detail-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
-
-import useDeleteHairConsultationMutation from '../api/use-delete-hair-consultation-mutation';
-import { usePostDetail } from '../context/post-detail-context';
-
 export default function useDeletePost(postId: string) {
   const showModal = useShowModal();
-  const { push } = useRouterWithUser();
+  const { push, source } = useRouterWithUser();
 
   const { postDetail } = usePostDetail();
   const { mutate: deleteNewPost } = useDeleteHairConsultationMutation();
@@ -29,16 +27,22 @@ export default function useDeletePost(postId: string) {
               {
                 label: '확인',
                 onClick: () => {
-                  push(ROUTES.POSTS, {
-                    [SEARCH_PARAMS.POST_TAB]: activePostTab,
-                  });
+                  if (normalizeSource(source) === 'app') {
+                    // 앱 전체화면 WebView에서 삭제 시 Flutter 페이지를 pop하여
+                    // 탭이 있는 헤어상담 메인으로 복귀
+                    closeAppWebView('close');
+                  } else {
+                    push(ROUTES.POSTS, {
+                      [SEARCH_PARAMS.POST_TAB]: activePostTab,
+                    });
+                  }
                 },
               },
             ],
           });
         },
       }),
-    [deleteNewPost, postId, showModal, push, activePostTab],
+    [deleteNewPost, postId, showModal, push, activePostTab, source],
   );
 
   const handleDeletePost = useCallback(() => {
