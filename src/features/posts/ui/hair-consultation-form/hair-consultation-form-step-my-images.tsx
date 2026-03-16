@@ -215,7 +215,7 @@ export default function HairConsultationFormStepMyImages() {
           <span className="typo-body-2-semibold text-cautionary">필수</span>
         </div>
         <p className={`${AppTypography.body2LongRegular} text-label-info`}>
-          내 머리와 이미지가 잘 드러나는 사진을 업로드해주세요
+          사진은 디자이너에게만 공개됩니다
         </p>
       </div>
       <div className="flex flex-col gap-5 items-center justify-center">
