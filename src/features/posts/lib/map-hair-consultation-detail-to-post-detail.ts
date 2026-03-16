@@ -113,6 +113,7 @@ export default function mapHairConsultationDetailToPostDetail(
             isSelf: Boolean(treatment.isSelf),
             treatmentArea: treatment.treatmentArea,
             decolorizationCount: treatment.decolorizationCount,
+            displayOrder: treatment.displayOrder,
           }))
       : undefined;
 

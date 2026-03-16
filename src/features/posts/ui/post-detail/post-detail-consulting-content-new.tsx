@@ -43,6 +43,22 @@ const getTreatmentCardType = (treatmentName: string, isMale: boolean) => {
   return 'TYPE3';
 };
 
+const parseTreatmentDateToTime = (value: string) => {
+  if (!value) return null;
+
+  const normalized = value.trim();
+  const yearMonthMatch = normalized.match(/^(\d{4})[-./](\d{2})$/);
+  if (yearMonthMatch) {
+    const year = Number(yearMonthMatch[1]);
+    const month = Number(yearMonthMatch[2]) - 1;
+    return new Date(year, month, 1).getTime();
+  }
+
+  const parsedDate = new Date(normalized);
+  if (Number.isNaN(parsedDate.getTime())) return null;
+  return parsedDate.getTime();
+};
+
 function ImageList({ images, size }: { images: string[]; size: 'small' | 'large' }) {
   return (
     <div className="flex gap-2 overflow-x-auto scrollbar-hide">
@@ -117,7 +133,48 @@ export default function PostDetailConsultingContentNew({
   const displayHairLength = !isMale && hairLength === '장발' ? '롱' : hairLength;
   const hairLengthDescription =
     hairLengthOptions.find((option) => option.value === displayHairLength)?.description ?? '';
-  const hasTreatments = Boolean(treatments && treatments.length > 0);
+  const sortedTreatments = useMemo(() => {
+    if (!treatments || treatments.length === 0) return [];
+
+    return [...treatments]
+      .map((treatment, index) => ({ treatment, index }))
+      .sort((a, b) => {
+        const aCardType = getTreatmentCardType(a.treatment.treatmentName, isMale);
+        const bCardType = getTreatmentCardType(b.treatment.treatmentName, isMale);
+        const isAIncomplete = aCardType !== 'TYPE3' && !a.treatment.treatmentArea;
+        const isBIncomplete = bCardType !== 'TYPE3' && !b.treatment.treatmentArea;
+
+        if (isAIncomplete !== isBIncomplete) {
+          return isAIncomplete ? -1 : 1;
+        }
+
+        const aDisplayOrder = a.treatment.displayOrder ?? Number.POSITIVE_INFINITY;
+        const bDisplayOrder = b.treatment.displayOrder ?? Number.POSITIVE_INFINITY;
+
+        if (isAIncomplete && isBIncomplete) {
+          if (aDisplayOrder !== bDisplayOrder) {
+            return aDisplayOrder - bDisplayOrder;
+          }
+          return a.index - b.index;
+        }
+
+        const aDateTime =
+          parseTreatmentDateToTime(a.treatment.treatmentDate) ?? Number.NEGATIVE_INFINITY;
+        const bDateTime =
+          parseTreatmentDateToTime(b.treatment.treatmentDate) ?? Number.NEGATIVE_INFINITY;
+        if (aDateTime !== bDateTime) {
+          return bDateTime - aDateTime;
+        }
+
+        if (aDisplayOrder !== bDisplayOrder) {
+          return aDisplayOrder - bDisplayOrder;
+        }
+
+        return a.index - b.index;
+      })
+      .map(({ treatment }) => treatment);
+  }, [treatments, isMale]);
+  const hasTreatments = sortedTreatments.length > 0;
   const hasAspirationImages = aspirationImageUrls.length > 0;
   const payableCostText = maxPaymentPrice != null ? `${maxPaymentPrice.toLocaleString()}원` : '-';
   const desiredDateText =
@@ -148,7 +205,7 @@ export default function PostDetailConsultingContentNew({
 
     const maxCollapsedHeight = 240;
     setCanExpandTreatments(treatmentsListRef.current.scrollHeight > maxCollapsedHeight);
-  }, [treatments]);
+  }, [sortedTreatments]);
 
   return (
     <div className="flex flex-col py-6">
@@ -265,7 +322,7 @@ export default function PostDetailConsultingContentNew({
                 isTreatmentsExpanded || !canExpandTreatments ? '' : 'max-h-[240px] overflow-hidden'
               }`}
             >
-              {treatments?.map((treatment, index) => {
+              {sortedTreatments.map((treatment, index) => {
                 const cardType = getTreatmentCardType(treatment.treatmentName, isMale);
                 const decolorizationCount = treatment.decolorizationCount ?? 0;
                 const decolorizationText =

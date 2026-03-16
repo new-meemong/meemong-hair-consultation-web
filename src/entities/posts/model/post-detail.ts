@@ -11,6 +11,7 @@ export type Treatment = {
   isSelf?: boolean;
   treatmentArea?: string | null;
   decolorizationCount?: number | null;
+  displayOrder?: number;
 };
 
 type MyImage = {

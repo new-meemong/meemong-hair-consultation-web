@@ -169,6 +169,8 @@ export default function HairConsultationFormStepTreatments() {
   const { user } = useAuthContext();
   const { showBottomSheet } = useOverlayContext();
   const [openCards, setOpenCards] = useState<boolean[]>([]);
+  const [cardInteractionOrders, setCardInteractionOrders] = useState<Array<number | null>>([]);
+  const cardInteractionSequenceRef = useRef(0);
   const treatmentDetailRef = useRef<HTMLTextAreaElement | null>(null);
   const [isTreatmentDetailFocused, setIsTreatmentDetailFocused] = useState(false);
 
@@ -209,7 +211,7 @@ export default function HairConsultationFormStepTreatments() {
   const getTreatmentAreaLabel = (value: string | null | undefined) =>
     value ? (treatmentAreaLabelMap.get(value) ?? value) : '시술부위 선택';
 
-  const treatmentList = treatments ?? [];
+  const treatmentList = useMemo(() => treatments ?? [], [treatments]);
 
   const hasSpecialTreatment = treatmentList.some((item) => item.treatmentType === specialTreatment);
 
@@ -246,6 +248,7 @@ export default function HairConsultationFormStepTreatments() {
               onConfirm={() => {
                 setTreatments([createTreatment(specialTreatment)]);
                 setOpenCards([]);
+                setCardInteractionOrders([]);
               }}
             />
           ),
@@ -254,6 +257,7 @@ export default function HairConsultationFormStepTreatments() {
       }
       setTreatments(hasSpecialTreatment ? [] : [createTreatment(specialTreatment)]);
       setOpenCards([]);
+      setCardInteractionOrders([]);
       return;
     }
 
@@ -265,6 +269,13 @@ export default function HairConsultationFormStepTreatments() {
         return item && item.treatmentType !== specialTreatment;
       });
       return [false, ...filtered];
+    });
+    setCardInteractionOrders((prev) => {
+      const filtered = prev.filter((_, index) => {
+        const item = treatmentList[index];
+        return item && item.treatmentType !== specialTreatment;
+      });
+      return [null, ...filtered];
     });
   };
 
@@ -282,9 +293,20 @@ export default function HairConsultationFormStepTreatments() {
     const next = treatmentList.filter((_, index) => index !== targetIndex);
     setTreatments(next);
     setOpenCards((prev) => prev.filter((_, index) => index !== targetIndex));
+    setCardInteractionOrders((prev) => prev.filter((_, index) => index !== targetIndex));
+  };
+
+  const markCardInteraction = (targetIndex: number) => {
+    setCardInteractionOrders((prev) => {
+      const next = [...prev];
+      cardInteractionSequenceRef.current += 1;
+      next[targetIndex] = cardInteractionSequenceRef.current;
+      return next;
+    });
   };
 
   const toggleCard = (targetIndex: number) => {
+    markCardInteraction(targetIndex);
     setOpenCards((prev) => {
       const next = [...prev];
       next[targetIndex] = !(next[targetIndex] ?? false);
@@ -292,32 +314,66 @@ export default function HairConsultationFormStepTreatments() {
     });
   };
 
-  const getCardType = (
-    treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType'],
-  ) => {
-    if (TYPE1_TREATMENTS.includes(treatmentType as (typeof TYPE1_TREATMENTS)[number])) {
-      return 'TYPE1';
-    }
-    if (!isMale) {
-      if (TYPE2_TREATMENTS.includes(treatmentType as (typeof TYPE2_TREATMENTS)[number])) {
-        return 'TYPE2';
+  const getCardType = useCallback(
+    (treatmentType: HairConsultationFormValues['treatments'][number]['treatmentType']) => {
+      if (TYPE1_TREATMENTS.includes(treatmentType as (typeof TYPE1_TREATMENTS)[number])) {
+        return 'TYPE1';
       }
-      if (
-        TYPE3_FEMALE_TREATMENTS.includes(treatmentType as (typeof TYPE3_FEMALE_TREATMENTS)[number])
-      ) {
+      if (!isMale) {
+        if (TYPE2_TREATMENTS.includes(treatmentType as (typeof TYPE2_TREATMENTS)[number])) {
+          return 'TYPE2';
+        }
+        if (
+          TYPE3_FEMALE_TREATMENTS.includes(
+            treatmentType as (typeof TYPE3_FEMALE_TREATMENTS)[number],
+          )
+        ) {
+          return 'TYPE3';
+        }
         return 'TYPE3';
       }
       return 'TYPE3';
-    }
-    return 'TYPE3';
-  };
+    },
+    [isMale],
+  );
 
   const cardTreatments = useMemo(
     () =>
       treatmentList
         .map((item, index) => ({ item, index }))
-        .filter(({ item }) => item.treatmentType !== specialTreatment),
-    [treatmentList, specialTreatment],
+        .filter(({ item }) => item.treatmentType !== specialTreatment)
+        .sort((a, b) => {
+          const aCardType = getCardType(a.item.treatmentType);
+          const bCardType = getCardType(b.item.treatmentType);
+          const isAIncomplete = aCardType !== 'TYPE3' && !a.item.treatmentArea;
+          const isBIncomplete = bCardType !== 'TYPE3' && !b.item.treatmentArea;
+
+          if (isAIncomplete !== isBIncomplete) {
+            return isAIncomplete ? -1 : 1;
+          }
+
+          const aInteractionOrder = cardInteractionOrders[a.index] ?? Number.POSITIVE_INFINITY;
+          const bInteractionOrder = cardInteractionOrders[b.index] ?? Number.POSITIVE_INFINITY;
+
+          if (isAIncomplete && isBIncomplete) {
+            if (aInteractionOrder !== bInteractionOrder) {
+              return aInteractionOrder - bInteractionOrder;
+            }
+            return a.index - b.index;
+          }
+
+          const monthDiff = a.item.monthsAgo - b.item.monthsAgo;
+          if (monthDiff !== 0) {
+            return monthDiff;
+          }
+
+          if (aInteractionOrder !== bInteractionOrder) {
+            return aInteractionOrder - bInteractionOrder;
+          }
+
+          return a.index - b.index;
+        }),
+    [treatmentList, specialTreatment, getCardType, cardInteractionOrders],
   );
 
   const handleMonthAdjust = (targetIndex: number, delta: number) => {
@@ -361,6 +417,7 @@ export default function HairConsultationFormStepTreatments() {
           sheetId={sheetId}
           selected={treatmentList[targetIndex]?.treatmentArea}
           onConfirm={(value) => {
+            markCardInteraction(targetIndex);
             updateTreatment(targetIndex, (item) => ({
               ...item,
               treatmentArea: value,
