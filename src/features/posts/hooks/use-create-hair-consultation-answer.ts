@@ -102,7 +102,7 @@ export default function useCreateHairConsultationAnswer(hairConsultationId: stri
 
     onSuccess();
 
-    return response.data.data.id;
+    return response.data.id;
   };
 
   return {
