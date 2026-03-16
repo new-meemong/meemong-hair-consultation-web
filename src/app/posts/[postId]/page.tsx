@@ -115,15 +115,23 @@ function NewPostDetailPageContent({
 export default function NewPostDetailPage() {
   const { postId } = useParams();
   const searchParams = useSearchParams();
+  const { back } = useRouterWithUser();
 
   const source = normalizeSource(searchParams.get(SEARCH_PARAMS.SOURCE));
   const isFromMain = searchParams.get('isFromMain') === 'true';
   const shouldCloseWebViewOnBack = source === 'app' || isFromMain;
 
+  const handleNotFound = useCallback(() => {
+    const closed = shouldCloseWebViewOnBack && closeAppWebView('close');
+    if (!closed) {
+      back();
+    }
+  }, [shouldCloseWebViewOnBack, back]);
+
   if (!postId) return null;
 
   return (
-    <NewPostDetailProvider postId={postId.toString()}>
+    <NewPostDetailProvider postId={postId.toString()} onNotFound={handleNotFound}>
       <NewPostDetailPageContent
         postId={postId.toString()}
         shouldCloseWebViewOnBack={shouldCloseWebViewOnBack}

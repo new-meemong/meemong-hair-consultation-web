@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, type ReactNode } from 'react';
 
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 
@@ -15,21 +15,40 @@ const PostDetailContext = createContext<PostDetailContextValue | null>(null);
 type PostDetailProviderProps = {
   children: ReactNode;
   postId: string;
+  onNotFound?: () => void;
 };
 
-export function PostDetailProvider({ children, postId }: PostDetailProviderProps) {
-  const { data: postDetailResponse } = useGetHairConsultationDetail(postId.toString());
+export function PostDetailProvider({ children, postId, onNotFound }: PostDetailProviderProps) {
+  const {
+    data: postDetailResponse,
+    isPending,
+    isError,
+  } = useGetHairConsultationDetail(postId.toString());
   const postDetail = postDetailResponse?.data
     ? mapHairConsultationDetailToPostDetail(postDetailResponse.data)
     : null;
 
-  if (!postDetail) return null;
+  useEffect(() => {
+    if (!isPending && (isError || !postDetail)) {
+      onNotFound?.();
+    }
+  }, [isPending, isError, postDetail, onNotFound]);
 
-  return <PostDetailContext.Provider value={{ postDetail, isConsultingPost: true }}>{children}</PostDetailContext.Provider>;
+  if (isPending || !postDetail) return null;
+
+  return (
+    <PostDetailContext.Provider value={{ postDetail, isConsultingPost: true }}>
+      {children}
+    </PostDetailContext.Provider>
+  );
 }
 
-export function NewPostDetailProvider({ children, postId }: PostDetailProviderProps) {
-  return <PostDetailProvider postId={postId}>{children}</PostDetailProvider>;
+export function NewPostDetailProvider({ children, postId, onNotFound }: PostDetailProviderProps) {
+  return (
+    <PostDetailProvider postId={postId} onNotFound={onNotFound}>
+      {children}
+    </PostDetailProvider>
+  );
 }
 
 export function usePostDetail() {
