@@ -31,6 +31,4 @@ export type HairConsultationAnswer = {
   createdAt: string;
 };
 
-export type CreateHairConsultationAnswerResponse = {
-  data: HairConsultationAnswer;
-};
+export type CreateHairConsultationAnswerResponse = HairConsultationAnswer;

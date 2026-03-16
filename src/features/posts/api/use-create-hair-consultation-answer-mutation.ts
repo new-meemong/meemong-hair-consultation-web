@@ -4,6 +4,7 @@ import type { CreateHairConsultationAnswerRequest } from '@/entities/posts/api/c
 import type { CreateHairConsultationAnswerResponse } from '@/entities/posts/api/create-hair-consultation-answer-response';
 import { HAIR_CONSULTATION_API_PREFIX } from '../constants/api';
 import { apiClient } from '@/shared/api/client';
+import { getHairConsultationAnswersQueryKeyPrefix } from './use-get-hair-consultation-answers';
 import { getHairConsultationDetailQueryKeyPrefix } from './use-get-hair-consultation-detail';
 import { getHairConsultationsQueryKeyPrefix } from './use-get-hair-consultations';
 
@@ -21,6 +22,9 @@ export default function useCreateHairConsultationAnswerMutation(hairConsultation
         queryKey: [getHairConsultationDetailQueryKeyPrefix(hairConsultationId)],
       });
       queryClient.invalidateQueries({ queryKey: [getHairConsultationsQueryKeyPrefix()] });
+      queryClient.invalidateQueries({
+        queryKey: [getHairConsultationAnswersQueryKeyPrefix(hairConsultationId)],
+      });
     },
   });
 
