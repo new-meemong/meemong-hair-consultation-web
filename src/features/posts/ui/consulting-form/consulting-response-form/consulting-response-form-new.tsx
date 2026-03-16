@@ -91,7 +91,7 @@ export default function ConsultingResponseFormNew({
 
     try {
       const eventMongResponse = await createEventMong({
-        createType: 'HAIR_CONSULT_ANSWER_EVENT',
+        createType: 'HAIR_CONSULTATIONS_ANSWER_EVENT',
         refType: 'HairConsultationsAnswers',
         refId: answerId,
       });
