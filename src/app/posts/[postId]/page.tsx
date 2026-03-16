@@ -4,6 +4,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
 import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
 import useShowEventMongSheet from '@/features/mong/hook/use-show-event-mong-sheet';
 import { consumePendingConsultingAnswerEventMong } from '@/features/mong/lib/consulting-answer-event-mong-storage';
@@ -30,6 +31,7 @@ function NewPostDetailPageContent({
   shouldCloseWebViewOnBack,
 }: NewPostDetailPageContentProps) {
   const { isUserDesigner, user } = useAuthContext();
+  useMeemongPassPolicy(); // prefetch ad-block status so canSkipMong is ready before user clicks an answer
   const showEventMongSheet = useShowEventMongSheet();
   const { back } = useRouterWithUser();
 

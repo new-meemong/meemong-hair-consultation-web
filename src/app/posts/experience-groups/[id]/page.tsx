@@ -15,6 +15,7 @@ import { SiteHeader } from '@/widgets/header';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { getGetExperienceGroupCommentsQueryKeyPrefix } from '@/features/comments/api/use-get-experience-group-comments';
 import { useAuthContext } from '@/features/auth/context/auth-context';
+import useGetGrowthPassStatus from '@/features/growth-pass/api/use-get-growth-pass-status';
 import { useCommentFormState } from '@/features/comments/hooks/use-comment-form-state';
 import useGetExperienceGroupDetail from '@/features/posts/api/use-get-experience-group-detail';
 import { useQueryClient } from '@tanstack/react-query';
@@ -34,6 +35,7 @@ export default function ExperienceGroupDetailPage() {
   const source = normalizeSource(searchParams.get(SEARCH_PARAMS.SOURCE));
 
   const { user, isUserDesigner } = useAuthContext();
+  useGetGrowthPassStatus(); // prefetch growth pass status so it's ready before user clicks SNS link
   const queryClient = useQueryClient();
   const wasHiddenRef = useRef(false);
   const isAutoCommentPostingRef = useRef(false);
