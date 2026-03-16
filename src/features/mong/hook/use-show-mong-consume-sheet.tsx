@@ -9,15 +9,15 @@ import {
 
 import type { GetMongWithdrawResponse } from '@/entities/mong/api/get-mong-withdraw-response';
 import type { HTTPError } from 'ky';
+import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import type { USER_SEX } from '@/entities/user/constants/user-sex';
 import type { ValueOf } from '@/shared/type/types';
 import { apiClient } from '@/shared/api/client';
 import { useCallback } from 'react';
-import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
-import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
+import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
@@ -69,10 +69,8 @@ export default function useShowMongConsumeSheet() {
       ] as const;
 
       // 먼저 몽 차감 유무 조회 API 호출 (자동결제 처리)
-      let isMongConsumeDisabled = false;
       let withdrawResponse: GetMongWithdrawResponse = null;
       let withdrawError: unknown = null;
-      let hasNotFoundPresetError = false;
 
       for (const query of withdrawQueryCandidates) {
         try {
@@ -86,10 +84,6 @@ export default function useShowMongConsumeSheet() {
 
           if (error && typeof error === 'object' && 'response' in error) {
             const httpError = error as HTTPError;
-            if (httpError.response?.status === 404) {
-              hasNotFoundPresetError = true;
-              continue;
-            }
             if (httpError.response?.status === 409) {
               showMongInsufficientSheet();
               return { alreadyPaid: false, mongInsufficient: true };
@@ -105,19 +99,8 @@ export default function useShowMongConsumeSheet() {
       }
 
       // API 호출 실패 시에도 바텀시트를 표시하도록 진행
-      if (!withdrawResponse && !isMongConsumeDisabled && withdrawError) {
+      if (!withdrawResponse && withdrawError) {
         console.error('몽 차감 조회 API 호출 실패:', withdrawError);
-      }
-
-      if (!withdrawResponse && hasNotFoundPresetError) {
-        isMongConsumeDisabled = true;
-        console.log('몽 소비 비활성화 상태');
-      }
-
-      // 몽 소비가 비활성화된 경우 바로 답변 페이지로 이동
-      if (isMongConsumeDisabled) {
-        push(targetRoute, responseNavigationParams);
-        return { alreadyPaid: false, mongConsumeDisabled: true };
       }
 
       // 결제한 적이 없으면 바텀시트 표시
@@ -130,7 +113,7 @@ export default function useShowMongConsumeSheet() {
           p.subType === MEEMONG_PASS_CREATE_TYPES.VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL ||
           p.title === '내가 쓴 게시물 헤어컨설팅 답변 보기',
       );
-      const price = preset?.price ?? 0;
+      const price = withdrawResponse?.price ?? preset?.price ?? 0;
       const currentMongAmount = mongCurrentData?.data?.currentTotalAmount ?? 0;
 
       showBottomSheet({
