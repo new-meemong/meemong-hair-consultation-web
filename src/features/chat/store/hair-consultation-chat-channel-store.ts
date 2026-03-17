@@ -522,7 +522,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
       // 항상 서버에서 최신 유저 정보를 가져와서 업데이트
       const userData = await getUser(userHairConsultationChatChannel.otherUserId);
 
-      if (userData.success) {
+      if (userData.data) {
         await updateDoc(ref, {
           otherUser: userData.data,
           updatedAt: serverTimestamp(),

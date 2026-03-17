@@ -117,7 +117,6 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
   }, [userChannel?.otherUser, user]);
 
   const isReservationButtonEnabled = !!storeUrl;
-  console.log('moonsae storeUrl', storeUrl);
   // 버튼 활성화 여부 결정 (역할에 따라)
   const isFirstButtonEnabled = isUserModel ? isModelOriginalPostEnabled : isDesignerPostEnabled;
   const isSecondButtonEnabled = isUserModel ? isModelResponseEnabled : isDesignerResponseEnabled;

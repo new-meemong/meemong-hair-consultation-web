@@ -166,8 +166,6 @@ export default function HairConsultationChatDetailPage() {
       return { success: false, channelId: null };
     }
   }
-  console.log('userChannel', userChannel);
-
   //   if (!userId && source !== 'app') {
   //     return <div>로그인이 필요합니다.</div>;
   //   }
@@ -226,11 +224,8 @@ export default function HairConsultationChatDetailPage() {
     );
   }
 
-  console.log('userChannel', userChannel);
-
   // 서버에서 가져온 유저 정보를 사용 (없으면 Firestore 데이터 fallback)
   const otherUser = otherUserFromServer || userChannel?.otherUser;
-  console.log('moonsae otherUserFromServer', otherUserFromServer);
   return (
     <div className="h-screen flex flex-col">
       <SiteHeader
