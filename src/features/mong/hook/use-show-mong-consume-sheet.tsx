@@ -8,13 +8,15 @@ import {
 } from '@/shared/ui/drawer';
 
 import type { GetMongWithdrawResponse } from '@/entities/mong/api/get-mong-withdraw-response';
-import type { HTTPError } from 'ky';
 import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import type { USER_SEX } from '@/entities/user/constants/user-sex';
 import type { ValueOf } from '@/shared/type/types';
 import { apiClient } from '@/shared/api/client';
+import { getApiError } from '@/shared/lib/error-handler';
+import { goStorePage } from '@/shared/lib/go-store-page';
 import { useCallback } from 'react';
+import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
 import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
@@ -35,12 +37,13 @@ export default function useShowMongConsumeSheet() {
   const { data: presetsData } = useGetMongConsumePresets();
   const { data: mongCurrentData } = useGetMongCurrent();
   const { canSkipMong } = useMeemongPassPolicy();
+  const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const { push } = useRouterWithUser();
 
   const showMongConsumeSheet = useCallback(
     async ({
-      designerName,
+      designerName: _designerName,
       answerId,
       postId,
       postListTab,
@@ -48,14 +51,6 @@ export default function useShowMongConsumeSheet() {
     }: ShowMongConsumeSheetParams) => {
       const targetRoute = ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString());
       const createType = MEEMONG_PASS_CREATE_TYPES.VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL;
-      if (canSkipMong(createType)) {
-        push(targetRoute, {
-          [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
-          ...(postWriterSex ? { [SEARCH_PARAMS.POST_WRITER_SEX]: postWriterSex } : {}),
-        });
-        return { alreadyPaid: false, adBlockActive: true };
-      }
-
       const responseNavigationParams = {
         [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
         ...(postWriterSex ? { [SEARCH_PARAMS.POST_WRITER_SEX]: postWriterSex } : {}),
@@ -68,7 +63,7 @@ export default function useShowMongConsumeSheet() {
         },
       ] as const;
 
-      // 먼저 몽 차감 유무 조회 API 호출 (자동결제 처리)
+      // 이미 결제한 답변인지 확인하고, 실패해도 바텀시트는 노출합니다.
       let withdrawResponse: GetMongWithdrawResponse = null;
       let withdrawError: unknown = null;
 
@@ -81,21 +76,7 @@ export default function useShowMongConsumeSheet() {
           break;
         } catch (error) {
           withdrawError = error;
-
-          if (error && typeof error === 'object' && 'response' in error) {
-            const httpError = error as HTTPError;
-            if (httpError.response?.status === 409) {
-              showMongInsufficientSheet();
-              return { alreadyPaid: false, mongInsufficient: true };
-            }
-          }
         }
-      }
-
-      // 이미 결제한 적이 있으면 바텀시트를 열지 않고 바로 답변 페이지로 이동
-      if (withdrawResponse?.isPaid === true) {
-        push(targetRoute, responseNavigationParams);
-        return { alreadyPaid: true };
       }
 
       // API 호출 실패 시에도 바텀시트를 표시하도록 진행
@@ -103,11 +84,8 @@ export default function useShowMongConsumeSheet() {
         console.error('몽 차감 조회 API 호출 실패:', withdrawError);
       }
 
-      // 결제한 적이 없으면 바텀시트 표시
-      // 모든 프리셋을 가져온 후 클라이언트에서 HAIR_CONSULTING 관련 프리셋만 필터링
       const hairConsultingPresets =
         presetsData?.dataList?.filter((p) => p.type === 'HAIR_CONSULTING') ?? [];
-      // subType이 최신/레거시 답변 조회 키이거나 title로 찾기
       const preset = hairConsultingPresets.find(
         (p) =>
           p.subType === MEEMONG_PASS_CREATE_TYPES.VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL ||
@@ -126,26 +104,65 @@ export default function useShowMongConsumeSheet() {
               <DrawerDescription>
                 <span className="flex flex-col gap-2">
                   <span className="typo-title-2-semibold text-label-strong">
-                    {designerName}님의
-                    <br />
-                    맞춤 컨설팅 답변을 조회할게요
+                    퍼스널 컨설팅 답변을 확인할까요?
                   </span>
                   <span className="typo-body-1-long-regular text-label-sub">
-                    내 잔여 몽: <span className="typo-body-1-semibold">{currentMongAmount}몽</span>
+                    내 잔여 몽:{' '}
+                    <span className="typo-body-1-semibold text-negative-light">
+                      {currentMongAmount}몽
+                    </span>
                   </span>
                 </span>
               </DrawerDescription>
             </DrawerHeader>
             <DrawerFooter
               buttons={[
+                <DrawerClose asChild key="meemong-pass">
+                  <Button
+                    theme="white"
+                    size="lg"
+                    className="rounded-4"
+                    onClick={() => {
+                      if (canSkipMong(createType)) {
+                        push(targetRoute, responseNavigationParams);
+                        return;
+                      }
+
+                      goStorePage();
+                    }}
+                  >
+                    미몽패스 이용하기
+                  </Button>
+                </DrawerClose>,
                 <DrawerClose asChild key="confirm">
                   <Button
                     size="lg"
                     className="rounded-4"
-                    onClick={() => {
-                      // 자동결제이므로 GET 요청에서 이미 결제 처리됨
-                      // 바로 답변 페이지로 이동
-                      push(targetRoute, responseNavigationParams);
+                    onClick={async () => {
+                      if (withdrawResponse?.isPaid === true) {
+                        push(targetRoute, responseNavigationParams);
+                        return;
+                      }
+
+                      try {
+                        await createMongWithdraw({
+                          createType: 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL',
+                          refId: answerId,
+                          refType: 'HairConsultationsAnswers',
+                        });
+                        push(targetRoute, responseNavigationParams);
+                      } catch (error) {
+                        const apiError = getApiError(error);
+                        if (
+                          apiError.code === 'NOT_ENOUGH_MONG_MONEY' ||
+                          apiError.httpCode === 409
+                        ) {
+                          showMongInsufficientSheet();
+                          return;
+                        }
+
+                        console.error('몽 차감 실패:', error);
+                      }
                     }}
                   >
                     {price}몽 사용
@@ -159,7 +176,15 @@ export default function useShowMongConsumeSheet() {
 
       return { alreadyPaid: false };
     },
-    [showBottomSheet, push, presetsData, mongCurrentData, showMongInsufficientSheet, canSkipMong],
+    [
+      showBottomSheet,
+      push,
+      presetsData,
+      mongCurrentData,
+      canSkipMong,
+      createMongWithdraw,
+      showMongInsufficientSheet,
+    ],
   );
 
   return showMongConsumeSheet;
