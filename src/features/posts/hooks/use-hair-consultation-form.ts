@@ -25,8 +25,23 @@ import {
   HAIR_CONSULTATION_HAIR_LENGTH_VALUES,
   HAIR_CONSULTATION_HAIR_TEXTURE_VALUES,
   HAIR_CONSULTATION_PERSONAL_COLOR_VALUES,
-  HAIR_CONSULTATION_SKIN_BRIGHTNESS_VALUES,
 } from '../constants/hair-consultation-create-options';
+
+const MALE_SKIN_BRIGHTNESS_VALUES = [
+  '매우 밝은/하얀 피부',
+  '밝은 피부',
+  '보통 피부',
+  '까만 피부',
+  '매우 어두운/까만 피부',
+] as const;
+
+const FEMALE_SKIN_BRIGHTNESS_VALUES = [
+  '18호 이하',
+  '19~21호',
+  '22~23호',
+  '24~25호',
+  '26호 이상',
+] as const;
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '../constants/hair-consultation-form-default-values';
 
 const normalizeEnumValue = <T extends readonly string[]>(
@@ -65,6 +80,11 @@ export default function useHairConsultationForm() {
     const profileSource: UserDetail | UserDetail['modelInfo'] | null =
       userDetail?.modelInfo ?? userDetail ?? null;
 
+    const isMale = user.sex === '남자';
+    const validSkinBrightnessValues = isMale
+      ? MALE_SKIN_BRIGHTNESS_VALUES
+      : FEMALE_SKIN_BRIGHTNESS_VALUES;
+
     return {
       ...DEFAULT_HAIR_CONSULTATION_FORM_VALUES,
       [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH]: normalizeEnumValue(
@@ -84,7 +104,7 @@ export default function useHairConsultationForm() {
       ),
       [HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS]: normalizeEnumValue(
         profileSource?.skinBrightness,
-        HAIR_CONSULTATION_SKIN_BRIGHTNESS_VALUES,
+        validSkinBrightnessValues,
         DEFAULT_HAIR_CONSULTATION_FORM_VALUES[HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS],
       ),
       [HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR]: normalizeEnumValue(
@@ -93,7 +113,7 @@ export default function useHairConsultationForm() {
         DEFAULT_HAIR_CONSULTATION_FORM_VALUES[HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR],
       ),
     };
-  }, [userDetail]);
+  }, [userDetail, user.sex]);
 
   const method = useForm<HairConsultationFormValues>({
     resolver: zodResolver(hairConsultationFormSchema),
