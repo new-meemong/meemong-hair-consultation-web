@@ -20,6 +20,7 @@ import type { ComponentProps } from 'react';
 import type { HTTPError } from 'ky';
 import type { HairLengthOption } from '@/features/posts/constants/hair-length-options';
 import Image from 'next/image';
+import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
 import ProfileIcon from '@/assets/icons/profile.svg';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { SiteHeader } from '@/widgets/header';
@@ -32,6 +33,7 @@ import faceTypeFeedback6 from '@/assets/face-type-feedback/face_type_feedback6.p
 import faceTypeFeedback7 from '@/assets/face-type-feedback/face_type_feedback7.png';
 import faceTypeFeedback8 from '@/assets/face-type-feedback/face_type_feedback8.png';
 import { format } from 'date-fns';
+import { getApiError } from '@/shared/lib/error-handler';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 import hairBangStyleFeedbackF1 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f1.png';
 import hairBangStyleFeedbackF2 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f2.png';
@@ -54,12 +56,10 @@ import hairLengthFeedbackM4 from '@/assets/hair-length-feedback/hair_length_feed
 import hairLengthFeedbackM5 from '@/assets/hair-length-feedback/hair_length_feedback_m5.png';
 import hairLengthFeedbackM6 from '@/assets/hair-length-feedback/hair_length_feedback_m6.png';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import { getApiError } from '@/shared/lib/error-handler';
+import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useGetHairConsultationAnswerDetail from '@/features/posts/api/use-get-hair-consultation-answer-detail';
 import useGetHairConsultationDetail from '@/features/posts/api/use-get-hair-consultation-detail';
-import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
-import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
@@ -333,8 +333,10 @@ export default function NewConsultingResponsePage() {
 
     setIsStartingChat(true);
     try {
-      if (isUserModel && !isPostWriter) {
-        const createType = MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
+      if (isUserModel) {
+        const createType = isPostWriter
+          ? MEEMONG_PASS_CREATE_TYPES.MY_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL
+          : MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
         const canOpenForFree = canSkipMong(createType);
 
         if (!canOpenForFree) {
