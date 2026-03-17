@@ -1,5 +1,8 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { resizeImageFile } from '@/shared/lib/resize-image-file';
+
+const RESIZE_MAX_SIZE = 1024;
 
 import Image, { type StaticImageData } from 'next/image';
 import { XIcon } from 'lucide-react';
@@ -116,12 +119,13 @@ export default function HairConsultationFormStepMyImages() {
   );
 
   const handleImageUpload = useCallback(
-    ({ file, type }: { file: File; type: ValueOf<typeof MY_IMAGE_TYPE> }) => {
+    async ({ file, type }: { file: File; type: ValueOf<typeof MY_IMAGE_TYPE> }) => {
+      const resizedFile = await resizeImageFile(file, RESIZE_MAX_SIZE);
       const currentImages = getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES) || [];
       const filteredImages = currentImages.filter(
         (img: { type: ValueOf<typeof MY_IMAGE_TYPE>; image: File }) => img.type !== type,
       );
-      const newImage = { type, image: file };
+      const newImage = { type, image: resizedFile };
 
       setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES, [...filteredImages, newImage], {
         shouldDirty: true,
@@ -146,7 +150,7 @@ export default function HairConsultationFormStepMyImages() {
   const handleInputChange =
     (type: ValueOf<typeof MY_IMAGE_TYPE>) => (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files || e.target.files.length === 0) return;
-      handleImageUpload({ file: e.target.files[0], type });
+      void handleImageUpload({ file: e.target.files[0], type });
       e.target.value = '';
     };
 

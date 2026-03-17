@@ -1,15 +1,15 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { Textarea } from '@/shared';
-import FormItem from '@/shared/ui/form-item';
-import ImageUploaderList from '@/shared/ui/image-uploader-list';
-
-
 import { CONSULTING_RESPONSE_FORM_FIELD_NAME } from '../../../constants/consulting-response-form-field-name';
 import type { ConsultingResponseFormValues } from '../../../types/consulting-response-form-values';
+import FormItem from '@/shared/ui/form-item';
+import ImageUploaderList from '@/shared/ui/image-uploader-list';
+import { Textarea } from '@/shared';
+import { resizeImageFile } from '@/shared/lib/resize-image-file';
 
 const MAX_IMAGE_COUNT = 6;
+const RESIZE_MAX_SIZE = 1024;
 
 export default function ConsultingResponseFormStepStyle() {
   const { register, setValue, control, getValues } = useFormContext<ConsultingResponseFormValues>();
@@ -33,8 +33,11 @@ export default function ConsultingResponseFormStepStyle() {
   }, [currentWatchedImageUrls]);
 
   const handleImageUpload = useCallback(
-    (file: File[]) => {
-      const newImages = [...currentImageFiles, ...file];
+    async (files: File[]) => {
+      const resizedFiles = await Promise.all(
+        files.map((file) => resizeImageFile(file, RESIZE_MAX_SIZE)),
+      );
+      const newImages = [...currentImageFiles, ...resizedFiles];
       const currentStyleValue = getValues(CONSULTING_RESPONSE_FORM_FIELD_NAME.STYLE);
 
       setValue(

@@ -10,11 +10,9 @@ import { resizeImageFile } from '@/shared/lib/resize-image-file';
 
 const MAX_IMAGE_COUNT = 3;
 const RESIZE_MAX_SIZE = 1024;
-const getFileKey = (file: File) => `${file.name}-${file.lastModified}`;
 
 export default function HairConsultationFormStepAspirationImages() {
   const { setValue, control, register, getValues } = useFormContext<HairConsultationFormValues>();
-  const resizingKeysRef = useRef(new Set<string>());
   const aspirationDescriptionRef = useRef<HTMLTextAreaElement | null>(null);
   const [isAspirationDescriptionFocused, setIsAspirationDescriptionFocused] = useState(false);
 
@@ -30,60 +28,24 @@ export default function HairConsultationFormStepAspirationImages() {
   const currentImages = useMemo(() => watchedImages ?? [], [watchedImages]);
 
   const handleImageUpload = useCallback(
-    (file: File[]) => {
+    async (files: File[]) => {
       const currentDescription = getValues(
         `${HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`,
       );
-      const currentResizedImages =
-        getValues(`${HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES}.resizedImages`) ?? [];
-      const newImages = [...currentImages, ...file];
+      const resizedFiles = await Promise.all(
+        files.map((file) => resizeImageFile(file, RESIZE_MAX_SIZE)),
+      );
+      const newImages = [...currentImages, ...resizedFiles];
 
-      setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
-        images: newImages,
-        resizedImages: currentResizedImages,
-        description: currentDescription,
-      });
-
-      void Promise.all(
-        file.map(async (imageFile) => {
-          const key = getFileKey(imageFile);
-          const currentResizedKeys = new Set(currentResizedImages.map(getFileKey));
-
-          if (currentResizedKeys.has(key) || resizingKeysRef.current.has(key)) {
-            return;
-          }
-
-          resizingKeysRef.current.add(key);
-          try {
-            const resizedFile = await resizeImageFile(imageFile, RESIZE_MAX_SIZE);
-            const latestValue = getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES);
-            const latestImages = latestValue?.images ?? [];
-
-            if (!latestImages.some((item) => getFileKey(item) === key)) {
-              return;
-            }
-
-            const latestResizedImages = latestValue?.resizedImages ?? [];
-            if (latestResizedImages.some((item) => getFileKey(item) === key)) {
-              return;
-            }
-
-            setValue(
-              HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES,
-              {
-                images: latestImages,
-                resizedImages: [...latestResizedImages, resizedFile],
-                description: latestValue?.description ?? '',
-              },
-              { shouldDirty: true },
-            );
-          } finally {
-            resizingKeysRef.current.delete(key);
-          }
-        }),
-      ).catch(() => {
-        resizingKeysRef.current.clear();
-      });
+      setValue(
+        HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES,
+        {
+          images: newImages,
+          resizedImages: newImages,
+          description: currentDescription,
+        },
+        { shouldDirty: true },
+      );
     },
     [currentImages, setValue, getValues],
   );
@@ -93,16 +55,10 @@ export default function HairConsultationFormStepAspirationImages() {
       const currentDescription = getValues(
         `${HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`,
       );
-      const currentResizedImages =
-        getValues(`${HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES}.resizedImages`) ?? [];
-      const imageKeys = new Set(newImageFiles.map(getFileKey));
-      const nextResizedImages = currentResizedImages.filter((file) =>
-        imageKeys.has(getFileKey(file)),
-      );
 
       setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
         images: newImageFiles,
-        resizedImages: nextResizedImages,
+        resizedImages: newImageFiles,
         description: currentDescription,
       });
     },
