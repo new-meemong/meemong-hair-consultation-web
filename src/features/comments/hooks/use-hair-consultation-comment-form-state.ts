@@ -1,13 +1,17 @@
+import { getApiError, getErrorMessage } from '@/shared/lib/error-handler';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Comment } from '@/entities/comment/model/comment';
 import type { CommentFormState } from '../types/comment-form-state';
 import type { CommentFormValues } from '../ui/comment-form';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import { useAuthContext } from '@/features/auth/context/auth-context';
 import useHairConsultationCommentOperations from './use-hair-consultation-comment-operations';
-import useSendPostCommentPushNotification from '@/features/chat/api/use-send-post-comment-push-notification';
 import { useOverlayContext } from '@/shared/context/overlay-context';
+import { useSearchParams } from 'next/navigation';
+import useSendPostCommentPushNotification from '@/features/chat/api/use-send-post-comment-push-notification';
+import useShowCommentMongConsumeSheet from '@/features/mong/hook/use-show-comment-mong-consume-sheet';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
-import { getApiError, getErrorMessage } from '@/shared/lib/error-handler';
 
 const INITIAL_COMMENT_FORM_STATE: CommentFormState = {
   state: 'create',
@@ -24,8 +28,12 @@ export const useHairConsultationCommentFormState = ({
   hairConsultationId,
   receiverId,
 }: UseHairConsultationCommentFormStateProps) => {
+  const { isUserDesigner } = useAuthContext();
   const { showSnackBar } = useOverlayContext();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
+  const showCommentMongConsumeSheet = useShowCommentMongConsumeSheet();
+  const searchParams = useSearchParams();
+  const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? undefined;
   const [commentFormState, setCommentFormState] = useState<CommentFormState>(
     INITIAL_COMMENT_FORM_STATE,
   );
@@ -102,31 +110,43 @@ export const useHairConsultationCommentFormState = ({
       };
 
       if (commentFormState.state === 'create' || commentFormState.state === 'reply') {
-        handleCreate(data, {
-          onSuccess: (response) => {
-            onSuccess();
+        const submitComment = () => {
+          handleCreate(data, {
+            onSuccess: (response) => {
+              onSuccess();
 
-            const paidPreset = response.data.data.mongConsumePreset;
-            if (paidPreset?.isPaidThisTime && paidPreset.price > 0) {
+              const paidPreset = response.data.mongConsumePreset;
+              if (paidPreset?.isPaidThisTime && paidPreset.price > 0) {
+                showSnackBar({
+                  type: 'success',
+                  message: `댓글 작성으로 ${paidPreset.price}몽이 차감되었어요.`,
+                });
+              }
+            },
+            onError: (error) => {
+              const apiError = getApiError(error);
+              if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
+                showMongInsufficientSheet();
+                return;
+              }
+
               showSnackBar({
-                type: 'success',
-                message: `댓글 작성으로 ${paidPreset.price}몽이 차감되었어요.`,
+                type: 'error',
+                message: getErrorMessage(error),
               });
-            }
-          },
-          onError: (error) => {
-            const apiError = getApiError(error);
-            if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
-              showMongInsufficientSheet();
-              return;
-            }
+            },
+          });
+        };
 
-            showSnackBar({
-              type: 'error',
-              message: getErrorMessage(error),
-            });
-          },
-        });
+        if (isUserDesigner) {
+          showCommentMongConsumeSheet({
+            postId: hairConsultationId,
+            postListTab,
+            onSubmit: submitComment,
+          });
+        } else {
+          submitComment();
+        }
       } else if (commentFormState.state === 'edit') {
         handleUpdate(data.content, onSuccess);
       }
@@ -135,9 +155,13 @@ export const useHairConsultationCommentFormState = ({
       commentFormState.state,
       handleCreate,
       handleUpdate,
+      hairConsultationId,
+      isUserDesigner,
+      postListTab,
       receiverId,
       resetCommentState,
       sendPostCommentNotification,
+      showCommentMongConsumeSheet,
       showMongInsufficientSheet,
       showSnackBar,
     ],

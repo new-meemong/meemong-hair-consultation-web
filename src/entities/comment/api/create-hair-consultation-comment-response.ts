@@ -1,24 +1,22 @@
 export type CreateHairConsultationCommentResponse = {
-  data: {
-    isReported: boolean;
+  isReported: boolean;
+  id: number;
+  userId: number;
+  hairConsultationId: number;
+  content: string;
+  parentCommentId: number | null;
+  commentType: 'COMMENT' | 'REPLY';
+  updatedAt: string;
+  createdAt: string;
+  mongConsumePreset: {
     id: number;
-    userId: number;
-    hairConsultationId: number;
-    content: string;
-    parentCommentId: number | null;
-    commentType: 'COMMENT' | 'REPLY';
-    updatedAt: string;
+    title: string;
+    type: string;
+    subType: string;
+    price: number;
     createdAt: string;
-    mongConsumePreset: {
-      id: number;
-      title: string;
-      type: string;
-      subType: string;
-      price: number;
-      createdAt: string;
-      updatedAt: string;
-      deletedAt: string | null;
-      isPaidThisTime: boolean;
-    } | null;
-  };
+    updatedAt: string;
+    deletedAt: string | null;
+    isPaidThisTime: boolean;
+  } | null;
 };
