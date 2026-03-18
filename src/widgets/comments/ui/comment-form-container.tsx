@@ -46,11 +46,11 @@ export default function CommentFormContainer({
 
   const isCommentFormReply = commentFormState.state === 'reply';
 
-  const canWriteConsultingResponse =
-    isConsulting && isUserDesigner && !isCommentFormReply && !isAnsweredByDesigner;
+  const canShowConsultingResponseControls = isConsulting && isUserDesigner && !isCommentFormReply;
+  const canWriteConsultingResponse = canShowConsultingResponseControls && !isAnsweredByDesigner;
 
   const [commentMode, setCommentMode] = useState<'consulting' | 'normal'>(
-    canWriteConsultingResponse ? 'consulting' : 'normal',
+    canShowConsultingResponseControls ? 'consulting' : 'normal',
   );
 
   const handleNormalCommentClick = useCallback(() => {
@@ -59,7 +59,11 @@ export default function CommentFormContainer({
 
   const { hasSavedContent } = useWritingConsultingResponse(postId);
 
-  const writingResponseButtonText = hasSavedContent ? '이어서 작성하기' : '컨설팅 답변하기';
+  const writingResponseButtonText = isAnsweredByDesigner
+    ? '이미 답변한 글입니다'
+    : hasSavedContent
+      ? '이어서 작성하기'
+      : '컨설팅 답변하기';
 
   const handleWriteConsultingResponseClick = () => {
     const path = ROUTES.POSTS_CREATE_CONSULTING_POST(postId.toString());
@@ -129,7 +133,7 @@ export default function CommentFormContainer({
           </div>
         </Button>
       )}
-      {canWriteConsultingResponse && commentMode === 'consulting' ? (
+      {canShowConsultingResponseControls && commentMode === 'consulting' ? (
         <div className="bg-white shadow-upper px-5 py-3">
           <div className="mx-auto flex w-full max-w-[335px] items-center gap-3">
             <Button
@@ -142,7 +146,8 @@ export default function CommentFormContainer({
             </Button>
             <Button
               size="md"
-              className="w-[264px] rounded-4 bg-label-default text-white hover:bg-label-default active:bg-label-default focus:bg-label-default"
+              disabled={!canWriteConsultingResponse}
+              className="w-[264px] rounded-4 bg-label-default text-white hover:bg-label-default active:bg-label-default focus:bg-label-default disabled:bg-label-disable disabled:text-white"
               onClick={handleWriteConsultingResponseClick}
             >
               {writingResponseButtonText}

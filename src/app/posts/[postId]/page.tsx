@@ -8,6 +8,7 @@ import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-poli
 import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
 import useShowEventMongSheet from '@/features/mong/hook/use-show-event-mong-sheet';
 import { consumePendingConsultingAnswerEventMong } from '@/features/mong/lib/consulting-answer-event-mong-storage';
+import useGetHairConsultationAnswers from '@/features/posts/api/use-get-hair-consultation-answers';
 import { type CommentFormValues } from '@/features/comments/ui/comment-form';
 import { NewPostDetailProvider, usePostDetail } from '@/features/posts/context/post-detail-context';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
@@ -39,6 +40,14 @@ function NewPostDetailPageContent({
 
   const { postDetail } = usePostDetail();
   const isWriter = postDetail.hairConsultPostingCreateUserId === user.id;
+  const { data: answersData } = useGetHairConsultationAnswers(postId, {
+    __limit: 100,
+  });
+  const hasAnsweredCurrentDesigner =
+    isUserDesigner &&
+    (answersData?.pages ?? []).some((page) =>
+      page.dataList.some((answer) => answer.user.id === user.id),
+    );
 
   const { commentFormState, textareaRef, isCommentCreating, isCommentUpdating, handlers } =
     useHairConsultationCommentFormState({
@@ -106,7 +115,7 @@ function NewPostDetailPageContent({
         isPending={isFormPending}
         textareaRef={textareaRef}
         isConsulting={true}
-        isAnsweredByDesigner={postDetail.isAnsweredByDesigner ?? false}
+        isAnsweredByDesigner={hasAnsweredCurrentDesigner}
       />
     </div>
   );
