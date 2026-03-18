@@ -13,16 +13,13 @@ import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import type { USER_SEX } from '@/entities/user/constants/user-sex';
 import type { ValueOf } from '@/shared/type/types';
 import { apiClient } from '@/shared/api/client';
-import { getApiError } from '@/shared/lib/error-handler';
 import { goStorePage } from '@/shared/lib/go-store-page';
 import { useCallback } from 'react';
-import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
 import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
 
 type ShowMongConsumeSheetParams = {
   designerName: string;
@@ -37,8 +34,6 @@ export default function useShowMongConsumeSheet() {
   const { data: presetsData } = useGetMongConsumePresets();
   const { data: mongCurrentData } = useGetMongCurrent();
   const { canSkipMong } = useMeemongPassPolicy();
-  const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
-  const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const { push } = useRouterWithUser();
 
   const showMongConsumeSheet = useCallback(
@@ -55,33 +50,23 @@ export default function useShowMongConsumeSheet() {
         [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
         ...(postWriterSex ? { [SEARCH_PARAMS.POST_WRITER_SEX]: postWriterSex } : {}),
       };
-      const withdrawQueryCandidates = [
-        {
-          createType,
-          refType: 'HairConsultationsAnswers',
-          refId: answerId.toString(),
-        },
-      ] as const;
-
-      // 이미 결제한 답변인지 확인하고, 실패해도 바텀시트는 노출합니다.
+      // 이미 결제한 답변이면 바텀시트 없이 바로 이동
       let withdrawResponse: GetMongWithdrawResponse = null;
-      let withdrawError: unknown = null;
-
-      for (const query of withdrawQueryCandidates) {
-        try {
-          const response = await apiClient.get<GetMongWithdrawResponse>('mong-moneys/withdraw', {
-            searchParams: query,
-          });
-          withdrawResponse = response.data;
-          break;
-        } catch (error) {
-          withdrawError = error;
+      try {
+        const response = await apiClient.get<GetMongWithdrawResponse>('mong-moneys/withdraw', {
+          searchParams: {
+            createType: 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL',
+            refType: 'HairConsultationsAnswers',
+            refId: answerId.toString(),
+          },
+        });
+        withdrawResponse = response.data;
+        if (withdrawResponse?.isPaid === true) {
+          push(targetRoute, responseNavigationParams);
+          return { alreadyPaid: true };
         }
-      }
-
-      // API 호출 실패 시에도 바텀시트를 표시하도록 진행
-      if (!withdrawResponse && withdrawError) {
-        console.error('몽 차감 조회 API 호출 실패:', withdrawError);
+      } catch {
+        // GET 실패 시 바텀시트를 표시하도록 계속 진행
       }
 
       const hairConsultingPresets =
@@ -138,31 +123,8 @@ export default function useShowMongConsumeSheet() {
                   <Button
                     size="lg"
                     className="rounded-4"
-                    onClick={async () => {
-                      if (withdrawResponse?.isPaid === true) {
-                        push(targetRoute, responseNavigationParams);
-                        return;
-                      }
-
-                      try {
-                        await createMongWithdraw({
-                          createType: 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL',
-                          refId: answerId,
-                          refType: 'HairConsultationsAnswers',
-                        });
-                        push(targetRoute, responseNavigationParams);
-                      } catch (error) {
-                        const apiError = getApiError(error);
-                        if (
-                          apiError.code === 'NOT_ENOUGH_MONG_MONEY' ||
-                          apiError.httpCode === 409
-                        ) {
-                          showMongInsufficientSheet();
-                          return;
-                        }
-
-                        console.error('몽 차감 실패:', error);
-                      }
+                    onClick={() => {
+                      push(targetRoute, responseNavigationParams);
                     }}
                   >
                     {price}몽 사용
@@ -176,15 +138,7 @@ export default function useShowMongConsumeSheet() {
 
       return { alreadyPaid: false };
     },
-    [
-      showBottomSheet,
-      push,
-      presetsData,
-      mongCurrentData,
-      canSkipMong,
-      createMongWithdraw,
-      showMongInsufficientSheet,
-    ],
+    [showBottomSheet, push, presetsData, mongCurrentData, canSkipMong],
   );
 
   return showMongConsumeSheet;
