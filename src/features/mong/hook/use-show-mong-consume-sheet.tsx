@@ -69,6 +69,12 @@ export default function useShowMongConsumeSheet() {
         // GET 실패 시 바텀시트를 표시하도록 계속 진행
       }
 
+      // 미몽패스 활성화 상태면 바텀시트 없이 바로 이동
+      if (canSkipMong(createType)) {
+        push(targetRoute, responseNavigationParams);
+        return { alreadyPaid: false };
+      }
+
       const hairConsultingPresets =
         presetsData?.dataList?.filter((p) => p.type === 'HAIR_CONSULTING') ?? [];
       const preset = hairConsultingPresets.find(
