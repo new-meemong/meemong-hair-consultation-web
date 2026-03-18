@@ -6,6 +6,7 @@ import useCreateEventMongMutation from '@/features/mong/api/use-create-event-mon
 import { savePendingConsultingAnswerEventMong } from '@/features/mong/lib/consulting-answer-event-mong-storage';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import useCreateHairConsultationAnswer from '@/features/posts/hooks/use-create-hair-consultation-answer';
+import useShowConsultingAnswerCompleteSheet from '@/features/posts/hooks/use-show-consulting-answer-complete-sheet';
 import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useOverlayContext } from '@/shared/context/overlay-context';
@@ -78,6 +79,13 @@ export default function ConsultingResponseFormNew({
   const { handleCreateHairConsultationAnswer, isPending: isCreatingHairConsultationAnswer } =
     useCreateHairConsultationAnswer(postId);
   const { mutateAsync: createEventMong } = useCreateEventMongMutation();
+  const showConsultingAnswerCompleteSheet = useShowConsultingAnswerCompleteSheet();
+
+  const navigateToPostDetail = () => {
+    replace(ROUTES.POSTS_DETAIL(postId), {
+      [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+    });
+  };
 
   const submit = async (values: ConsultingResponseFormValues) => {
     const answerId = await handleCreateHairConsultationAnswer(values, {
@@ -89,6 +97,7 @@ export default function ConsultingResponseFormNew({
       },
     });
 
+    let eventMongData = null;
     try {
       const eventMongResponse = await createEventMong({
         createType: 'HAIR_CONSULTATIONS_ANSWER_EVENT',
@@ -96,18 +105,21 @@ export default function ConsultingResponseFormNew({
         refId: answerId,
       });
 
-      if (eventMongResponse.data && eventMongResponse.data.amount > 0) {
+      eventMongData = eventMongResponse.data ?? null;
+
+      if (eventMongData && eventMongData.amount > 0) {
         savePendingConsultingAnswerEventMong({
           postId,
-          rewardData: eventMongResponse.data,
+          rewardData: eventMongData,
         });
       }
     } catch {
       // Do not block answer completion if reward payout call fails.
     }
 
-    replace(ROUTES.POSTS_DETAIL(postId), {
-      [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
+    showConsultingAnswerCompleteSheet({
+      eventMongData,
+      onNavigate: navigateToPostDetail,
     });
   };
 
