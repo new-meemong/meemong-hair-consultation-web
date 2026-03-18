@@ -5,6 +5,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/shared/ui/drawer';
+import {
+  STORE_RETURN_STATUS_KEYS,
+  markPendingStoreReturnStatusCheck,
+} from '@/shared/lib/store-return-status';
 
 import { Button } from '@/shared';
 import type { GetMongWithdrawResponse } from '@/entities/mong/api/get-mong-withdraw-response';
@@ -110,6 +114,7 @@ export default function useShowExperienceGroupLinkSheetBottomSheet() {
                     theme="white"
                     className="rounded-4"
                     onClick={() => {
+                      markPendingStoreReturnStatusCheck(STORE_RETURN_STATUS_KEYS.GROWTH_PASS);
                       goStorePage();
                     }}
                   >

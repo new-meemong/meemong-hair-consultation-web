@@ -1,14 +1,24 @@
-import { useQuery } from '@tanstack/react-query';
-
 import type { AdBlockStatus } from '@/entities/ad-block/api/ad-block-status';
+import { STORE_RETURN_STATUS_KEYS } from '@/shared/lib/store-return-status';
 import { apiClient } from '@/shared/api/client';
+import { useQuery } from '@tanstack/react-query';
+import useRefetchOnStoreReturn from '@/shared/hooks/use-refetch-on-store-return';
 
 const GET_AD_BLOCK_STATUS_ENDPOINT = 'ad-blocks/status';
 export const getAdBlockStatusQueryKeyPrefix = () => GET_AD_BLOCK_STATUS_ENDPOINT;
 
 export default function useGetAdBlockStatus() {
-  return useQuery({
+  const query = useQuery({
     queryKey: [getAdBlockStatusQueryKeyPrefix()],
     queryFn: () => apiClient.get<AdBlockStatus>(GET_AD_BLOCK_STATUS_ENDPOINT),
   });
+
+  useRefetchOnStoreReturn({
+    pendingKey: STORE_RETURN_STATUS_KEYS.MEEMONG_PASS,
+    refetch: async () => {
+      await query.refetch();
+    },
+  });
+
+  return query;
 }

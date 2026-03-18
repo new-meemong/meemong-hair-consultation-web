@@ -6,6 +6,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/shared/ui/drawer';
+import {
+  STORE_RETURN_STATUS_KEYS,
+  markPendingStoreReturnStatusCheck,
+} from '@/shared/lib/store-return-status';
 
 import type { GetMongWithdrawResponse } from '@/entities/mong/api/get-mong-withdraw-response';
 import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
@@ -119,6 +123,7 @@ export default function useShowMongConsumeSheet() {
                         return;
                       }
 
+                      markPendingStoreReturnStatusCheck(STORE_RETURN_STATUS_KEYS.MEEMONG_PASS);
                       goStorePage();
                     }}
                   >
