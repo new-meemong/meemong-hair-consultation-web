@@ -24,6 +24,33 @@ const nextConfig: NextConfig = {
       'img1.kakaocdn.net',
       'job-storage.meemong.com',
     ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 's3.ap-northeast-2.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'meemong-job-storage.s3.ap-northeast-2.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'meemong-uploads.s3.ap-northeast-2.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'storage.meemong.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'job-storage.meemong.com',
+        pathname: '/**',
+      },
+    ],
   },
   devIndicators: false,
   webpack(config) {
