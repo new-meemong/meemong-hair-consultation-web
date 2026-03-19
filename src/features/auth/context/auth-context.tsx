@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   createContext,
   type ReactNode,
@@ -34,7 +34,14 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const PUBLIC_ROUTES = ['/welcome'];
+
+// /{brandSlug}/welcome 같은 브랜드 웰컴 경로도 userId 없이 접근 가능해야 함
+const isPublicRoute = (path: string) =>
+  PUBLIC_ROUTES.includes(path) || /^\/[^/]+\/welcome$/.test(path);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const userId = searchParams.get(SEARCH_PARAMS.USER_ID);
 
@@ -171,6 +178,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.addEventListener(AUTH_TOKEN_EXPIRED_EVENT, handleTokenExpired);
     return () => window.removeEventListener(AUTH_TOKEN_EXPIRED_EVENT, handleTokenExpired);
   }, [userId, refreshToken]);
+
+  if (isPublicRoute(pathname)) return <>{children}</>;
 
   if (userId === null) return <div>유저아이디가 누락되었습니다</div>;
 
