@@ -144,7 +144,11 @@ export default function PhoneAuthPage() {
       } catch (loginError: unknown) {
         const status = (loginError as { response?: { status?: number } }).response?.status;
         if (status === 404) {
-          // 미가입 유저 → 회원가입
+          // 미가입 유저 → 회원가입 (authToken + phoneNumber 전달)
+          sessionStorage.setItem(
+            `web_signup_form:${brand.slug}`,
+            JSON.stringify({ authToken, phoneNumber: phoneDigits }),
+          );
           router.push(ROUTES.WEB_AUTH_SIGNUP(brand.slug));
         } else {
           setVerifyError(true);
