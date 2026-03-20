@@ -12,13 +12,18 @@ export const BrandConfigSchema = z.object({
     // StaticImageData 최소 shape 검증 — z.custom() 단독 사용 시 어떤 값도 통과하는 문제 방지
     src: z.custom<StaticImageData>(
       (val) =>
-        typeof val === 'object' &&
-        val !== null &&
-        typeof (val as StaticImageData).src === 'string',
+        typeof val === 'object' && val !== null && typeof (val as StaticImageData).src === 'string',
       { message: 'logo.src는 StaticImageData 형식이어야 합니다' },
     ),
     width: z.number(),
     height: z.number(),
+  }),
+  smallLogo: z.object({
+    src: z.custom<StaticImageData>(
+      (val) =>
+        typeof val === 'object' && val !== null && typeof (val as StaticImageData).src === 'string',
+      { message: 'smallLogo.src는 StaticImageData 형식이어야 합니다' },
+    ),
   }),
   theme: z.object({
     colorCautionary: z.string().optional(),

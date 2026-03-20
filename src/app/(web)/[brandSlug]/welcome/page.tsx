@@ -1,13 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-
+import { ROUTES } from '@/shared/lib/routes';
 import { useBrand } from '@/shared/context/brand-context';
+import { useRouter } from 'next/navigation';
 
 // layout에서 BrandProvider가 dev override를 반영한 brand를 주입하므로
 // 여기서 getBrandConfig를 별도 호출하지 않음 (테마/로고/브랜드명 일치 보장)
 export default function BrandWelcomePage() {
   const { config: brand } = useBrand();
+  const router = useRouter();
 
   return (
     <div className="relative flex h-full min-h-screen flex-col">
@@ -28,6 +30,7 @@ export default function BrandWelcomePage() {
           <button
             type="button"
             className="flex w-full items-center justify-center rounded-[4px] border border-border-default bg-white px-5 py-4 typo-body-1-medium text-label-default"
+            onClick={() => router.push(ROUTES.WEB_SAMPLE(brand.slug))}
           >
             샘플보기
           </button>

@@ -33,6 +33,7 @@ export const ROUTES = {
 
   // 웹 브랜드 경로 (brandSlug를 첫 번째 인자로 받아 완전한 경로 반환)
   WEB_WELCOME: (brandSlug: string) => `/${brandSlug}/welcome`,
+  WEB_SAMPLE: (brandSlug: string) => `/${brandSlug}/sample`,
   WEB_POSTS: (brandSlug: string) => `/${brandSlug}/posts`,
   WEB_POSTS_CREATE: (brandSlug: string) => `/${brandSlug}/posts/create`,
   WEB_POST_DETAIL: (brandSlug: string, postId: string) => `/${brandSlug}/posts/${postId}`,
