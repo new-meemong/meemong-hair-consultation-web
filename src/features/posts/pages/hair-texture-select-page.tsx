@@ -1,8 +1,8 @@
 'use client';
 
-import { Button, ROUTES } from '@/shared';
 import { useMemo, useState } from 'react';
 
+import { Button } from '@/shared';
 import { AppTypography } from '@/shared/styles/typography';
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '@/features/posts/constants/hair-consultation-form-field-name';
@@ -12,8 +12,6 @@ import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import { useSearchParams } from 'next/navigation';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
 const HAIR_TEXTURE_OPTIONS: Array<{
@@ -36,12 +34,13 @@ const HAIR_TEXTURE_OPTIONS: Array<{
   },
 ];
 
-export default function HairTextureSelectPage() {
-  const { replace } = useRouterWithUser();
-  const searchParams = useSearchParams();
-  const { savedContent, saveContent } = useWritingContent(
-    USER_WRITING_CONTENT_KEYS.hairConsultation,
-  );
+type Props = {
+  onComplete: () => void;
+  onBack: () => void;
+};
+
+export function HairTextureSelectPage({ onComplete, onBack }: Props) {
+  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
 
   const initialValue = useMemo(() => {
     return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE] ?? null;
@@ -51,39 +50,20 @@ export default function HairTextureSelectPage() {
     initialValue,
   );
 
-  const handleSelect = (value: HairConsultationHairTexture) => {
-    setSelectedTexture(value);
-  };
-
   const handleComplete = () => {
     if (!selectedTexture) return;
-
     const baseContent = savedContent?.content ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES;
     const nextContent: HairConsultationFormValues = {
       ...baseContent,
       [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE]: selectedTexture,
     };
-
-    saveContent({
-      step: savedContent?.step ?? 1,
-      content: nextContent,
-    });
-
-    replace(ROUTES.POSTS_CREATE, { skipReload: '1' });
+    saveContent({ step: savedContent?.step ?? 1, content: nextContent });
+    onComplete();
   };
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col bg-white">
-      <SiteHeader
-        title="모발 타입"
-        showBackButton
-        onBackClick={() =>
-          replace(ROUTES.POSTS_CREATE, {
-            skipReload: '1',
-            ...Object.fromEntries(searchParams.entries()),
-          })
-        }
-      />
+      <SiteHeader title="모발 타입" showBackButton onBackClick={onBack} />
       <div className="flex flex-col gap-7 px-5 pt-7 pb-6 flex-1 overflow-y-auto">
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between gap-2">
@@ -105,7 +85,7 @@ export default function HairTextureSelectPage() {
                 key={option.value}
                 type="button"
                 className="flex w-full items-center gap-4 px-0 py-3"
-                onClick={() => handleSelect(option.value)}
+                onClick={() => setSelectedTexture(option.value)}
               >
                 <div className="flex flex-col items-start gap-2 flex-1 text-left">
                   <span className={`${AppTypography.body1Medium} text-label-default`}>

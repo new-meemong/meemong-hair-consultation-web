@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { type ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 
 import { type BrandConfig } from '@/shared/config/brand-config';
 import { brandRegistry, getBrandConfig } from '@/shared/config/brands';
@@ -33,7 +33,9 @@ export default async function WebBrandLayout({
   // className="contents"로 wrapper가 레이아웃에 영향을 주지 않음
   return (
     <div style={buildThemeVars(brand.theme)} className="contents">
-      <BrandProvider initialBrand={brand}>{children}</BrandProvider>
+      <BrandProvider initialBrand={brand}>
+        <Suspense fallback={null}>{children}</Suspense>
+      </BrandProvider>
     </div>
   );
 }

@@ -9,7 +9,8 @@ import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useGetUser } from '@/features/auth/api/use-get-user';
 import type { UserDetail } from '@/entities/user/model/user-detail';
 import { getErrorMessage } from '@/shared/lib/error-handler';
@@ -68,19 +69,20 @@ const normalizeEnumArray = <T extends readonly string[]>(
 export default function useHairConsultationForm() {
   const { replace } = useRouterWithUser();
   const { showSnackBar } = useOverlayContext();
-  const { user } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const brand = useOptionalBrand();
 
   const { saveContent, savedContent } = useWritingContent(
     USER_WRITING_CONTENT_KEYS.hairConsultation,
   );
-  const { data: userResponse } = useGetUser(user.id.toString());
+  const { data: userResponse } = useGetUser(auth?.user?.id?.toString() ?? '');
   const userDetail = userResponse?.data;
 
   const defaultValues = useMemo<HairConsultationFormValues>(() => {
     const profileSource: UserDetail | UserDetail['modelInfo'] | null =
       userDetail?.modelInfo ?? userDetail ?? null;
 
-    const isMale = user.sex === '남자';
+    const isMale = auth?.user?.sex === '남자';
     const validSkinBrightnessValues = isMale
       ? MALE_SKIN_BRIGHTNESS_VALUES
       : FEMALE_SKIN_BRIGHTNESS_VALUES;
@@ -113,7 +115,7 @@ export default function useHairConsultationForm() {
         DEFAULT_HAIR_CONSULTATION_FORM_VALUES[HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR],
       ),
     };
-  }, [userDetail, user.sex]);
+  }, [userDetail, auth?.user?.sex]);
 
   const method = useForm<HairConsultationFormValues>({
     resolver: zodResolver(hairConsultationFormSchema),
@@ -138,7 +140,7 @@ export default function useHairConsultationForm() {
           type: 'success',
           message: '업로드가 완료되었습니다!',
         });
-        replace(ROUTES.POSTS);
+        replace(brand ? ROUTES.WEB_POSTS(brand.config.slug) : ROUTES.POSTS);
       },
       onError: (error) => {
         showSnackBar({

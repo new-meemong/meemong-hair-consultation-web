@@ -3,7 +3,7 @@
 import { useParams, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
 import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
 import useShowEventMongSheet from '@/features/mong/hook/use-show-event-mong-sheet';
@@ -31,7 +31,9 @@ function NewPostDetailPageContent({
   postId,
   shouldCloseWebViewOnBack,
 }: NewPostDetailPageContentProps) {
-  const { isUserDesigner, user } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const isUserDesigner = auth?.isUserDesigner ?? false;
+  const user = auth?.user ?? null;
   useMeemongPassPolicy(); // prefetch ad-block status so canSkipMong is ready before user clicks an answer
   const showEventMongSheet = useShowEventMongSheet();
   const { back } = useRouterWithUser();
@@ -39,14 +41,14 @@ function NewPostDetailPageContent({
   useShowGuide(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
 
   const { postDetail } = usePostDetail();
-  const isWriter = postDetail.hairConsultPostingCreateUserId === user.id;
+  const isWriter = user != null && postDetail.hairConsultPostingCreateUserId === user.id;
   const { data: answersData } = useGetHairConsultationAnswers(postId, {
     __limit: 100,
   });
   const hasAnsweredCurrentDesigner =
     isUserDesigner &&
     (answersData?.pages ?? []).some((page) =>
-      page.dataList.some((answer) => answer.user.id === user.id),
+      page.dataList.some((answer) => user != null && answer.user.id === user.id),
     );
 
   const { commentFormState, textareaRef, isCommentCreating, isCommentUpdating, handlers } =

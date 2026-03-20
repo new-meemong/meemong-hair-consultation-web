@@ -13,7 +13,8 @@ import type { ValueOf } from '@/shared/type/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useRef } from 'react';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { useSearchParams } from 'next/navigation';
@@ -55,11 +56,17 @@ export default function CommentListItem({
   const searchParams = useSearchParams();
   const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
 
-  const { user, isUserDesigner, isUserModel } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const user = auth?.user ?? null;
+  const isUserDesigner = auth?.isUserDesigner ?? false;
+  const isUserModel = auth?.isUserModel ?? false;
+  const brand = useOptionalBrand();
   const { push } = useRouterWithUser();
   const showMongConsumeSheet = useShowMongConsumeSheet();
   const consultingResponsePath = comment.answerId
-    ? ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString())
+    ? brand
+      ? ROUTES.WEB_CONSULTING_RESPONSE(brand.config.slug, postId, comment.answerId.toString())
+      : ROUTES.POSTS_CONSULTING_RESPONSE(postId, comment.answerId.toString())
     : null;
   const responseNavigationParams = {
     [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
@@ -103,8 +110,8 @@ export default function CommentListItem({
     isConsultingAnswer,
   } = comment;
 
-  const isPostWriter = postWriterId === user.id;
-  const isCommentWriter = author.userId === user.id;
+  const isPostWriter = user != null && postWriterId === user.id;
+  const isCommentWriter = user != null && author.userId === user.id;
 
   const replyCommentRef = useRef<HTMLDivElement>(null);
 

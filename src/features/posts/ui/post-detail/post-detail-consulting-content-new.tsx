@@ -10,7 +10,7 @@ import PostDetailAuthorProfile from './post-detail-author-profile';
 import PostDetailImage from './post-detail-image';
 import { format } from 'date-fns';
 import { isUserMale } from '@/entities/user/lib/user-sex';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 
 function Separator() {
   return <div className="bg-alternative h-1.5" />;
@@ -87,7 +87,9 @@ const formatCreatedAt = (value: string) => {
 export default function PostDetailConsultingContentNew({
   postDetail,
 }: PostDetailConsultingContentNewProps) {
-  const { user, isUserDesigner } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const user = auth?.user ?? null;
+  const isUserDesigner = auth?.isUserDesigner ?? false;
 
   const {
     hairConsultPostingCreateUserProfileImageUrl: authorImageUrl,
@@ -121,7 +123,7 @@ export default function PostDetailConsultingContentNew({
   const [canExpandTreatments, setCanExpandTreatments] = useState(false);
   const treatmentsListRef = useRef<HTMLDivElement | null>(null);
 
-  const isWriter = authorId === user.id;
+  const isWriter = user != null && authorId === user.id;
   const shouldShowAuthorInfo = isWriter || isUserDesigner;
   const displayName = shouldShowAuthorInfo ? authorName || '익명' : '익명';
   const displayImageUrl = shouldShowAuthorInfo ? authorImageUrl : null;

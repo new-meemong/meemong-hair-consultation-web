@@ -27,3 +27,8 @@ export function useBrand(): BrandContextType {
   }
   return context;
 }
+
+// (web)/[brandSlug] 레이아웃 밖에서도 안전하게 호출 가능 — null이면 webview 컨텍스트
+export function useOptionalBrand(): BrandContextType | null {
+  return useContext(BrandContext);
+}

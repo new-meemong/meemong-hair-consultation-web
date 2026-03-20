@@ -7,6 +7,7 @@ import { useIntersectionObserver } from '@/shared/hooks/use-intersection-observe
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { normalizeSource, openInAppWebView } from '@/shared/lib/app-bridge';
 import { ROUTES } from '@/shared/lib/routes';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 
 import PostListEmptyView from './post-list-empty-view';
 import PostListItem from './post-list-item';
@@ -21,6 +22,7 @@ type PostListProps = {
 export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
   const router = useRouterWithUser();
   const source = normalizeSource(router.source);
+  const brand = useOptionalBrand();
 
   const { mutate: createHairConsultationReadingMutation } =
     useCreateHairConsultationReadingMutation();
@@ -37,7 +39,10 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
       }
     }
 
-    router.push(ROUTES.POSTS_DETAIL(postId), {
+    const route = brand
+      ? ROUTES.WEB_POST_DETAIL(brand.config.slug, String(postId))
+      : ROUTES.POSTS_DETAIL(postId);
+    router.push(route, {
       [SEARCH_PARAMS.POST_LIST_TAB]: tab,
     });
   };

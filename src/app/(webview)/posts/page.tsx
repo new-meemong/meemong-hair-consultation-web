@@ -17,14 +17,20 @@ import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import { getPostTabs } from '@/features/posts/constants/post-tabs';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { USER_ROLE } from '@/entities/user/constants/user-role';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import usePostListRegionTab from '@/features/posts/hooks/use-post-list-region-tab';
 import usePostListTab from '@/features/posts/hooks/use-post-list-tab';
 import { usePostTab } from '@/features/posts/hooks/use-post-tab';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 export default function PostsPage() {
-  const { user, isUserModel, isUserDesigner } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const user = auth?.user ?? null;
+  const isUserModel = auth?.isUserModel ?? false;
+  const isUserDesigner = auth?.isUserDesigner ?? false;
+  const brand = useOptionalBrand();
 
   const router = useRouterWithUser();
 
@@ -42,15 +48,15 @@ export default function PostsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const listTabs = getPostListTabs(user.role);
+  const listTabs = getPostListTabs(user?.role ?? USER_ROLE.MODEL);
 
   const handleWriteButtonClick = useCallback(() => {
-    const targetRoute = ROUTES.POSTS_CREATE;
+    const targetRoute = brand ? ROUTES.WEB_POSTS_CREATE(brand.config.slug) : ROUTES.POSTS_CREATE;
 
     router.push(targetRoute, {
       [SEARCH_PARAMS.POST_TAB]: activePostTab,
     });
-  }, [router, activePostTab]);
+  }, [brand, router, activePostTab]);
 
   const getListContainer = useCallback(() => {
     switch (activePostTab) {

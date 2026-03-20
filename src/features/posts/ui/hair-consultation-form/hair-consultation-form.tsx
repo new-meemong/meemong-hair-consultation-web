@@ -12,7 +12,7 @@ import HairConsultationFormStepTreatments from './hair-consultation-form-step-tr
 import type { HairConsultationFormValues } from '../../types/hair-consultation-form-values';
 import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 
 const BASE_FORM_STEPS: FormStep<HairConsultationFormValues>[] = [
   {
@@ -82,14 +82,14 @@ export default function HairConsultationForm({
   isSubmitting = false,
 }: HairConsultationFormProps) {
   const method = useFormContext<HairConsultationFormValues>();
-  const { user } = useAuthContext();
+  const auth = useOptionalAuthContext();
   const selectedHairLength = useWatch({
     control: method.control,
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH,
   });
 
   const getTreatmentMonthsLabel = () => {
-    const isMale = user.sex === '남자';
+    const isMale = auth?.user?.sex === '남자';
     const hairLength = selectedHairLength;
 
     if (!hairLength) return 'N개월';
@@ -150,7 +150,7 @@ export default function HairConsultationForm({
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENTS) {
       const formValue = method.getValues(name) as HairConsultationFormValues['treatments'];
       if (!Array.isArray(formValue) || formValue.length === 0) return false;
-      const isMale = user.sex === '남자';
+      const isMale = auth?.user?.sex === '남자';
       const specialTreatment = isMale ? '커트만 했어요' : '커트/드라이만 했어요';
       const type1Treatments = ['일반염색', '블랙염색', '블랙빼기'] as const;
       const type2Treatments = ['일반펌', '열펌/셋팅펌', '매직', '탈색'] as const;

@@ -13,7 +13,8 @@ import type { HairConsultationFormValues } from '../../types/hair-consultation-f
 import Image from 'next/image';
 import { ROUTES } from '@/shared';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
@@ -42,7 +43,8 @@ const EMPTY_FIELD_MESSAGE = '정보를 입력해주세요';
 
 export default function HairConsultationFormStepProfile() {
   const { control, getValues } = useFormContext<HairConsultationFormValues>();
-  const { user } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const brand = useOptionalBrand();
   const { push } = useRouterWithUser();
   const { saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
 
@@ -71,18 +73,19 @@ export default function HairConsultationFormStepProfile() {
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH,
   });
 
+  const isMale = auth?.user?.sex === '남자';
   const hairLengthOptions = useMemo(
-    () => (user.sex === '남자' ? MALE_HAIR_LENGTH_OPTIONS : FEMALE_HAIR_LENGTH_OPTIONS),
-    [user.sex],
+    () => (isMale ? MALE_HAIR_LENGTH_OPTIONS : FEMALE_HAIR_LENGTH_OPTIONS),
+    [isMale],
   );
 
   const selectedHairLengthOption = useMemo(() => {
     if (!selectedHairLength) return null;
     const normalizedSelectedHairLength =
-      user.sex !== '남자' && selectedHairLength === '장발' ? '롱' : selectedHairLength;
+      !isMale && selectedHairLength === '장발' ? '롱' : selectedHairLength;
     const option = hairLengthOptions.find((item) => item.value === normalizedSelectedHairLength);
     return option ?? null;
-  }, [hairLengthOptions, selectedHairLength, user.sex]);
+  }, [hairLengthOptions, isMale, selectedHairLength]);
 
   const skinBrightnessDescription = useMemo(
     () => SKIN_BRIGHTNESS_DESCRIPTION_MAP[selectedSkinBrightness ?? ''] ?? '',
@@ -103,8 +106,11 @@ export default function HairConsultationFormStepProfile() {
       content: getValues(),
     };
     saveContent(writingContent);
-    push(ROUTES.POSTS_CREATE_HAIR_LENGTH, { skipReload: '1' });
-  }, [getValues, push, saveContent]);
+    push(
+      brand ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairLength') : ROUTES.POSTS_CREATE_HAIR_LENGTH,
+      { skipReload: '1' },
+    );
+  }, [brand, getValues, push, saveContent]);
 
   const handleHairConcernEdit = useCallback(() => {
     const writingContent = {
@@ -112,8 +118,11 @@ export default function HairConsultationFormStepProfile() {
       content: getValues(),
     };
     saveContent(writingContent);
-    push(ROUTES.POSTS_CREATE_HAIR_CONCERNS, { skipReload: '1' });
-  }, [getValues, push, saveContent]);
+    push(
+      brand ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairConcerns') : ROUTES.POSTS_CREATE_HAIR_CONCERNS,
+      { skipReload: '1' },
+    );
+  }, [brand, getValues, push, saveContent]);
 
   const handleHairTextureEdit = useCallback(() => {
     const writingContent = {
@@ -121,8 +130,11 @@ export default function HairConsultationFormStepProfile() {
       content: getValues(),
     };
     saveContent(writingContent);
-    push(ROUTES.POSTS_CREATE_HAIR_TEXTURE, { skipReload: '1' });
-  }, [getValues, push, saveContent]);
+    push(
+      brand ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairTexture') : ROUTES.POSTS_CREATE_HAIR_TEXTURE,
+      { skipReload: '1' },
+    );
+  }, [brand, getValues, push, saveContent]);
 
   const handleSkinBrightnessEdit = useCallback(() => {
     const writingContent = {
@@ -130,8 +142,11 @@ export default function HairConsultationFormStepProfile() {
       content: getValues(),
     };
     saveContent(writingContent);
-    push(ROUTES.POSTS_CREATE_SKIN_BRIGHTNESS, { skipReload: '1' });
-  }, [getValues, push, saveContent]);
+    push(
+      brand ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'skinBrightness') : ROUTES.POSTS_CREATE_SKIN_BRIGHTNESS,
+      { skipReload: '1' },
+    );
+  }, [brand, getValues, push, saveContent]);
 
   const handlePersonalColorEdit = useCallback(() => {
     const writingContent = {
@@ -139,8 +154,11 @@ export default function HairConsultationFormStepProfile() {
       content: getValues(),
     };
     saveContent(writingContent);
-    push(ROUTES.POSTS_CREATE_PERSONAL_COLOR, { skipReload: '1' });
-  }, [getValues, push, saveContent]);
+    push(
+      brand ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'personalColor') : ROUTES.POSTS_CREATE_PERSONAL_COLOR,
+      { skipReload: '1' },
+    );
+  }, [brand, getValues, push, saveContent]);
 
   const renderEditHeader = (
     title: string,

@@ -55,7 +55,8 @@ import hairLengthFeedbackM3 from '@/assets/hair-length-feedback/hair_length_feed
 import hairLengthFeedbackM4 from '@/assets/hair-length-feedback/hair_length_feedback_m4.png';
 import hairLengthFeedbackM5 from '@/assets/hair-length-feedback/hair_length_feedback_m5.png';
 import hairLengthFeedbackM6 from '@/assets/hair-length-feedback/hair_length_feedback_m6.png';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useGetHairConsultationAnswerDetail from '@/features/posts/api/use-get-hair-consultation-answer-detail';
 import useGetHairConsultationDetail from '@/features/posts/api/use-get-hair-consultation-detail';
@@ -255,7 +256,10 @@ export default function NewConsultingResponsePage() {
   const { postId, responseId } = useParams();
   const searchParams = useSearchParams();
   const { push, back } = useRouterWithUser();
-  const { user, isUserModel } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const user = auth?.user ?? null;
+  const isUserModel = auth?.isUserModel ?? false;
+  const brand = useOptionalBrand();
   const { startChat } = useStartChat();
   const { canSkipMong } = useMeemongPassPolicy();
   const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
@@ -305,8 +309,8 @@ export default function NewConsultingResponsePage() {
     consultationDetail?.user?.id ??
     consultationDetail?.hairConsultationCreateUserId ??
     consultationDetail?.hairConsultationCreateUser?.userId;
-  const isResponseWriter = user.id === answer.user.id;
-  const isPostWriter = postWriterId != null && user.id === postWriterId;
+  const isResponseWriter = user != null && user.id === answer.user.id;
+  const isPostWriter = postWriterId != null && user != null && user.id === postWriterId;
   const shouldShowBottomModelActions = isUserModel && !isResponseWriter;
 
   const handleDesignerProfileClick = () => {
@@ -320,9 +324,10 @@ export default function NewConsultingResponsePage() {
   };
 
   const handleOriginalPostClick = () => {
-    push(ROUTES.POSTS_DETAIL(postIdString), {
-      [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
-    });
+    push(
+      brand ? ROUTES.WEB_POST_DETAIL(brand.config.slug, postIdString) : ROUTES.POSTS_DETAIL(postIdString),
+      { [SEARCH_PARAMS.POST_LIST_TAB]: postListTab },
+    );
   };
 
   const handleChatClick = async () => {

@@ -1,5 +1,5 @@
 import type { Post } from '@/entities/posts';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import PostList from '@/features/posts/ui/post-list/post-list';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import type { SelectedRegion } from '@/features/region/types/selected-region';
@@ -16,7 +16,8 @@ export default function ConsultingPostListContainer({
   activePostListTab,
   userSelectedRegionData,
 }: ConsultingPostListContainerProps) {
-  const { isUserDesigner } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const isUserDesigner = auth?.isUserDesigner ?? false;
 
   const listFilterParams =
     activePostListTab === 'my'

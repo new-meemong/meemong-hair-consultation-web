@@ -1,14 +1,15 @@
 import type { PostDetail } from '@/entities/posts/model/post-detail';
 import PostDetailAuthorProfile from './post-detail-author-profile';
 import PostDetailImage from './post-detail-image';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 
 type PostDetailContentProps = {
   postDetail: PostDetail;
 };
 
 export default function PostDetailContent({ postDetail }: PostDetailContentProps) {
-  const { user } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const user = auth?.user ?? null;
 
   const {
     hairConsultPostingCreateUserProfileImageUrl: authorImageUrl,
@@ -22,7 +23,7 @@ export default function PostDetailContent({ postDetail }: PostDetailContentProps
     isPhotoVisibleToDesigner: shouldShowImage,
   } = postDetail;
 
-  const isWriter = authorId === user.id;
+  const isWriter = user != null && authorId === user.id;
 
   return (
     <div className="flex flex-col gap-5 py-6">

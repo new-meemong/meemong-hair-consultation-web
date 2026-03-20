@@ -4,6 +4,7 @@ import { FormProvider } from 'react-hook-form';
 import HairConsultationForm from '@/features/posts/ui/hair-consultation-form/hair-consultation-form';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
 import { ROUTES } from '@/shared';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import type { WritingStep } from '@/features/posts/types/user-writing-content';
@@ -16,6 +17,7 @@ export default function HairConsultationFormContainer() {
   const [currentStep, setCurrentStep] = useState(1);
   const searchParams = useSearchParams();
   const { replace } = useRouterWithUser();
+  const brand = useOptionalBrand();
   const skipReload = searchParams.get('skipReload') === '1';
 
   const { method, submit, isPending } = useHairConsultationForm();
@@ -46,8 +48,8 @@ export default function HairConsultationFormContainer() {
 
   useEffect(() => {
     if (!skipReload) return;
-    replace(ROUTES.POSTS_CREATE);
-  }, [replace, skipReload]);
+    replace(brand ? ROUTES.WEB_POSTS_CREATE(brand.config.slug) : ROUTES.POSTS_CREATE);
+  }, [brand, replace, skipReload]);
 
   return (
     <FormProvider {...method}>

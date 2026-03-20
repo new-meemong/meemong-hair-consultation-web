@@ -66,12 +66,12 @@ export const hairConsultationFormSchema = z.object({
   [HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES]: z.array(
     z.object({
       type: z.enum(MY_IMAGE_TYPES),
-      image: z.instanceof(File),
+      image: z.custom<File>((val) => typeof File === 'undefined' || val instanceof File),
     }),
   ),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES]: z.object({
-    images: z.array(z.instanceof(File)).optional(),
-    resizedImages: z.array(z.instanceof(File)).optional(),
+    images: z.array(z.custom<File>((val) => typeof File === 'undefined' || val instanceof File)).optional(),
+    resizedImages: z.array(z.custom<File>((val) => typeof File === 'undefined' || val instanceof File)).optional(),
     description: z.string(),
   }),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.PRICE]: z.object({

@@ -1,34 +1,32 @@
 'use client';
 
+import Image from 'next/image';
+import { useMemo } from 'react';
+
 import {
   FEMALE_HAIR_LENGTH_OPTIONS,
   MALE_HAIR_LENGTH_OPTIONS,
 } from '@/features/posts/constants/hair-length-options';
-
 import { AppTypography } from '@/shared/styles/typography';
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '@/features/posts/constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
-import Image from 'next/image';
-import { ROUTES } from '@/shared';
 import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
-import { useAuthContext } from '@/features/auth/context/auth-context';
-import { useMemo } from 'react';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import { useSearchParams } from 'next/navigation';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
-export default function HairLengthSelectPage() {
-  const { replace } = useRouterWithUser();
-  const searchParams = useSearchParams();
-  const { user } = useAuthContext();
-  const { savedContent, saveContent } = useWritingContent(
-    USER_WRITING_CONTENT_KEYS.hairConsultation,
-  );
-  const isMale = user.sex === '남자';
+type Props = {
+  onComplete: () => void;
+  onBack: () => void;
+};
+
+export function HairLengthSelectPage({ onComplete, onBack }: Props) {
+  const auth = useOptionalAuthContext();
+  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
+  const isMale = auth?.user?.sex === '남자';
 
   const currentValue = useMemo(() => {
     const savedHairLength =
@@ -46,30 +44,19 @@ export default function HairLengthSelectPage() {
     value: HairConsultationFormValues[typeof HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH],
   ) => {
     const baseContent = savedContent?.content ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES;
-    const nextContent = {
-      ...baseContent,
-      [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH]: value,
-    };
     saveContent({
       step: savedContent?.step ?? 1,
-      content: nextContent,
+      content: {
+        ...baseContent,
+        [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH]: value,
+      },
     });
-
-    replace(ROUTES.POSTS_CREATE, { skipReload: '1' });
+    onComplete();
   };
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col bg-white">
-      <SiteHeader
-        title="머리기장"
-        showBackButton
-        onBackClick={() =>
-          replace(ROUTES.POSTS_CREATE, {
-            skipReload: '1',
-            ...Object.fromEntries(searchParams.entries()),
-          })
-        }
-      />
+      <SiteHeader title="머리기장" showBackButton onBackClick={onBack} />
       <div className="flex flex-col gap-7 px-5 pt-7 pb-6 flex-1 overflow-y-auto">
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between gap-2">

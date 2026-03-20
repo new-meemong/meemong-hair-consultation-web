@@ -1,8 +1,8 @@
 'use client';
 
-import { Button, ROUTES, ToggleChip, ToggleChipGroup } from '@/shared';
 import { useMemo, useState } from 'react';
 
+import { Button, ToggleChip, ToggleChipGroup } from '@/shared';
 import { AppTypography } from '@/shared/styles/typography';
 import Checkbox from '@/shared/ui/checkbox';
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
@@ -12,18 +12,17 @@ import type { HairConsultationConcern } from '@/entities/posts/api/create-hair-c
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import { useSearchParams } from 'next/navigation';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
 const SPECIAL_CONCERN = '특별한 문제는 없어요';
 
-export default function HairConcernSelectPage() {
-  const { replace } = useRouterWithUser();
-  const searchParams = useSearchParams();
-  const { savedContent, saveContent } = useWritingContent(
-    USER_WRITING_CONTENT_KEYS.hairConsultation,
-  );
+type Props = {
+  onComplete: () => void;
+  onBack: () => void;
+};
+
+export function HairConcernsSelectPage({ onComplete, onBack }: Props) {
+  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
 
   const initialValue = useMemo(() => {
     return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS] ?? [];
@@ -36,12 +35,8 @@ export default function HairConcernSelectPage() {
       if (value === SPECIAL_CONCERN) {
         return prev.includes(SPECIAL_CONCERN) ? [] : [SPECIAL_CONCERN];
       }
-      if (prev.includes(SPECIAL_CONCERN)) {
-        return [value];
-      }
-      if (prev.includes(value)) {
-        return prev.filter((item) => item !== value);
-      }
+      if (prev.includes(SPECIAL_CONCERN)) return [value];
+      if (prev.includes(value)) return prev.filter((item) => item !== value);
       return [...prev, value];
     });
   };
@@ -52,27 +47,13 @@ export default function HairConcernSelectPage() {
       ...baseContent,
       [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS]: selectedConcerns,
     };
-
-    saveContent({
-      step: savedContent?.step ?? 1,
-      content: nextContent,
-    });
-
-    replace(ROUTES.POSTS_CREATE, { skipReload: '1' });
+    saveContent({ step: savedContent?.step ?? 1, content: nextContent });
+    onComplete();
   };
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col bg-white">
-      <SiteHeader
-        title="헤어 고민"
-        showBackButton
-        onBackClick={() =>
-          replace(ROUTES.POSTS_CREATE, {
-            skipReload: '1',
-            ...Object.fromEntries(searchParams.entries()),
-          })
-        }
-      />
+      <SiteHeader title="헤어 고민" showBackButton onBackClick={onBack} />
       <div className="flex flex-col gap-7 px-5 pt-7 pb-6 flex-1 overflow-y-auto">
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between gap-2">

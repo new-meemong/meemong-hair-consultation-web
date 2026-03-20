@@ -7,7 +7,7 @@ import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 import { CarouselItem } from '@/shared/ui/carousel';
 
 import RankBadge from './rank-badge';
-import { useAuthContext } from '../context/auth-context';
+import { useOptionalAuthContext } from '../context/auth-context';
 
 type RankTier = 'top' | 'middle' | 'bottom';
 
@@ -44,7 +44,8 @@ type TopAdvisorCarouselItemProps = {
 };
 
 export default function TopAdvisorCarouselItem({ topAdvisor, rank }: TopAdvisorCarouselItemProps) {
-  const { isUserDesigner } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const isUserDesigner = auth?.isUserDesigner ?? false;
 
   const { profilePictureURL, displayName, companyName, userId } = topAdvisor;
 

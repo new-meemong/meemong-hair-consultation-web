@@ -1,7 +1,9 @@
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 
 export default function PromotionBanner() {
-  const { isUserDesigner, isUserModel } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const isUserDesigner = auth?.isUserDesigner ?? false;
+  const isUserModel = auth?.isUserModel ?? false;
 
   const text = isUserDesigner
     ? '홍보비 0원으로 매출 상승, 상담이 곧 예약이 되는 마법'

@@ -3,10 +3,7 @@ import '../styles/globals.css';
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import Script from 'next/script';
-import { Suspense } from 'react';
 
-import { AuthProvider } from '@/features/auth/context/auth-context';
-import { LoadingProvider } from '@/shared/context/loading-context';
 import { OverlayProvider } from '@/shared/context/overlay-context';
 import { ErrorBoundary } from '@/shared/error-boundary';
 import { QueryProvider } from '@/shared/ui/providers/query-provider';
@@ -46,11 +43,7 @@ export default function RootLayout({
         <OverlayProvider>
           <QueryProvider>
             <ErrorBoundary>
-              <Suspense fallback={<div />}>
-                <AuthProvider>
-                  <LoadingProvider>{children}</LoadingProvider>
-                </AuthProvider>
-              </Suspense>
+              {children}
             </ErrorBoundary>
           </QueryProvider>
         </OverlayProvider>
