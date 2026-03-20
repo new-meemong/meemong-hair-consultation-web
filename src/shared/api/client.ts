@@ -317,6 +317,13 @@ const createApiInstanceWithoutAuth = () => {
 export class ApiClientWithoutAuth {
   private api = createApiInstanceWithoutAuth();
 
+  async get<T>(
+    endpoint: string,
+    { searchParams }: { searchParams?: SearchParamsOption } = {},
+  ): Promise<ApiResponse<T>> {
+    return this.api.get(endpoint, { searchParams }).json<ApiResponse<T>>();
+  }
+
   async getList<T extends Record<string, unknown>>(
     endpoint: string,
     { searchParams }: { searchParams?: SearchParamsOption } = {},
