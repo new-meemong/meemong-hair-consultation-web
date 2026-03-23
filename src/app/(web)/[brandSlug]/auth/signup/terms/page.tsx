@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-
-import { useBrand } from '@/shared/context/brand-context';
-import { ROUTES } from '@/shared/lib/routes';
 import Checkbox from '@/shared/ui/checkbox';
 import { Loader } from '@/shared/ui/loader';
+import { ROUTES } from '@/shared/lib/routes';
 import { SiteHeader } from '@/widgets/header/ui/site-header';
+import { apiClientWithoutAuth } from '@/shared/api/client';
+import { useBrand } from '@/shared/context/brand-context';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 const SIGNUP_FORM_KEY = (slug: string) => `web_signup_form:${slug}`;
 
@@ -35,8 +35,23 @@ export default function SignupTermsPage() {
     setIsSubmitting(true);
     try {
       const formData = JSON.parse(sessionStorage.getItem(SIGNUP_FORM_KEY(brand.slug)) ?? '{}');
-      // TODO: POST auth/phone/signup with { ...formData, termsMarketing }
-      console.log('signup data:', { ...formData, termsMarketing });
+      const response = await apiClientWithoutAuth.post<{
+        id: number;
+        token: string;
+        MongMoney: null;
+      }>('auth/phone/register/model', {
+        authToken: formData.authToken,
+        phoneNumber: formData.phoneNumber,
+        sex: formData.gender === 'FEMALE' ? '여자' : '남자',
+        address: `${formData.region.key} ${formData.region.value}`,
+        agreementAdvertisement: termsMarketing,
+      });
+
+      // TODO: Phase 3 WebAuthProvider — store web_user_data:${brand.slug}
+      localStorage.setItem(
+        `web_user_data:${brand.slug}`,
+        JSON.stringify({ userId: response.data.id, token: response.data.token }),
+      );
       sessionStorage.removeItem(SIGNUP_FORM_KEY(brand.slug));
       router.push(ROUTES.WEB_MY(brand.slug));
     } finally {

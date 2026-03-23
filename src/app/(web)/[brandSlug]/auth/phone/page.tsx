@@ -129,29 +129,27 @@ export default function PhoneAuthPage() {
           JSON.stringify({ userId: loginData.id, token: loginData.token }),
         );
 
-        // 소셜 연결 계정 조회
+        // 로그인 성공 → 바로 마이페이지
+        router.push(ROUTES.WEB_MY(brand.slug));
+      } catch {
+        // 로그인 실패 → 해당 번호로 연동 계정 검색
         const modelResponse = await apiClientWithoutAuth.get<{ users: LinkedUser[] }>(
           'auth/phone/model',
           { searchParams: { authToken } },
         );
         const linkedUsers = modelResponse.data.users;
 
+        sessionStorage.setItem(
+          `web_signup_form:${brand.slug}`,
+          JSON.stringify({ authToken, phoneNumber: phoneDigits }),
+        );
+
         if (linkedUsers.length > 0) {
+          // 연동할 계정 존재 → 계정 선택 페이지
           router.push(ROUTES.WEB_AUTH_LINK(brand.slug));
         } else {
-          router.push(ROUTES.WEB_MY(brand.slug));
-        }
-      } catch (loginError: unknown) {
-        const status = (loginError as { response?: { status?: number } }).response?.status;
-        if (status === 404) {
-          // 미가입 유저 → 회원가입 (authToken + phoneNumber 전달)
-          sessionStorage.setItem(
-            `web_signup_form:${brand.slug}`,
-            JSON.stringify({ authToken, phoneNumber: phoneDigits }),
-          );
+          // 계정 없음 → 회원가입
           router.push(ROUTES.WEB_AUTH_SIGNUP(brand.slug));
-        } else {
-          setVerifyError(true);
         }
       }
     } catch {
