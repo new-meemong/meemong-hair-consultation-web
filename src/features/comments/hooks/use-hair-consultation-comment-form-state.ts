@@ -5,7 +5,7 @@ import type { Comment } from '@/entities/comment/model/comment';
 import type { CommentFormState } from '../types/comment-form-state';
 import type { CommentFormValues } from '../ui/comment-form';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import useHairConsultationCommentOperations from './use-hair-consultation-comment-operations';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useSearchParams } from 'next/navigation';
@@ -28,7 +28,8 @@ export const useHairConsultationCommentFormState = ({
   hairConsultationId,
   receiverId,
 }: UseHairConsultationCommentFormStateProps) => {
-  const { isUserDesigner } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const isUserDesigner = auth?.isUserDesigner ?? false;
   const { showSnackBar } = useOverlayContext();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const showCommentMongConsumeSheet = useShowCommentMongConsumeSheet();

@@ -1,13 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   FEMALE_HAIR_LENGTH_OPTIONS,
   MALE_HAIR_LENGTH_OPTIONS,
 } from '@/features/posts/constants/hair-length-options';
 import { AppTypography } from '@/shared/styles/typography';
+import { Button } from '@/shared';
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '@/features/posts/constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
@@ -28,27 +29,30 @@ export function HairLengthSelectPage({ onComplete, onBack }: Props) {
   const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
   const isMale = auth?.user?.sex === '남자';
 
-  const currentValue = useMemo(() => {
+  const initialValue = useMemo(() => {
     const savedHairLength =
       savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH] ?? null;
-    if (!isMale && savedHairLength === '장발') return '롱';
+    if (!isMale && savedHairLength === '장발') return '롱' as const;
     return savedHairLength;
   }, [isMale, savedContent]);
+
+  const [selectedValue, setSelectedValue] = useState<
+    HairConsultationFormValues[typeof HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH] | null
+  >(initialValue);
 
   const options = useMemo(
     () => (isMale ? MALE_HAIR_LENGTH_OPTIONS : FEMALE_HAIR_LENGTH_OPTIONS),
     [isMale],
   );
 
-  const handleSelect = (
-    value: HairConsultationFormValues[typeof HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH],
-  ) => {
+  const handleComplete = () => {
+    if (!selectedValue) return;
     const baseContent = savedContent?.content ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES;
     saveContent({
       step: savedContent?.step ?? 1,
       content: {
         ...baseContent,
-        [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH]: value,
+        [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH]: selectedValue,
       },
     });
     onComplete();
@@ -70,13 +74,13 @@ export function HairLengthSelectPage({ onComplete, onBack }: Props) {
           </span>
         </div>
         {options.map((option) => {
-          const isSelected = option.value === currentValue;
+          const isSelected = option.value === selectedValue;
           return (
             <button
               key={option.value}
               type="button"
               className="flex w-full items-center gap-4 rounded-8 px-0 h-32"
-              onClick={() => handleSelect(option.value)}
+              onClick={() => setSelectedValue(option.value)}
             >
               <div className="relative w-[100px] h-[128px] flex-shrink-0 rounded-6 overflow-hidden bg-alternative">
                 <Image src={option.image} alt={option.label} fill className="object-cover" />
@@ -99,6 +103,11 @@ export function HairLengthSelectPage({ onComplete, onBack }: Props) {
             </button>
           );
         })}
+      </div>
+      <div className="px-5 py-3 border-t border-1 border-border-default">
+        <Button className="w-full" size="lg" onClick={handleComplete} disabled={!selectedValue}>
+          완료
+        </Button>
       </div>
     </div>
   );

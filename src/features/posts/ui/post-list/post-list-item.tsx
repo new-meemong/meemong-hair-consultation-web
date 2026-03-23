@@ -13,7 +13,7 @@ import type { ValueOf } from '@/shared/type/types';
 import formatAddress from '@/features/auth/lib/format-address';
 import formatDateTime from '@/shared/lib/formatDateTime';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 
 type PostListItemProps = {
   createdAt: string;
@@ -51,7 +51,8 @@ const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function Post
 ) {
   const isValidImageUrl = repImageUrl && isValidUrl(repImageUrl);
 
-  const { isUserDesigner } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const isUserDesigner = auth?.isUserDesigner ?? false;
 
   const handleClick = useCallback(() => {
     onClick?.();

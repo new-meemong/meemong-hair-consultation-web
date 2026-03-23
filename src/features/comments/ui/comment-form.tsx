@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
 
 import ArrowUpIcon from '@/assets/icons/arrow-up.svg';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';
@@ -42,7 +42,8 @@ export function CommentForm({
   isPending,
   textareaRef,
 }: CommentFormProps) {
-  const { isUserDesigner } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const isUserDesigner = auth?.isUserDesigner ?? false;
   const placeholder = isReply ? '대댓글을 입력하세요' : '댓글을 입력하세요';
 
   const method = useForm<CommentFormValues>({

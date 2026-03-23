@@ -2,7 +2,7 @@ import { useSearchParams } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import type { CommentFormState } from '@/features/comments/types/comment-form-state';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
 import useWritingConsultingResponse from '@/features/posts/hooks/use-writing-consulting-response';
@@ -41,7 +41,8 @@ export default function CommentFormContainer({
   const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
 
   const { push } = useRouterWithUser();
-  const { isUserDesigner } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const isUserDesigner = auth?.isUserDesigner ?? false;
   const showModal = useShowModal();
 
   const isCommentFormReply = commentFormState.state === 'reply';

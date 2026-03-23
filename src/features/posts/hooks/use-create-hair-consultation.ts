@@ -8,8 +8,10 @@ import type { HairConsultationFormValues } from '../types/hair-consultation-form
 import { MY_IMAGE_TYPE } from '../constants/my-image-type';
 import type { ValueOf } from '@/shared/type/types';
 import { apiClient } from '@/shared/api/client';
+import { getBrandSelectionPayload } from '@/shared/config/brands';
 import { resizeImageFile } from '@/shared/lib/resize-image-file';
 import useCreateHairConsultationMutation from '../api/use-create-hair-consultation-mutation';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useState } from 'react';
 
 const DECOLORIZATION_COUNT_TREATMENT_TYPES = new Set(['일반염색', '블랙염색', '블랙빼기']);
@@ -45,6 +47,7 @@ export function useCreateHairConsultation() {
   const { mutate: createHairConsultation, isPending: isCreatingHairConsultation } =
     useCreateHairConsultationMutation();
   const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const brand = useOptionalBrand();
 
   const getPresignedUploadData = async (filename: string) => {
     let lastError: unknown;
@@ -199,7 +202,9 @@ export function useCreateHairConsultation() {
         personalColor: data.personalColor,
         desiredDateType,
         desiredCostPrice,
-        brandSelectionType: 'ALL',
+        ...(brand
+          ? getBrandSelectionPayload(brand.config)
+          : { brandSelectionType: 'ALL' as const }),
         aspirationImages,
         myImages: myImageList,
         treatments,
