@@ -1,22 +1,38 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { GenderSelector, type Gender } from '@/features/profile/ui/gender-selector';
 import { useBrand } from '@/shared/context/brand-context';
 import { ROUTES } from '@/shared/lib/routes';
+import { createWebApiClient } from '@/shared/lib/web-api';
 import { SiteHeader } from '@/widgets/header/ui/site-header';
 
 const SIGNUP_FORM_KEY = (slug: string) => `web_signup_form:${slug}`;
+const WEB_USER_KEY = (slug: string) => `web_user_data:${slug}`;
 
 export default function SignupGenderPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { config: brand } = useBrand();
-  const [gender, setGender] = useState<Gender | null>(null);
 
-  const handleConfirm = () => {
+  const isEditMode = searchParams.get('editMode') === 'true';
+  const initialGender = (searchParams.get('gender') as Gender | null) ?? null;
+
+  const [gender, setGender] = useState<Gender | null>(initialGender);
+
+  const handleConfirm = async () => {
     if (!gender) return;
+
+    if (isEditMode) {
+      const userData = JSON.parse(localStorage.getItem(WEB_USER_KEY(brand.slug)) ?? '{}');
+      const api = createWebApiClient(userData.token);
+      await api.patch('models/me', { sex: gender === 'FEMALE' ? '여자' : '남자' });
+      router.push(ROUTES.WEB_MY(brand.slug));
+      return;
+    }
+
     const existing = JSON.parse(sessionStorage.getItem(SIGNUP_FORM_KEY(brand.slug)) ?? '{}');
     sessionStorage.setItem(SIGNUP_FORM_KEY(brand.slug), JSON.stringify({ ...existing, gender }));
     router.push(ROUTES.WEB_AUTH_SIGNUP_REGION(brand.slug));
@@ -24,16 +40,18 @@ export default function SignupGenderPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      <SiteHeader title="회원가입" showBackButton onBackClick={() => router.back()} />
+      <SiteHeader
+        title={isEditMode ? '성별 수정' : '회원가입'}
+        showBackButton
+        onBackClick={() => router.back()}
+      />
 
       <div className="flex-1 overflow-y-auto px-5 pt-8 pb-6">
         <div className="flex items-start gap-2 mb-2">
           <p className="typo-headline-semibold text-label-strong">성별을 선택해주세요</p>
           <span className="typo-body-2-semibold text-cautionary shrink-0">필수</span>
         </div>
-        <p className="typo-body-1-regular text-label-info mb-8">
-          성별에 맞는 맞춤 상담지를 드려요
-        </p>
+        <p className="typo-body-1-regular text-label-info mb-8">성별에 맞는 맞춤 상담지를 드려요</p>
         <GenderSelector value={gender} onChange={setGender} />
       </div>
 

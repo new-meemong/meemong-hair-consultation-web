@@ -1,10 +1,9 @@
 'use client';
 
-import { useConsultationNavigation } from '@/features/posts/hooks/use-consultation-navigation';
 import { PersonalColorSelectPage } from '@/features/posts/pages/personal-color-select-page';
+import { useConsultationEditNavigation } from '@/features/posts/hooks/use-consultation-edit-navigation';
 
 export default function Page() {
-  const { goNext, goPrev } = useConsultationNavigation('personalColor');
-
-  return <PersonalColorSelectPage onComplete={goNext} onBack={goPrev} />;
+  const { onComplete, onBack } = useConsultationEditNavigation('personalColor');
+  return <PersonalColorSelectPage onComplete={onComplete} onBack={onBack} />;
 }

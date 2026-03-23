@@ -1,3 +1,4 @@
+import { brandRegistry, getBrandConfig, getBrandSelectionPayload } from './index';
 import { describe, expect, it, vi } from 'vitest';
 
 // PNG import는 Vitest에서 string을 반환해 StaticImageData Zod 검증이 실패하므로
@@ -9,6 +10,7 @@ vi.mock('./meemong', () => ({
     displayName: '미몽 헤어컨설팅',
     apiBrandId: null,
     logo: { src: { src: '/logos/meemong.png', width: 578, height: 134 }, width: 160, height: 37 },
+    smallLogo: { src: { src: '/logos/meemong-small.png', width: 40, height: 40 } },
     theme: {},
     features: { chat: true, mong: true, growthPass: true },
   },
@@ -21,12 +23,11 @@ vi.mock('./parkjun', () => ({
     displayName: '박준 뷰티랩',
     apiBrandId: 1,
     logo: { src: { src: '/logos/parkjun.png', width: 288, height: 231 }, width: 120, height: 96 },
+    smallLogo: { src: { src: '/logos/parkjun-small.png', width: 40, height: 40 } },
     theme: { colorCautionary: '#C8A97E' },
     features: { chat: false, mong: false, growthPass: false },
   },
 }));
-
-import { brandRegistry, getBrandConfig, getBrandSelectionPayload } from './index';
 
 describe('getBrandConfig', () => {
   it('유효한 slug(meemong)는 BrandConfig를 반환한다', () => {

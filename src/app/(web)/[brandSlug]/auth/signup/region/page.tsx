@@ -1,32 +1,40 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-
 import { getCurrentPosition, reverseGeocodeToRegion } from '@/features/region/lib/kakao-geocoding';
-import { RegionAddressInput } from '@/features/region/ui/region-address-input';
-import { useBrand } from '@/shared/context/brand-context';
-import { ROUTES } from '@/shared/lib/routes';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import { Loader } from '@/shared/ui/loader';
+import { ROUTES } from '@/shared/lib/routes';
+import { RegionAddressInput } from '@/features/region/ui/region-address-input';
 import { SiteHeader } from '@/widgets/header/ui/site-header';
+import { createWebApiClient } from '@/shared/lib/web-api';
+import { useBrand } from '@/shared/context/brand-context';
 
 const SIGNUP_FORM_KEY = (slug: string) => `web_signup_form:${slug}`;
+const WEB_USER_KEY = (slug: string) => `web_user_data:${slug}`;
 
 export default function SignupRegionPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { config: brand } = useBrand();
 
-  const [regionKey, setRegionKey] = useState<string | null>(null);
-  const [regionValue, setRegionValue] = useState<string | null>(null);
+  const isEditMode = searchParams.get('editMode') === 'true';
+
+  const [regionKey, setRegionKey] = useState<string | null>(searchParams.get('regionKey') ?? null);
+  const [regionValue, setRegionValue] = useState<string | null>(
+    searchParams.get('regionValue') ?? null,
+  );
   const [searchOpen, setSearchOpen] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
 
   const regionDisplay = regionKey && regionValue ? `${regionKey} ${regionValue}` : null;
 
   useEffect(() => {
-    requestCurrentLocation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!isEditMode) {
+      requestCurrentLocation();
+    }
+  }, [isEditMode]);
 
   const requestCurrentLocation = async () => {
     setIsLocating(true);
@@ -47,8 +55,17 @@ export default function SignupRegionPage() {
     }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!regionKey || !regionValue) return;
+
+    if (isEditMode) {
+      const userData = JSON.parse(localStorage.getItem(WEB_USER_KEY(brand.slug)) ?? '{}');
+      const api = createWebApiClient(userData.token);
+      await api.patch('models/me', { address: `${regionKey} ${regionValue}` });
+      router.push(ROUTES.WEB_MY(brand.slug));
+      return;
+    }
+
     const existing = JSON.parse(sessionStorage.getItem(SIGNUP_FORM_KEY(brand.slug)) ?? '{}');
     sessionStorage.setItem(
       SIGNUP_FORM_KEY(brand.slug),
@@ -59,7 +76,11 @@ export default function SignupRegionPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      <SiteHeader title="회원가입" showBackButton onBackClick={() => router.back()} />
+      <SiteHeader
+        title={isEditMode ? '추천지역 수정' : '회원가입'}
+        showBackButton
+        onBackClick={() => router.back()}
+      />
 
       <div className="flex-1 overflow-y-auto px-5 pt-8 pb-6">
         <div className="flex items-start gap-2 mb-2">

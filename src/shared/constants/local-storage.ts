@@ -1,3 +1,6 @@
+export const WEB_USER_DATA_KEY = (slug: string) => `web_user_data:${slug}`;
+export const WEB_HAIR_CONSULTATION_CONTENT_KEY = 'web_writing_content_hairConsultation';
+
 export const USER_GUIDE_KEYS = {
   hasSeenCreatePostGuide: 'hasSeenCreatePostGuide',
   hasSeenDesignerOnboardingGuide: 'hasSeenDesignerOnboardingGuide',
