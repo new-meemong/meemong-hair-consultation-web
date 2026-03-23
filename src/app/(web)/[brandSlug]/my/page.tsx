@@ -11,11 +11,11 @@ import {
   WEB_HAIR_CONSULTATION_CONTENT_KEY,
   WEB_USER_DATA_KEY,
 } from '@/shared/constants/local-storage';
-import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
 import { useEffect, useState } from 'react';
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
+import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
 import EyeIcon from '@/assets/icons/eye.svg';
 import { Loader } from '@/shared/ui/loader';
 import { ROUTES } from '@/shared/lib/routes';
@@ -105,7 +105,8 @@ export default function MyPage() {
       .then((data) => setModel(data))
       .catch(() => {})
       .finally(() => setIsLoading(false));
-  }, [brand.slug, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [brand.slug]);
 
   const handleShare = async () => {
     const url = `${window.location.origin}${ROUTES.WEB_WELCOME(brand.slug)}`;
@@ -270,13 +271,24 @@ export default function MyPage() {
           onClick={() => {
             const content = {
               ...DEFAULT_HAIR_CONSULTATION_FORM_VALUES,
-              hairLength: model?.modelInfo?.hairLength ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairLength,
-              hairConcerns: model?.modelInfo?.hairConcerns ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairConcerns,
-              hairTexture: model?.modelInfo?.hairTexture ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairTexture,
-              skinBrightness: model?.modelInfo?.skinBrightness ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.skinBrightness,
-              personalColor: model?.modelInfo?.personalColor ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.personalColor,
+              hairLength:
+                model?.modelInfo?.hairLength ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairLength,
+              hairConcerns:
+                model?.modelInfo?.hairConcerns ??
+                DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairConcerns,
+              hairTexture:
+                model?.modelInfo?.hairTexture ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairTexture,
+              skinBrightness:
+                model?.modelInfo?.skinBrightness ??
+                DEFAULT_HAIR_CONSULTATION_FORM_VALUES.skinBrightness,
+              personalColor:
+                model?.modelInfo?.personalColor ??
+                DEFAULT_HAIR_CONSULTATION_FORM_VALUES.personalColor,
             };
-            localStorage.setItem(WEB_HAIR_CONSULTATION_CONTENT_KEY, JSON.stringify({ step: 1, content }));
+            localStorage.setItem(
+              WEB_HAIR_CONSULTATION_CONTENT_KEY,
+              JSON.stringify({ step: 1, content }),
+            );
             router.push(`${ROUTES.WEB_POSTS_CREATE(brand.slug)}?skipReload=1`);
           }}
         >

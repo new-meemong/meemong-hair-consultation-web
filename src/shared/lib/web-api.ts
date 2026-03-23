@@ -1,6 +1,5 @@
-import ky from 'ky';
-
 import { API_BASE_URL } from '@/shared/api/client';
+import ky from 'ky';
 
 /**
  * web_user_data token 기반 인증 API 클라이언트 팩토리
@@ -96,8 +95,13 @@ export function createWebApiClient(token: string) {
   });
 
   return {
-    async get<T>(endpoint: string): Promise<T> {
-      const res = await api.get(endpoint).json<{ data: T }>();
+    async get<T>(
+      endpoint: string,
+      options?: { searchParams?: Record<string, string> },
+    ): Promise<T> {
+      const res = await api
+        .get(endpoint, { searchParams: options?.searchParams })
+        .json<{ data: T }>();
       return res.data;
     },
     async patch(endpoint: string, data: unknown): Promise<void> {

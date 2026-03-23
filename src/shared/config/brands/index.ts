@@ -57,12 +57,13 @@ export function getBrandConfig(slug: string | undefined | null): BrandConfig | n
 }
 
 // 컨설팅 생성 API 호출 시 브랜드별 파라미터 변환
-export function getBrandSelectionPayload(brand: BrandConfig) {
-  if (brand.apiBrandId === null) {
+// brandId: GET /api/v1/brands/code 로 조회한 브랜드 ID (null = ALL 타입)
+export function getBrandSelectionPayload(brandId: number | null) {
+  if (brandId === null) {
     return { brandSelectionType: 'ALL' as const };
   }
   return {
     brandSelectionType: 'BRAND' as const,
-    brandIds: [brand.apiBrandId],
+    brandIds: [brandId],
   };
 }

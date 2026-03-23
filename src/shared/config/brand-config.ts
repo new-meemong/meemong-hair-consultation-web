@@ -7,7 +7,7 @@ export const BrandConfigSchema = z.object({
   slug: z.string(),
   name: z.string(),
   displayName: z.string(), // 웰컴 페이지 등 UI에 노출되는 브랜드명
-  apiBrandId: z.number().nullable(), // null = meemong (ALL 타입)
+  brandCode: z.string().nullable(), // null = meemong (ALL 타입), 그 외 브랜드는 대문자 6자리 코드
   logo: z.object({
     // StaticImageData 최소 shape 검증 — z.custom() 단독 사용 시 어떤 값도 통과하는 문제 방지
     src: z.custom<StaticImageData>(

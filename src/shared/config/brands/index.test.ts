@@ -8,7 +8,7 @@ vi.mock('./meemong', () => ({
     slug: 'meemong',
     name: '미몽',
     displayName: '미몽 헤어컨설팅',
-    apiBrandId: null,
+    brandCode: null,
     logo: { src: { src: '/logos/meemong.png', width: 578, height: 134 }, width: 160, height: 37 },
     smallLogo: { src: { src: '/logos/meemong-small.png', width: 40, height: 40 } },
     theme: {},
@@ -21,7 +21,7 @@ vi.mock('./parkjun', () => ({
     slug: 'parkjun',
     name: '박준뷰티랩',
     displayName: '박준 뷰티랩',
-    apiBrandId: 1,
+    brandCode: 'P4599',
     logo: { src: { src: '/logos/parkjun.png', width: 288, height: 231 }, width: 120, height: 96 },
     smallLogo: { src: { src: '/logos/parkjun-small.png', width: 40, height: 40 } },
     theme: { colorCautionary: '#C8A97E' },
@@ -34,14 +34,14 @@ describe('getBrandConfig', () => {
     const config = getBrandConfig('meemong');
     expect(config).not.toBeNull();
     expect(config?.slug).toBe('meemong');
-    expect(config?.apiBrandId).toBeNull();
+    expect(config?.brandCode).toBeNull();
   });
 
   it('유효한 slug(parkjun)는 BrandConfig를 반환한다', () => {
     const config = getBrandConfig('parkjun');
     expect(config).not.toBeNull();
     expect(config?.slug).toBe('parkjun');
-    expect(config?.apiBrandId).toBe(1);
+    expect(config?.brandCode).toBe('P4599');
   });
 
   it('미등록 slug는 null을 반환한다', () => {
@@ -64,16 +64,14 @@ describe('getBrandConfig', () => {
 });
 
 describe('getBrandSelectionPayload', () => {
-  it('meemong(apiBrandId=null)은 ALL 타입을 반환한다', () => {
-    const config = getBrandConfig('meemong')!;
-    const payload = getBrandSelectionPayload(config);
+  it('brandId=null이면 ALL 타입을 반환한다', () => {
+    const payload = getBrandSelectionPayload(null);
     expect(payload).toEqual({ brandSelectionType: 'ALL' });
   });
 
-  it('parkjun(apiBrandId=1)은 BRAND 타입과 brandIds를 반환한다', () => {
-    const config = getBrandConfig('parkjun')!;
-    const payload = getBrandSelectionPayload(config);
-    expect(payload).toEqual({ brandSelectionType: 'BRAND', brandIds: [1] });
+  it('brandId=32이면 BRAND 타입과 brandIds를 반환한다', () => {
+    const payload = getBrandSelectionPayload(32);
+    expect(payload).toEqual({ brandSelectionType: 'BRAND', brandIds: [32] });
   });
 });
 

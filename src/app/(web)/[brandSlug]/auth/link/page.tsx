@@ -57,7 +57,8 @@ export default function AccountLinkPage() {
       .then((res) => setUsers(res.data.users))
       .catch(() => router.replace(ROUTES.WEB_AUTH_PHONE(brand.slug)))
       .finally(() => setIsLoading(false));
-  }, [brand.slug, router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [brand.slug]);
 
   const handleSubmit = async () => {
     if (!selectedId || isSubmitting) return;

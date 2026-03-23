@@ -6,7 +6,7 @@ export const parkjunConfig: BrandConfig = {
   slug: 'parkjun',
   name: '박준뷰티랩',
   displayName: '박준 뷰티랩',
-  apiBrandId: 1, // BRAND 타입 — brandIds: [1]
+  brandCode: 'P4599', // GET /api/v1/brands/code 로 brandId를 동적 조회
   logo: { src: parkjunLogoLarge, width: 120, height: 96 },
   smallLogo: { src: parkjunLogoSmall },
   theme: { colorCautionary: '#C8A97E' },
