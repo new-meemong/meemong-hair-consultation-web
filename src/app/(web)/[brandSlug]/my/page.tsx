@@ -21,7 +21,9 @@ import { Loader } from '@/shared/ui/loader';
 import { ROUTES } from '@/shared/lib/routes';
 import ShareIcon from '@/assets/icons/share.svg';
 import { createWebApiClient } from '@/shared/lib/web-api';
+import { getWebUserData } from '@/shared/lib/auth';
 import { useBrand } from '@/shared/context/brand-context';
+import { useGetBrandByCode } from '@/entities/brands/api/use-get-brand-by-code';
 import { useRouter } from 'next/navigation';
 
 type ModelData = {
@@ -47,13 +49,13 @@ type InProgressConsultation = {
 };
 
 type SentConsultation = {
-  id: string;
+  id: number;
   title: string;
   createdAt: string;
-  maxAmount: number;
+  desiredCostPrice: number;
   viewCount: number;
   commentCount: number;
-  brandName: string;
+  brands?: { id: number }[];
 };
 
 function formatDate(dateStr: string): string {
@@ -62,7 +64,7 @@ function formatDate(dateStr: string): string {
 }
 
 function formatAmount(amount: number): string {
-  return `최대 ${amount.toLocaleString('ko-KR')}원`;
+  return `${amount.toLocaleString('ko-KR')}원`;
 }
 
 function formatPhone(phone: string): string {
@@ -73,23 +75,28 @@ export default function MyPage() {
   const router = useRouter();
   const { config: brand } = useBrand();
 
+  const webToken = getWebUserData(brand.slug)?.token ?? null;
+  const { data: brandData } = useGetBrandByCode(brand.brandCode, webToken);
+
   const [model, setModel] = useState<ModelData | null>(null);
   const [inProgress, _setInProgress] = useState<InProgressConsultation | null>(null);
-  const [sentConsultations, _setSentConsultations] = useState<SentConsultation[]>([]);
+  const [sentConsultations, setSentConsultations] = useState<SentConsultation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
   const [infoExpanded, setInfoExpanded] = useState(true);
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem(WEB_USER_DATA_KEY(brand.slug)) ?? '{}');
-    if (!userData.userId || !userData.token) {
+    const userData = getWebUserData(brand.slug);
+    if (!userData?.userId || !userData?.token) {
       router.replace(ROUTES.WEB_AUTH_PHONE(brand.slug));
       return;
     }
 
-    const api = createWebApiClient(userData.token);
+    const api = createWebApiClient(userData.token!);
 
     const fetchProfile = async () => {
-      let { modelInfoId } = userData;
+      let { modelInfoId } = userData!;
       if (!modelInfoId) {
         const me = await api.get<{ id: number }>('models/me');
         modelInfoId = me.id;
@@ -101,12 +108,31 @@ export default function MyPage() {
       return api.get<ModelData>(`models/${modelInfoId}/my-page`);
     };
 
-    fetchProfile()
-      .then((data) => setModel(data))
-      .catch(() => {})
+    const fetchConsultations = () =>
+      api.getRaw<{ dataList: SentConsultation[] }>('hair-consultations', {
+        searchParams: { isMine: true, __limit: 50 },
+      });
+
+    Promise.all([fetchProfile(), fetchConsultations()])
+      .then(([profileData, consultationsData]) => {
+        setModel(profileData);
+        setSentConsultations(consultationsData.dataList);
+      })
+      .catch((error: unknown) => {
+        const status =
+          error instanceof Error && 'response' in error
+            ? (error as { response?: { status?: number } }).response?.status
+            : undefined;
+        if (status === 401 || status === 403) {
+          localStorage.removeItem(WEB_USER_DATA_KEY(brand.slug));
+          router.replace(ROUTES.WEB_WELCOME(brand.slug));
+        } else {
+          setFetchError(true);
+        }
+      })
       .finally(() => setIsLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [brand.slug]);
+  }, [brand.slug, retryKey]);
 
   const handleShare = async () => {
     const url = `${window.location.origin}${ROUTES.WEB_WELCOME(brand.slug)}`;
@@ -167,6 +193,29 @@ export default function MyPage() {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader size="md" theme="dark" />
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen gap-3 px-5">
+        <p className="typo-body-1-regular text-label-info text-center">
+          데이터를 불러오지 못했어요.
+          <br />
+          잠시 후 다시 시도해주세요.
+        </p>
+        <button
+          type="button"
+          className="px-6 py-3 rounded-[4px] typo-body-2-medium bg-label-default text-white"
+          onClick={() => {
+            setFetchError(false);
+            setIsLoading(true);
+            setRetryKey((k) => k + 1);
+          }}
+        >
+          다시 시도
+        </button>
       </div>
     );
   }
@@ -247,16 +296,24 @@ export default function MyPage() {
         </section>
 
         {/* 보낸 상담지 */}
-        <section className="px-5 py-6">
-          <p className="typo-body-2-semibold text-label-default mb-4">보낸 상담지</p>
+        <section>
+          <p className="typo-body-2-semibold text-label-default px-5 py-6 pb-0 mb-2">보낸 상담지</p>
           {sentConsultations.length === 0 ? (
             <p className="py-8 text-center typo-body-1-regular text-label-placeholder">
               아직 보낸 상담지가 없어요
             </p>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col">
               {sentConsultations.map((c) => (
-                <SentConsultationCard key={c.id} consultation={c} />
+                <SentConsultationCard
+                  key={c.id}
+                  consultation={c}
+                  brandName={
+                    brandData && c.brands?.some((b) => b.id === brandData.id)
+                      ? brand.name
+                      : undefined
+                  }
+                />
               ))}
             </div>
           )}
@@ -375,34 +432,36 @@ function InProgressCard({
   );
 }
 
-function SentConsultationCard({ consultation }: { consultation: SentConsultation }) {
+function SentConsultationCard({
+  consultation,
+  brandName,
+}: {
+  consultation: SentConsultation;
+  brandName?: string;
+}) {
   return (
-    <div className="border border-border-default rounded-[8px] p-4">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex-1 min-w-0">
-          <p className="typo-body-2-regular text-label-info mb-1">
-            {formatDate(consultation.createdAt)}
-          </p>
-          <p className="typo-body-1-semibold text-label-strong truncate mb-2">
-            {consultation.title}
-          </p>
-          <div className="flex items-center gap-3">
-            <span className="typo-body-2-regular text-label-default">
-              {formatAmount(consultation.maxAmount)}
-            </span>
-            <div className="flex items-center gap-1 text-label-info">
-              <EyeIcon className="size-3.5 fill-label-info" />
-              <span className="typo-body-2-regular">{consultation.viewCount}</span>
-            </div>
-            <div className="flex items-center gap-1 text-label-info">
-              <CommentIcon className="size-3.5 fill-label-info" />
-              <span className="typo-body-2-regular">{consultation.commentCount}</span>
-            </div>
+    <div className="border-b border-gray-200 p-5 flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
+        <p className="typo-body-3-regular text-label-info">{formatDate(consultation.createdAt)}</p>
+        <h2 className="typo-headline-bold text-label-strong overflow-hidden text-ellipsis line-clamp-1">
+          {consultation.title}
+        </h2>
+        <p className="typo-body-2-regular text-label-default">
+          {formatAmount(consultation.desiredCostPrice)}
+        </p>
+      </div>
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
+            <EyeIcon className="size-4 fill-label-info" />
+            <span className="typo-body-2-medium text-label-info">{consultation.viewCount}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <CommentIcon className="w-4 h-4 fill-positive" />
+            <span className="typo-body-2-medium text-positive">{consultation.commentCount}</span>
           </div>
         </div>
-        <span className="typo-body-2-semibold text-label-info shrink-0">
-          {consultation.brandName}
-        </span>
+        {brandName && <span className="typo-body-2-medium text-label-info">{brandName}</span>}
       </div>
     </div>
   );

@@ -1,11 +1,12 @@
 import type { Post } from '@/entities/posts';
-import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import PostList from '@/features/posts/ui/post-list/post-list';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import type { SelectedRegion } from '@/features/region/types/selected-region';
 import convertToAddresses from '@/shared/api/lib/convert-to-addresses';
 import { useCallback } from 'react';
+import { useGetBrandIdMap } from '@/entities/brands/api/use-get-brand-id-map';
 import useGetHairConsultations from '@/features/posts/api/use-get-hair-consultations';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 
 type ConsultingPostListContainerProps = {
   activePostListTab: PostListTab;
@@ -18,6 +19,7 @@ export default function ConsultingPostListContainer({
 }: ConsultingPostListContainerProps) {
   const auth = useOptionalAuthContext();
   const isUserDesigner = auth?.isUserDesigner ?? false;
+  const brandIdMap = useGetBrandIdMap();
 
   const listFilterParams =
     activePostListTab === 'my'
@@ -48,6 +50,9 @@ export default function ConsultingPostListContainer({
       minPaymentPrice: null,
       maxPaymentPrice: item.desiredCostPrice,
       isRead: item.isRead,
+      brandName: item.brands?.find((b) => brandIdMap.has(b.id))
+        ? brandIdMap.get(item.brands.find((b) => brandIdMap.has(b.id))!.id)
+        : undefined,
     })),
   );
 

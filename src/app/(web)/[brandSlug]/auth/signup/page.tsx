@@ -7,10 +7,10 @@ import { GenderSelector, type Gender } from '@/features/profile/ui/gender-select
 import { useBrand } from '@/shared/context/brand-context';
 import { ROUTES } from '@/shared/lib/routes';
 import { createWebApiClient } from '@/shared/lib/web-api';
+import { getWebUserData } from '@/shared/lib/auth';
 import { SiteHeader } from '@/widgets/header/ui/site-header';
 
 const SIGNUP_FORM_KEY = (slug: string) => `web_signup_form:${slug}`;
-const WEB_USER_KEY = (slug: string) => `web_user_data:${slug}`;
 
 export default function SignupGenderPage() {
   const router = useRouter();
@@ -26,8 +26,12 @@ export default function SignupGenderPage() {
     if (!gender) return;
 
     if (isEditMode) {
-      const userData = JSON.parse(localStorage.getItem(WEB_USER_KEY(brand.slug)) ?? '{}');
-      const api = createWebApiClient(userData.token);
+      const token = getWebUserData(brand.slug)?.token;
+      if (!token) {
+        router.replace(ROUTES.WEB_AUTH_PHONE(brand.slug));
+        return;
+      }
+      const api = createWebApiClient(token);
       await api.patch('models/me', { sex: gender === 'FEMALE' ? '여자' : '남자' });
       router.push(ROUTES.WEB_MY(brand.slug));
       return;

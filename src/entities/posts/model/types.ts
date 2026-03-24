@@ -21,6 +21,7 @@ export type Post = {
   minPaymentPrice: number | null;
   maxPaymentPrice: number | null;
   isRead: boolean;
+  brandName?: string;
 };
 
 export interface Banner {

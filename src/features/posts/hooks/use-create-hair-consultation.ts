@@ -7,9 +7,9 @@ import { format, subMonths } from 'date-fns';
 import type { HairConsultationFormValues } from '../types/hair-consultation-form-values';
 import { MY_IMAGE_TYPE } from '../constants/my-image-type';
 import type { ValueOf } from '@/shared/type/types';
-import { WEB_USER_DATA_KEY } from '@/shared/constants/local-storage';
 import { apiClient } from '@/shared/api/client';
 import { getBrandSelectionPayload } from '@/shared/config/brands';
+import { getWebUserData } from '@/shared/lib/auth';
 import { resizeImageFile } from '@/shared/lib/resize-image-file';
 import useCreateHairConsultationMutation from '../api/use-create-hair-consultation-mutation';
 import { useGetBrandByCode } from '@/entities/brands/api/use-get-brand-by-code';
@@ -50,11 +50,7 @@ export function useCreateHairConsultation() {
     useCreateHairConsultationMutation();
   const [isUploadingImages, setIsUploadingImages] = useState(false);
   const brand = useOptionalBrand();
-  const webToken =
-    brand?.config.slug && typeof window !== 'undefined'
-      ? (JSON.parse(localStorage.getItem(WEB_USER_DATA_KEY(brand.config.slug)) ?? '{}').token ??
-        null)
-      : null;
+  const webToken = brand?.config.slug ? (getWebUserData(brand.config.slug)?.token ?? null) : null;
   const { data: brandData } = useGetBrandByCode(brand?.config.brandCode ?? null, webToken);
 
   const getPresignedUploadData = async (filename: string) => {

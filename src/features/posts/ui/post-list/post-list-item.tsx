@@ -29,6 +29,7 @@ type PostListItemProps = {
   isRead: boolean;
   priceType?: ValueOf<typeof EXPERIENCE_GROUP_PRICE_TYPE>;
   onClick?: () => void;
+  brandName?: string;
 };
 
 const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function PostListItem(
@@ -46,6 +47,7 @@ const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function Post
     commentCount,
     isRead,
     priceType,
+    brandName,
   },
   ref,
 ) {
@@ -130,6 +132,7 @@ const PostListItem = forwardRef<HTMLDivElement, PostListItemProps>(function Post
               <span className="typo-body-2-medium text-positive">{commentCount}</span>
             </div>
           </div>
+          {brandName && <span className="typo-body-2-medium text-label-info">{brandName}</span>}
         </div>
       </div>
     </div>

@@ -17,10 +17,10 @@ export function createWebApiClient(token: string) {
     hooks: {
       beforeRequest: [
         (request) => {
+          if (process.env.NODE_ENV === 'production') return;
           console.group('🚀 API Request (Web Auth)');
           console.log('URL:', request.url);
           console.log('Method:', request.method);
-          console.log('Headers:', Object.fromEntries(request.headers.entries()));
 
           const url = new URL(request.url);
           if (url.searchParams.toString()) {
@@ -49,11 +49,11 @@ export function createWebApiClient(token: string) {
       ],
       afterResponse: [
         async (request, _options, response) => {
+          if (process.env.NODE_ENV === 'production') return;
           console.group('✅ API Response (Web Auth)');
           console.log('URL:', request.url);
           console.log('Method:', request.method);
           console.log('Status:', response.status, response.statusText);
-          console.log('Response Headers:', Object.fromEntries(response.headers.entries()));
 
           try {
             const body = await response.clone().text();
@@ -72,22 +72,24 @@ export function createWebApiClient(token: string) {
       ],
       beforeError: [
         async (error) => {
-          const response = error.response;
-          console.group('❌ API Error (Web Auth)');
-          console.log('URL:', error.request?.url);
-          console.log('Method:', error.request?.method);
-          console.log('Status:', response?.status, response?.statusText);
-          console.log('Error Message:', error.message);
+          if (process.env.NODE_ENV !== 'production') {
+            const response = error.response;
+            console.group('❌ API Error (Web Auth)');
+            console.log('URL:', error.request?.url);
+            console.log('Method:', error.request?.method);
+            console.log('Status:', response?.status, response?.statusText);
+            console.log('Error Message:', error.message);
 
-          if (response?.body) {
-            try {
-              const errorData = await response.clone().json();
-              console.log('Error Response Body:', errorData);
-            } catch {
-              console.log('Error Response Body: [Unable to read]');
+            if (response?.body) {
+              try {
+                const errorData = await response.clone().json();
+                console.log('Error Response Body:', errorData);
+              } catch {
+                console.log('Error Response Body: [Unable to read]');
+              }
             }
+            console.groupEnd();
           }
-          console.groupEnd();
           return error;
         },
       ],
@@ -97,12 +99,38 @@ export function createWebApiClient(token: string) {
   return {
     async get<T>(
       endpoint: string,
-      options?: { searchParams?: Record<string, string> },
+      options?: { searchParams?: Record<string, string | number | boolean | string[] | number[]> },
     ): Promise<T> {
-      const res = await api
-        .get(endpoint, { searchParams: options?.searchParams })
-        .json<{ data: T }>();
+      let searchParams: URLSearchParams | undefined;
+      if (options?.searchParams) {
+        searchParams = new URLSearchParams();
+        for (const [key, value] of Object.entries(options.searchParams)) {
+          if (Array.isArray(value)) {
+            value.forEach((v) => searchParams!.append(key, String(v)));
+          } else {
+            searchParams.set(key, String(value));
+          }
+        }
+      }
+      const res = await api.get(endpoint, { searchParams }).json<{ data: T }>();
       return res.data;
+    },
+    async getRaw<T>(
+      endpoint: string,
+      options?: { searchParams?: Record<string, string | number | boolean | string[] | number[]> },
+    ): Promise<T> {
+      let searchParams: URLSearchParams | undefined;
+      if (options?.searchParams) {
+        searchParams = new URLSearchParams();
+        for (const [key, value] of Object.entries(options.searchParams)) {
+          if (Array.isArray(value)) {
+            value.forEach((v) => searchParams!.append(key, String(v)));
+          } else {
+            searchParams.set(key, String(value));
+          }
+        }
+      }
+      return api.get(endpoint, { searchParams }).json<T>();
     },
     async patch(endpoint: string, data: unknown): Promise<void> {
       await api.patch(endpoint, { json: data });

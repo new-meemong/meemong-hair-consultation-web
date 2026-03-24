@@ -1,4 +1,9 @@
-import { USER_GUIDE_KEYS, USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
+import {
+  USER_GUIDE_KEYS,
+  USER_WRITING_CONTENT_KEYS,
+  WEB_HAIR_CONSULTATION_CONTENT_KEY,
+  WEB_USER_DATA_KEY,
+} from '@/shared/constants/local-storage';
 
 import type { SelectedRegion } from '@/features/region/types/selected-region';
 import type { User } from '@/entities/user/model/user';
@@ -144,6 +149,34 @@ export const updateUserSelectedRegionData = (selectedRegion: SelectedRegion | nu
 export const getToken = (): string | null => {
   const user = getCurrentUser();
   return user?.token || null;
+};
+
+export interface WebUserData {
+  token?: string;
+  userId?: number;
+  modelInfoId?: number;
+}
+
+export const getWebConsultationContent = (): Record<string, unknown> | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(WEB_HAIR_CONSULTATION_CONTENT_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+};
+
+export const getWebUserData = (slug: string): WebUserData | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(WEB_USER_DATA_KEY(slug));
+    if (!raw) return null;
+    return JSON.parse(raw) as WebUserData;
+  } catch {
+    return null;
+  }
 };
 
 export const removeUserData = (): void => {

@@ -80,6 +80,7 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
           }
           ref={index === observerTargetIndex ? observerRef : undefined}
           isRead={post.isRead}
+          brandName={post.brandName}
         />
       ))}
     </>

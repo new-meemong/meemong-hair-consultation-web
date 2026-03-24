@@ -1,4 +1,4 @@
-const KAKAO_CITY_NORMALIZE: Record<string, string> = {
+export const KAKAO_CITY_NORMALIZE: Record<string, string> = {
   서울특별시: '서울',
   부산광역시: '부산',
   인천광역시: '인천',
@@ -25,18 +25,12 @@ export async function reverseGeocodeToRegion(
   lat: number,
   lng: number,
 ): Promise<RegionResult | null> {
-  const apiKey = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY;
-  if (!apiKey) return null;
-
   try {
-    const res = await fetch(
-      `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`,
-      { headers: { Authorization: `KakaoAK ${apiKey}` } },
-    );
+    const res = await fetch(`/api/region/reverse-geocode?lat=${lat}&lng=${lng}`);
     const data = await res.json();
-    const region = data.documents?.find(
-      (d: { region_type: string }) => d.region_type === 'H',
-    );
+    console.log('[geocode] raw data:', data);
+    const region = data.documents?.find((d: { region_type: string }) => d.region_type === 'H');
+    console.log('[geocode] region:', region);
     if (!region) return null;
 
     const key = KAKAO_CITY_NORMALIZE[region.region_1depth_name] ?? region.region_1depth_name;
