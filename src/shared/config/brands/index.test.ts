@@ -29,6 +29,19 @@ vi.mock('./parkjun', () => ({
   },
 }));
 
+vi.mock('./vog', () => ({
+  vogConfig: {
+    slug: 'vog',
+    name: '보그헤어',
+    displayName: '보그헤어',
+    brandCode: 'V2920',
+    logo: { src: { src: '/logos/vog.png', width: 288, height: 231 }, width: 120, height: 96 },
+    smallLogo: { src: { src: '/logos/vog-small.png', width: 40, height: 40 } },
+    theme: {},
+    features: { chat: false, mong: false, growthPass: false },
+  },
+}));
+
 describe('getBrandConfig', () => {
   it('유효한 slug(meemong)는 BrandConfig를 반환한다', () => {
     const config = getBrandConfig('meemong');
@@ -37,11 +50,11 @@ describe('getBrandConfig', () => {
     expect(config?.brandCode).toBeNull();
   });
 
-  it('유효한 slug(parkjun)는 BrandConfig를 반환한다', () => {
-    const config = getBrandConfig('parkjun');
+  it('유효한 slug(vog)는 BrandConfig를 반환한다', () => {
+    const config = getBrandConfig('vog');
     expect(config).not.toBeNull();
-    expect(config?.slug).toBe('parkjun');
-    expect(config?.brandCode).toBe('P4599');
+    expect(config?.slug).toBe('vog');
+    expect(config?.brandCode).toBe('V2920');
   });
 
   it('미등록 slug는 null을 반환한다', () => {

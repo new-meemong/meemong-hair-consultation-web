@@ -2,11 +2,12 @@ import { type BrandConfig, BrandConfigSchema } from '@/shared/config/brand-confi
 
 import { ALLOWED_BRAND_SLUGS } from './allowed-slugs';
 import { meemongConfig } from './meemong';
-import { parkjunConfig } from './parkjun';
+import { vogConfig } from './vog';
 
 export const brandRegistry = {
   meemong: meemongConfig,
-  parkjun: parkjunConfig,
+  // parkjun: parkjunConfig,
+  vog: vogConfig,
 } as const;
 
 export type BrandSlug = keyof typeof brandRegistry;
