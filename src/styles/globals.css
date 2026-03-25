@@ -30,6 +30,11 @@
     -ms-user-select: auto;
     user-select: auto;
   }
+
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
 }
 
 @layer utilities {

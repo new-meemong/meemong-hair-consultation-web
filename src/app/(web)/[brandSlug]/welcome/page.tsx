@@ -32,42 +32,44 @@ export default function BrandWelcomePage() {
 
   return (
     <>
-      <div className="relative flex h-full min-h-screen flex-col">
-        <div className="flex flex-1 flex-col items-center justify-center pb-56">
-          <Image
-            src={brand.logo.src}
-            width={brand.logo.width}
-            height={brand.logo.height}
-            alt={brand.name}
-            priority
-          />
-          <div className="my-4 h-0.5 w-5 bg-border-default" />
-          <p className="typo-body-1-regular text-label-info">{brand.displayName}</p>
-        </div>
+      <div className="min-h-screen bg-white">
+        <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-5 pb-56">
+          <div className="flex flex-1 flex-col items-center justify-center">
+            <Image
+              src={brand.logo.src}
+              width={brand.logo.width}
+              height={brand.logo.height}
+              alt={brand.name}
+              priority
+            />
+            <div className="my-4 h-0.5 w-5 bg-border-default" />
+            <p className="typo-body-1-regular text-label-info">{brand.displayName}</p>
+          </div>
 
-        <div className="fixed bottom-0 left-1/2 w-full max-w-2xl -translate-x-1/2 px-5 pb-8">
-          <div className="flex flex-col gap-3">
-            <button
-              type="button"
-              className="flex w-full items-center justify-center rounded-[4px] border border-border-default bg-white px-5 py-4 typo-body-1-medium text-label-default"
-              onClick={() => router.push(ROUTES.WEB_SAMPLE(brand.slug))}
-            >
-              샘플보기
-            </button>
-            <button
-              type="button"
-              className="flex w-full items-center justify-center rounded-[4px] border border-border-default bg-white px-5 py-4 typo-body-1-medium text-label-default"
-              onClick={() => setHistorySheetOpen(true)}
-            >
-              내 컨설팅 목록
-            </button>
-            <button
-              type="button"
-              className="flex w-full items-center justify-center rounded-[4px] bg-cautionary px-5 py-4 typo-body-1-medium text-white"
-              onClick={goToPhoneAuth}
-            >
-              컨설팅 시작하기
-            </button>
+          <div className="absolute bottom-0 left-0 right-0 px-5 pb-8">
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                className="flex w-full items-center justify-center rounded-[4px] border border-border-default bg-white px-5 py-4 typo-body-1-medium text-label-default"
+                onClick={() => router.push(ROUTES.WEB_SAMPLE(brand.slug))}
+              >
+                샘플보기
+              </button>
+              <button
+                type="button"
+                className="flex w-full items-center justify-center rounded-[4px] border border-border-default bg-white px-5 py-4 typo-body-1-medium text-label-default"
+                onClick={() => setHistorySheetOpen(true)}
+              >
+                내 컨설팅 목록
+              </button>
+              <button
+                type="button"
+                className="flex w-full items-center justify-center rounded-[4px] bg-cautionary px-5 py-4 typo-body-1-medium text-white"
+                onClick={goToPhoneAuth}
+              >
+                컨설팅 시작하기
+              </button>
+            </div>
           </div>
         </div>
       </div>
