@@ -19,6 +19,7 @@
   --color-border-default: #e5e5e5;
   --color-border-alternative: #f4f4f5;
   --color-border-strong: #b6b6b6;
+  --color-border-active: #262524;
 
   /* Dimmer */
   --color-dimmer: rgba(38, 37, 36, 70%);

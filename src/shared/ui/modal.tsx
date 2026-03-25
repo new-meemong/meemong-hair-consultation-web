@@ -9,6 +9,7 @@ export type ModalButtonProps = {
   onClick?: () => void;
   disabled?: boolean;
   variant?: 'default' | 'primary'; // default: body-1-long-regular, primary: headline-medium
+  className?: string;
 };
 
 type ModalProps = {
@@ -28,6 +29,7 @@ function ModalButton({
   onClose,
   disabled = false,
   variant = 'default',
+  className,
 }: ModalButtonProps & { onClose: () => void }) {
   const handleClick = () => {
     onClick?.();
@@ -43,6 +45,7 @@ function ModalButton({
         'w-full px-7 py-5 text-center',
         typographyClass,
         textColor,
+        className,
         disabled && 'opacity-40 cursor-not-allowed',
       )}
       onClick={handleClick}

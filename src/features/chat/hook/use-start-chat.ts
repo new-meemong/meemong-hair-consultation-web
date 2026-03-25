@@ -2,10 +2,10 @@
 
 import { ROUTES } from '@/shared';
 import { openChatChannelInApp } from '@/shared/lib/app-bridge';
-import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useCallback } from 'react';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import useIsFromApp from '@/features/chat/hook/use-is-from-app';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 type ChatEntrySource = 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
@@ -25,7 +25,8 @@ type UseStartChatParams = {
  * - 웹인 경우 채팅 상세 페이지로 이동
  */
 export default function useStartChat() {
-  const { user } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const user = auth?.user ?? null;
   const { push } = useRouterWithUser();
   const isFromApp = useIsFromApp();
   const { findOrCreateChannel } = useHairConsultationChatChannelStore((state) => ({

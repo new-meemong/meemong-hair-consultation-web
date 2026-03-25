@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage, Button, ROUTES } from '@/shared';
+import { Avatar, AvatarFallback, AvatarImage, Button } from '@/shared';
 import {
   BANG_STYLE,
   BANG_STYLE_LABEL,
@@ -55,14 +55,15 @@ import hairLengthFeedbackM3 from '@/assets/hair-length-feedback/hair_length_feed
 import hairLengthFeedbackM4 from '@/assets/hair-length-feedback/hair_length_feedback_m4.png';
 import hairLengthFeedbackM5 from '@/assets/hair-length-feedback/hair_length_feedback_m5.png';
 import hairLengthFeedbackM6 from '@/assets/hair-length-feedback/hair_length_feedback_m6.png';
-import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
-import { useOptionalBrand } from '@/shared/context/brand-context';
 import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useGetHairConsultationAnswerDetail from '@/features/posts/api/use-get-hair-consultation-answer-detail';
 import useGetHairConsultationDetail from '@/features/posts/api/use-get-hair-consultation-detail';
 import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
 import useStartChat from '@/features/chat/hook/use-start-chat';
 
@@ -255,19 +256,44 @@ function RecommendationPreviewRows({ items }: { items: RecommendationPreviewItem
 export default function NewConsultingResponsePage() {
   const { postId, responseId } = useParams();
   const searchParams = useSearchParams();
-  const { push, back } = useRouterWithUser();
+  const { back } = useRouterWithUser();
   const auth = useOptionalAuthContext();
   const user = auth?.user ?? null;
   const isUserModel = auth?.isUserModel ?? false;
   const brand = useOptionalBrand();
+  const showModal = useShowModal();
   const { startChat } = useStartChat();
+
+  const showAppOnlyModal = () => {
+    const isIOS = /iPhone|iPad|iPod/i.test(
+      typeof navigator !== 'undefined' ? navigator.userAgent : '',
+    );
+    showModal({
+      id: 'app-only-feature-modal',
+      text: '디자이너 프로필 보기 및 추가상담은\n미몽 앱에서 가능합니다.',
+      buttons: [
+        {
+          label: '앱 다운로드',
+          className: 'typo-headline-bold text-border-active',
+          onClick: () => {
+            window.open(
+              isIOS
+                ? 'https://apps.apple.com/kr/app/%EB%AF%B8%EB%AA%BD-%EB%8B%B9%EC%8B%A0%EB%8F%84-%ED%97%A4%EC%96%B4%EB%AA%A8%EB%8D%B8/id1572588554'
+                : 'https://play.google.com/store/apps/details?id=com.meemong.second',
+              '_blank',
+            );
+          },
+        },
+        { label: '닫기' },
+      ],
+    });
+  };
   const { canSkipMong } = useMeemongPassPolicy();
   const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
   const { showSnackBar } = useOverlayContext();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const postIdString = postId?.toString() ?? '';
   const responseIdString = responseId?.toString() ?? '';
-  const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
   const [isStartingChat, setIsStartingChat] = useState(false);
 
   const { data: response, error } = useGetHairConsultationAnswerDetail(
@@ -311,9 +337,13 @@ export default function NewConsultingResponsePage() {
     consultationDetail?.hairConsultationCreateUser?.userId;
   const isResponseWriter = user != null && user.id === answer.user.id;
   const isPostWriter = postWriterId != null && user != null && user.id === postWriterId;
-  const shouldShowBottomModelActions = isUserModel && !isResponseWriter;
+  const shouldShowBottomActions = brand ? true : isUserModel && !isResponseWriter;
 
   const handleDesignerProfileClick = () => {
+    if (brand) {
+      showAppOnlyModal();
+      return;
+    }
     goDesignerProfilePage(answer.user.id.toString(), {
       postId: postIdString,
       answerId: responseIdString,
@@ -323,14 +353,11 @@ export default function NewConsultingResponsePage() {
     });
   };
 
-  const handleOriginalPostClick = () => {
-    push(
-      brand ? ROUTES.WEB_POST_DETAIL(brand.config.slug, postIdString) : ROUTES.POSTS_DETAIL(postIdString),
-      { [SEARCH_PARAMS.POST_LIST_TAB]: postListTab },
-    );
-  };
-
   const handleChatClick = async () => {
+    if (brand) {
+      showAppOnlyModal();
+      return;
+    }
     if (isStartingChat) return;
 
     const finalPostId = postIdString;
@@ -442,7 +469,7 @@ export default function NewConsultingResponsePage() {
       <div
         className="flex-1 overflow-y-auto"
         style={
-          shouldShowBottomModelActions
+          shouldShowBottomActions
             ? { paddingBottom: 'calc(100px + env(safe-area-inset-bottom))' }
             : undefined
         }
@@ -465,22 +492,6 @@ export default function NewConsultingResponsePage() {
               {`${formatDateTime(answer.createdAt)} 작성`}
             </p>
           </div>
-
-          {!isResponseWriter && !shouldShowBottomModelActions ? (
-            <div className="mt-8 flex w-full flex-col gap-3">
-              <Button theme="whiteBorder" onClick={handleChatClick}>
-                채팅하기
-              </Button>
-              <Button theme="whiteBorder" onClick={handleDesignerProfileClick}>
-                디자이너 프로필 보기
-              </Button>
-              {isPostWriter && (
-                <Button theme="whiteBorder" onClick={handleOriginalPostClick}>
-                  원글 보기
-                </Button>
-              )}
-            </div>
-          ) : null}
         </div>
 
         <div className="px-5 pt-7">
@@ -647,7 +658,7 @@ export default function NewConsultingResponsePage() {
         </div>
       </div>
 
-      {shouldShowBottomModelActions && (
+      {shouldShowBottomActions && (
         <div className="fixed inset-x-0 bottom-0 z-20 border-t-1 border-border-default bg-white">
           <div className="mx-auto flex min-w-[375px] w-full gap-2 px-5 pt-3 pb-[max(12px,env(safe-area-inset-bottom))]">
             <Button
