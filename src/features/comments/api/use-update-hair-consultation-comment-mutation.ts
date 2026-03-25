@@ -6,6 +6,9 @@ import { apiClient } from '@/shared/api/client';
 import { getHairConsultationCommentsQueryKeyPrefix } from './use-get-hair-consultation-comments';
 import { getHairConsultationDetailQueryKeyPrefix } from '@/features/posts/api/use-get-hair-consultation-detail';
 import { getHairConsultationsQueryKeyPrefix } from '@/features/posts/api/use-get-hair-consultations';
+import { useOptionalBrand } from '@/shared/context/brand-context';
+import { getWebUserData } from '@/shared/lib/auth';
+import { createWebApiClient } from '@/shared/lib/web-api';
 
 type MutationParams = {
   hairConsultationId: string;
@@ -15,13 +18,24 @@ type MutationParams = {
 
 export default function useUpdateHairConsultationCommentMutation() {
   const queryClient = useQueryClient();
+  const brand = useOptionalBrand();
 
   const mutation = useMutation({
-    mutationFn: ({ hairConsultationId, hairConsultationCommentId, data }: MutationParams) =>
-      apiClient.patch(
+    mutationFn: async ({ hairConsultationId, hairConsultationCommentId, data }: MutationParams) => {
+      if (brand) {
+        const webToken = getWebUserData(brand.config.slug)?.token;
+        if (webToken) {
+          return createWebApiClient(webToken).patch(
+            `${HAIR_CONSULTATION_API_PREFIX}/${hairConsultationId}/comments/${hairConsultationCommentId}`,
+            data,
+          );
+        }
+      }
+      return apiClient.patch(
         `${HAIR_CONSULTATION_API_PREFIX}/${hairConsultationId}/comments/${hairConsultationCommentId}`,
         data,
-      ),
+      );
+    },
     onSuccess: (_response, { hairConsultationId }) => {
       queryClient.invalidateQueries({
         queryKey: [getHairConsultationDetailQueryKeyPrefix(hairConsultationId)],

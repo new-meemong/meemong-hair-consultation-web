@@ -5,6 +5,7 @@ import { Suspense, type ReactNode } from 'react';
 import { type BrandConfig } from '@/shared/config/brand-config';
 import { brandRegistry, getBrandConfig } from '@/shared/config/brands';
 import { BrandProvider } from '@/shared/context/brand-context';
+import WebSessionGuard from './web-session-guard';
 
 function buildThemeVars(theme: BrandConfig['theme']): React.CSSProperties {
   return {
@@ -34,6 +35,7 @@ export default async function WebBrandLayout({
   return (
     <div style={buildThemeVars(brand.theme)} className="contents">
       <BrandProvider initialBrand={brand}>
+        <WebSessionGuard />
         <Suspense fallback={null}>{children}</Suspense>
       </BrandProvider>
     </div>

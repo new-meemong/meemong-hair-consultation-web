@@ -1,5 +1,7 @@
 import { cn } from '@/shared';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { getWebUserData } from '@/shared/lib/auth';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 
 type ConsultingResponseButtonProps = {
   isCommentWriter: boolean;
@@ -26,7 +28,10 @@ export default function ConsultingResponseButton({
   recommendedTreatment,
   onClick,
 }: ConsultingResponseButtonProps) {
-  const { isUserModel } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const brand = useOptionalBrand();
+  const isWebBrandModel = brand ? !!getWebUserData(brand.config.slug)?.userId : false;
+  const isUserModel = auth?.isUserModel ?? isWebBrandModel;
   const STORE_CONSULTING_TEXT = '매장상담이 필요합니다';
 
   const hidden = !isUserModel && !isCommentWriter;

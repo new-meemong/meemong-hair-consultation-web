@@ -5,8 +5,10 @@ import LockIcon from '@/assets/icons/lock.svg';
 import ProfileIcon from '@/assets/icons/profile.svg';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { cn } from '@/lib/utils';
+import { getWebUserData } from '@/shared/lib/auth';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
-import { useAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useShowInvalidChatRequestSheet } from '@/features/chat/hook/use-show-invalid-chat-request-sheet';
 
 type CommentAuthorProfileProps = {
@@ -40,9 +42,13 @@ export default function CommentAuthorProfile({
   isPostWriter = false,
   allComments = [],
 }: CommentAuthorProfileProps) {
-  const { user, isUserDesigner } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const brand = useOptionalBrand();
+  const webUserId = brand ? (getWebUserData(brand.config.slug)?.userId ?? null) : null;
+  const currentUserId = auth?.user?.id ?? webUserId;
+  const isUserDesigner = auth?.isUserDesigner ?? false;
 
-  const isWriter = user.id === author.userId;
+  const isWriter = currentUserId === author.userId;
 
   const { profilePictureURL, displayName } = author;
 

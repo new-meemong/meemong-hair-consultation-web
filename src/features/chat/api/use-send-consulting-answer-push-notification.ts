@@ -1,6 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
-
 import { apiClient } from '@/shared/api/client';
+import { useMutation } from '@tanstack/react-query';
 
 type SendConsultingAnswerPushNotificationRequest = {
   userId: string;
@@ -11,6 +10,7 @@ export default function useSendConsultingAnswerPushNotification() {
     mutationFn: (data: SendConsultingAnswerPushNotificationRequest) => {
       return apiClient.post('push/hair-consulting-answers', data);
     },
+    meta: { skipGlobalError: true },
   });
 
   return {

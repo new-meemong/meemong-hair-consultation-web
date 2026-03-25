@@ -3,9 +3,9 @@ import { Query, useInfiniteQuery, type InfiniteData, type QueryKey } from '@tans
 import type { ApiListResponse, ApiResponse } from '@/shared/api/client';
 import { filterUndefined } from '@/shared/lib/filter-undefined';
 
-import { apiClient } from '../client';
 import { DEFAULT_LIMIT } from '../constants/default-limit';
 import type { PagingQueryParams } from '../types/paging-query-params';
+import { useContextualApiClient } from './use-contextual-api-client';
 
 type UseCursorInfiniteQueryParams<TData extends Record<string, unknown>> = PagingQueryParams & {
   endpoint: string;
@@ -25,6 +25,8 @@ export default function useCursorInfiniteQuery<TData extends Record<string, unkn
   select,
   enabled = true,
 }: UseCursorInfiniteQueryParams<TData>) {
+  const client = useContextualApiClient();
+
   return useInfiniteQuery<
     ApiListResponse<TData>,
     Error,
@@ -52,7 +54,7 @@ export default function useCursorInfiniteQuery<TData extends Record<string, unkn
         });
       }
 
-      return apiClient.getList<TData>(endpoint, {
+      return client.getList<TData>(endpoint, {
         searchParams: params,
       });
     },

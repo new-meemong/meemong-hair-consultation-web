@@ -1,7 +1,7 @@
 import { HAIR_CONSULTATION_API_PREFIX } from '../constants/api';
 import type { HairConsultationAnswerDetailResponse } from '@/entities/posts/api/get-hair-consultation-answer-detail-response';
-import { apiClient } from '@/shared/api/client';
 import { useQuery } from '@tanstack/react-query';
+import { useContextualApiClient } from '@/shared/api/hooks/use-contextual-api-client';
 
 const getHairConsultationAnswerDetailEndpoint = (
   hairConsultationId: string,
@@ -17,12 +17,14 @@ export default function useGetHairConsultationAnswerDetail(
   hairConsultationId: string,
   hairConsultationsAnswerId: string,
 ) {
+  const client = useContextualApiClient();
+
   return useQuery({
     queryKey: [
       getHairConsultationAnswerDetailQueryKeyPrefix(hairConsultationId, hairConsultationsAnswerId),
     ],
     queryFn: () =>
-      apiClient.get<HairConsultationAnswerDetailResponse>(
+      client.get<HairConsultationAnswerDetailResponse>(
         getHairConsultationAnswerDetailEndpoint(hairConsultationId, hairConsultationsAnswerId),
       ),
     enabled: !!hairConsultationId && !!hairConsultationsAnswerId,

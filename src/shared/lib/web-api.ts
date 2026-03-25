@@ -1,11 +1,12 @@
-import { API_BASE_URL } from '@/shared/api/client';
+import { API_BASE_URL, AUTH_TOKEN_EXPIRED_EVENT, type ApiListResponse } from '@/shared/api/client';
+import { WEB_USER_DATA_KEY } from '@/shared/constants/local-storage';
 import ky from 'ky';
 
 /**
  * web_user_data token 기반 인증 API 클라이언트 팩토리
  * Phase 3 WebAuthProvider 도입 전까지 사용
  */
-export function createWebApiClient(token: string) {
+export function createWebApiClient(token: string, slug?: string) {
   const api = ky.create({
     prefixUrl: `${API_BASE_URL}/api/v1`,
     headers: {
@@ -72,8 +73,16 @@ export function createWebApiClient(token: string) {
       ],
       beforeError: [
         async (error) => {
+          const { response } = error;
+
+          if (response?.status === 403 && typeof window !== 'undefined') {
+            if (slug) {
+              localStorage.removeItem(WEB_USER_DATA_KEY(slug));
+            }
+            window.dispatchEvent(new CustomEvent(AUTH_TOKEN_EXPIRED_EVENT));
+          }
+
           if (process.env.NODE_ENV !== 'production') {
-            const response = error.response;
             console.group('❌ API Error (Web Auth)');
             console.log('URL:', error.request?.url);
             console.log('Method:', error.request?.method);
@@ -115,6 +124,12 @@ export function createWebApiClient(token: string) {
       const res = await api.get(endpoint, { searchParams }).json<{ data: T }>();
       return res.data;
     },
+    async getList<T extends Record<string, unknown>>(
+      endpoint: string,
+      options?: { searchParams?: URLSearchParams },
+    ): Promise<ApiListResponse<T>> {
+      return api.get(endpoint, { searchParams: options?.searchParams }).json<ApiListResponse<T>>();
+    },
     async getRaw<T>(
       endpoint: string,
       options?: { searchParams?: Record<string, string | number | boolean | string[] | number[]> },
@@ -138,6 +153,9 @@ export function createWebApiClient(token: string) {
     },
     async patch(endpoint: string, data: unknown): Promise<void> {
       await api.patch(endpoint, { json: data });
+    },
+    async delete(endpoint: string): Promise<void> {
+      await api.delete(endpoint);
     },
   };
 }

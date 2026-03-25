@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { HAIR_CONSULTATION_API_PREFIX } from '../constants/api';
-import { apiClient } from '@/shared/api/client';
 import { getHairConsultationAnswersQueryKeyPrefix } from './use-get-hair-consultation-answers';
 import { getHairConsultationDetailQueryKeyPrefix } from './use-get-hair-consultation-detail';
+import { useContextualApiClient } from '@/shared/api/hooks/use-contextual-api-client';
 
 type MutationParams = {
   hairConsultationId: string;
@@ -12,10 +12,11 @@ type MutationParams = {
 
 export default function useDeleteHairConsultationAnswerMutation() {
   const queryClient = useQueryClient();
+  const client = useContextualApiClient();
 
   const mutation = useMutation({
     mutationFn: ({ hairConsultationId, hairConsultationsAnswerId }: MutationParams) =>
-      apiClient.delete(
+      client.delete(
         `${HAIR_CONSULTATION_API_PREFIX}/${hairConsultationId}/answers/${hairConsultationsAnswerId}`,
       ),
     onSuccess: (_response, { hairConsultationId }) => {
