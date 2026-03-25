@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import CommentIcon from '@/assets/icons/comment.svg';
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
+import EditIcon from '@/assets/icons/edit.svg';
 import EyeIcon from '@/assets/icons/eye.svg';
 import { Loader } from '@/shared/ui/loader';
 import { ROUTES } from '@/shared/lib/routes';
@@ -84,7 +85,7 @@ export default function MyPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
-  const [infoExpanded, setInfoExpanded] = useState(true);
+  const [infoExpanded, setInfoExpanded] = useState(false);
 
   useEffect(() => {
     const userData = getWebUserData(brand.slug);
@@ -136,7 +137,7 @@ export default function MyPage() {
   }, [brand.slug, retryKey]);
 
   const handleShare = async () => {
-    const url = `${window.location.origin}${ROUTES.WEB_WELCOME(brand.slug)}`;
+    const url = `${window.location.origin}/${brand.slug}`;
     if (navigator.share) {
       await navigator.share({ url });
     } else {
@@ -226,8 +227,11 @@ export default function MyPage() {
       {/* 헤더 */}
       <div className="shrink-0 flex items-center justify-between px-5 h-14 border-b border-border-default bg-white">
         <span className="typo-title-2-bold text-static-black">{brand.name}</span>
-        <button type="button" onClick={handleShare} className="p-1">
-          <ShareIcon className="size-6 fill-label-default" />
+        <button type="button" onClick={handleShare} className="flex items-center gap-2">
+          <span className="typo-body-3-regular text-static-black">링크복사</span>
+          <span className="flex h-9 w-9 items-center justify-center rounded-4 bg-alternative">
+            <ShareIcon className="h-4 w-4 fill-label-info" />
+          </span>
         </button>
       </div>
 
@@ -242,13 +246,13 @@ export default function MyPage() {
         ) : null}
 
         {/* 내 정보 */}
-        <section className="border-b border-border-default">
+        <section>
           <button
             type="button"
             className="w-full flex items-center justify-between px-5 py-6"
             onClick={() => setInfoExpanded((v) => !v)}
           >
-            <span className="typo-body-2-semibold text-label-default">내 정보</span>
+            <span className="typo-body-1-semibold text-label-default">내 정보</span>
             <ChevronRightIcon
               className={`size-5 fill-label-default transition-transform duration-200 ${infoExpanded ? 'rotate-90' : '-rotate-90'}`}
             />
@@ -296,9 +300,11 @@ export default function MyPage() {
           )}
         </section>
 
+        <div className="h-3 bg-alternative" />
+
         {/* 보낸 상담지 */}
         <section>
-          <p className="typo-body-2-semibold text-label-default px-5 py-6 pb-0 mb-2">보낸 상담지</p>
+          <p className="typo-body-1-semibold text-label-default px-5 py-6 pb-0 mb-2">보낸 상담지</p>
           {sentConsultations.length === 0 ? (
             <p className="py-8 text-center typo-body-1-regular text-label-placeholder">
               아직 보낸 상담지가 없어요
@@ -371,9 +377,11 @@ function InfoRow({
 }) {
   if (readOnly) {
     return (
-      <div className="flex items-center justify-between py-4 border-b border-border-default">
-        <span className="typo-body-2-semibold text-label-default">{label}</span>
-        <span className="typo-body-1-regular text-label-info">{value ?? '-'}</span>
+      <div className="flex items-center gap-3 py-4">
+        <span className="w-20 shrink-0 text-left typo-body-2-medium text-label-sub">{label}</span>
+        <span className="min-w-0 flex-1 text-left typo-body-2-regular text-label-sub">
+          {value ?? '-'}
+        </span>
       </div>
     );
   }
@@ -381,14 +389,16 @@ function InfoRow({
   return (
     <button
       type="button"
-      className="flex items-center justify-between py-4 border-b border-border-default text-left"
+      className="flex w-full items-center gap-3 py-4 text-left"
       onClick={onEdit}
     >
-      <span className="typo-body-2-semibold text-label-default">{label}</span>
-      <div className="flex items-center gap-2">
-        <span className="typo-body-1-regular text-label-info">{value ?? '-'}</span>
-        <ChevronRightIcon className="size-4 fill-label-placeholder shrink-0" />
-      </div>
+      <span className="w-20 shrink-0 text-left typo-body-2-medium text-label-sub">{label}</span>
+      <span className="min-w-0 flex-1 text-left typo-body-2-regular text-label-sub">
+        {value ?? '-'}
+      </span>
+      <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center">
+        <EditIcon className="block h-[22px] w-[22px] text-label-info" />
+      </span>
     </button>
   );
 }
