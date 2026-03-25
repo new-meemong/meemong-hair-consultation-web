@@ -90,7 +90,7 @@ export default function useShowCommentMongConsumeSheet() {
                   <Button
                     theme="white"
                     size="lg"
-                    className="rounded-4"
+                    className="rounded-4 hover:bg-alternative active:bg-alternative focus:bg-alternative"
                     onClick={() => {
                       push(consultingCreateRoute, {
                         ...(postListTab ? { [SEARCH_PARAMS.POST_LIST_TAB]: postListTab } : {}),

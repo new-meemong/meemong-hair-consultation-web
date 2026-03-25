@@ -116,7 +116,7 @@ export default function useShowMongConsumeSheet() {
                   <Button
                     theme="white"
                     size="lg"
-                    className="rounded-4"
+                    className="rounded-4 hover:bg-alternative active:bg-alternative focus:bg-alternative"
                     onClick={() => {
                       if (canSkipMong(createType)) {
                         push(targetRoute, responseNavigationParams);
