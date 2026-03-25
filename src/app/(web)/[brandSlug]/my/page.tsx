@@ -11,6 +11,7 @@ import {
   WEB_HAIR_CONSULTATION_CONTENT_KEY,
   WEB_USER_DATA_KEY,
 } from '@/shared/constants/local-storage';
+import { getWebUserData, setWebUserData } from '@/shared/lib/auth';
 import { useEffect, useState } from 'react';
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
@@ -21,7 +22,6 @@ import { Loader } from '@/shared/ui/loader';
 import { ROUTES } from '@/shared/lib/routes';
 import ShareIcon from '@/assets/icons/share.svg';
 import { createWebApiClient } from '@/shared/lib/web-api';
-import { getWebUserData, setWebUserData } from '@/shared/lib/auth';
 import { useBrand } from '@/shared/context/brand-context';
 import { useGetBrandByCode } from '@/entities/brands/api/use-get-brand-by-code';
 import { useRouter } from 'next/navigation';
@@ -309,6 +309,7 @@ export default function MyPage() {
                 <SentConsultationCard
                   key={c.id}
                   consultation={c}
+                  brandSlug={brand.slug}
                   brandName={
                     brandData && c.brands?.some((b) => b.id === brandData.id)
                       ? brand.name
@@ -436,12 +437,20 @@ function InProgressCard({
 function SentConsultationCard({
   consultation,
   brandName,
+  brandSlug,
 }: {
   consultation: SentConsultation;
   brandName?: string;
+  brandSlug: string;
 }) {
+  const router = useRouter();
+
   return (
-    <div className="border-b border-gray-200 p-5 flex flex-col gap-4">
+    <button
+      type="button"
+      className="border-b border-gray-200 p-5 flex flex-col gap-4 w-full text-left"
+      onClick={() => router.push(ROUTES.WEB_POST_DETAIL(brandSlug, String(consultation.id)))}
+    >
       <div className="flex flex-col gap-1">
         <p className="typo-body-3-regular text-label-info">{formatDate(consultation.createdAt)}</p>
         <h2 className="typo-headline-bold text-label-strong overflow-hidden text-ellipsis line-clamp-1">
@@ -464,6 +473,6 @@ function SentConsultationCard({
         </div>
         {brandName && <span className="typo-body-2-medium text-label-info">{brandName}</span>}
       </div>
-    </div>
+    </button>
   );
 }

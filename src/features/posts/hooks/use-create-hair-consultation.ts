@@ -8,12 +8,15 @@ import type { HairConsultationFormValues } from '../types/hair-consultation-form
 import { MY_IMAGE_TYPE } from '../constants/my-image-type';
 import type { ValueOf } from '@/shared/type/types';
 import { apiClient } from '@/shared/api/client';
+import { createWebApiClient } from '@/shared/lib/web-api';
 import { getBrandSelectionPayload } from '@/shared/config/brands';
+import { getHairConsultationsQueryKeyPrefix } from '../api/use-get-hair-consultations';
 import { getWebUserData } from '@/shared/lib/auth';
 import { resizeImageFile } from '@/shared/lib/resize-image-file';
 import useCreateHairConsultationMutation from '../api/use-create-hair-consultation-mutation';
 import { useGetBrandByCode } from '@/entities/brands/api/use-get-brand-by-code';
 import { useOptionalBrand } from '@/shared/context/brand-context';
+import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
 const DECOLORIZATION_COUNT_TREATMENT_TYPES = new Set(['일반염색', '블랙염색', '블랙빼기']);
@@ -48,19 +51,32 @@ const mapMyImageTypeToRequestSubType = (
 export function useCreateHairConsultation() {
   const { mutate: createHairConsultation, isPending: isCreatingHairConsultation } =
     useCreateHairConsultationMutation();
+  const queryClient = useQueryClient();
   const [isUploadingImages, setIsUploadingImages] = useState(false);
   const brand = useOptionalBrand();
   const webToken = brand?.config.slug ? (getWebUserData(brand.config.slug)?.token ?? null) : null;
-  const { data: brandData } = useGetBrandByCode(brand?.config.brandCode ?? null, webToken);
+  const webApiClient = webToken ? createWebApiClient(webToken) : null;
+  const { data: brandData, isLoading: isBrandLoading } = useGetBrandByCode(
+    brand?.config.brandCode ?? null,
+    webToken,
+  );
+  // 브랜드 코드가 있는데 아직 brandData 조회 중이면 제출 불가
+  const isBrandPending = !!brand?.config.brandCode && isBrandLoading;
 
   const getPresignedUploadData = async (filename: string) => {
     let lastError: unknown;
 
     for (const endpoint of PRESIGNED_UPLOAD_ENDPOINTS) {
       try {
-        const { data } = await apiClient.get<PresignedUploadResponseData>(endpoint, {
-          searchParams: { filename },
-        });
+        const data = webApiClient
+          ? await webApiClient.get<PresignedUploadResponseData>(endpoint, {
+              searchParams: { filename },
+            })
+          : (
+              await apiClient.get<PresignedUploadResponseData>(endpoint, {
+                searchParams: { filename },
+              })
+            ).data;
         return data;
       } catch (error) {
         lastError = error;
@@ -214,7 +230,13 @@ export function useCreateHairConsultation() {
         ...(aspirationImageDescription ? { aspirationImageDescription } : {}),
       };
 
-      await createHairConsultation(request, { onSuccess, onError });
+      if (webApiClient) {
+        await webApiClient.post('hair-consultations', request);
+        void queryClient.invalidateQueries({ queryKey: [getHairConsultationsQueryKeyPrefix()] });
+        onSuccess();
+      } else {
+        await createHairConsultation(request, { onSuccess, onError });
+      }
     } catch (error) {
       onError?.(error);
     } finally {
@@ -224,6 +246,6 @@ export function useCreateHairConsultation() {
 
   return {
     handleCreateHairConsultation,
-    isPending: isUploadingImages || isCreatingHairConsultation,
+    isPending: isUploadingImages || isCreatingHairConsultation || isBrandPending,
   };
 }

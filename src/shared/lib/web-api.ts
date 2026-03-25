@@ -132,6 +132,10 @@ export function createWebApiClient(token: string) {
       }
       return api.get(endpoint, { searchParams }).json<T>();
     },
+    async post<T>(endpoint: string, data: unknown): Promise<T> {
+      const res = await api.post(endpoint, { json: data }).json<{ data: T }>();
+      return res.data;
+    },
     async patch(endpoint: string, data: unknown): Promise<void> {
       await api.patch(endpoint, { json: data });
     },
