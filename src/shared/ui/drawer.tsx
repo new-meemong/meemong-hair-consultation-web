@@ -30,17 +30,24 @@ function DrawerClose({ ...props }: React.ComponentProps<typeof DrawerPrimitive.C
   return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />;
 }
 
-function DrawerOverlay({ className }: React.HTMLAttributes<HTMLDivElement>) {
+function DrawerOverlay({ className }: React.HTMLAttributes<HTMLButtonElement>) {
   return (
-    <DrawerClose asChild>
-      <div
-        data-slot="drawer-overlay"
-        className={cn(
-          'fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-          className,
-        )}
-      />
-    </DrawerClose>
+    <DrawerPrimitive.Close
+      type="button"
+      aria-label="바텀시트 닫기"
+      data-slot="drawer-overlay"
+      onPointerDown={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+      }}
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
+      className={cn(
+        'fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+        className,
+      )}
+    />
   );
 }
 

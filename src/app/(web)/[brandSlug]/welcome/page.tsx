@@ -11,6 +11,7 @@ import { useRef, useState } from 'react';
 
 import { BottomSheet } from '@/shared/ui/bottom-sheet';
 import { Button } from '@/shared/ui/button';
+import { cn } from '@/shared/lib/utils';
 import Image from 'next/image';
 import { ROUTES } from '@/shared/lib/routes';
 import { useBrand } from '@/shared/context/brand-context';
@@ -33,7 +34,12 @@ export default function BrandWelcomePage() {
   return (
     <>
       <div className="min-h-screen bg-white">
-        <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-5 pb-56">
+        <div
+          className={cn(
+            'relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-5 pb-56',
+            (historySheetOpen || newConsultationSheetOpen) && 'pointer-events-none',
+          )}
+        >
           <div className="flex flex-1 flex-col items-center justify-center">
             <Image
               src={brand.logo.src}

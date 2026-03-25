@@ -73,10 +73,17 @@ export default function SignupTermsPage() {
         </div>
 
         {/* 전체동의 */}
-        <button
-          type="button"
-          className="w-full flex items-center gap-3 py-4 border-b-2 border-border-default"
+        <div
+          role="button"
+          tabIndex={0}
+          className="w-full flex cursor-pointer items-center gap-3 py-4 border-b-2 border-border-default"
           onClick={handleToggleAll}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleToggleAll();
+            }
+          }}
         >
           <Checkbox
             shape="round"
@@ -86,7 +93,7 @@ export default function SignupTermsPage() {
             onClick={(e) => e.stopPropagation()}
           />
           <span className="typo-body-1-semibold text-label-default">전체동의</span>
-        </button>
+        </div>
 
         {/* 개별 약관 */}
         <TermsRow
@@ -141,10 +148,17 @@ function TermsRow({
   onChange: () => void;
 }) {
   return (
-    <button
-      type="button"
-      className="w-full flex items-center gap-3 py-4 border-b border-border-default"
+    <div
+      role="button"
+      tabIndex={0}
+      className="w-full flex cursor-pointer items-center gap-3 py-4 border-b border-border-default"
       onClick={onChange}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onChange();
+        }
+      }}
     >
       <Checkbox
         shape="round"
@@ -157,6 +171,6 @@ function TermsRow({
         {label}
         <span className="ml-1 typo-body-2-regular text-label-info">({badge})</span>
       </span>
-    </button>
+    </div>
   );
 }

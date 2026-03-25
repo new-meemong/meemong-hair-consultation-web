@@ -1,26 +1,56 @@
+import type React from 'react';
 import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 import SquareCheckboxEmptyIcon from '@/assets/icons/square-checkbox-empty.svg';
 import SquareCheckboxIcon from '@/assets/icons/square-checkbox.svg';
 import { cn } from '@/shared/lib/utils';
 
-export type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {
+export type CheckboxProps = Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  'onChange' | 'onClick'
+> & {
+  checked?: boolean;
+  disabled?: boolean;
+  id?: string;
   label?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
   shape: 'square' | 'round';
 };
 
-export default function Checkbox({ className, shape = 'square', id, ...props }: CheckboxProps) {
+export default function Checkbox({
+  className,
+  shape = 'square',
+  id,
+  checked = false,
+  disabled = false,
+  onChange,
+  onClick,
+}: CheckboxProps) {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onClick?.(event as unknown as React.MouseEvent<HTMLInputElement>);
+
+    if (disabled) return;
+
+    onChange?.({
+      target: { checked: !checked, id },
+      currentTarget: { checked: !checked, id },
+    } as React.ChangeEvent<HTMLInputElement>);
+  };
+
   return (
-    <label htmlFor={id} className="size-6 flex items-center justify-center relative cursor-pointer">
-      <input type="checkbox" id={id} className={cn('sr-only', className)} {...props} />
-      <div className="absolute inset-0 flex items-center justify-center">
-        {shape === 'round' && (
-          <>{props.checked ? <RoundCheckboxIcon /> : <RoundCheckboxEmptyIcon />}</>
-        )}
-        {shape === 'square' && (
-          <>{props.checked ? <SquareCheckboxIcon /> : <SquareCheckboxEmptyIcon />}</>
-        )}
-      </div>
-    </label>
+    <button
+      type="button"
+      id={id}
+      aria-pressed={checked}
+      aria-checked={checked}
+      disabled={disabled}
+      className={cn('relative flex size-6 cursor-pointer items-center justify-center', className)}
+      onClick={handleClick}
+    >
+      {shape === 'round' && <>{checked ? <RoundCheckboxIcon /> : <RoundCheckboxEmptyIcon />}</>}
+      {shape === 'square' && <>{checked ? <SquareCheckboxIcon /> : <SquareCheckboxEmptyIcon />}</>}
+    </button>
   );
 }
