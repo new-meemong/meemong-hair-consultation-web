@@ -155,6 +155,7 @@ export interface WebUserData {
   token?: string;
   userId?: number;
   modelInfoId?: number;
+  sex?: '남자' | '여자';
 }
 
 export const getWebConsultationContent = (): Record<string, unknown> | null => {
@@ -177,6 +178,11 @@ export const getWebUserData = (slug: string): WebUserData | null => {
   } catch {
     return null;
   }
+};
+
+export const setWebUserData = (slug: string, data: Partial<WebUserData>): void => {
+  const existing = getWebUserData(slug) ?? {};
+  localStorage.setItem(WEB_USER_DATA_KEY(slug), JSON.stringify({ ...existing, ...data }));
 };
 
 export const removeUserData = (): void => {

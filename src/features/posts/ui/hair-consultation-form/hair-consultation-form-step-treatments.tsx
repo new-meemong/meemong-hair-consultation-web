@@ -10,7 +10,7 @@ import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '../../constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '../../types/hair-consultation-form-values';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
-import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useSex } from '@/features/auth/hooks/use-sex';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 
 const MALE_TREATMENTS = [
@@ -166,7 +166,7 @@ const TreatmentAreaSheet = ({
 
 export default function HairConsultationFormStepTreatments() {
   const { control, setValue } = useFormContext<HairConsultationFormValues>();
-  const auth = useOptionalAuthContext();
+  const sex = useSex();
   const { showBottomSheet } = useOverlayContext();
   const [openCards, setOpenCards] = useState<boolean[]>([]);
   const [cardInteractionOrders, setCardInteractionOrders] = useState<Array<number | null>>([]);
@@ -183,7 +183,7 @@ export default function HairConsultationFormStepTreatments() {
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENT_DETAIL,
   });
 
-  const isMale = auth?.user?.sex === '남자';
+  const isMale = sex === '남자';
   const specialTreatment = isMale ? '커트만 했어요' : '커트/드라이만 했어요';
   const treatmentOptions = isMale ? MALE_TREATMENTS : FEMALE_TREATMENTS;
 

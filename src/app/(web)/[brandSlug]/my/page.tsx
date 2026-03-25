@@ -21,7 +21,7 @@ import { Loader } from '@/shared/ui/loader';
 import { ROUTES } from '@/shared/lib/routes';
 import ShareIcon from '@/assets/icons/share.svg';
 import { createWebApiClient } from '@/shared/lib/web-api';
-import { getWebUserData } from '@/shared/lib/auth';
+import { getWebUserData, setWebUserData } from '@/shared/lib/auth';
 import { useBrand } from '@/shared/context/brand-context';
 import { useGetBrandByCode } from '@/entities/brands/api/use-get-brand-by-code';
 import { useRouter } from 'next/navigation';
@@ -100,12 +100,13 @@ export default function MyPage() {
       if (!modelInfoId) {
         const me = await api.get<{ id: number }>('models/me');
         modelInfoId = me.id;
-        localStorage.setItem(
-          WEB_USER_DATA_KEY(brand.slug),
-          JSON.stringify({ ...userData, modelInfoId }),
-        );
+        setWebUserData(brand.slug, { modelInfoId });
       }
-      return api.get<ModelData>(`models/${modelInfoId}/my-page`);
+      const profile = await api.get<ModelData>(`models/${modelInfoId}/my-page`);
+      if (profile.sex) {
+        setWebUserData(brand.slug, { sex: profile.sex });
+      }
+      return profile;
     };
 
     const fetchConsultations = () =>

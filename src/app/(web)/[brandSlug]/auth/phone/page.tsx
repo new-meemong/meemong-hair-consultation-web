@@ -7,6 +7,8 @@ import { Loader } from '@/shared/ui/loader';
 import { ROUTES } from '@/shared/lib/routes';
 import { SiteHeader } from '@/widgets/header/ui/site-header';
 import { apiClientWithoutAuth } from '@/shared/api/client';
+import { createWebApiClient } from '@/shared/lib/web-api';
+import { setWebUserData } from '@/shared/lib/auth';
 import { useBrand } from '@/shared/context/brand-context';
 import { useRouter } from 'next/navigation';
 
@@ -28,6 +30,19 @@ type LinkedUser = {
   loginType: string;
   profilePictureURL: string | null;
 };
+
+async function fetchAndStoreSex(token: string, slug: string) {
+  try {
+    const api = createWebApiClient(token);
+    const me = await api.get<{ id: number }>('models/me');
+    const profile = await api.get<{ sex?: '남자' | '여자' }>(`models/${me.id}/my-page`);
+    if (profile.sex) {
+      setWebUserData(slug, { sex: profile.sex });
+    }
+  } catch {
+    // my page에서 재시도
+  }
+}
 
 function formatPhone(digits: string): string {
   if (digits.length <= 3) return digits;
@@ -123,11 +138,8 @@ export default function PhoneAuthPage() {
         });
         const loginData = loginResponse.data;
 
-        // TODO: Phase 3 WebAuthProvider — store web_user_data:${brand.slug}
-        localStorage.setItem(
-          `web_user_data:${brand.slug}`,
-          JSON.stringify({ userId: loginData.id, token: loginData.token }),
-        );
+        setWebUserData(brand.slug, { userId: loginData.id, token: loginData.token });
+        void fetchAndStoreSex(loginData.token, brand.slug);
 
         // 로그인 성공 → 바로 마이페이지
         router.push(ROUTES.WEB_MY(brand.slug));

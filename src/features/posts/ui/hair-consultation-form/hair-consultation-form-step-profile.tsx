@@ -13,9 +13,9 @@ import type { HairConsultationFormValues } from '../../types/hair-consultation-f
 import Image from 'next/image';
 import { ROUTES } from '@/shared';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
-import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { useSex } from '@/features/auth/hooks/use-sex';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
 const SKIN_BRIGHTNESS_DESCRIPTION_MAP: Record<string, string> = {
@@ -43,7 +43,7 @@ const EMPTY_FIELD_MESSAGE = '정보를 입력해주세요';
 
 export default function HairConsultationFormStepProfile() {
   const { control, getValues } = useFormContext<HairConsultationFormValues>();
-  const auth = useOptionalAuthContext();
+  const sex = useSex();
   const brand = useOptionalBrand();
   const { push } = useRouterWithUser();
   const { saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
@@ -73,7 +73,7 @@ export default function HairConsultationFormStepProfile() {
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH,
   });
 
-  const isMale = auth?.user?.sex === '남자';
+  const isMale = sex === '남자';
   const hairLengthOptions = useMemo(
     () => (isMale ? MALE_HAIR_LENGTH_OPTIONS : FEMALE_HAIR_LENGTH_OPTIONS),
     [isMale],
@@ -107,7 +107,9 @@ export default function HairConsultationFormStepProfile() {
     };
     saveContent(writingContent);
     push(
-      brand ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairLength') : ROUTES.POSTS_CREATE_HAIR_LENGTH,
+      brand
+        ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairLength')
+        : ROUTES.POSTS_CREATE_HAIR_LENGTH,
       { skipReload: '1' },
     );
   }, [brand, getValues, push, saveContent]);
@@ -119,7 +121,9 @@ export default function HairConsultationFormStepProfile() {
     };
     saveContent(writingContent);
     push(
-      brand ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairConcerns') : ROUTES.POSTS_CREATE_HAIR_CONCERNS,
+      brand
+        ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairConcerns')
+        : ROUTES.POSTS_CREATE_HAIR_CONCERNS,
       { skipReload: '1' },
     );
   }, [brand, getValues, push, saveContent]);
@@ -131,7 +135,9 @@ export default function HairConsultationFormStepProfile() {
     };
     saveContent(writingContent);
     push(
-      brand ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairTexture') : ROUTES.POSTS_CREATE_HAIR_TEXTURE,
+      brand
+        ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairTexture')
+        : ROUTES.POSTS_CREATE_HAIR_TEXTURE,
       { skipReload: '1' },
     );
   }, [brand, getValues, push, saveContent]);
@@ -143,7 +149,9 @@ export default function HairConsultationFormStepProfile() {
     };
     saveContent(writingContent);
     push(
-      brand ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'skinBrightness') : ROUTES.POSTS_CREATE_SKIN_BRIGHTNESS,
+      brand
+        ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'skinBrightness')
+        : ROUTES.POSTS_CREATE_SKIN_BRIGHTNESS,
       { skipReload: '1' },
     );
   }, [brand, getValues, push, saveContent]);
@@ -155,7 +163,9 @@ export default function HairConsultationFormStepProfile() {
     };
     saveContent(writingContent);
     push(
-      brand ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'personalColor') : ROUTES.POSTS_CREATE_PERSONAL_COLOR,
+      brand
+        ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'personalColor')
+        : ROUTES.POSTS_CREATE_PERSONAL_COLOR,
       { skipReload: '1' },
     );
   }, [brand, getValues, push, saveContent]);

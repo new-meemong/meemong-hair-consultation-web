@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from 'react';
 
-import { Button } from '@/shared';
 import { AppTypography } from '@/shared/styles/typography';
+import { Button } from '@/shared';
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '@/features/posts/constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
@@ -12,7 +12,7 @@ import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
-import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useSex } from '@/features/auth/hooks/use-sex';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
 const FEMALE_SKIN_BRIGHTNESS_OPTIONS: Array<{
@@ -45,8 +45,10 @@ type Props = {
 };
 
 export function SkinBrightnessSelectPage({ onComplete, onBack }: Props) {
-  const auth = useOptionalAuthContext();
-  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
+  const sex = useSex();
+  const { savedContent, saveContent } = useWritingContent(
+    USER_WRITING_CONTENT_KEYS.hairConsultation,
+  );
 
   const initialValue = useMemo(() => {
     return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.SKIN_BRIGHTNESS] ?? null;
@@ -55,9 +57,10 @@ export function SkinBrightnessSelectPage({ onComplete, onBack }: Props) {
   const [selectedBrightness, setSelectedBrightness] =
     useState<HairConsultationSkinBrightness | null>(initialValue);
 
+  const isMale = sex === '남자';
   const skinBrightnessOptions = useMemo(
-    () => (auth?.user?.sex === '남자' ? MALE_SKIN_BRIGHTNESS_OPTIONS : FEMALE_SKIN_BRIGHTNESS_OPTIONS),
-    [auth?.user?.sex],
+    () => (isMale ? MALE_SKIN_BRIGHTNESS_OPTIONS : FEMALE_SKIN_BRIGHTNESS_OPTIONS),
+    [isMale],
   );
 
   const handleComplete = () => {

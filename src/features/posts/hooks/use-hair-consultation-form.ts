@@ -10,6 +10,7 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useSex } from '@/features/auth/hooks/use-sex';
 import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useGetUser } from '@/features/auth/api/use-get-user';
 import type { UserDetail } from '@/entities/user/model/user-detail';
@@ -70,6 +71,7 @@ export default function useHairConsultationForm() {
   const { replace } = useRouterWithUser();
   const { showSnackBar } = useOverlayContext();
   const auth = useOptionalAuthContext();
+  const sex = useSex();
   const brand = useOptionalBrand();
 
   const { saveContent, savedContent } = useWritingContent(
@@ -82,7 +84,7 @@ export default function useHairConsultationForm() {
     const profileSource: UserDetail | UserDetail['modelInfo'] | null =
       userDetail?.modelInfo ?? userDetail ?? null;
 
-    const isMale = auth?.user?.sex === '남자';
+    const isMale = sex === '남자';
     const validSkinBrightnessValues = isMale
       ? MALE_SKIN_BRIGHTNESS_VALUES
       : FEMALE_SKIN_BRIGHTNESS_VALUES;
@@ -115,7 +117,7 @@ export default function useHairConsultationForm() {
         DEFAULT_HAIR_CONSULTATION_FORM_VALUES[HAIR_CONSULTATION_FORM_FIELD_NAME.PERSONAL_COLOR],
       ),
     };
-  }, [userDetail, auth?.user?.sex]);
+  }, [userDetail, sex]);
 
   const method = useForm<HairConsultationFormValues>({
     resolver: zodResolver(hairConsultationFormSchema),

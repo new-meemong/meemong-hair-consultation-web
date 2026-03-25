@@ -5,6 +5,7 @@ import { Loader } from '@/shared/ui/loader';
 import { ROUTES } from '@/shared/lib/routes';
 import { SiteHeader } from '@/widgets/header/ui/site-header';
 import { apiClientWithoutAuth } from '@/shared/api/client';
+import { setWebUserData } from '@/shared/lib/auth';
 import { useBrand } from '@/shared/context/brand-context';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -47,11 +48,11 @@ export default function SignupTermsPage() {
         agreementAdvertisement: termsMarketing,
       });
 
-      // TODO: Phase 3 WebAuthProvider — store web_user_data:${brand.slug}
-      localStorage.setItem(
-        `web_user_data:${brand.slug}`,
-        JSON.stringify({ userId: response.data.id, token: response.data.token }),
-      );
+      setWebUserData(brand.slug, {
+        userId: response.data.id,
+        token: response.data.token,
+        sex: formData.gender === 'FEMALE' ? '여자' : '남자',
+      });
       sessionStorage.removeItem(SIGNUP_FORM_KEY(brand.slug));
       router.push(ROUTES.WEB_MY(brand.slug));
     } finally {

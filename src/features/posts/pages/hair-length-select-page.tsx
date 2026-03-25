@@ -1,22 +1,22 @@
 'use client';
 
-import Image from 'next/image';
-import { useMemo, useState } from 'react';
-
 import {
   FEMALE_HAIR_LENGTH_OPTIONS,
   MALE_HAIR_LENGTH_OPTIONS,
 } from '@/features/posts/constants/hair-length-options';
+import { useMemo, useState } from 'react';
+
 import { AppTypography } from '@/shared/styles/typography';
 import { Button } from '@/shared';
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '@/features/posts/constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
+import Image from 'next/image';
 import RoundCheckboxEmptyIcon from '@/assets/icons/round-checkbox-empty.svg';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
-import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import { useSex } from '@/features/auth/hooks/use-sex';
 import useWritingContent from '@/shared/hooks/use-writing-content';
 
 type Props = {
@@ -25,9 +25,11 @@ type Props = {
 };
 
 export function HairLengthSelectPage({ onComplete, onBack }: Props) {
-  const auth = useOptionalAuthContext();
-  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
-  const isMale = auth?.user?.sex === '남자';
+  const sex = useSex();
+  const { savedContent, saveContent } = useWritingContent(
+    USER_WRITING_CONTENT_KEYS.hairConsultation,
+  );
+  const isMale = sex === '남자';
 
   const initialValue = useMemo(() => {
     const savedHairLength =
