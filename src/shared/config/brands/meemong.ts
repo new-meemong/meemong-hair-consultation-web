@@ -9,6 +9,6 @@ export const meemongConfig: BrandConfig = {
   brandCode: null, // null = ALL 타입 — 모든 브랜드 컨설팅 조회
   logo: { src: meemongLogoLarge, width: 160, height: 37 },
   smallLogo: { src: meemongLogoSmall },
-  theme: {}, // 기본 테마 사용 (globals.css 정의값)
+  theme: { colorCautionary: '#C8A97E' },
   features: { chat: true, mong: true, growthPass: true },
 };

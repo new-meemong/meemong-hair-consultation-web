@@ -11,7 +11,7 @@ vi.mock('./meemong', () => ({
     brandCode: null,
     logo: { src: { src: '/logos/meemong.png', width: 578, height: 134 }, width: 160, height: 37 },
     smallLogo: { src: { src: '/logos/meemong-small.png', width: 40, height: 40 } },
-    theme: {},
+    theme: { colorCautionary: '#C8A97E' },
     features: { chat: true, mong: true, growthPass: true },
   },
 }));
@@ -24,7 +24,7 @@ vi.mock('./parkjun', () => ({
     brandCode: 'P4599',
     logo: { src: { src: '/logos/parkjun.png', width: 288, height: 231 }, width: 120, height: 96 },
     smallLogo: { src: { src: '/logos/parkjun-small.png', width: 40, height: 40 } },
-    theme: { colorCautionary: '#C8A97E' },
+    theme: {},
     features: { chat: false, mong: false, growthPass: false },
   },
 }));

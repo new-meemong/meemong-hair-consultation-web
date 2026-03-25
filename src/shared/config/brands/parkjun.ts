@@ -9,6 +9,6 @@ export const parkjunConfig: BrandConfig = {
   brandCode: 'P4599', // GET /api/v1/brands/code 로 brandId를 동적 조회
   logo: { src: parkjunLogoLarge, width: 120, height: 96 },
   smallLogo: { src: parkjunLogoSmall },
-  theme: { colorCautionary: '#C8A97E' },
+  theme: {}, // 기본 테마 사용 (globals.css 정의값)
   features: { chat: false, mong: false, growthPass: false },
 };
