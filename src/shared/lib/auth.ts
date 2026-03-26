@@ -154,7 +154,6 @@ export const getToken = (): string | null => {
 export interface WebUserData {
   token?: string;
   userId?: number;
-  modelInfoId?: number;
   sex?: '남자' | '여자';
 }
 
