@@ -7,12 +7,12 @@ type BrandByCodeResponse = {
   name: string;
 } | null;
 
-export function useGetBrandByCode(code: string | null, token: string | null) {
+export function useGetBrandByCode(code: string | null, token: string | null, slug?: string) {
   return useQuery({
     queryKey: ['brands', 'code', code],
     queryFn: async () => {
       if (!code || !token) return null;
-      const api = createWebApiClient(token);
+      const api = createWebApiClient(token, slug);
       return api.get<BrandByCodeResponse>('brands/code', { searchParams: { code } });
     },
     enabled: code !== null && token !== null,

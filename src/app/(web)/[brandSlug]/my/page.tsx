@@ -77,7 +77,7 @@ export default function MyPage() {
   const { config: brand } = useBrand();
 
   const webToken = getWebUserData(brand.slug)?.token ?? null;
-  const { data: brandData } = useGetBrandByCode(brand.brandCode, webToken);
+  const { data: brandData } = useGetBrandByCode(brand.brandCode, webToken, brand.slug);
 
   const [model, setModel] = useState<ModelData | null>(null);
   const [inProgress, _setInProgress] = useState<InProgressConsultation | null>(null);
@@ -94,16 +94,10 @@ export default function MyPage() {
       return;
     }
 
-    const api = createWebApiClient(userData.token!);
+    const api = createWebApiClient(userData.token!, brand.slug);
 
     const fetchProfile = async () => {
-      let { modelInfoId } = userData!;
-      if (!modelInfoId) {
-        const me = await api.get<{ id: number }>('models/me');
-        modelInfoId = me.id;
-        setWebUserData(brand.slug, { modelInfoId });
-      }
-      const profile = await api.get<ModelData>(`models/${modelInfoId}/my-page`);
+      const profile = await api.get<ModelData>('models/me/my-page');
       if (profile.sex) {
         setWebUserData(brand.slug, { sex: profile.sex });
       }

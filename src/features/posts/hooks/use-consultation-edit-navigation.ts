@@ -24,8 +24,8 @@ export function useConsultationEditNavigation(stepId: StepId) {
         router.replace(ROUTES.WEB_AUTH_PHONE(config.slug));
         return;
       }
-      const api = createWebApiClient(token);
-      await api.patch('models/me', { [stepId]: value });
+      const api = createWebApiClient(token, config.slug);
+      await api.patch('models/me/my-page', { [stepId]: value });
       router.push(ROUTES.WEB_MY(config.slug));
     };
     const onBack = () => router.push(ROUTES.WEB_MY(config.slug));

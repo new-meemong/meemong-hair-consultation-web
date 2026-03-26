@@ -25,7 +25,7 @@ export default function useUpdateHairConsultationCommentMutation() {
       if (brand) {
         const webToken = getWebUserData(brand.config.slug)?.token;
         if (webToken) {
-          return createWebApiClient(webToken).patch(
+          return createWebApiClient(webToken, brand.config.slug).patch(
             `${HAIR_CONSULTATION_API_PREFIX}/${hairConsultationId}/comments/${hairConsultationCommentId}`,
             data,
           );

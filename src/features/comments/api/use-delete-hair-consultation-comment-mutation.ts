@@ -23,7 +23,7 @@ export default function useDeleteHairConsultationCommentMutation() {
       if (brand) {
         const webToken = getWebUserData(brand.config.slug)?.token;
         if (webToken) {
-          return createWebApiClient(webToken).delete(
+          return createWebApiClient(webToken, brand.config.slug).delete(
             `${HAIR_CONSULTATION_API_PREFIX}/${hairConsultationId}/comments/${hairConsultationCommentId}`,
           );
         }

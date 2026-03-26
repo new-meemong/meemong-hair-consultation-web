@@ -16,89 +16,15 @@ export function createWebApiClient(token: string, slug?: string) {
     },
     timeout: 30000,
     hooks: {
-      beforeRequest: [
-        (request) => {
-          if (process.env.NODE_ENV === 'production') return;
-          console.group('🚀 API Request (Web Auth)');
-          console.log('URL:', request.url);
-          console.log('Method:', request.method);
-
-          const url = new URL(request.url);
-          if (url.searchParams.toString()) {
-            console.log('Query Params:', Object.fromEntries(url.searchParams.entries()));
-          }
-
-          if (request.body) {
-            request
-              .clone()
-              .text()
-              .then((body) => {
-                if (body) {
-                  try {
-                    console.log('Request Body:', JSON.parse(body));
-                  } catch {
-                    console.log('Request Body (raw):', body);
-                  }
-                }
-              })
-              .catch(() => {
-                console.log('Request Body: [Unable to read]');
-              });
-          }
-          console.groupEnd();
-        },
-      ],
-      afterResponse: [
-        async (request, _options, response) => {
-          if (process.env.NODE_ENV === 'production') return;
-          console.group('✅ API Response (Web Auth)');
-          console.log('URL:', request.url);
-          console.log('Method:', request.method);
-          console.log('Status:', response.status, response.statusText);
-
-          try {
-            const body = await response.clone().text();
-            if (body) {
-              try {
-                console.log('Response Body:', JSON.parse(body));
-              } catch {
-                console.log('Response Body (raw):', body);
-              }
-            }
-          } catch (error) {
-            console.log('Response Body: [Unable to read]', error);
-          }
-          console.groupEnd();
-        },
-      ],
       beforeError: [
         async (error) => {
           const { response } = error;
 
-          if (response?.status === 403 && typeof window !== 'undefined') {
-            if (slug) {
-              localStorage.removeItem(WEB_USER_DATA_KEY(slug));
-            }
+          if (response?.status === 403 && typeof window !== 'undefined' && slug) {
+            localStorage.removeItem(WEB_USER_DATA_KEY(slug));
             window.dispatchEvent(new CustomEvent(AUTH_TOKEN_EXPIRED_EVENT));
           }
 
-          if (process.env.NODE_ENV !== 'production') {
-            console.group('❌ API Error (Web Auth)');
-            console.log('URL:', error.request?.url);
-            console.log('Method:', error.request?.method);
-            console.log('Status:', response?.status, response?.statusText);
-            console.log('Error Message:', error.message);
-
-            if (response?.body) {
-              try {
-                const errorData = await response.clone().json();
-                console.log('Error Response Body:', errorData);
-              } catch {
-                console.log('Error Response Body: [Unable to read]');
-              }
-            }
-            console.groupEnd();
-          }
           return error;
         },
       ],

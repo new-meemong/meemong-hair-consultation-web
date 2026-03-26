@@ -103,8 +103,8 @@ export default function SignupRegionPage() {
         router.replace(ROUTES.WEB_AUTH_PHONE(brand.slug));
         return;
       }
-      const api = createWebApiClient(token);
-      await api.patch('models/me', { address: `${regionKey} ${regionValue}` });
+      const api = createWebApiClient(token, brand.slug);
+      await api.patch('models/me/my-page', { address: `${regionKey} ${regionValue}` });
       router.push(ROUTES.WEB_MY(brand.slug));
       return;
     }

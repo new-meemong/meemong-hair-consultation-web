@@ -24,6 +24,7 @@ export default function useCreateHairConsultationCommentMutation(hairConsultatio
         if (webToken) {
           const result = await createWebApiClient(
             webToken,
+            brand.config.slug,
           ).post<CreateHairConsultationCommentResponse>(
             `${HAIR_CONSULTATION_API_PREFIX}/${hairConsultationId}/comments`,
             data,

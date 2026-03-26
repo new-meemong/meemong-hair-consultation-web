@@ -55,10 +55,11 @@ export function useCreateHairConsultation() {
   const [isUploadingImages, setIsUploadingImages] = useState(false);
   const brand = useOptionalBrand();
   const webToken = brand?.config.slug ? (getWebUserData(brand.config.slug)?.token ?? null) : null;
-  const webApiClient = webToken ? createWebApiClient(webToken) : null;
+  const webApiClient = webToken && brand ? createWebApiClient(webToken, brand.config.slug) : null;
   const { data: brandData, isLoading: isBrandLoading } = useGetBrandByCode(
     brand?.config.brandCode ?? null,
     webToken,
+    brand?.config.slug,
   );
   // 브랜드 코드가 있는데 아직 brandData 조회 중이면 제출 불가
   const isBrandPending = !!brand?.config.brandCode && isBrandLoading;

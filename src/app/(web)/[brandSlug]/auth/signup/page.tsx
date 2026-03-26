@@ -31,8 +31,8 @@ export default function SignupGenderPage() {
         router.replace(ROUTES.WEB_AUTH_PHONE(brand.slug));
         return;
       }
-      const api = createWebApiClient(token);
-      await api.patch('models/me', { sex: gender === 'FEMALE' ? '여자' : '남자' });
+      const api = createWebApiClient(token, brand.slug);
+      await api.patch('models/me/my-page', { sex: gender === 'FEMALE' ? '여자' : '남자' });
       router.push(ROUTES.WEB_MY(brand.slug));
       return;
     }

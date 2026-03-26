@@ -16,8 +16,7 @@ import { useRouter } from 'next/navigation';
 async function fetchAndStoreSex(token: string, slug: string) {
   try {
     const api = createWebApiClient(token);
-    const me = await api.get<{ id: number }>('models/me');
-    const profile = await api.get<{ sex?: '남자' | '여자' }>(`models/${me.id}/my-page`);
+    const profile = await api.get<{ sex?: '남자' | '여자' }>('models/me/my-page');
     if (profile.sex) {
       setWebUserData(slug, { sex: profile.sex });
     }
