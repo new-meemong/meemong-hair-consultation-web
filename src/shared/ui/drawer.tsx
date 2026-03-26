@@ -6,16 +6,11 @@ import CloseIcon from '@/assets/icons/close.svg';
 import { Drawer as DrawerPrimitive } from 'vaul';
 import { cn } from '@/shared/lib/utils';
 
-function Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
-  return (
-    <DrawerPrimitive.Root
-      data-slot="drawer"
-      modal={false}
-      noBodyStyles
-      disablePreventScroll={false}
-      {...props}
-    />
-  );
+function Drawer({
+  noBodyStyles = true,
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Root>) {
+  return <DrawerPrimitive.Root data-slot="drawer" noBodyStyles={noBodyStyles} {...props} />;
 }
 
 function DrawerTrigger({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {

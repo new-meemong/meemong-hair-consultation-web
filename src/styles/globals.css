@@ -22,6 +22,19 @@
     user-select: none; /* Standard */
   }
 
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .width-before-scroll-bar {
+    margin-right: 0 !important;
+  }
+
+  .right-scroll-bar-position {
+    right: 0 !important;
+  }
+
   /* 입력 필드는 선택 가능하도록 */
   input,
   textarea {
