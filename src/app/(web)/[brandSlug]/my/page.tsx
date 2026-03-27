@@ -28,16 +28,16 @@ import { useGetBrandByCode } from '@/entities/brands/api/use-get-brand-by-code';
 import { useRouter } from 'next/navigation';
 
 type ModelData = {
-  displayName: string;
-  phone?: string;
-  sex?: '여자' | '남자';
-  modelInfo: {
-    address?: string;
-    hairLength?: HairConsultationHairLength | null;
-    hairConcerns?: HairConsultationConcern[] | null;
-    hairTexture?: HairConsultationHairTexture | null;
-    skinBrightness?: HairConsultationSkinBrightness | null;
-    personalColor?: HairConsultationPersonalColor | null;
+  address?: string;
+  hairLength?: HairConsultationHairLength | null;
+  hairConcerns?: HairConsultationConcern[] | null;
+  hairTexture?: HairConsultationHairTexture | null;
+  skinBrightness?: HairConsultationSkinBrightness | null;
+  personalColor?: HairConsultationPersonalColor | null;
+  user: {
+    displayName: string;
+    phone?: string;
+    sex?: '여자' | '남자';
   };
 };
 
@@ -98,8 +98,8 @@ export default function MyPage() {
 
     const fetchProfile = async () => {
       const profile = await api.get<ModelData>('models/me/my-page');
-      if (profile.sex) {
-        setWebUserData(brand.slug, { sex: profile.sex });
+      if (profile.user.sex) {
+        setWebUserData(brand.slug, { sex: profile.user.sex });
       }
       return profile;
     };
@@ -141,19 +141,19 @@ export default function MyPage() {
 
   const writeModelInfoToStorage = () => {
     const content = {
-      hairLength: model?.modelInfo?.hairLength ?? null,
-      hairConcerns: model?.modelInfo?.hairConcerns ?? [],
-      hairTexture: model?.modelInfo?.hairTexture ?? null,
-      skinBrightness: model?.modelInfo?.skinBrightness ?? null,
-      personalColor: model?.modelInfo?.personalColor ?? null,
+      hairLength: model?.hairLength ?? null,
+      hairConcerns: model?.hairConcerns ?? [],
+      hairTexture: model?.hairTexture ?? null,
+      skinBrightness: model?.skinBrightness ?? null,
+      personalColor: model?.personalColor ?? null,
     };
     localStorage.setItem(WEB_HAIR_CONSULTATION_CONTENT_KEY, JSON.stringify({ step: 1, content }));
   };
 
   const handleOpenRegionEdit = () => {
     const params = new URLSearchParams({ editMode: 'true' });
-    if (model?.modelInfo?.address) {
-      const parts = model.modelInfo.address.split(' ');
+    if (model?.address) {
+      const parts = model.address.split(' ');
       if (parts[0]) params.set('regionKey', parts[0]);
       if (parts[1]) params.set('regionValue', parts[1]);
     }
@@ -254,40 +254,36 @@ export default function MyPage() {
 
           {infoExpanded && (
             <div className="flex flex-col px-5 pb-6">
-              <InfoRow label="성별" value={model?.sex} readOnly />
+              <InfoRow label="성별" value={model?.user.sex} readOnly />
               <InfoRow
                 label="연락처"
-                value={model?.phone ? formatPhone(model.phone) : undefined}
+                value={model?.user.phone ? formatPhone(model.user.phone) : undefined}
                 readOnly
               />
-              <InfoRow
-                label="추천지역"
-                value={model?.modelInfo?.address}
-                onEdit={handleOpenRegionEdit}
-              />
+              <InfoRow label="추천지역" value={model?.address} onEdit={handleOpenRegionEdit} />
               <InfoRow
                 label="머리기장"
-                value={model?.modelInfo?.hairLength ?? undefined}
+                value={model?.hairLength ?? undefined}
                 onEdit={handleOpenHairLengthEdit}
               />
               <InfoRow
                 label="헤어고민"
-                value={model?.modelInfo?.hairConcerns?.join(', ')}
+                value={model?.hairConcerns?.join(', ')}
                 onEdit={handleOpenHairConcernEdit}
               />
               <InfoRow
                 label="모발타입"
-                value={model?.modelInfo?.hairTexture ?? undefined}
+                value={model?.hairTexture ?? undefined}
                 onEdit={handleOpenHairTextureEdit}
               />
               <InfoRow
                 label="피부톤"
-                value={model?.modelInfo?.skinBrightness ?? undefined}
+                value={model?.skinBrightness ?? undefined}
                 onEdit={handleOpenSkinBrightnessEdit}
               />
               <InfoRow
                 label="퍼스널컬러"
-                value={model?.modelInfo?.personalColor ?? undefined}
+                value={model?.personalColor ?? undefined}
                 onEdit={handleOpenPersonalColorEdit}
               />
             </div>
@@ -330,19 +326,14 @@ export default function MyPage() {
           onClick={() => {
             const content = {
               ...DEFAULT_HAIR_CONSULTATION_FORM_VALUES,
-              hairLength:
-                model?.modelInfo?.hairLength ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairLength,
+              hairLength: model?.hairLength ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairLength,
               hairConcerns:
-                model?.modelInfo?.hairConcerns ??
-                DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairConcerns,
-              hairTexture:
-                model?.modelInfo?.hairTexture ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairTexture,
+                model?.hairConcerns ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairConcerns,
+              hairTexture: model?.hairTexture ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.hairTexture,
               skinBrightness:
-                model?.modelInfo?.skinBrightness ??
-                DEFAULT_HAIR_CONSULTATION_FORM_VALUES.skinBrightness,
+                model?.skinBrightness ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.skinBrightness,
               personalColor:
-                model?.modelInfo?.personalColor ??
-                DEFAULT_HAIR_CONSULTATION_FORM_VALUES.personalColor,
+                model?.personalColor ?? DEFAULT_HAIR_CONSULTATION_FORM_VALUES.personalColor,
             };
             localStorage.setItem(
               WEB_HAIR_CONSULTATION_CONTENT_KEY,

@@ -16,9 +16,9 @@ import { useRouter } from 'next/navigation';
 async function fetchAndStoreSex(token: string, slug: string) {
   try {
     const api = createWebApiClient(token);
-    const profile = await api.get<{ sex?: '남자' | '여자' }>('models/me/my-page');
-    if (profile.sex) {
-      setWebUserData(slug, { sex: profile.sex });
+    const profile = await api.get<{ user: { sex?: '남자' | '여자' } }>('models/me/my-page');
+    if (profile.user.sex) {
+      setWebUserData(slug, { sex: profile.user.sex });
     }
   } catch {
     // my page에서 재시도
