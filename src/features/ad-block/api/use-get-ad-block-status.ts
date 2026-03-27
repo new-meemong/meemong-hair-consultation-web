@@ -20,6 +20,7 @@ export default function useGetAdBlockStatus() {
   useRefetchOnStoreReturn({
     pendingKey: STORE_RETURN_STATUS_KEYS.MEEMONG_PASS,
     refetch: async () => {
+      if (brand) return;
       await query.refetch();
     },
   });

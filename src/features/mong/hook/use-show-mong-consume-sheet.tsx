@@ -22,6 +22,7 @@ import { useCallback } from 'react';
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
 import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
@@ -34,6 +35,7 @@ type ShowMongConsumeSheetParams = {
 };
 
 export default function useShowMongConsumeSheet() {
+  const brand = useOptionalBrand();
   const { showBottomSheet } = useOverlayContext();
   const { data: presetsData } = useGetMongConsumePresets();
   const { data: mongCurrentData } = useGetMongCurrent();
@@ -48,12 +50,20 @@ export default function useShowMongConsumeSheet() {
       postListTab,
       postWriterSex,
     }: ShowMongConsumeSheetParams) => {
-      const targetRoute = ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString());
-      const createType = MEEMONG_PASS_CREATE_TYPES.VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL;
+      const targetRoute = brand
+        ? ROUTES.WEB_CONSULTING_RESPONSE(brand.config.slug, postId, answerId.toString())
+        : ROUTES.POSTS_CONSULTING_RESPONSE(postId, answerId.toString());
       const responseNavigationParams = {
         [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
         ...(postWriterSex ? { [SEARCH_PARAMS.POST_WRITER_SEX]: postWriterSex } : {}),
       };
+
+      // 브랜드 웹 컨텍스트에서는 몽 없이 바로 이동
+      if (brand) {
+        push(targetRoute, responseNavigationParams);
+        return { alreadyPaid: false };
+      }
+      const createType = MEEMONG_PASS_CREATE_TYPES.VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL;
       // 이미 결제한 답변이면 바텀시트 없이 바로 이동
       let withdrawResponse: GetMongWithdrawResponse = null;
       try {
@@ -149,7 +159,7 @@ export default function useShowMongConsumeSheet() {
 
       return { alreadyPaid: false };
     },
-    [showBottomSheet, push, presetsData, mongCurrentData, canSkipMong],
+    [brand, showBottomSheet, push, presetsData, mongCurrentData, canSkipMong],
   );
 
   return showMongConsumeSheet;

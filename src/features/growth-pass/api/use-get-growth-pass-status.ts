@@ -20,6 +20,7 @@ export default function useGetGrowthPassStatus() {
   useRefetchOnStoreReturn({
     pendingKey: STORE_RETURN_STATUS_KEYS.GROWTH_PASS,
     refetch: async () => {
+      if (brand) return;
       await query.refetch();
     },
   });
