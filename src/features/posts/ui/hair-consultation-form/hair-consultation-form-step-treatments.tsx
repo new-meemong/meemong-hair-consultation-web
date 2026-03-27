@@ -10,8 +10,8 @@ import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '../../constants/hair-consultation-form-field-name';
 import type { HairConsultationFormValues } from '../../types/hair-consultation-form-values';
 import RoundCheckboxIcon from '@/assets/icons/round-checkbox.svg';
-import { useSex } from '@/features/auth/hooks/use-sex';
 import { useOverlayContext } from '@/shared/context/overlay-context';
+import { useSex } from '@/features/auth/hooks/use-sex';
 
 const MALE_TREATMENTS = [
   { value: '일반펌', label: '일반펌' },

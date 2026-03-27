@@ -105,7 +105,7 @@ export default function BrandWelcomePage() {
               <Button
                 theme="white"
                 size="lg"
-                className="w-full rounded-[4px] hover:bg-alternative active:bg-alternative focus:bg-alternative"
+                className="w-full rounded-[4px]"
                 onClick={() => {
                   openNewSheetAfterClose.current = true;
                 }}
@@ -145,7 +145,7 @@ export default function BrandWelcomePage() {
               <Button
                 theme="white"
                 size="lg"
-                className="w-full rounded-[4px] hover:bg-alternative active:bg-alternative focus:bg-alternative"
+                className="w-full rounded-[4px]"
               >
                 닫기
               </Button>

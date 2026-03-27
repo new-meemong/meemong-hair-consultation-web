@@ -1,7 +1,3 @@
-import type { CreateEventMongResponse } from '@/entities/mong/api/create-event-mong-response';
-import { Button } from '@/shared';
-import { useOverlayContext } from '@/shared/context/overlay-context';
-import { goStorePage } from '@/shared/lib/go-store-page';
 import {
   DrawerClose,
   DrawerDescription,
@@ -9,6 +5,11 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/shared/ui/drawer';
+
+import { Button } from '@/shared';
+import type { CreateEventMongResponse } from '@/entities/mong/api/create-event-mong-response';
+import { goStorePage } from '@/shared/lib/go-store-page';
+import { useOverlayContext } from '@/shared/context/overlay-context';
 
 export default function useShowEventMongSheet() {
   const { showBottomSheet } = useOverlayContext();
@@ -42,7 +43,12 @@ export default function useShowEventMongSheet() {
           <DrawerFooter
             buttons={[
               <DrawerClose asChild key="store">
-                <Button theme="white" size="lg" className="rounded-4" onClick={goStorePage}>
+                <Button
+                  theme="white"
+                  size="lg"
+                  className="rounded-4"
+                  onClick={goStorePage}
+                >
                   스토어 가기
                 </Button>
               </DrawerClose>,

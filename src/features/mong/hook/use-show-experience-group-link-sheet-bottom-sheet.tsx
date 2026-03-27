@@ -112,7 +112,7 @@ export default function useShowExperienceGroupLinkSheetBottomSheet() {
                   <Button
                     size="lg"
                     theme="white"
-                    className="rounded-4 hover:bg-alternative active:bg-alternative focus:bg-alternative"
+                    className="rounded-4"
                     onClick={() => {
                       markPendingStoreReturnStatusCheck(STORE_RETURN_STATUS_KEYS.GROWTH_PASS);
                       goStorePage();
