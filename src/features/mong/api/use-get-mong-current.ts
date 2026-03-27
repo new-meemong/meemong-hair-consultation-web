@@ -1,5 +1,6 @@
 import type { GetMongCurrentResponse } from '@/entities/mong/api/get-mong-current-response';
 import { apiClient } from '@/shared/api/client';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useQuery } from '@tanstack/react-query';
 
 const GET_MONG_CURRENT_ENDPOINT = 'mong-moneys/current';
@@ -11,6 +12,7 @@ type GetMongCurrentParams = {
 
 export default function useGetMongCurrent(params?: GetMongCurrentParams) {
   const { mongType } = params ?? {};
+  const brand = useOptionalBrand();
 
   return useQuery({
     queryKey: [getMongCurrentQueryKeyPrefix(), params],
@@ -18,5 +20,6 @@ export default function useGetMongCurrent(params?: GetMongCurrentParams) {
       apiClient.get<GetMongCurrentResponse>(GET_MONG_CURRENT_ENDPOINT, {
         searchParams: mongType ? { mongType } : undefined,
       }),
+    enabled: !brand,
   });
 }
