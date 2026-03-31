@@ -72,12 +72,6 @@ export default function SignupRegionPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!isEditMode) {
-      requestCurrentLocation();
-    }
-  }, [isEditMode, requestCurrentLocation]);
-
   const openPostcode = useCallback(() => {
     if (!scriptLoaded || !postcodeContainerRef.current) return;
     postcodeContainerRef.current.innerHTML = '';
