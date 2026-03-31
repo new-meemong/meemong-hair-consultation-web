@@ -8,7 +8,9 @@ import { ROUTES } from '@/shared/lib/routes';
 import { SiteHeader } from '@/widgets/header/ui/site-header';
 import { apiClientWithoutAuth } from '@/shared/api/client';
 import { createWebApiClient } from '@/shared/lib/web-api';
+import { isTokenExpiredError } from '@/shared/lib/error-handler';
 import { setWebUserData } from '@/shared/lib/auth';
+import { showGlobalSnackBar } from '@/shared/lib/global-overlay';
 import { useBrand } from '@/shared/context/brand-context';
 import { useRouter } from 'next/navigation';
 
@@ -163,8 +165,15 @@ export default function PhoneAuthPage() {
           router.push(ROUTES.WEB_AUTH_SIGNUP(brand.slug));
         }
       }
-    } catch {
-      setVerifyError(true);
+    } catch (error) {
+      if (isTokenExpiredError(error)) {
+        showGlobalSnackBar({
+          type: 'error',
+          message: '인증시간이 지났습니다.\n휴대폰 인증을 다시 진행해주세요',
+        });
+      } else {
+        setVerifyError(true);
+      }
     } finally {
       setIsVerifying(false);
     }

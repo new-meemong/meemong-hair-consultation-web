@@ -5,7 +5,9 @@ import { Loader } from '@/shared/ui/loader';
 import { ROUTES } from '@/shared/lib/routes';
 import { SiteHeader } from '@/widgets/header/ui/site-header';
 import { apiClientWithoutAuth } from '@/shared/api/client';
+import { isTokenExpiredError } from '@/shared/lib/error-handler';
 import { setWebUserData } from '@/shared/lib/auth';
+import { showGlobalSnackBar } from '@/shared/lib/global-overlay';
 import { useBrand } from '@/shared/context/brand-context';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -55,6 +57,14 @@ export default function SignupTermsPage() {
       });
       sessionStorage.removeItem(SIGNUP_FORM_KEY(brand.slug));
       router.push(ROUTES.WEB_MY(brand.slug));
+    } catch (error) {
+      if (isTokenExpiredError(error)) {
+        showGlobalSnackBar({
+          type: 'error',
+          message: '인증시간이 지났습니다.\n휴대폰 인증을 다시 진행해주세요',
+        });
+        router.push(ROUTES.WEB_AUTH_PHONE(brand.slug));
+      }
     } finally {
       setIsSubmitting(false);
     }

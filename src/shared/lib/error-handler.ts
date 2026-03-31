@@ -66,11 +66,17 @@ export function getApiError(error: unknown): ApiError {
 /**
  * 토큰 만료 관련 에러인지 확인합니다.
  */
+const AUTH_EXPIRED_CODES = ['AUTH_SMS_TOKEN_NO_MATCHED'];
+
 export function isTokenExpiredError(error: unknown): boolean {
   const apiError = getApiError(error);
 
   // 401 에러이거나 메시지에 "token expired" 또는 "만료"가 포함된 경우
   if (apiError.httpCode === 401) {
+    return true;
+  }
+
+  if (AUTH_EXPIRED_CODES.includes(apiError.code)) {
     return true;
   }
 
