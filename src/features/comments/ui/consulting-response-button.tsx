@@ -1,3 +1,4 @@
+import PictureRedIcon from '@/assets/icons/picture-red.svg';
 import { cn } from '@/shared';
 import { getWebUserData } from '@/shared/lib/auth';
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
@@ -19,7 +20,7 @@ type ConsultingResponseButtonProps = {
 export default function ConsultingResponseButton({
   isCommentWriter,
   isFemalePostWriter,
-  hasAnswerImages: _hasAnswerImages,
+  hasAnswerImages,
   analysisFaceShape,
   analysisBangs,
   analysisHairLength,
@@ -77,9 +78,12 @@ export default function ConsultingResponseButton({
       </div>
       <div className="p-3 bg-white">
         <p className="typo-body-2-semibold text-label-info">추천시술</p>
-        <p className="mt-[6px] typo-body-2-regular text-label-default whitespace-nowrap overflow-hidden text-ellipsis">
-          {treatmentText || '-'}
-        </p>
+        <div className="mt-[6px] flex items-center gap-1">
+          {hasAnswerImages && <PictureRedIcon className="size-6 shrink-0" />}
+          <p className="typo-body-2-regular text-label-default whitespace-nowrap overflow-hidden text-ellipsis">
+            {treatmentText || '-'}
+          </p>
+        </div>
         {!hidden && (
           <button
             type="button"
