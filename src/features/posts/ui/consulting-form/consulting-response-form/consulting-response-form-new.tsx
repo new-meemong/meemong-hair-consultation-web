@@ -3,7 +3,6 @@ import { type UseFormReturn } from 'react-hook-form';
 
 import { isUserMale } from '@/entities/user/lib/user-sex';
 import useCreateEventMongMutation from '@/features/mong/api/use-create-event-mong-mutation';
-import { savePendingConsultingAnswerEventMong } from '@/features/mong/lib/consulting-answer-event-mong-storage';
 import { usePostDetail } from '@/features/posts/context/post-detail-context';
 import useCreateHairConsultationAnswer from '@/features/posts/hooks/use-create-hair-consultation-answer';
 import useShowConsultingAnswerCompleteSheet from '@/features/posts/hooks/use-show-consulting-answer-complete-sheet';
@@ -106,13 +105,6 @@ export default function ConsultingResponseFormNew({
       });
 
       eventMongData = eventMongResponse.data ?? null;
-
-      if (eventMongData && eventMongData.amount > 0) {
-        savePendingConsultingAnswerEventMong({
-          postId,
-          rewardData: eventMongData,
-        });
-      }
     } catch {
       // Do not block answer completion if reward payout call fails.
     }

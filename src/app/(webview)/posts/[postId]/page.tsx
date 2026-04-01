@@ -1,13 +1,11 @@
 'use client';
 
 import { useParams, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
 import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
-import useShowEventMongSheet from '@/features/mong/hook/use-show-event-mong-sheet';
-import { consumePendingConsultingAnswerEventMong } from '@/features/mong/lib/consulting-answer-event-mong-storage';
 import useGetHairConsultationAnswers from '@/features/posts/api/use-get-hair-consultation-answers';
 import { type CommentFormValues } from '@/features/comments/ui/comment-form';
 import { NewPostDetailProvider, usePostDetail } from '@/features/posts/context/post-detail-context';
@@ -35,7 +33,6 @@ function NewPostDetailPageContent({
   const isUserDesigner = auth?.isUserDesigner ?? false;
   const user = auth?.user ?? null;
   useMeemongPassPolicy(); // prefetch ad-block status so canSkipMong is ready before user clicks an answer
-  const showEventMongSheet = useShowEventMongSheet();
   const { back } = useRouterWithUser();
 
   useShowGuide(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
@@ -79,13 +76,6 @@ function NewPostDetailPageContent({
     }
     back();
   }, [shouldCloseWebViewOnBack, back]);
-
-  useEffect(() => {
-    const rewardData = consumePendingConsultingAnswerEventMong({ postId });
-    if (rewardData && rewardData.amount > 0) {
-      showEventMongSheet(rewardData);
-    }
-  }, [postId, showEventMongSheet]);
 
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen overflow-x-hidden">
