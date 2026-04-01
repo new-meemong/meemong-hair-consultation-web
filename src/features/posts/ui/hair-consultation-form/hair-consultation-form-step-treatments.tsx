@@ -606,7 +606,7 @@ export default function HairConsultationFormStepTreatments() {
                       </div>
                     </div>
 
-                    {(cardType === 'TYPE1' || cardType === 'TYPE3') && (
+                    {(cardType === 'TYPE1' || cardType === 'TYPE2' || cardType === 'TYPE3') && (
                       <div className="flex items-center justify-between">
                         <div className="flex gap-2">
                           {[3, 6, 12].map((months) => (
