@@ -6,6 +6,13 @@ import {
   BANG_STYLE_LABEL,
   BANG_STYLE_OPTIONS_NEW,
 } from '@/features/posts/constants/bang-style';
+import {
+  DrawerClose,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/shared/ui/drawer';
 import { FACE_SHAPE, FACE_TYPE_OPTIONS_NEW } from '@/features/posts/constants/face-shape';
 import {
   FEMALE_HAIR_LENGTH_OPTIONS,
@@ -58,6 +65,8 @@ import hairLengthFeedbackM6 from '@/assets/hair-length-feedback/hair_length_feed
 import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useGetHairConsultationAnswerDetail from '@/features/posts/api/use-get-hair-consultation-answer-detail';
 import useGetHairConsultationDetail from '@/features/posts/api/use-get-hair-consultation-detail';
+import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
+import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
 import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import { useOptionalBrand } from '@/shared/context/brand-context';
@@ -290,8 +299,10 @@ export default function NewConsultingResponsePage() {
   };
   const { canSkipMong } = useMeemongPassPolicy();
   const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
-  const { showSnackBar } = useOverlayContext();
+  const { showSnackBar, showBottomSheet, closeBottomSheet } = useOverlayContext();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
+  const { data: presetsData } = useGetMongConsumePresets();
+  const { data: mongCurrentData } = useGetMongCurrent();
   const postIdString = postId?.toString() ?? '';
   const responseIdString = responseId?.toString() ?? '';
   const [isStartingChat, setIsStartingChat] = useState(false);
@@ -353,41 +364,29 @@ export default function NewConsultingResponsePage() {
     });
   };
 
-  const handleChatClick = async () => {
-    if (brand) {
-      showAppOnlyModal();
-      return;
-    }
-    if (isStartingChat) return;
-
+  const startChatWithMong = async () => {
     const finalPostId = postIdString;
     const finalAnswerId = responseIdString;
 
     setIsStartingChat(true);
     try {
-      if (isUserModel) {
-        const createType = isPostWriter
-          ? MEEMONG_PASS_CREATE_TYPES.MY_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL
-          : MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
-        const canOpenForFree = canSkipMong(createType);
+      const createType = isPostWriter
+        ? MEEMONG_PASS_CREATE_TYPES.MY_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL
+        : MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
 
-        if (!canOpenForFree) {
-          try {
-            await createMongWithdraw({ createType });
-          } catch (error) {
-            const apiError = getApiError(error);
-            if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
-              showMongInsufficientSheet();
-              return;
-            }
-
-            showSnackBar({
-              type: 'error',
-              message: apiError.message || '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
-            });
-            return;
-          }
+      try {
+        await createMongWithdraw({ createType });
+      } catch (error) {
+        const apiError = getApiError(error);
+        if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
+          showMongInsufficientSheet();
+          return;
         }
+        showSnackBar({
+          type: 'error',
+          message: apiError.message || '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+        });
+        return;
       }
 
       const started = await startChat({
@@ -407,6 +406,106 @@ export default function NewConsultingResponsePage() {
     } finally {
       setIsStartingChat(false);
     }
+  };
+
+  const handleChatClick = async () => {
+    if (brand) {
+      showAppOnlyModal();
+      return;
+    }
+    if (isStartingChat) return;
+
+    if (!isUserModel) {
+      await startChat({
+        receiverId: answer.user.id,
+        postId: postIdString,
+        answerId: responseIdString,
+        entrySource: 'CONSULTING_RESPONSE',
+        isMyHairConsultationPost: isPostWriter,
+      });
+      return;
+    }
+
+    const createType = isPostWriter
+      ? MEEMONG_PASS_CREATE_TYPES.MY_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL
+      : MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
+
+    if (canSkipMong(createType)) {
+      setIsStartingChat(true);
+      try {
+        const started = await startChat({
+          receiverId: answer.user.id,
+          postId: postIdString,
+          answerId: responseIdString,
+          entrySource: 'CONSULTING_RESPONSE',
+          isMyHairConsultationPost: isPostWriter,
+        });
+        if (!started) {
+          showSnackBar({
+            type: 'error',
+            message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+          });
+        }
+      } finally {
+        setIsStartingChat(false);
+      }
+      return;
+    }
+
+    const CHAT_SHEET_ID = 'consulting-response-chat-confirm-sheet';
+    const hairConsultingPresets =
+      presetsData?.dataList?.filter((p) => p.type === 'HAIR_CONSULTING') ?? [];
+    const preset = hairConsultingPresets.find((p) => p.subType === createType);
+    const price = preset?.price ?? 0;
+    const currentMongAmount = mongCurrentData?.data?.currentTotalAmount ?? 0;
+
+    showBottomSheet({
+      id: CHAT_SHEET_ID,
+      hideHandle: true,
+      children: (
+        <>
+          <DrawerHeader>
+            <DrawerTitle showCloseButton />
+            <DrawerDescription>
+              <span className="flex flex-col gap-2">
+                <span className="typo-title-2-semibold text-label-strong">
+                  {answer.user.displayName} 디자이너와
+                  <br />
+                  추가 상담을 시작할까요?
+                </span>
+                <span className="typo-body-1-long-regular text-label-sub">
+                  내 잔여 몽:{' '}
+                  <span className="typo-body-1-semibold text-negative-light">
+                    {currentMongAmount}몽
+                  </span>
+                </span>
+              </span>
+            </DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter
+            buttons={[
+              <DrawerClose asChild key="cancel">
+                <Button theme="white" size="lg" className="rounded-4">
+                  취소
+                </Button>
+              </DrawerClose>,
+              <DrawerClose asChild key="confirm">
+                <Button
+                  size="lg"
+                  className="rounded-4"
+                  onClick={() => {
+                    closeBottomSheet(CHAT_SHEET_ID);
+                    startChatWithMong();
+                  }}
+                >
+                  {price}몽 사용
+                </Button>
+              </DrawerClose>,
+            ]}
+          />
+        </>
+      ),
+    });
   };
 
   const postWriterSex = searchParams.get(SEARCH_PARAMS.POST_WRITER_SEX);
