@@ -10,10 +10,12 @@ import { usePostDetail } from '../../context/post-detail-context';
 function PostDetailItem({
   hideAuthorProfile,
   isWriter,
+  compactTitleSpacing,
   hideTopAdvisor,
 }: {
   hideAuthorProfile?: boolean;
   isWriter?: boolean;
+  compactTitleSpacing?: boolean;
   hideTopAdvisor?: boolean;
 }) {
   const { postDetail, isConsultingPost } = usePostDetail();
@@ -26,6 +28,7 @@ function PostDetailItem({
           postDetail={postDetail}
           hideAuthorProfile={hideAuthorProfile}
           isWriter={isWriter}
+          compactTitleSpacing={compactTitleSpacing}
         />
       ) : (
         <PostDetailContent postDetail={postDetail} />

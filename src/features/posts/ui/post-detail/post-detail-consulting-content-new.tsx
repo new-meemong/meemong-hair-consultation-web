@@ -78,6 +78,7 @@ type PostDetailConsultingContentNewProps = {
   postDetail: PostDetail;
   hideAuthorProfile?: boolean;
   isWriter?: boolean;
+  compactTitleSpacing?: boolean;
 };
 
 const formatCreatedAt = (value: string) => {
@@ -90,6 +91,7 @@ export default function PostDetailConsultingContentNew({
   postDetail,
   hideAuthorProfile = false,
   isWriter: isWriterProp = false,
+  compactTitleSpacing = false,
 }: PostDetailConsultingContentNewProps) {
   const auth = useOptionalAuthContext();
   const user = auth?.user ?? null;
@@ -214,7 +216,7 @@ export default function PostDetailConsultingContentNew({
   }, [sortedTreatments]);
 
   return (
-    <div className="flex flex-col py-6">
+    <div className={compactTitleSpacing ? 'flex flex-col pt-2 pb-6' : 'flex flex-col py-6'}>
       <div className="flex flex-col gap-5 px-5 mb-6">
         {!hideAuthorProfile && (
           <PostDetailAuthorProfile

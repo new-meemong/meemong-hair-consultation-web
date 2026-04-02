@@ -1,20 +1,18 @@
 'use client';
 
-import { useCallback, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-
-import { type CommentFormValues } from '@/features/comments/ui/comment-form';
-import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
 import { NewPostDetailProvider, usePostDetail } from '@/features/posts/context/post-detail-context';
-import { ROUTES } from '@/shared/lib/routes';
-import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
-import { getWebUserData } from '@/shared/lib/auth';
-import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-import { useBrand } from '@/shared/context/brand-context';
+import { useCallback, useEffect } from 'react';
+
 import HairConsultationCommentContainer from '@/widgets/comments/ui/hair-consultation-comment-container';
-import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
-import { SiteHeader } from '@/widgets/header';
 import { PostDetailContainer } from '@/widgets/post/post-detail-container';
+import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
+import { ROUTES } from '@/shared/lib/routes';
+import { SiteHeader } from '@/widgets/header';
+import { getWebUserData } from '@/shared/lib/auth';
+import { useBrand } from '@/shared/context/brand-context';
+import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
+import { useParams } from 'next/navigation';
+import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 
 function MyPostDetailPageContent({ postId }: { postId: string }) {
   const { back, replace } = useRouterWithUser();
@@ -29,24 +27,14 @@ function MyPostDetailPageContent({ postId }: { postId: string }) {
     }
   }, [webUserId, isWriter, replace, brand.slug]);
 
-  const { commentFormState, textareaRef, isCommentCreating, isCommentUpdating, handlers } =
-    useHairConsultationCommentFormState({
-      hairConsultationId: postId,
-      receiverId: postDetail.hairConsultPostingCreateUserId.toString(),
-    });
-
-  const isFormPending = isCommentCreating || isCommentUpdating;
+  const { commentFormState, handlers } = useHairConsultationCommentFormState({
+    hairConsultationId: postId,
+    receiverId: postDetail.hairConsultPostingCreateUserId.toString(),
+  });
 
   const handleContainerClick = useCallback(() => {
     handlers.resetCommentState();
   }, [handlers]);
-
-  const handleCommentFormSubmit = useCallback(
-    (data: CommentFormValues, options: { onSuccess: () => void }) => {
-      handlers.handleCommentFormSubmit(data, options);
-    },
-    [handlers],
-  );
 
   if (webUserId != null && !isWriter) {
     return null;
@@ -64,29 +52,24 @@ function MyPostDetailPageContent({ postId }: { postId: string }) {
         className="flex-1 overflow-y-auto overflow-x-hidden touch-pan-y"
         onClick={handleContainerClick}
       >
-        <div className="px-5 pt-6">
-          <p className="typo-body-3-regular text-label-info">{brand.name} 컨설팅</p>
-        </div>
-        <PostDetailContainer hideAuthorProfile isWriter={isWriter} hideTopAdvisor className="-mt-4">
+        <PostDetailContainer
+          topContent={
+            <div className="px-5 pt-6">
+              <p className="typo-body-3-regular text-label-info">{brand.name} 컨설팅</p>
+            </div>
+          }
+          hideAuthorProfile
+          isWriter={isWriter}
+          compactTitleSpacing
+          hideTopAdvisor
+        >
           <HairConsultationCommentContainer
             hairConsultationId={postId}
             commentFormState={commentFormState}
-            handlers={{
-              ...handlers,
-              handleCommentFormSubmit,
-            }}
+            handlers={handlers}
           />
         </PostDetailContainer>
       </div>
-      <CommentFormContainer
-        postId={postId}
-        onSubmit={handleCommentFormSubmit}
-        commentFormState={commentFormState}
-        isPending={isFormPending}
-        textareaRef={textareaRef}
-        isConsulting={true}
-        isAnsweredByDesigner={false}
-      />
     </div>
   );
 }
