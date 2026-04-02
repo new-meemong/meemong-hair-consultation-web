@@ -77,6 +77,7 @@ function ImageList({ images, size }: { images: string[]; size: 'small' | 'large'
 type PostDetailConsultingContentNewProps = {
   postDetail: PostDetail;
   hideAuthorProfile?: boolean;
+  isWriter?: boolean;
 };
 
 const formatCreatedAt = (value: string) => {
@@ -88,6 +89,7 @@ const formatCreatedAt = (value: string) => {
 export default function PostDetailConsultingContentNew({
   postDetail,
   hideAuthorProfile = false,
+  isWriter: isWriterProp = false,
 }: PostDetailConsultingContentNewProps) {
   const auth = useOptionalAuthContext();
   const user = auth?.user ?? null;
@@ -125,7 +127,7 @@ export default function PostDetailConsultingContentNew({
   const [canExpandTreatments, setCanExpandTreatments] = useState(false);
   const treatmentsListRef = useRef<HTMLDivElement | null>(null);
 
-  const isWriter = user != null && authorId === user.id;
+  const isWriter = isWriterProp || (user != null && authorId === user.id);
   const shouldShowAuthorInfo = isWriter || isUserDesigner;
   const displayName = shouldShowAuthorInfo ? authorName || '익명' : '익명';
   const displayImageUrl = shouldShowAuthorInfo ? authorImageUrl : null;

@@ -1,9 +1,8 @@
 import Image from 'next/image';
-
 import LockIcon from '@/assets/icons/lock.svg';
-import { useAuthContext } from '@/features/auth/context/auth-context';
 import { cn } from '@/lib/utils';
 import { isValidUrl } from '@/shared/lib/is-valid-url';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
 
 function HiddenImage() {
@@ -45,7 +44,8 @@ export default function PostDetailImage({
   onlyShowToDesigner = false,
   size,
 }: PostDetailImageProps) {
-  const { isUserDesigner } = useAuthContext();
+  const auth = useOptionalAuthContext();
+  const isUserDesigner = auth?.isUserDesigner ?? false;
 
   const shouldShowImage = isUserDesigner || !onlyShowToDesigner;
 

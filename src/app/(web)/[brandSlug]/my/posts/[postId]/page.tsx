@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { type CommentFormValues } from '@/features/comments/ui/comment-form';
 import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
 import { NewPostDetailProvider, usePostDetail } from '@/features/posts/context/post-detail-context';
+import { ROUTES } from '@/shared/lib/routes';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { getWebUserData } from '@/shared/lib/auth';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -16,7 +17,7 @@ import { SiteHeader } from '@/widgets/header';
 import { PostDetailContainer } from '@/widgets/post/post-detail-container';
 
 function MyPostDetailPageContent({ postId }: { postId: string }) {
-  const { back } = useRouterWithUser();
+  const { back, replace } = useRouterWithUser();
   const { postDetail } = usePostDetail();
   const { config: brand } = useBrand();
   const webUserId = getWebUserData(brand.slug)?.userId ?? null;
@@ -24,9 +25,9 @@ function MyPostDetailPageContent({ postId }: { postId: string }) {
 
   useEffect(() => {
     if (webUserId != null && !isWriter) {
-      back();
+      replace(ROUTES.WEB_MY(brand.slug));
     }
-  }, [webUserId, isWriter, back]);
+  }, [webUserId, isWriter, replace, brand.slug]);
 
   const { commentFormState, textareaRef, isCommentCreating, isCommentUpdating, handlers } =
     useHairConsultationCommentFormState({
@@ -47,6 +48,10 @@ function MyPostDetailPageContent({ postId }: { postId: string }) {
     [handlers],
   );
 
+  if (webUserId != null && !isWriter) {
+    return null;
+  }
+
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen overflow-x-hidden">
       <SiteHeader
@@ -62,7 +67,7 @@ function MyPostDetailPageContent({ postId }: { postId: string }) {
         <div className="px-5 pt-6">
           <p className="typo-body-3-regular text-label-info">{brand.name} 컨설팅</p>
         </div>
-        <PostDetailContainer hideAuthorProfile className="-mt-4">
+        <PostDetailContainer hideAuthorProfile isWriter={isWriter} hideTopAdvisor className="-mt-4">
           <HairConsultationCommentContainer
             hairConsultationId={postId}
             commentFormState={commentFormState}
