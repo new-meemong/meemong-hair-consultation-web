@@ -60,4 +60,5 @@ export type PostDetail = {
   desiredDateType?: string | null;
   desiredDateDescription?: string | null;
   desiredDate?: string | null;
+  isBrandConsultation?: boolean;
 };

@@ -178,5 +178,9 @@ export default function mapHairConsultationDetailToPostDetail(
     maxPaymentPrice: detail.desiredCostPrice,
     desiredDateType: detail.desiredDateType,
     desiredDateDescription: detail.desiredDateDescription ?? detail.desiredDate,
+    isBrandConsultation: Boolean(
+      (detail.brandIds && detail.brandIds.length > 0) ||
+        (detail.brands && detail.brands.length > 0),
+    ),
   };
 }

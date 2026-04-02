@@ -119,6 +119,7 @@ export default function PostDetailConsultingContentNew({
     modelImageList,
     treatments,
     aspirations,
+    isBrandConsultation,
   } = postDetail;
 
   const myImageUrls = myImageList?.map(({ imageUrl }) => imageUrl) ?? [];
@@ -247,7 +248,7 @@ export default function PostDetailConsultingContentNew({
               <ImageList images={myImageUrls} size="large" />
             )}
           </div>
-          {isUserDesigner && (
+          {isUserDesigner && !isBrandConsultation && (
             <div className="mt-5">
               <p className="typo-body-1-semibold text-label-default">프로필사진</p>
               <div className="mt-3">
