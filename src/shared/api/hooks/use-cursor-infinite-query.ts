@@ -11,6 +11,8 @@ type UseCursorInfiniteQueryParams<TData extends Record<string, unknown>> = Pagin
   endpoint: string;
   queryKey: QueryKey;
   additionalParams?: Record<string, unknown>;
+  staleTime?: number;
+  refetchOnMount?: boolean | 'always';
   select?: (
     data: InfiniteData<ApiListResponse<TData>, string | undefined>,
   ) => InfiniteData<ApiListResponse<TData>, string | undefined>;
@@ -22,6 +24,8 @@ export default function useCursorInfiniteQuery<TData extends Record<string, unkn
   endpoint,
   queryKey,
   additionalParams,
+  staleTime,
+  refetchOnMount,
   select,
   enabled = true,
 }: UseCursorInfiniteQueryParams<TData>) {
@@ -36,6 +40,8 @@ export default function useCursorInfiniteQuery<TData extends Record<string, unkn
   >({
     queryKey,
     enabled,
+    staleTime,
+    refetchOnMount,
     queryFn: async ({ pageParam }) => {
       const searchParams = filterUndefined({
         __limit,
@@ -64,9 +70,7 @@ export default function useCursorInfiniteQuery<TData extends Record<string, unkn
     },
     initialPageParam: undefined as string | undefined,
     meta: {
-      skipLoadingOverlay: (
-        query: Query<InfiniteData<ApiResponse<TData>, string | undefined>>,
-      ) => {
+      skipLoadingOverlay: (query: Query<InfiniteData<ApiResponse<TData>, string | undefined>>) => {
         const isFetchingNextPage = (query.state.data?.pages?.length ?? 0) > 0;
         return isFetchingNextPage;
       },

@@ -19,5 +19,7 @@ export default function useGetHairConsultationComments(
     endpoint: getHairConsultationCommentsEndpoint(hairConsultationId),
     queryKey: [getHairConsultationCommentsQueryKeyPrefix(hairConsultationId), params],
     __limit,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 }
