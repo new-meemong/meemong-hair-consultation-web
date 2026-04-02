@@ -40,6 +40,7 @@ export const ROUTES = {
   WEB_AUTH_SIGNUP_TERMS: (brandSlug: string) => `/${brandSlug}/auth/signup/terms`,
   WEB_AUTH_LINK: (brandSlug: string) => `/${brandSlug}/auth/link`,
   WEB_MY: (brandSlug: string) => `/${brandSlug}/my`,
+  WEB_MY_POST_DETAIL: (brandSlug: string, postId: string) => `/${brandSlug}/my/posts/${postId}`,
   WEB_POSTS: (brandSlug: string) => `/${brandSlug}/posts`,
   WEB_POSTS_CREATE: (brandSlug: string) => `/${brandSlug}/posts/create`,
   WEB_POST_DETAIL: (brandSlug: string, postId: string) => `/${brandSlug}/posts/${postId}`,

@@ -444,7 +444,7 @@ function SentConsultationCard({
     <button
       type="button"
       className="border-b border-gray-200 p-5 flex flex-col gap-4 w-full text-left"
-      onClick={() => router.push(ROUTES.WEB_POST_DETAIL(brandSlug, String(consultation.id)))}
+      onClick={() => router.push(ROUTES.WEB_MY_POST_DETAIL(brandSlug, String(consultation.id)))}
     >
       <div className="flex flex-col gap-1">
         <p className="typo-body-3-regular text-label-info">{formatDate(consultation.createdAt)}</p>

@@ -7,14 +7,17 @@ import PostDetailContent from './post-detail-content';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { usePostDetail } from '../../context/post-detail-context';
 
-function PostDetailItem() {
+function PostDetailItem({ hideAuthorProfile }: { hideAuthorProfile?: boolean }) {
   const { postDetail, isConsultingPost } = usePostDetail();
   const { id, likeCount, commentCount, isFavorited, viewCount } = postDetail;
 
   return (
     <>
       {isConsultingPost ? (
-        <PostDetailConsultingContentNew postDetail={postDetail} />
+        <PostDetailConsultingContentNew
+          postDetail={postDetail}
+          hideAuthorProfile={hideAuthorProfile}
+        />
       ) : (
         <PostDetailContent postDetail={postDetail} />
       )}

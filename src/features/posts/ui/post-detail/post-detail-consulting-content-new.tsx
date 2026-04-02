@@ -76,6 +76,7 @@ function ImageList({ images, size }: { images: string[]; size: 'small' | 'large'
 
 type PostDetailConsultingContentNewProps = {
   postDetail: PostDetail;
+  hideAuthorProfile?: boolean;
 };
 
 const formatCreatedAt = (value: string) => {
@@ -86,6 +87,7 @@ const formatCreatedAt = (value: string) => {
 
 export default function PostDetailConsultingContentNew({
   postDetail,
+  hideAuthorProfile = false,
 }: PostDetailConsultingContentNewProps) {
   const auth = useOptionalAuthContext();
   const user = auth?.user ?? null;
@@ -212,13 +214,15 @@ export default function PostDetailConsultingContentNew({
   return (
     <div className="flex flex-col py-6">
       <div className="flex flex-col gap-5 px-5 mb-6">
-        <PostDetailAuthorProfile
-          imageUrl={displayImageUrl}
-          name={displayName}
-          region={authorRegion}
-          createdAt={formattedCreatedAt}
-          authorId={authorId}
-        />
+        {!hideAuthorProfile && (
+          <PostDetailAuthorProfile
+            imageUrl={displayImageUrl}
+            name={displayName}
+            region={authorRegion}
+            createdAt={formattedCreatedAt}
+            authorId={authorId}
+          />
+        )}
         <div className="flex flex-col gap-3">
           <p className="typo-title-3-semibold text-label-default">{title}</p>
           {content && (

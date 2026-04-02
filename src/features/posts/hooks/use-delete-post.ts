@@ -3,13 +3,15 @@ import { ROUTES, closeAppWebView, normalizeSource } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useCallback } from 'react';
 import useDeleteHairConsultationMutation from '../api/use-delete-hair-consultation-mutation';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { usePostDetail } from '../context/post-detail-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 export default function useDeletePost(postId: string) {
   const showModal = useShowModal();
-  const { push, source } = useRouterWithUser();
+  const { push, replace, source } = useRouterWithUser();
+  const brand = useOptionalBrand();
 
   const { postDetail } = usePostDetail();
   const { mutate: deleteNewPost } = useDeleteHairConsultationMutation();
@@ -27,7 +29,9 @@ export default function useDeletePost(postId: string) {
               {
                 label: '확인',
                 onClick: () => {
-                  if (normalizeSource(source) === 'app') {
+                  if (brand) {
+                    replace(ROUTES.WEB_MY(brand.config.slug));
+                  } else if (normalizeSource(source) === 'app') {
                     // 앱 전체화면 WebView에서 삭제 시 Flutter 페이지를 pop하여
                     // 탭이 있는 헤어상담 메인으로 복귀
                     closeAppWebView('close');
@@ -42,7 +46,7 @@ export default function useDeletePost(postId: string) {
           });
         },
       }),
-    [deleteNewPost, postId, showModal, push, activePostTab, source],
+    [deleteNewPost, postId, showModal, push, replace, activePostTab, source, brand],
   );
 
   const handleDeletePost = useCallback(() => {
