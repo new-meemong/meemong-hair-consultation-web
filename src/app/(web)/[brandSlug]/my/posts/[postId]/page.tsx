@@ -50,7 +50,7 @@ function MyPostDetailPageContent({ postId }: { postId: string }) {
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen overflow-x-hidden">
       <SiteHeader
-        title="내 상담지"
+        title="헤어컨설팅"
         showBackButton
         onBackClick={back}
         rightComponent={isWriter && <PostDetailMoreButton postId={postId} />}
@@ -59,7 +59,10 @@ function MyPostDetailPageContent({ postId }: { postId: string }) {
         className="flex-1 overflow-y-auto overflow-x-hidden touch-pan-y"
         onClick={handleContainerClick}
       >
-        <PostDetailContainer hideAuthorProfile>
+        <div className="px-5 pt-6">
+          <p className="typo-body-3-regular text-label-info">{brand.name} 컨설팅</p>
+        </div>
+        <PostDetailContainer hideAuthorProfile className="-mt-4">
           <HairConsultationCommentContainer
             hairConsultationId={postId}
             commentFormState={commentFormState}
