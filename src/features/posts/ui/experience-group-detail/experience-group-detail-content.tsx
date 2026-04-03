@@ -84,6 +84,7 @@ export default function ExperienceGroupDetailContent({
 }: ExperienceGroupDetailContentProps) {
   const { user, isAnonymous, createdAt, title, content, snsTypes, priceType, price } =
     experienceGroupDetail;
+  const authorName = isAnonymous ? '익명' : (user.displayName ?? '익명');
 
   const getPriceText = () => {
     switch (priceType) {
@@ -116,7 +117,7 @@ export default function ExperienceGroupDetailContent({
       <div className="flex flex-col gap-5 px-5 pt-6">
         <PostDetailAuthorProfile
           imageUrl={user.profilePictureURL}
-          name={isAnonymous ? '익명' : user.displayName}
+          name={authorName}
           region={null}
           createdAt={formatDate(createdAt, 'MM/dd HH:mm')}
           authorId={user.id}
@@ -138,7 +139,7 @@ export default function ExperienceGroupDetailContent({
                 snsType={snsType.snsType}
                 url={snsType.url}
                 experienceGroupId={experienceGroupDetail.id}
-                designerName={isAnonymous ? '익명' : user.displayName}
+                designerName={authorName}
               />
             ))}
           </div>

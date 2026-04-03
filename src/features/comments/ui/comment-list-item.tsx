@@ -182,6 +182,7 @@ export default function CommentListItem({
             <div className="flex-1 min-w-0">
               <CommentAuthorProfile
                 author={comment.user}
+                isAnonymous={comment.isAnonymous ?? false}
                 lockIconShown={lockIconShown}
                 postId={postId}
                 answerId={comment.answerId}

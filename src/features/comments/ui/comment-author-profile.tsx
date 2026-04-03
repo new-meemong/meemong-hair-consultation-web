@@ -13,6 +13,7 @@ import { useShowInvalidChatRequestSheet } from '@/features/chat/hook/use-show-in
 
 type CommentAuthorProfileProps = {
   author: CommentUser;
+  isAnonymous?: boolean;
   lockIconShown: boolean;
   postId?: string;
   answerId?: number;
@@ -23,7 +24,11 @@ type CommentAuthorProfileProps = {
 
 const NICKNAME_VISIBLE_LENGTH = 13;
 
-const formatCommentNickname = (nickname: string) => {
+const formatCommentNickname = (nickname?: string | null) => {
+  if (!nickname) {
+    return '익명';
+  }
+
   const chars = Array.from(nickname);
 
   if (chars.length <= NICKNAME_VISIBLE_LENGTH) {
@@ -35,6 +40,7 @@ const formatCommentNickname = (nickname: string) => {
 
 export default function CommentAuthorProfile({
   author,
+  isAnonymous = false,
   lockIconShown,
   postId,
   answerId,
@@ -51,13 +57,14 @@ export default function CommentAuthorProfile({
   const isWriter = currentUserId === author.userId;
 
   const { profilePictureURL, displayName } = author;
+  const normalizedDisplayName = isAnonymous ? '익명' : (displayName ?? '익명');
 
   const shouldHideConsultingAnswerAuthorName = isConsultingAnswer && isUserDesigner && !isWriter;
   const displayedName = shouldHideConsultingAnswerAuthorName
     ? '익명'
     : isWriter
-      ? `${formatCommentNickname(displayName)}(글쓴이)`
-      : formatCommentNickname(displayName);
+      ? `${formatCommentNickname(normalizedDisplayName)}(글쓴이)`
+      : formatCommentNickname(normalizedDisplayName);
 
   const isCommentAuthorDesigner = author.role === USER_ROLE.DESIGNER;
 
