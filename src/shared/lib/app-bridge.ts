@@ -37,10 +37,9 @@ function hasGoAppRouterBridge(): boolean {
   if (typeof window === 'undefined') return false;
 
   const w = window as BridgeWindow;
-  return (
-    typeof w.goAppRouter === 'function' ||
-    (!!w.GoAppRouter && typeof w.GoAppRouter.postMessage === 'function')
-  );
+  // window.goAppRouter 래퍼는 레이아웃 스크립트에서 항상 주입되므로,
+  // 실제 네이티브 브리지(GoAppRouter.postMessage) 존재 여부로 판단한다.
+  return !!w.GoAppRouter && typeof w.GoAppRouter.postMessage === 'function';
 }
 
 function hasCloseWebViewBridge(): boolean {
@@ -57,17 +56,16 @@ export function openInAppWebView(path: string, options?: OpenInAppWebViewOptions
   if (!hasGoAppRouterBridge()) return false;
 
   try {
-    const payload: GoAppRouterPayload = {
-      path,
-      reloadOnReturn: options?.reloadOnReturn ?? true,
-    };
+    // 프로덕션 앱은 아직 문자열 path 시그니처를 사용하므로 하위호환을 유지한다.
+    // 옵션 타입은 이후 앱 배포 시 버전 게이트를 붙여 재활용할 수 있도록 유지한다.
+    void options;
     const w = window as BridgeWindow;
     if (typeof w.goAppRouter === 'function') {
-      w.goAppRouter(payload);
+      w.goAppRouter(path);
       return true;
     }
 
-    w.GoAppRouter?.postMessage(JSON.stringify(payload));
+    w.GoAppRouter?.postMessage(JSON.stringify(path));
     return true;
   } catch (_) {
     return false;
