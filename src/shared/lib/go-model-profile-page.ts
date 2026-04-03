@@ -1,5 +1,5 @@
+import { openInAppWebView } from './app-bridge';
+
 export default function goModelProfilePage(modelId: string) {
-  if (window.goAppRouter) {
-    window.goAppRouter(`/model/profile/${modelId}`);
-  }
+  openInAppWebView(`/model/profile/${modelId}`, { reloadOnReturn: false });
 }

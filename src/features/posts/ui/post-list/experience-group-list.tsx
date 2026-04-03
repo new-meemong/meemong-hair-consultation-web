@@ -33,7 +33,9 @@ export default function ExperienceGroupList({
     }
 
     if (source === 'app') {
-      const opened = openInAppWebView(`/hair-consultation/experience-groups/${id}`);
+      const opened = openInAppWebView(`/hair-consultation/experience-groups/${id}`, {
+        reloadOnReturn: false,
+      });
       if (opened) {
         return;
       }

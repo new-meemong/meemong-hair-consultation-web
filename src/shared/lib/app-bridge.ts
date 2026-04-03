@@ -1,9 +1,17 @@
 export type AppSource = 'app' | 'web';
+export type GoAppRouterPayload = {
+  path: string;
+  reloadOnReturn?: boolean;
+};
+export type OpenInAppWebViewOptions = {
+  reloadOnReturn?: boolean;
+};
 
 type BridgeWindow = Window & {
   GoAppRouter?: {
     postMessage: (value: string) => void;
   };
+  goAppRouter?: (payload: string | GoAppRouterPayload) => void;
   GoBack?: {
     postMessage: (value: string) => void;
   };
@@ -45,17 +53,21 @@ function hasCloseWebViewBridge(): boolean {
   );
 }
 
-export function openInAppWebView(path: string): boolean {
+export function openInAppWebView(path: string, options?: OpenInAppWebViewOptions): boolean {
   if (!hasGoAppRouterBridge()) return false;
 
   try {
+    const payload: GoAppRouterPayload = {
+      path,
+      reloadOnReturn: options?.reloadOnReturn ?? true,
+    };
     const w = window as BridgeWindow;
     if (typeof w.goAppRouter === 'function') {
-      w.goAppRouter(path);
+      w.goAppRouter(payload);
       return true;
     }
 
-    w.GoAppRouter?.postMessage(JSON.stringify(path));
+    w.GoAppRouter?.postMessage(JSON.stringify(payload));
     return true;
   } catch (_) {
     return false;

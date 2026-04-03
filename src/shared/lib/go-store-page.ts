@@ -1,5 +1,5 @@
+import { openInAppWebView } from './app-bridge';
+
 export function goStorePage() {
-  if (window.goAppRouter) {
-    window.goAppRouter('/store');
-  }
+  openInAppWebView('/store', { reloadOnReturn: true });
 }

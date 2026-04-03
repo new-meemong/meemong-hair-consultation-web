@@ -33,7 +33,9 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
     }
 
     if (source === 'app') {
-      const opened = openInAppWebView(`/hair-consultation/posts/${postId}`);
+      const opened = openInAppWebView(`/hair-consultation/posts/${postId}`, {
+        reloadOnReturn: false,
+      });
       if (opened) {
         return;
       }
