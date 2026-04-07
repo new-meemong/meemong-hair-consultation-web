@@ -8,6 +8,7 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { normalizeSource, openInAppWebView } from '@/shared/lib/app-bridge';
 import { ROUTES } from '@/shared/lib/routes';
 import { useOptionalBrand } from '@/shared/context/brand-context';
+import { useSearchParams } from 'next/navigation';
 
 import PostListEmptyView from './post-list-empty-view';
 import PostListItem from './post-list-item';
@@ -21,8 +22,10 @@ type PostListProps = {
 
 export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
   const router = useRouterWithUser();
+  const searchParams = useSearchParams();
   const source = normalizeSource(router.source);
   const brand = useOptionalBrand();
+  const activeBrandId = searchParams.get(SEARCH_PARAMS.BRAND_ID);
 
   const { mutate: createHairConsultationReadingMutation } =
     useCreateHairConsultationReadingMutation();
@@ -44,9 +47,15 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
     const route = brand
       ? ROUTES.WEB_POST_DETAIL(brand.config.slug, String(postId))
       : ROUTES.POSTS_DETAIL(postId);
-    router.push(route, {
+    const nextParams: Record<string, string> = {
       [SEARCH_PARAMS.POST_LIST_TAB]: tab,
-    });
+    };
+
+    if (activeBrandId) {
+      nextParams[SEARCH_PARAMS.BRAND_ID] = activeBrandId;
+    }
+
+    router.push(route, nextParams);
   };
 
   const observerRef = useIntersectionObserver({

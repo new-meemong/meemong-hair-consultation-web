@@ -111,15 +111,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsInitialized(false);
     }
     const isSameUser = user?.id === Number(userId);
-    if (!isSameUser) {
-      void refreshToken('user-change');
+    const isBrandLoaded = user?.brand !== undefined;
+    if (!isSameUser || !isBrandLoaded) {
+      void refreshToken(!isSameUser ? 'user-change' : 'brand-missing');
       return;
     }
 
     if (!isInitialized) {
       setIsInitialized(true);
     }
-  }, [isInitialized, refreshToken, userId, user?.id]);
+  }, [isInitialized, refreshToken, userId, user?.brand, user?.id]);
 
   useEffect(() => {
     if (!userId || !user?.token) return;
@@ -176,8 +177,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   if (userId === null) return <div>유저아이디가 누락되었습니다</div>;
 
   const isSameUser = user?.id === Number(userId);
+  const isBrandLoaded = user?.brand !== undefined;
 
-  if (!user || !isInitialized || !isSameUser) {
+  if (!user || !isInitialized || !isSameUser || !isBrandLoaded) {
     return isError ? <div>로그인 실패</div> : null;
   }
 

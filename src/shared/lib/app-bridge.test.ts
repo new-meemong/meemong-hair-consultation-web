@@ -24,7 +24,7 @@ describe('openInAppWebView', () => {
     expect(bridgeWindow.goAppRouter).not.toHaveBeenCalled();
   });
 
-  it('uses the wrapper with a string path when the native bridge exists', () => {
+  it('ignores options and uses the wrapper with a string path for backward compatibility', () => {
     const goAppRouter = vi.fn();
     const postMessage = vi.fn();
 
@@ -40,7 +40,7 @@ describe('openInAppWebView', () => {
     expect(postMessage).not.toHaveBeenCalled();
   });
 
-  it('falls back to the native channel with a string payload', () => {
+  it('ignores options and falls back to the native channel with a string payload', () => {
     const postMessage = vi.fn();
 
     bridgeWindow.GoAppRouter = { postMessage };

@@ -14,12 +14,13 @@ import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { SiteHeader } from '@/widgets/header';
 import Tab from '@/shared/ui/tab';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
+import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import { getPostTabs } from '@/features/posts/constants/post-tabs';
-import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import { useOptionalBrand } from '@/shared/context/brand-context';
+import usePostListBrandTab from '@/features/posts/hooks/use-post-list-brand-tab';
 import usePostListRegionTab from '@/features/posts/hooks/use-post-list-region-tab';
 import usePostListTab from '@/features/posts/hooks/use-post-list-tab';
 import { usePostTab } from '@/features/posts/hooks/use-post-tab';
@@ -40,6 +41,7 @@ export default function PostsPage() {
   const { containerRef } = useScrollRestoration(POSTS_PAGE_KEY);
 
   const { regionTab, userSelectedRegionData } = usePostListRegionTab();
+  const { brandTab, selectedBrandId } = usePostListBrandTab(activePostListTab);
 
   const handleTabChange = (tab: PostListTab) => {
     if (activePostListTab === tab) return;
@@ -65,6 +67,7 @@ export default function PostsPage() {
           <ConsultingPostListContainer
             activePostListTab={activePostListTab}
             userSelectedRegionData={userSelectedRegionData}
+            selectedBrandId={selectedBrandId}
           />
         );
       case CONSULT_TYPE.EXPERIENCE_GROUP:
@@ -75,7 +78,7 @@ export default function PostsPage() {
           />
         );
     }
-  }, [activePostTab, activePostListTab, userSelectedRegionData]);
+  }, [activePostTab, activePostListTab, selectedBrandId, userSelectedRegionData]);
 
   const postTabs = useMemo(() => getPostTabs(user?.role), [user?.role]);
 
@@ -114,6 +117,16 @@ export default function PostsPage() {
                           onDelete={regionTab.onDelete}
                         >
                           {regionTab.label}
+                        </ToggleChip>
+                      )}
+
+                      {activePostTab === CONSULT_TYPE.CONSULTING && brandTab && (
+                        <ToggleChip
+                          key={brandTab.id}
+                          pressed={brandTab.pressed}
+                          onPressedChange={brandTab.onPressedChange}
+                        >
+                          {brandTab.label}
                         </ToggleChip>
                       )}
 

@@ -24,11 +24,7 @@ type CommentAuthorProfileProps = {
 
 const NICKNAME_VISIBLE_LENGTH = 13;
 
-const formatCommentNickname = (nickname?: string | null) => {
-  if (!nickname) {
-    return '익명';
-  }
-
+const formatCommentNickname = (nickname: string) => {
   const chars = Array.from(nickname);
 
   if (chars.length <= NICKNAME_VISIBLE_LENGTH) {
@@ -136,7 +132,7 @@ export default function CommentAuthorProfile({
             isWriter ? 'text-negative-light' : 'text-label-default',
           )}
         >
-          {displayedName ?? '익명'}
+          {displayedName}
         </p>
         {lockIconShown && <LockIcon className="size-3.5 fill-label-placeholder" />}
       </div>

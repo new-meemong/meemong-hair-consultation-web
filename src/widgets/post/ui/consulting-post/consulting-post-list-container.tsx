@@ -11,11 +11,13 @@ import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 type ConsultingPostListContainerProps = {
   activePostListTab: PostListTab;
   userSelectedRegionData: SelectedRegion | null;
+  selectedBrandId: number | null;
 };
 
 export default function ConsultingPostListContainer({
   activePostListTab,
   userSelectedRegionData,
+  selectedBrandId,
 }: ConsultingPostListContainerProps) {
   const auth = useOptionalAuthContext();
   const isUserDesigner = auth?.isUserDesigner ?? false;
@@ -32,6 +34,7 @@ export default function ConsultingPostListContainer({
     __orderColumn: isUserDesigner ? 'createdAt' : 'comment36LastUpdatedAt',
     ...listFilterParams,
     addresses: convertToAddresses(userSelectedRegionData),
+    brandIds: selectedBrandId ? [selectedBrandId] : undefined,
   });
 
   const newPosts: Post[] | undefined = data?.pages.flatMap((page) =>

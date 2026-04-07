@@ -5,6 +5,7 @@ import {
   WEB_USER_DATA_KEY,
 } from '@/shared/constants/local-storage';
 
+import type { MyBrand } from '@/entities/brands/model/my-brand';
 import type { SelectedRegion } from '@/features/region/types/selected-region';
 import type { User } from '@/entities/user/model/user';
 import type { UserWritingContent } from '@/features/posts/types/user-writing-content';
@@ -22,7 +23,11 @@ export interface UserGuideData {
   [USER_GUIDE_KEYS.hasSeenHairConsultationOnboardingDesigner]: boolean;
 }
 
-export type UserData = User & UserWritingContent;
+export type AuthenticatedUser = User & {
+  brand?: MyBrand | null;
+};
+
+export type UserData = AuthenticatedUser & UserWritingContent;
 
 const USER_DATA_KEY = 'user_data';
 const USER_GUIDE_DATA_KEY_PREFIX = 'user_guide_data_';
@@ -45,7 +50,7 @@ export const decodeJWTPayload = (token: string): JWTPayload | null => {
   }
 };
 
-export const getDefaultUserData = (user: User): UserData => {
+export const getDefaultUserData = (user: AuthenticatedUser): UserData => {
   return {
     ...user,
     [USER_WRITING_CONTENT_KEYS.consultingPost]: null,
@@ -55,7 +60,7 @@ export const getDefaultUserData = (user: User): UserData => {
   };
 };
 
-export const setUserData = (user: User): void => {
+export const setUserData = (user: AuthenticatedUser): void => {
   if (typeof window === 'undefined') return;
 
   const userData: UserData = getDefaultUserData(user);
