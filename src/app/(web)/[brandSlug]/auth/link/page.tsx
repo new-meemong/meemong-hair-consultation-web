@@ -1,5 +1,6 @@
 'use client';
 
+import { getApiError, getErrorMessage, isTokenExpiredError } from '@/shared/lib/error-handler';
 import { useEffect, useState } from 'react';
 
 import Checkbox from '@/shared/ui/checkbox';
@@ -10,6 +11,7 @@ import { SiteHeader } from '@/widgets/header/ui/site-header';
 import { apiClientWithoutAuth } from '@/shared/api/client';
 import { createWebApiClient } from '@/shared/lib/web-api';
 import { setWebUserData } from '@/shared/lib/auth';
+import { showGlobalSnackBar } from '@/shared/lib/global-overlay';
 import { useBrand } from '@/shared/context/brand-context';
 import { useRouter } from 'next/navigation';
 
@@ -81,13 +83,40 @@ export default function AccountLinkPage() {
       const formData = JSON.parse(sessionStorage.getItem(SIGNUP_FORM_KEY(brand.slug)) ?? '{}');
       const response = await apiClientWithoutAuth.post<{ id: number; token: string }>(
         'auth/phone/model-connect',
-        { authToken: formData.authToken, userId: selectedId },
+        {
+          authToken: formData.authToken,
+          userId: selectedId,
+          accessType: 'APP',
+        },
       );
 
       setWebUserData(brand.slug, { userId: response.data.id, token: response.data.token });
       void fetchAndStoreSex(response.data.token, brand.slug);
       sessionStorage.removeItem(SIGNUP_FORM_KEY(brand.slug));
       router.push(ROUTES.WEB_MY(brand.slug));
+    } catch (error) {
+      if (isTokenExpiredError(error)) {
+        showGlobalSnackBar({
+          type: 'error',
+          message: '인증정보가 유효하지 않습니다.\n휴대폰 인증을 다시 진행해주세요',
+        });
+        router.push(ROUTES.WEB_AUTH_PHONE(brand.slug));
+        return;
+      }
+
+      const apiError = getApiError(error);
+      if (apiError.httpCode === 404) {
+        showGlobalSnackBar({
+          type: 'error',
+          message: '선택한 계정을 찾을 수 없습니다.\n다시 선택해주세요',
+        });
+        return;
+      }
+
+      showGlobalSnackBar({
+        type: 'error',
+        message: getErrorMessage(error),
+      });
     } finally {
       setIsSubmitting(false);
     }
