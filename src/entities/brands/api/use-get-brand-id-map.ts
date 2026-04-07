@@ -9,7 +9,7 @@ const brandedEntries = Object.values(brandRegistry).filter(
 );
 
 export function useGetBrandIdMap(): Map<number, string> {
-  const results = useQueries({
+  return useQueries({
     queries: brandedEntries.map((brand) => ({
       queryKey: ['brands', 'code', brand.brandCode],
       queryFn: async () => {
@@ -20,13 +20,14 @@ export function useGetBrandIdMap(): Map<number, string> {
       },
       staleTime: Infinity,
     })),
+    combine: (results) => {
+      const map = new Map<number, string>();
+      results.forEach((result) => {
+        if (result.data) {
+          map.set(result.data.id, result.data.name);
+        }
+      });
+      return map;
+    },
   });
-
-  const map = new Map<number, string>();
-  results.forEach((result) => {
-    if (result.data) {
-      map.set(result.data.id, result.data.name);
-    }
-  });
-  return map;
 }

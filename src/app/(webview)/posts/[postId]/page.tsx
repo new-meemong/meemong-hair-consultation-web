@@ -7,6 +7,8 @@ import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
 import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
 import useGetHairConsultationAnswers from '@/features/posts/api/use-get-hair-consultation-answers';
+import useHairConsultationBrandAccess from '@/features/posts/hooks/use-hair-consultation-brand-access';
+import useShowBrandStaffOnlyPostSheet from '@/features/posts/hooks/use-show-brand-staff-only-post-sheet';
 import { type CommentFormValues } from '@/features/comments/ui/comment-form';
 import { NewPostDetailProvider, usePostDetail } from '@/features/posts/context/post-detail-context';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
@@ -38,6 +40,8 @@ function NewPostDetailPageContent({
   useShowGuide(USER_GUIDE_KEYS.hasSeenDesignerOnboardingGuide, { shouldShow: isUserDesigner });
 
   const { postDetail } = usePostDetail();
+  const { isDesignerBlockedFromBrandPost, postBrandName } = useHairConsultationBrandAccess(postId);
+  const showBrandStaffOnlyPostSheet = useShowBrandStaffOnlyPostSheet();
   const isWriter = user != null && postDetail.hairConsultPostingCreateUserId === user.id;
   const { data: answersData } = useGetHairConsultationAnswers(postId, {
     __limit: 100,
@@ -56,15 +60,36 @@ function NewPostDetailPageContent({
 
   const isFormPending = isCommentCreating || isCommentUpdating;
 
+  const handleRestrictedBrandAttempt = useCallback(() => {
+    showBrandStaffOnlyPostSheet(postBrandName);
+  }, [postBrandName, showBrandStaffOnlyPostSheet]);
+
   const handleContainerClick = useCallback(() => {
     handlers.resetCommentState();
   }, [handlers]);
 
   const handleCommentFormSubmit = useCallback(
     (data: CommentFormValues, options: { onSuccess: () => void }) => {
+      if (isDesignerBlockedFromBrandPost) {
+        handleRestrictedBrandAttempt();
+        return;
+      }
+
       handlers.handleCommentFormSubmit(data, options);
     },
-    [handlers],
+    [handleRestrictedBrandAttempt, handlers, isDesignerBlockedFromBrandPost],
+  );
+
+  const handleReplyClick = useCallback(
+    (commentId: number) => {
+      if (isDesignerBlockedFromBrandPost) {
+        handleRestrictedBrandAttempt();
+        return;
+      }
+
+      handlers.handleReplyClick(commentId);
+    },
+    [handleRestrictedBrandAttempt, handlers, isDesignerBlockedFromBrandPost],
   );
 
   const handleBackClick = useCallback(() => {
@@ -97,6 +122,7 @@ function NewPostDetailPageContent({
               ...handlers,
               handleCommentFormSubmit,
             }}
+            onReplyClick={handleReplyClick}
           />
         </PostDetailContainer>
       </div>
@@ -108,6 +134,9 @@ function NewPostDetailPageContent({
         textareaRef={textareaRef}
         isConsulting={true}
         isAnsweredByDesigner={hasAnsweredCurrentDesigner}
+        onRestrictedBrandAttempt={
+          isDesignerBlockedFromBrandPost ? handleRestrictedBrandAttempt : undefined
+        }
       />
     </div>
   );

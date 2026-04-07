@@ -15,12 +15,14 @@ type HairConsultationCommentContainerProps = {
   hairConsultationId: string;
   commentFormState: CommentFormState;
   handlers: CommentActionHandlers;
+  onReplyClick?: (commentId: number) => void;
 };
 
 export default function HairConsultationCommentContainer({
   hairConsultationId,
   commentFormState,
   handlers,
+  onReplyClick,
 }: HairConsultationCommentContainerProps) {
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useGetHairConsultationComments(hairConsultationId);
@@ -156,7 +158,7 @@ export default function HairConsultationCommentContainer({
       postWriterId={postDetail.hairConsultPostingCreateUserId}
       postWriterSex={postDetail.hairConsultPostingCreateUserSex}
       fetchNextPage={handleFetchNextPage}
-      onReplyClick={handlers.handleReplyClick}
+      onReplyClick={onReplyClick ?? handlers.handleReplyClick}
       focusedCommentId={commentFormState.commentId}
       onDelete={handleDelete}
       onEdit={(commentId) => handlers.handleEditComment(commentId, mergedComments)}

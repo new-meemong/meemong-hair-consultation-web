@@ -26,6 +26,7 @@ type CommentFormContainerProps = {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   isConsulting: boolean;
   isAnsweredByDesigner: boolean;
+  onRestrictedBrandAttempt?: () => void;
 };
 
 export default function CommentFormContainer({
@@ -36,6 +37,7 @@ export default function CommentFormContainer({
   textareaRef,
   isConsulting,
   isAnsweredByDesigner,
+  onRestrictedBrandAttempt,
 }: CommentFormContainerProps) {
   const searchParams = useSearchParams();
   const postListTab = searchParams.get(SEARCH_PARAMS.POST_LIST_TAB) ?? 'latest';
@@ -55,8 +57,12 @@ export default function CommentFormContainer({
   );
 
   const handleNormalCommentClick = useCallback(() => {
+    if (onRestrictedBrandAttempt) {
+      onRestrictedBrandAttempt();
+      return;
+    }
     setCommentMode('normal');
-  }, []);
+  }, [onRestrictedBrandAttempt]);
 
   const { hasSavedContent } = useWritingConsultingResponse(postId);
 
@@ -67,6 +73,11 @@ export default function CommentFormContainer({
       : '컨설팅 답변하기';
 
   const handleWriteConsultingResponseClick = () => {
+    if (onRestrictedBrandAttempt) {
+      onRestrictedBrandAttempt();
+      return;
+    }
+
     const path = ROUTES.POSTS_CREATE_CONSULTING_POST(postId.toString());
 
     push(path, {
@@ -76,6 +87,11 @@ export default function CommentFormContainer({
 
   const handleCommentFormSubmit = useCallback(
     (data: CommentFormValues, options: { onSuccess: () => void }) => {
+      if (onRestrictedBrandAttempt) {
+        onRestrictedBrandAttempt();
+        return;
+      }
+
       // 디자이너가 모델의 헤어컨설팅글에 일반댓글 작성 시 항상 모달 표시
       const shouldShowModal =
         isUserDesigner && isConsulting && commentMode === 'normal' && !isCommentFormReply;
@@ -118,7 +134,15 @@ export default function CommentFormContainer({
       // 검증이 필요 없는 경우 바로 제출
       onSubmit(data, options);
     },
-    [isUserDesigner, isConsulting, commentMode, isCommentFormReply, showModal, onSubmit],
+    [
+      onRestrictedBrandAttempt,
+      isUserDesigner,
+      isConsulting,
+      commentMode,
+      isCommentFormReply,
+      showModal,
+      onSubmit,
+    ],
   );
 
   return (
