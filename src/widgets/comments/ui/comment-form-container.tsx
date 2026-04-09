@@ -2,16 +2,36 @@ import { useSearchParams } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
+import {
+  DrawerClose,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/shared/ui/drawer';
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import useStartChat from '@/features/chat/hook/use-start-chat';
 import type { CommentFormState } from '@/features/comments/types/comment-form-state';
+import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
+import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
+import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
+import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
 import useWritingConsultingResponse from '@/features/posts/hooks/use-writing-consulting-response';
 import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import { useOverlayContext } from '@/shared/context/overlay-context';
+import { getApiError } from '@/shared/lib/error-handler';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { detectExternalContact } from '@/shared/lib/detect-external-contact';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import { Button } from '@/shared/ui/button';
+
+type ConsultingChatTarget = {
+  receiverId: number;
+  receiverName: string;
+  answerId: string;
+};
 
 type CommentFormContainerProps = {
   postId: string;
@@ -26,6 +46,7 @@ type CommentFormContainerProps = {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   isConsulting: boolean;
   isAnsweredByDesigner: boolean;
+  consultingChatTarget?: ConsultingChatTarget;
   onRestrictedBrandAttempt?: () => void;
 };
 
@@ -37,6 +58,7 @@ export default function CommentFormContainer({
   textareaRef,
   isConsulting,
   isAnsweredByDesigner,
+  consultingChatTarget,
   onRestrictedBrandAttempt,
 }: CommentFormContainerProps) {
   const searchParams = useSearchParams();
@@ -46,15 +68,24 @@ export default function CommentFormContainer({
   const auth = useOptionalAuthContext();
   const isUserDesigner = auth?.isUserDesigner ?? false;
   const showModal = useShowModal();
+  const { showBottomSheet, showSnackBar } = useOverlayContext();
+  const { startChat } = useStartChat();
+  const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
+  const { data: presetsData } = useGetMongConsumePresets();
+  const { data: mongCurrentData } = useGetMongCurrent();
+  const showMongInsufficientSheet = useShowMongInsufficientSheet();
 
   const isCommentFormReply = commentFormState.state === 'reply';
 
   const canShowConsultingResponseControls = isConsulting && isUserDesigner && !isCommentFormReply;
   const canWriteConsultingResponse = canShowConsultingResponseControls && !isAnsweredByDesigner;
+  const canStartConsultingChat =
+    canShowConsultingResponseControls && isAnsweredByDesigner && consultingChatTarget != null;
 
   const [commentMode, setCommentMode] = useState<'consulting' | 'normal'>(
     canShowConsultingResponseControls ? 'consulting' : 'normal',
   );
+  const [isStartingChat, setIsStartingChat] = useState(false);
 
   const handleNormalCommentClick = useCallback(() => {
     if (onRestrictedBrandAttempt) {
@@ -66,11 +97,13 @@ export default function CommentFormContainer({
 
   const { hasSavedContent } = useWritingConsultingResponse(postId);
 
-  const writingResponseButtonText = isAnsweredByDesigner
-    ? '이미 답변한 글입니다'
-    : hasSavedContent
-      ? '이어서 작성하기'
-      : '컨설팅 답변하기';
+  const writingResponseButtonText = canStartConsultingChat
+    ? '글쓴이와 채팅하기'
+    : isAnsweredByDesigner
+      ? '이미 답변한 글입니다'
+      : hasSavedContent
+        ? '이어서 작성하기'
+        : '컨설팅 답변하기';
 
   const handleWriteConsultingResponseClick = () => {
     if (onRestrictedBrandAttempt) {
@@ -84,6 +117,124 @@ export default function CommentFormContainer({
       [SEARCH_PARAMS.POST_LIST_TAB]: postListTab,
     });
   };
+
+  const handleConsultingChatClick = useCallback(() => {
+    if (!consultingChatTarget || isStartingChat) return;
+
+    if (onRestrictedBrandAttempt) {
+      onRestrictedBrandAttempt();
+      return;
+    }
+
+    const chatSheetId = 'consulting-post-chat-confirm-sheet';
+    const hairConsultingPresets =
+      presetsData?.dataList?.filter((preset) => preset.type === 'HAIR_CONSULTING') ?? [];
+    const chatPreset = hairConsultingPresets.find(
+      (preset) => preset.subType === 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
+    );
+    const price = chatPreset?.price;
+    const currentMongAmount = mongCurrentData?.data?.currentTotalAmount;
+
+    showBottomSheet({
+      id: chatSheetId,
+      hideHandle: true,
+      children: (
+        <>
+          <DrawerHeader>
+            <DrawerTitle showCloseButton />
+            <DrawerDescription>
+              <span className="flex flex-col gap-2">
+                <span className="typo-title-2-semibold text-label-strong whitespace-pre-line">
+                  {`${consultingChatTarget.receiverName}님과\n대화를 시작하시겠어요?`}
+                </span>
+                <span className="typo-body-1-long-regular text-label-sub">
+                  내 잔여 몽:{' '}
+                  <span className="typo-body-1-semibold text-negative-light">
+                    {currentMongAmount != null ? `${currentMongAmount}몽` : '불러오는 중'}
+                  </span>
+                </span>
+              </span>
+            </DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter
+            buttons={[
+              <DrawerClose asChild key="cancel">
+                <Button theme="white" size="lg" className="rounded-4">
+                  취소
+                </Button>
+              </DrawerClose>,
+              <DrawerClose asChild key="confirm">
+                <Button
+                  size="lg"
+                  className="rounded-4"
+                  disabled={price == null || isStartingChat}
+                  onClick={async () => {
+                    setIsStartingChat(true);
+
+                    try {
+                      try {
+                        await createMongWithdraw({
+                          createType: 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
+                        });
+                      } catch (error) {
+                        const apiError = getApiError(error);
+                        if (
+                          apiError.code === 'NOT_ENOUGH_MONG_MONEY' ||
+                          apiError.httpCode === 409
+                        ) {
+                          showMongInsufficientSheet();
+                          return;
+                        }
+
+                        showSnackBar({
+                          type: 'error',
+                          message:
+                            apiError.message ||
+                            '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+                        });
+                        return;
+                      }
+
+                      const started = await startChat({
+                        receiverId: consultingChatTarget.receiverId,
+                        postId,
+                        answerId: consultingChatTarget.answerId,
+                        entrySource: 'POST_COMMENT',
+                        isMyHairConsultationPost: false,
+                      });
+
+                      if (!started) {
+                        showSnackBar({
+                          type: 'error',
+                          message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+                        });
+                      }
+                    } finally {
+                      setIsStartingChat(false);
+                    }
+                  }}
+                >
+                  {price != null ? `채팅하기 ${price}몽` : '채팅하기'}
+                </Button>
+              </DrawerClose>,
+            ]}
+          />
+        </>
+      ),
+    });
+  }, [
+    consultingChatTarget,
+    createMongWithdraw,
+    isStartingChat,
+    mongCurrentData?.data?.currentTotalAmount,
+    onRestrictedBrandAttempt,
+    postId,
+    presetsData?.dataList,
+    showBottomSheet,
+    showMongInsufficientSheet,
+    showSnackBar,
+    startChat,
+  ]);
 
   const handleCommentFormSubmit = useCallback(
     (data: CommentFormValues, options: { onSuccess: () => void }) => {
@@ -171,11 +322,15 @@ export default function CommentFormContainer({
             </Button>
             <Button
               size="md"
-              disabled={!canWriteConsultingResponse}
+              disabled={(!canWriteConsultingResponse && !canStartConsultingChat) || isStartingChat}
               className="w-[264px] rounded-4 bg-label-default text-white hover:bg-label-default active:bg-label-default focus:bg-label-default disabled:bg-label-disable disabled:text-white"
-              onClick={handleWriteConsultingResponseClick}
+              onClick={
+                canStartConsultingChat
+                  ? handleConsultingChatClick
+                  : handleWriteConsultingResponseClick
+              }
             >
-              {writingResponseButtonText}
+              {isStartingChat ? '연결 중...' : writingResponseButtonText}
             </Button>
           </div>
         </div>

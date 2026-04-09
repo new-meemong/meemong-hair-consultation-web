@@ -46,11 +46,13 @@ function NewPostDetailPageContent({
   const { data: answersData } = useGetHairConsultationAnswers(postId, {
     __limit: 100,
   });
-  const hasAnsweredCurrentDesigner =
-    isUserDesigner &&
-    (answersData?.pages ?? []).some((page) =>
-      page.dataList.some((answer) => user != null && answer.user.id === user.id),
-    );
+  const currentDesignerAnswer =
+    isUserDesigner && user != null
+      ? (answersData?.pages ?? [])
+          .flatMap((page) => page.dataList)
+          .find((answer) => answer.user.id === user.id)
+      : undefined;
+  const hasAnsweredCurrentDesigner = isUserDesigner && currentDesignerAnswer != null;
 
   const { commentFormState, textareaRef, isCommentCreating, isCommentUpdating, handlers } =
     useHairConsultationCommentFormState({
@@ -134,6 +136,15 @@ function NewPostDetailPageContent({
         textareaRef={textareaRef}
         isConsulting={true}
         isAnsweredByDesigner={hasAnsweredCurrentDesigner}
+        consultingChatTarget={
+          currentDesignerAnswer
+            ? {
+                receiverId: postDetail.hairConsultPostingCreateUserId,
+                receiverName: postDetail.hairConsultPostingCreateUserName,
+                answerId: currentDesignerAnswer.id.toString(),
+              }
+            : undefined
+        }
         onRestrictedBrandAttempt={
           isDesignerBlockedFromBrandPost ? handleRestrictedBrandAttempt : undefined
         }

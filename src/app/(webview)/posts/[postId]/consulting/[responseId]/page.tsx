@@ -299,7 +299,7 @@ export default function NewConsultingResponsePage() {
   };
   const { canSkipMong } = useMeemongPassPolicy();
   const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
-  const { showSnackBar, showBottomSheet, closeBottomSheet } = useOverlayContext();
+  const { showSnackBar, showBottomSheet } = useOverlayContext();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const { data: presetsData } = useGetMongConsumePresets();
   const { data: mongCurrentData } = useGetMongCurrent();
@@ -456,8 +456,8 @@ export default function NewConsultingResponsePage() {
     const hairConsultingPresets =
       presetsData?.dataList?.filter((p) => p.type === 'HAIR_CONSULTING') ?? [];
     const preset = hairConsultingPresets.find((p) => p.subType === createType);
-    const price = preset?.price ?? 0;
-    const currentMongAmount = mongCurrentData?.data?.currentTotalAmount ?? 0;
+    const price = preset?.price;
+    const currentMongAmount = mongCurrentData?.data?.currentTotalAmount;
 
     showBottomSheet({
       id: CHAT_SHEET_ID,
@@ -476,7 +476,7 @@ export default function NewConsultingResponsePage() {
                 <span className="typo-body-1-long-regular text-label-sub">
                   내 잔여 몽:{' '}
                   <span className="typo-body-1-semibold text-negative-light">
-                    {currentMongAmount}몽
+                    {currentMongAmount != null ? `${currentMongAmount}몽` : '불러오는 중'}
                   </span>
                 </span>
               </span>
@@ -493,12 +493,10 @@ export default function NewConsultingResponsePage() {
                 <Button
                   size="lg"
                   className="rounded-4"
-                  onClick={() => {
-                    closeBottomSheet(CHAT_SHEET_ID);
-                    startChatWithMong();
-                  }}
+                  disabled={price == null || isStartingChat}
+                  onClick={startChatWithMong}
                 >
-                  {price}몽 사용
+                  {price != null ? `${price}몽 사용` : '채팅하기'}
                 </Button>
               </DrawerClose>,
             ]}
