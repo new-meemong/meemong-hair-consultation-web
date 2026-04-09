@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 
 import CommentFormContainer from '@/widgets/comments/ui/comment-form-container';
+import ExperienceGroupCommentFormContainer from '@/widgets/comments/ui/experience-group-comment-form-container';
 import type { CommentFormValues } from '@/features/comments/ui/comment-form';
 import { EXPERIENCE_GROUP_LINK_CLICK_STORAGE_KEY } from '@/features/posts/constants/experience-group-link-click-storage-key';
 import ExperienceGroupCommentContainer from '@/widgets/comments/ui/experience-group-comment-container';
@@ -12,7 +13,6 @@ import ExperienceGroupDetailContainer from '@/widgets/post/ui/experience-group/e
 import ExperienceGroupDetailMoreButton from '@/features/posts/ui/experience-group-detail/experience-group-detail-more-button';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { SiteHeader } from '@/widgets/header';
-import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { getGetExperienceGroupCommentsQueryKeyPrefix } from '@/features/comments/api/use-get-experience-group-comments';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useGetGrowthPassStatus from '@/features/growth-pass/api/use-get-growth-pass-status';
@@ -202,15 +202,26 @@ export default function ExperienceGroupDetailPage() {
           />
         </ExperienceGroupDetailContainer>
       </div>
-      <CommentFormContainer
-        postId={id.toString()}
-        onSubmit={handleCommentFormSubmit}
-        commentFormState={commentFormState}
-        isPending={isFormPending}
-        textareaRef={textareaRef}
-        isConsulting={false}
-        isAnsweredByDesigner={experienceGroupDetail.user.role === USER_ROLE.DESIGNER}
-      />
+      {isUserDesigner ? (
+        <ExperienceGroupCommentFormContainer
+          receiverId={experienceGroupDetail.user.id}
+          receiverName={experienceGroupDetail.user.displayName}
+          onSubmit={handleCommentFormSubmit}
+          commentFormState={commentFormState}
+          isPending={isFormPending}
+          textareaRef={textareaRef}
+        />
+      ) : (
+        <CommentFormContainer
+          postId={id.toString()}
+          onSubmit={handleCommentFormSubmit}
+          commentFormState={commentFormState}
+          isPending={isFormPending}
+          textareaRef={textareaRef}
+          isConsulting={false}
+          isAnsweredByDesigner={false}
+        />
+      )}
     </div>
   );
 }

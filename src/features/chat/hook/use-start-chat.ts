@@ -18,6 +18,14 @@ type UseStartChatParams = {
   isMyHairConsultationPost?: boolean;
 };
 
+type PreparedHairConsultationChat = {
+  channelId: string;
+  postId?: string;
+  answerId?: string;
+  entrySource?: ChatEntrySource;
+  isMyHairConsultationPost?: boolean;
+};
+
 /**
  * 채팅 시작을 위한 공통 훅
  * - findOrCreateChannel로 채널 생성/찾기
@@ -33,24 +41,20 @@ export default function useStartChat() {
     findOrCreateChannel: state.findOrCreateChannel,
   }));
 
-  const startChat = useCallback(
+  const prepareChat = useCallback(
     async ({
       receiverId,
       postId,
       answerId,
       entrySource,
       isMyHairConsultationPost,
-    }: UseStartChatParams) => {
+    }: UseStartChatParams): Promise<PreparedHairConsultationChat | null> => {
       if (!user?.id) {
         console.error('사용자 정보가 없습니다.');
-        return false;
+        return null;
       }
 
       try {
-        let chatDetailPath = '';
-
-        // 1. 채널 생성 또는 찾기
-        // undefined를 null로 변환하여 Firestore에 null로 저장되도록 함
         const result = await findOrCreateChannel({
           senderId: user.id.toString(),
           receiverId: receiverId.toString(),
@@ -61,43 +65,89 @@ export default function useStartChat() {
 
         if (!result.channelId) {
           console.error('채널 생성에 실패했습니다.');
-          return false;
-        }
-        chatDetailPath = ROUTES.CHAT_HAIR_CONSULTATION_DETAIL(result.channelId);
-
-        // 2. 네이티브 앱인 경우 브릿지 호출
-        // null을 undefined로 변환하여 네이티브 앱으로 전달 (타입 정의상 undefined만 허용)
-        if (isFromApp) {
-          const opened = openChatChannelInApp({
-            userId: user.id.toString(),
-            chatChannelId: result.channelId,
-            postId: postId ?? undefined,
-            answerId: answerId ?? undefined,
-            entrySource,
-            isMyHairConsultationPost,
-          });
-
-          if (opened) {
-            // 네이티브 브릿지가 응답하지 않는 환경을 대비해 웹 채팅 화면으로 폴백한다.
-            setTimeout(() => {
-              if (document.visibilityState !== 'visible') return;
-              if (window.location.pathname === chatDetailPath) return;
-              push(chatDetailPath);
-            }, 800);
-            return true;
-          }
+          return null;
         }
 
-        // 3. 웹인 경우 채팅 상세 페이지로 이동
-        push(chatDetailPath);
-        return true;
+        return {
+          channelId: result.channelId,
+          postId,
+          answerId,
+          entrySource,
+          isMyHairConsultationPost,
+        };
       } catch (error) {
-        console.error('채팅 시작 중 오류 발생:', error);
-        return false;
+        console.error('채팅 준비 중 오류 발생:', error);
+        return null;
       }
     },
-    [user?.id, findOrCreateChannel, isFromApp, push],
+    [findOrCreateChannel, user?.id],
   );
 
-  return { startChat };
+  const openPreparedChat = useCallback(
+    async ({
+      channelId,
+      postId,
+      answerId,
+      entrySource,
+      isMyHairConsultationPost,
+    }: PreparedHairConsultationChat) => {
+      if (!user?.id) {
+        console.error('사용자 정보가 없습니다.');
+        return false;
+      }
+
+      const chatDetailPath = ROUTES.CHAT_HAIR_CONSULTATION_DETAIL(channelId);
+
+      if (isFromApp) {
+        const opened = openChatChannelInApp({
+          userId: user.id.toString(),
+          chatChannelId: channelId,
+          postId: postId ?? undefined,
+          answerId: answerId ?? undefined,
+          entrySource,
+          isMyHairConsultationPost,
+        });
+
+        if (opened) {
+          setTimeout(() => {
+            if (document.visibilityState !== 'visible') return;
+            if (window.location.pathname === chatDetailPath) return;
+            push(chatDetailPath);
+          }, 800);
+          return true;
+        }
+      }
+
+      push(chatDetailPath);
+      return true;
+    },
+    [isFromApp, push, user?.id],
+  );
+
+  const startChat = useCallback(
+    async ({
+      receiverId,
+      postId,
+      answerId,
+      entrySource,
+      isMyHairConsultationPost,
+    }: UseStartChatParams) => {
+      const preparedChat = await prepareChat({
+        receiverId,
+        postId,
+        answerId,
+        entrySource,
+        isMyHairConsultationPost,
+      });
+
+      if (!preparedChat) {
+        return false;
+      }
+
+      return openPreparedChat(preparedChat);
+    },
+    [openPreparedChat, prepareChat],
+  );
+
+  return { startChat, prepareChat, openPreparedChat };
 }

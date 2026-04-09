@@ -69,10 +69,10 @@ export default function CommentFormContainer({
   const isUserDesigner = auth?.isUserDesigner ?? false;
   const showModal = useShowModal();
   const { showBottomSheet, showSnackBar } = useOverlayContext();
-  const { startChat } = useStartChat();
+  const { prepareChat, openPreparedChat } = useStartChat();
   const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
   const { data: presetsData } = useGetMongConsumePresets();
-  const { data: mongCurrentData } = useGetMongCurrent();
+  const { data: mongCurrentData, refetch: refetchMongCurrent } = useGetMongCurrent();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
 
   const isCommentFormReply = commentFormState.state === 'reply';
@@ -118,7 +118,7 @@ export default function CommentFormContainer({
     });
   };
 
-  const handleConsultingChatClick = useCallback(() => {
+  const handleConsultingChatClick = useCallback(async () => {
     if (!consultingChatTarget || isStartingChat) return;
 
     if (onRestrictedBrandAttempt) {
@@ -133,7 +133,10 @@ export default function CommentFormContainer({
       (preset) => preset.subType === 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
     );
     const price = chatPreset?.price;
-    const currentMongAmount = mongCurrentData?.data?.currentTotalAmount;
+    const latestMongCurrentResponse = await refetchMongCurrent();
+    const currentMongAmount =
+      latestMongCurrentResponse.data?.data?.currentTotalAmount ??
+      mongCurrentData?.data?.currentTotalAmount;
 
     showBottomSheet({
       id: chatSheetId,
@@ -172,30 +175,7 @@ export default function CommentFormContainer({
                     setIsStartingChat(true);
 
                     try {
-                      try {
-                        await createMongWithdraw({
-                          createType: 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
-                        });
-                      } catch (error) {
-                        const apiError = getApiError(error);
-                        if (
-                          apiError.code === 'NOT_ENOUGH_MONG_MONEY' ||
-                          apiError.httpCode === 409
-                        ) {
-                          showMongInsufficientSheet();
-                          return;
-                        }
-
-                        showSnackBar({
-                          type: 'error',
-                          message:
-                            apiError.message ||
-                            '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
-                        });
-                        return;
-                      }
-
-                      const started = await startChat({
+                      const preparedChat = await prepareChat({
                         receiverId: consultingChatTarget.receiverId,
                         postId,
                         answerId: consultingChatTarget.answerId,
@@ -203,12 +183,38 @@ export default function CommentFormContainer({
                         isMyHairConsultationPost: false,
                       });
 
-                      if (!started) {
+                      if (!preparedChat) {
+                        showSnackBar({
+                          type: 'error',
+                          message: '채팅을 시작할 수 없습니다. 잠시 후 다시 시도해주세요.',
+                        });
+                        return;
+                      }
+
+                      const opened = await openPreparedChat(preparedChat);
+                      if (!opened) {
                         showSnackBar({
                           type: 'error',
                           message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
                         });
+                        return;
                       }
+
+                      await createMongWithdraw({
+                        createType: 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
+                      });
+                    } catch (error) {
+                      const apiError = getApiError(error);
+                      if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
+                        showMongInsufficientSheet();
+                        return;
+                      }
+
+                      showSnackBar({
+                        type: 'error',
+                        message:
+                          apiError.message || '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+                      });
                     } finally {
                       setIsStartingChat(false);
                     }
@@ -228,12 +234,14 @@ export default function CommentFormContainer({
     isStartingChat,
     mongCurrentData?.data?.currentTotalAmount,
     onRestrictedBrandAttempt,
+    openPreparedChat,
     postId,
     presetsData?.dataList,
+    prepareChat,
+    refetchMongCurrent,
     showBottomSheet,
     showMongInsufficientSheet,
     showSnackBar,
-    startChat,
   ]);
 
   const handleCommentFormSubmit = useCallback(

@@ -271,7 +271,7 @@ export default function NewConsultingResponsePage() {
   const isUserModel = auth?.isUserModel ?? false;
   const brand = useOptionalBrand();
   const showModal = useShowModal();
-  const { startChat } = useStartChat();
+  const { startChat, prepareChat, openPreparedChat } = useStartChat();
 
   const showAppOnlyModal = () => {
     const isIOS = /iPhone|iPad|iPod/i.test(
@@ -302,7 +302,7 @@ export default function NewConsultingResponsePage() {
   const { showSnackBar, showBottomSheet } = useOverlayContext();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
   const { data: presetsData } = useGetMongConsumePresets();
-  const { data: mongCurrentData } = useGetMongCurrent();
+  const { data: mongCurrentData, refetch: refetchMongCurrent } = useGetMongCurrent();
   const postIdString = postId?.toString() ?? '';
   const responseIdString = responseId?.toString() ?? '';
   const [isStartingChat, setIsStartingChat] = useState(false);
@@ -367,29 +367,13 @@ export default function NewConsultingResponsePage() {
   const startChatWithMong = async () => {
     const finalPostId = postIdString;
     const finalAnswerId = responseIdString;
+    const createType = isPostWriter
+      ? MEEMONG_PASS_CREATE_TYPES.MY_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL
+      : MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
 
     setIsStartingChat(true);
     try {
-      const createType = isPostWriter
-        ? MEEMONG_PASS_CREATE_TYPES.MY_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL
-        : MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
-
-      try {
-        await createMongWithdraw({ createType });
-      } catch (error) {
-        const apiError = getApiError(error);
-        if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
-          showMongInsufficientSheet();
-          return;
-        }
-        showSnackBar({
-          type: 'error',
-          message: apiError.message || '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
-        });
-        return;
-      }
-
-      const started = await startChat({
+      const preparedChat = await prepareChat({
         receiverId: answer.user.id,
         postId: finalPostId,
         answerId: finalAnswerId,
@@ -397,12 +381,34 @@ export default function NewConsultingResponsePage() {
         isMyHairConsultationPost: isPostWriter,
       });
 
-      if (!started) {
+      if (!preparedChat) {
+        showSnackBar({
+          type: 'error',
+          message: '채팅을 시작할 수 없습니다. 잠시 후 다시 시도해주세요.',
+        });
+        return;
+      }
+
+      const opened = await openPreparedChat(preparedChat);
+      if (!opened) {
         showSnackBar({
           type: 'error',
           message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
         });
+        return;
       }
+
+      await createMongWithdraw({ createType });
+    } catch (error) {
+      const apiError = getApiError(error);
+      if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
+        showMongInsufficientSheet();
+        return;
+      }
+      showSnackBar({
+        type: 'error',
+        message: apiError.message || '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+      });
     } finally {
       setIsStartingChat(false);
     }
@@ -457,7 +463,10 @@ export default function NewConsultingResponsePage() {
       presetsData?.dataList?.filter((p) => p.type === 'HAIR_CONSULTING') ?? [];
     const preset = hairConsultingPresets.find((p) => p.subType === createType);
     const price = preset?.price;
-    const currentMongAmount = mongCurrentData?.data?.currentTotalAmount;
+    const latestMongCurrentResponse = await refetchMongCurrent();
+    const currentMongAmount =
+      latestMongCurrentResponse.data?.data?.currentTotalAmount ??
+      mongCurrentData?.data?.currentTotalAmount;
 
     showBottomSheet({
       id: CHAT_SHEET_ID,
