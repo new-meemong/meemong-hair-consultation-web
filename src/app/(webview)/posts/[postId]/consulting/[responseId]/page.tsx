@@ -398,6 +398,10 @@ export default function NewConsultingResponsePage() {
         return;
       }
 
+      if (!existingChat) {
+        await createMongWithdraw({ createType });
+      }
+
       const opened = await openPreparedChat(preparedChat);
       if (!opened) {
         showSnackBar({
@@ -406,8 +410,6 @@ export default function NewConsultingResponsePage() {
         });
         return;
       }
-
-      await createMongWithdraw({ createType });
     } catch (error) {
       const apiError = getApiError(error);
       if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {

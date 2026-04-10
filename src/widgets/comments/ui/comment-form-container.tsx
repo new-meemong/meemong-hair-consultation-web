@@ -228,6 +228,12 @@ export default function CommentFormContainer({
                           return;
                         }
 
+                        if (!existingChat) {
+                          await createMongWithdraw({
+                            createType: 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
+                          });
+                        }
+
                         const opened = await openPreparedChat(preparedChat);
                         if (!opened) {
                           showSnackBar({
@@ -236,13 +242,12 @@ export default function CommentFormContainer({
                           });
                           return;
                         }
-
-                        await createMongWithdraw({
-                          createType: 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
-                        });
                       } catch (error) {
                         const apiError = getApiError(error);
-                        if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
+                        if (
+                          apiError.code === 'NOT_ENOUGH_MONG_MONEY' ||
+                          apiError.httpCode === 409
+                        ) {
                           showMongInsufficientSheet();
                           return;
                         }
@@ -250,7 +255,8 @@ export default function CommentFormContainer({
                         showSnackBar({
                           type: 'error',
                           message:
-                            apiError.message || '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+                            apiError.message ||
+                            '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
                         });
                       } finally {
                         setIsStartingChat(false);
