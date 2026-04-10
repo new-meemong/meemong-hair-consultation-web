@@ -7,4 +7,5 @@ export const SEARCH_PARAMS = {
   BRAND_ID: 'brandId',
   POST_WRITER_SEX: 'postWriterSex',
   SOURCE: 'source',
+  SUPPORTS_EXPERIENCE_GROUP_CHAT: 'supportsExperienceGroupChat',
 } as const;

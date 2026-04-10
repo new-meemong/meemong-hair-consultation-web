@@ -18,10 +18,11 @@ import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-p
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useOverlayContext } from '@/shared/context/overlay-context';
-import { hasOpenChatChannelBridge } from '@/shared/lib/app-bridge';
 import { getApiError } from '@/shared/lib/error-handler';
 import { Button } from '@/shared/ui/button';
+import { useSearchParams } from 'next/navigation';
 
 type ExperienceGroupCommentFormContainerProps = {
   receiverId: number;
@@ -45,10 +46,13 @@ export default function ExperienceGroupCommentFormContainer({
   isPending,
   textareaRef,
 }: ExperienceGroupCommentFormContainerProps) {
+  const searchParams = useSearchParams();
   const { showBottomSheet, showSnackBar } = useOverlayContext();
   const { findExistingModelMatchingChat, prepareModelMatchingChat, openPreparedModelMatchingChat } =
     useStartModelMatchingChat();
   const isFromApp = useIsFromApp();
+  const supportsExperienceGroupChat =
+    searchParams.get(SEARCH_PARAMS.SUPPORTS_EXPERIENCE_GROUP_CHAT) === 'true';
   const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
   const { data: presetsData } = useGetMongConsumePresets();
   const { data: mongCurrentData, refetch: refetchMongCurrent } = useGetMongCurrent();
@@ -84,7 +88,7 @@ export default function ExperienceGroupCommentFormContainer({
       return;
     }
 
-    if (!hasOpenChatChannelBridge()) {
+    if (!supportsExperienceGroupChat) {
       showSnackBar({
         type: 'error',
         message: '다음버전에 반영되는 기능입니다. 곧 업데이트 됩니다.',
@@ -250,6 +254,7 @@ export default function ExperienceGroupCommentFormContainer({
     showBottomSheet,
     showMongInsufficientSheet,
     showSnackBar,
+    supportsExperienceGroupChat,
   ]);
 
   const handleCommentFormSubmit = useCallback(
