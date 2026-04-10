@@ -271,7 +271,7 @@ export default function NewConsultingResponsePage() {
   const isUserModel = auth?.isUserModel ?? false;
   const brand = useOptionalBrand();
   const showModal = useShowModal();
-  const { startChat, prepareChat, openPreparedChat } = useStartChat();
+  const { startChat, findExistingChat, prepareChat, openPreparedChat } = useStartChat();
 
   const showAppOnlyModal = () => {
     const isIOS = /iPhone|iPad|iPod/i.test(
@@ -373,13 +373,22 @@ export default function NewConsultingResponsePage() {
 
     setIsStartingChat(true);
     try {
-      const preparedChat = await prepareChat({
+      const existingChat = await findExistingChat({
         receiverId: answer.user.id,
         postId: finalPostId,
         answerId: finalAnswerId,
         entrySource: 'CONSULTING_RESPONSE',
         isMyHairConsultationPost: isPostWriter,
       });
+      const preparedChat =
+        existingChat ??
+        (await prepareChat({
+          receiverId: answer.user.id,
+          postId: finalPostId,
+          answerId: finalAnswerId,
+          entrySource: 'CONSULTING_RESPONSE',
+          isMyHairConsultationPost: isPostWriter,
+        }));
 
       if (!preparedChat) {
         showSnackBar({
@@ -435,6 +444,30 @@ export default function NewConsultingResponsePage() {
     const createType = isPostWriter
       ? MEEMONG_PASS_CREATE_TYPES.MY_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL
       : MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
+
+    const existingChat = await findExistingChat({
+      receiverId: answer.user.id,
+      postId: postIdString,
+      answerId: responseIdString,
+      entrySource: 'CONSULTING_RESPONSE',
+      isMyHairConsultationPost: isPostWriter,
+    });
+
+    if (existingChat) {
+      setIsStartingChat(true);
+      try {
+        const opened = await openPreparedChat(existingChat);
+        if (!opened) {
+          showSnackBar({
+            type: 'error',
+            message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+          });
+        }
+      } finally {
+        setIsStartingChat(false);
+      }
+      return;
+    }
 
     if (canSkipMong(createType)) {
       setIsStartingChat(true);

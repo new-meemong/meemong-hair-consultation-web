@@ -1,14 +1,19 @@
 'use client';
 
+import { doc, getDoc } from 'firebase/firestore';
+
 import { ROUTES } from '@/shared';
 import { openChatChannelInApp } from '@/shared/lib/app-bridge';
 import { useCallback } from 'react';
+import { ChatChannelTypeEnum } from '@/features/chat/constants/chat-channel-type';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import useIsFromApp from '@/features/chat/hook/use-is-from-app';
+import { sortParticipantIds } from '@/features/chat/lib/sort-participant-ids';
+import type { ChatEntrySource } from '@/features/chat/type/chat-entry-source';
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
-
-type ChatEntrySource = 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
+import { db } from '@/shared/lib/firebase';
+import { getDbPath } from '@/features/chat/lib/get-db-path';
 
 type UseStartChatParams = {
   receiverId: number | string;
@@ -40,6 +45,44 @@ export default function useStartChat() {
   const { findOrCreateChannel } = useHairConsultationChatChannelStore((state) => ({
     findOrCreateChannel: state.findOrCreateChannel,
   }));
+
+  const findExistingChat = useCallback(
+    async ({
+      receiverId,
+      postId,
+      answerId,
+      entrySource,
+      isMyHairConsultationPost,
+    }: UseStartChatParams): Promise<PreparedHairConsultationChat | null> => {
+      if (!user?.id) {
+        console.error('사용자 정보가 없습니다.');
+        return null;
+      }
+
+      try {
+        const participantIds = sortParticipantIds([user.id, receiverId]);
+        const channelId = `${ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS}_${participantIds.join('_')}`;
+        const userMetaRef = doc(db, getDbPath(user.id.toString()), channelId);
+        const userMetaSnapshot = await getDoc(userMetaRef);
+
+        if (!userMetaSnapshot.exists() || userMetaSnapshot.data()?.deletedAt != null) {
+          return null;
+        }
+
+        return {
+          channelId,
+          postId,
+          answerId,
+          entrySource,
+          isMyHairConsultationPost,
+        };
+      } catch (error) {
+        console.error('기존 채팅 조회 중 오류 발생:', error);
+        throw error;
+      }
+    },
+    [user?.id],
+  );
 
   const prepareChat = useCallback(
     async ({
@@ -149,5 +192,5 @@ export default function useStartChat() {
     [openPreparedChat, prepareChat],
   );
 
-  return { startChat, prepareChat, openPreparedChat };
+  return { startChat, prepareChat, openPreparedChat, findExistingChat };
 }

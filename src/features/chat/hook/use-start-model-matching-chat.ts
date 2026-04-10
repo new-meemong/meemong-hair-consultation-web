@@ -1,6 +1,6 @@
 'use client';
 
-import { doc, runTransaction } from 'firebase/firestore';
+import { doc, getDoc, runTransaction } from 'firebase/firestore';
 
 import { ChatChannelTypeEnum } from '@/features/chat/constants/chat-channel-type';
 import type { UserDetail } from '@/entities/user/model/user-detail';
@@ -9,9 +9,9 @@ import { getUser } from '@/features/auth/api/use-get-user';
 import { openChatChannelInApp } from '@/shared/lib/app-bridge';
 import { useCallback } from 'react';
 import useIsFromApp from '@/features/chat/hook/use-is-from-app';
+import { sortParticipantIds } from '@/features/chat/lib/sort-participant-ids';
+import type { ChatEntrySource } from '@/features/chat/type/chat-entry-source';
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
-
-type ChatEntrySource = 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
 
 type UseStartModelMatchingChatParams = {
   receiverId: number | string;
@@ -56,7 +56,7 @@ async function findOrCreateModelMatchingChannel({
   ]);
   const senderUser = senderResponse.data;
   const receiverUser = receiverResponse.data;
-  const participantIds = [senderId, receiverId].sort();
+  const participantIds = sortParticipantIds([senderId, receiverId]);
   const channelKey = `${ChatChannelTypeEnum.MODEL_MATCHING_CHAT_CHANNELS}_${participantIds.join('_')}`;
   const channelRef = doc(db, ChatChannelTypeEnum.MODEL_MATCHING_CHAT_CHANNELS, channelKey);
   const now = new Date();
@@ -83,7 +83,7 @@ async function findOrCreateModelMatchingChannel({
         updatedAt: now,
         deletedAt: null,
         otherUserLeft: false,
-        hasReceivedFirst: userId === senderId ? false : true,
+        hasReceivedFirst: userId !== senderId,
         hasFirstReply: false,
         isOpenUsingMong: false,
         awaitingReply: false,
@@ -146,7 +146,7 @@ async function findOrCreateModelMatchingChannel({
             ? {
                 deletedAt: null,
                 otherUserLeft: false,
-                hasReceivedFirst: userId === senderId ? false : true,
+                hasReceivedFirst: userId !== senderId,
                 hasFirstReply: false,
                 isOpenUsingMong: false,
                 awaitingReply: false,
@@ -170,6 +170,38 @@ export default function useStartModelMatchingChat() {
   const auth = useOptionalAuthContext();
   const user = auth?.user ?? null;
   const isFromApp = useIsFromApp();
+
+  const findExistingModelMatchingChat = useCallback(
+    async ({
+      receiverId,
+      entrySource,
+    }: UseStartModelMatchingChatParams): Promise<PreparedModelMatchingChat | null> => {
+      if (!user?.id) {
+        console.error('사용자 정보가 없습니다.');
+        return null;
+      }
+
+      try {
+        const participantIds = sortParticipantIds([user.id, receiverId]);
+        const channelId = `${ChatChannelTypeEnum.MODEL_MATCHING_CHAT_CHANNELS}_${participantIds.join('_')}`;
+        const userMetaRef = doc(db, getUserModelMatchingPath(user.id.toString()), channelId);
+        const userMetaSnapshot = await getDoc(userMetaRef);
+
+        if (!userMetaSnapshot.exists() || userMetaSnapshot.data()?.deletedAt != null) {
+          return null;
+        }
+
+        return {
+          channelId,
+          entrySource,
+        };
+      } catch (error) {
+        console.error('기존 모델매칭 채팅 조회 중 오류 발생:', error);
+        throw error;
+      }
+    },
+    [user?.id],
+  );
 
   const prepareModelMatchingChat = useCallback(
     async ({
@@ -235,5 +267,10 @@ export default function useStartModelMatchingChat() {
     [openPreparedModelMatchingChat, prepareModelMatchingChat],
   );
 
-  return { startModelMatchingChat, prepareModelMatchingChat, openPreparedModelMatchingChat };
+  return {
+    startModelMatchingChat,
+    prepareModelMatchingChat,
+    openPreparedModelMatchingChat,
+    findExistingModelMatchingChat,
+  };
 }

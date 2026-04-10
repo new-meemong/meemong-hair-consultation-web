@@ -1,3 +1,4 @@
+import type { ChatEntrySource } from '@/features/chat/type/chat-entry-source';
 import { openInAppWebView } from './app-bridge';
 
 export function goDesignerProfilePage(
@@ -5,7 +6,7 @@ export function goDesignerProfilePage(
   options?: {
     postId?: string;
     answerId?: string;
-    entrySource?: 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
+    entrySource?: ChatEntrySource;
     isTopAdvisorDesigner?: boolean;
     isMyHairConsultationPost?: boolean;
     isConsultingAnswerComment?: boolean;

@@ -20,6 +20,8 @@ import { updateChattingUnreadCount } from '../api/use-update-user-unread-count';
 
 import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
 import { getDbPath } from '../lib/get-db-path';
+import { sortParticipantIds } from '../lib/sort-participant-ids';
+import type { ChatEntrySource } from '../type/chat-entry-source';
 import type { HairConsultationChatChannelType } from '../type/hair-consultation-chat-channel-type';
 import {
   HairConsultationChatMessageTypeEnum,
@@ -55,7 +57,7 @@ interface ChatChannelState {
     receiverId: string;
     postId?: string | null;
     answerId?: string | null;
-    entrySource?: 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
+    entrySource?: ChatEntrySource;
   }) => Promise<{ channelId: string | null; isCreated: boolean }>;
 
   subscribeToChannels: (userId: number) => () => void;
@@ -105,7 +107,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
         }) as User;
 
       // 참여자 ID 정렬 및 channelKey 생성
-      const participantIds = [senderId, receiverId].sort();
+      const participantIds = sortParticipantIds([senderId, receiverId]);
       const channelKey = `${ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS}_${participantIds.join('_')}`;
 
       // 채널 레퍼런스 생성

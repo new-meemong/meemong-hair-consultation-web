@@ -1,3 +1,5 @@
+import type { ChatEntrySource } from '@/features/chat/type/chat-entry-source';
+
 export type AppSource = 'app' | 'web';
 export type GoAppRouterPayload = {
   path: string;
@@ -25,7 +27,7 @@ type OpenChatChannelMessage = {
   chatChannelId: string;
   postId?: string;
   answerId?: string;
-  entrySource?: 'PROFILE' | 'CONSULTING_RESPONSE' | 'POST_COMMENT' | 'TOP_ADVISOR';
+  entrySource?: ChatEntrySource;
   isMyHairConsultationPost?: boolean;
 };
 
@@ -40,6 +42,13 @@ function hasGoAppRouterBridge(): boolean {
   // window.goAppRouter 래퍼는 레이아웃 스크립트에서 항상 주입되므로,
   // 실제 네이티브 브리지(GoAppRouter.postMessage) 존재 여부로 판단한다.
   return !!w.GoAppRouter && typeof w.GoAppRouter.postMessage === 'function';
+}
+
+export function hasOpenChatChannelBridge(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  const w = window as BridgeWindow;
+  return !!w.OpenChatChannel && typeof w.OpenChatChannel.postMessage === 'function';
 }
 
 function hasCloseWebViewBridge(): boolean {
@@ -96,7 +105,7 @@ export function openChatChannelInApp(message: OpenChatChannelMessage): boolean {
 
   // window.openChatChannel 래퍼는 웹에서도 항상 주입되므로,
   // 실제 네이티브 브리지(OpenChatChannel.postMessage) 존재 여부로 판단한다.
-  if (!w.OpenChatChannel || typeof w.OpenChatChannel.postMessage !== 'function') {
+  if (!hasOpenChatChannelBridge()) {
     return false;
   }
 
@@ -106,7 +115,7 @@ export function openChatChannelInApp(message: OpenChatChannelMessage): boolean {
       return true;
     }
 
-    w.OpenChatChannel.postMessage(JSON.stringify(message));
+    w.OpenChatChannel?.postMessage(JSON.stringify(message));
     return true;
   } catch (_) {
     return false;

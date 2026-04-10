@@ -1,5 +1,5 @@
 import { useSearchParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import ChevronRightIcon from '@/assets/icons/chevron-right.svg';
 import {
@@ -69,7 +69,7 @@ export default function CommentFormContainer({
   const isUserDesigner = auth?.isUserDesigner ?? false;
   const showModal = useShowModal();
   const { showBottomSheet, showSnackBar } = useOverlayContext();
-  const { prepareChat, openPreparedChat } = useStartChat();
+  const { findExistingChat, prepareChat, openPreparedChat } = useStartChat();
   const { mutateAsync: createMongWithdraw } = useCreateMongWithdrawMutation();
   const { data: presetsData } = useGetMongConsumePresets();
   const { data: mongCurrentData, refetch: refetchMongCurrent } = useGetMongCurrent();
@@ -86,6 +86,7 @@ export default function CommentFormContainer({
     canShowConsultingResponseControls ? 'consulting' : 'normal',
   );
   const [isStartingChat, setIsStartingChat] = useState(false);
+  const isConsultingChatClickLockedRef = useRef(false);
 
   const handleNormalCommentClick = useCallback(() => {
     if (onRestrictedBrandAttempt) {
@@ -119,118 +120,163 @@ export default function CommentFormContainer({
   };
 
   const handleConsultingChatClick = useCallback(async () => {
-    if (!consultingChatTarget || isStartingChat) return;
+    if (!consultingChatTarget || isStartingChat || isConsultingChatClickLockedRef.current) return;
 
     if (onRestrictedBrandAttempt) {
       onRestrictedBrandAttempt();
       return;
     }
 
-    const chatSheetId = 'consulting-post-chat-confirm-sheet';
-    const hairConsultingPresets =
-      presetsData?.dataList?.filter((preset) => preset.type === 'HAIR_CONSULTING') ?? [];
-    const chatPreset = hairConsultingPresets.find(
-      (preset) => preset.subType === 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
-    );
-    const price = chatPreset?.price;
-    const latestMongCurrentResponse = await refetchMongCurrent();
-    const currentMongAmount =
-      latestMongCurrentResponse.data?.data?.currentTotalAmount ??
-      mongCurrentData?.data?.currentTotalAmount;
+    isConsultingChatClickLockedRef.current = true;
 
-    showBottomSheet({
-      id: chatSheetId,
-      hideHandle: true,
-      children: (
-        <>
-          <DrawerHeader>
-            <DrawerTitle showCloseButton />
-            <DrawerDescription>
-              <span className="flex flex-col gap-2">
-                <span className="typo-title-2-semibold text-label-strong whitespace-pre-line">
-                  {`${consultingChatTarget.receiverName}님과\n대화를 시작하시겠어요?`}
-                </span>
-                <span className="typo-body-1-long-regular text-label-sub">
-                  내 잔여 몽:{' '}
-                  <span className="typo-body-1-semibold text-negative-light">
-                    {currentMongAmount != null ? `${currentMongAmount}몽` : '불러오는 중'}
+    try {
+      const existingChat = await findExistingChat({
+        receiverId: consultingChatTarget.receiverId,
+        postId,
+        answerId: consultingChatTarget.answerId,
+        entrySource: 'POST_COMMENT',
+        isMyHairConsultationPost: false,
+      });
+
+      if (existingChat) {
+        setIsStartingChat(true);
+        try {
+          const opened = await openPreparedChat(existingChat);
+          if (!opened) {
+            showSnackBar({
+              type: 'error',
+              message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+            });
+          }
+        } finally {
+          setIsStartingChat(false);
+        }
+        return;
+      }
+
+      const chatSheetId = 'consulting-post-chat-confirm-sheet';
+      const hairConsultingPresets =
+        presetsData?.dataList?.filter((preset) => preset.type === 'HAIR_CONSULTING') ?? [];
+      const chatPreset = hairConsultingPresets.find(
+        (preset) => preset.subType === 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
+      );
+      const price = chatPreset?.price;
+      const latestMongCurrentResponse = await refetchMongCurrent();
+      const currentMongAmount =
+        latestMongCurrentResponse.data?.data?.currentTotalAmount ??
+        mongCurrentData?.data?.currentTotalAmount;
+
+      showBottomSheet({
+        id: chatSheetId,
+        hideHandle: true,
+        children: (
+          <>
+            <DrawerHeader>
+              <DrawerTitle showCloseButton />
+              <DrawerDescription>
+                <span className="flex flex-col gap-2">
+                  <span className="typo-title-2-semibold text-label-strong whitespace-pre-line">
+                    {`${consultingChatTarget.receiverName}님과\n대화를 시작하시겠어요?`}
+                  </span>
+                  <span className="typo-body-1-long-regular text-label-sub">
+                    내 잔여 몽:{' '}
+                    <span className="typo-body-1-semibold text-negative-light">
+                      {currentMongAmount != null ? `${currentMongAmount}몽` : '불러오는 중'}
+                    </span>
                   </span>
                 </span>
-              </span>
-            </DrawerDescription>
-          </DrawerHeader>
-          <DrawerFooter
-            buttons={[
-              <DrawerClose asChild key="cancel">
-                <Button theme="white" size="lg" className="rounded-4">
-                  취소
-                </Button>
-              </DrawerClose>,
-              <DrawerClose asChild key="confirm">
-                <Button
-                  size="lg"
-                  className="rounded-4"
-                  disabled={price == null || isStartingChat}
-                  onClick={async () => {
-                    setIsStartingChat(true);
+              </DrawerDescription>
+            </DrawerHeader>
+            <DrawerFooter
+              buttons={[
+                <DrawerClose asChild key="cancel">
+                  <Button theme="white" size="lg" className="rounded-4">
+                    취소
+                  </Button>
+                </DrawerClose>,
+                <DrawerClose asChild key="confirm">
+                  <Button
+                    size="lg"
+                    className="rounded-4"
+                    disabled={price == null || isStartingChat}
+                    onClick={async () => {
+                      setIsStartingChat(true);
 
-                    try {
-                      const preparedChat = await prepareChat({
-                        receiverId: consultingChatTarget.receiverId,
-                        postId,
-                        answerId: consultingChatTarget.answerId,
-                        entrySource: 'POST_COMMENT',
-                        isMyHairConsultationPost: false,
-                      });
+                      try {
+                        const existingChat = await findExistingChat({
+                          receiverId: consultingChatTarget.receiverId,
+                          postId,
+                          answerId: consultingChatTarget.answerId,
+                          entrySource: 'POST_COMMENT',
+                          isMyHairConsultationPost: false,
+                        });
+                        const preparedChat =
+                          existingChat ??
+                          (await prepareChat({
+                            receiverId: consultingChatTarget.receiverId,
+                            postId,
+                            answerId: consultingChatTarget.answerId,
+                            entrySource: 'POST_COMMENT',
+                            isMyHairConsultationPost: false,
+                          }));
 
-                      if (!preparedChat) {
+                        if (!preparedChat) {
+                          showSnackBar({
+                            type: 'error',
+                            message: '채팅을 시작할 수 없습니다. 잠시 후 다시 시도해주세요.',
+                          });
+                          return;
+                        }
+
+                        const opened = await openPreparedChat(preparedChat);
+                        if (!opened) {
+                          showSnackBar({
+                            type: 'error',
+                            message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+                          });
+                          return;
+                        }
+
+                        await createMongWithdraw({
+                          createType: 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
+                        });
+                      } catch (error) {
+                        const apiError = getApiError(error);
+                        if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
+                          showMongInsufficientSheet();
+                          return;
+                        }
+
                         showSnackBar({
                           type: 'error',
-                          message: '채팅을 시작할 수 없습니다. 잠시 후 다시 시도해주세요.',
+                          message:
+                            apiError.message || '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
                         });
-                        return;
+                      } finally {
+                        setIsStartingChat(false);
                       }
-
-                      const opened = await openPreparedChat(preparedChat);
-                      if (!opened) {
-                        showSnackBar({
-                          type: 'error',
-                          message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
-                        });
-                        return;
-                      }
-
-                      await createMongWithdraw({
-                        createType: 'HAIR_CONSULTATIONS_CHAT_DESIGNER',
-                      });
-                    } catch (error) {
-                      const apiError = getApiError(error);
-                      if (apiError.code === 'NOT_ENOUGH_MONG_MONEY' || apiError.httpCode === 409) {
-                        showMongInsufficientSheet();
-                        return;
-                      }
-
-                      showSnackBar({
-                        type: 'error',
-                        message:
-                          apiError.message || '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
-                      });
-                    } finally {
-                      setIsStartingChat(false);
-                    }
-                  }}
-                >
-                  {price != null ? `채팅하기 ${price}몽` : '채팅하기'}
-                </Button>
-              </DrawerClose>,
-            ]}
-          />
-        </>
-      ),
-    });
+                    }}
+                  >
+                    {price != null ? `채팅하기 ${price}몽` : '채팅하기'}
+                  </Button>
+                </DrawerClose>,
+              ]}
+            />
+          </>
+        ),
+      });
+    } catch {
+      showSnackBar({
+        type: 'error',
+        message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+      });
+    } finally {
+      isConsultingChatClickLockedRef.current = false;
+    }
   }, [
     consultingChatTarget,
     createMongWithdraw,
+    findExistingChat,
     isStartingChat,
     mongCurrentData?.data?.currentTotalAmount,
     onRestrictedBrandAttempt,
