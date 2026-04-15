@@ -22,6 +22,12 @@ export default function ConsultingPostListContainer({
   const auth = useOptionalAuthContext();
   const isUserDesigner = auth?.isUserDesigner ?? false;
   const brandIdMap = useGetBrandIdMap();
+  const orderColumn =
+    activePostListTab === 'latest'
+      ? isUserDesigner
+        ? 'createdAt'
+        : 'comment36LastUpdatedAt'
+      : undefined;
 
   const listFilterParams =
     activePostListTab === 'my'
@@ -31,7 +37,7 @@ export default function ConsultingPostListContainer({
         : {};
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetHairConsultations({
-    __orderColumn: isUserDesigner ? 'createdAt' : 'comment36LastUpdatedAt',
+    __orderColumn: orderColumn,
     ...listFilterParams,
     addresses: convertToAddresses(userSelectedRegionData),
     brandIds: selectedBrandId ? [selectedBrandId] : undefined,

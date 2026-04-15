@@ -33,12 +33,7 @@ type HairConsultationListQueryParams = PagingQueryParams & {
 };
 
 export default function useGetHairConsultations(params: HairConsultationListQueryParams) {
-  const {
-    __limit = DEFAULT_LIMIT,
-    __orderColumn = 'contentUpdatedAt',
-    __order = 'desc',
-    ...rest
-  } = params;
+  const { __limit = DEFAULT_LIMIT, __orderColumn, __order = 'desc', ...rest } = params;
 
   return useCursorInfiniteQuery<HairConsultationListItem>({
     endpoint: GET_HAIR_CONSULTATIONS_ENDPOINT,
