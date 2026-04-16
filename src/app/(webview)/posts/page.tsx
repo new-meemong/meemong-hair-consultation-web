@@ -36,6 +36,7 @@ export default function PostsPage() {
   const brand = useOptionalBrand();
 
   const router = useRouterWithUser();
+  const source = router.source;
 
   const [activePostTab, setActivePostTab] = usePostTab();
   const [activePostListTab, setActivePostListTab] = usePostListTab();
@@ -55,12 +56,13 @@ export default function PostsPage() {
   const listTabs = getPostListTabs(user?.role ?? USER_ROLE.MODEL);
 
   const navigateToWritePage = useCallback(() => {
-    const targetRoute = brand ? ROUTES.WEB_POSTS_CREATE(brand.config.slug) : ROUTES.POSTS_CREATE;
+    const targetRoute =
+      source !== 'app' && brand ? ROUTES.WEB_POSTS_CREATE(brand.config.slug) : ROUTES.POSTS_CREATE;
 
     router.push(targetRoute, {
       [SEARCH_PARAMS.POST_TAB]: activePostTab,
     });
-  }, [brand, router, activePostTab]);
+  }, [activePostTab, brand, router, source]);
 
   const {
     isBreakSheetOpen,
