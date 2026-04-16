@@ -19,6 +19,7 @@ import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import { getPostTabs } from '@/features/posts/constants/post-tabs';
+import { openInAppWebView } from '@/shared/lib/app-bridge';
 import { useModelWriteGuard } from '@/features/posts/hooks/use-model-write-guard';
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import { useOptionalBrand } from '@/shared/context/brand-context';
@@ -56,9 +57,14 @@ export default function PostsPage() {
   const listTabs = getPostListTabs(user?.role ?? USER_ROLE.MODEL);
 
   const navigateToWritePage = useCallback(() => {
-    const targetRoute =
-      source !== 'app' && brand ? ROUTES.WEB_POSTS_CREATE(brand.config.slug) : ROUTES.POSTS_CREATE;
+    if (source === 'app') {
+      const opened = openInAppWebView(
+        `/hair-consultation/posts/create?${SEARCH_PARAMS.POST_TAB}=${activePostTab}`,
+      );
+      if (opened) return;
+    }
 
+    const targetRoute = brand ? ROUTES.WEB_POSTS_CREATE(brand.config.slug) : ROUTES.POSTS_CREATE;
     router.push(targetRoute, {
       [SEARCH_PARAMS.POST_TAB]: activePostTab,
     });
