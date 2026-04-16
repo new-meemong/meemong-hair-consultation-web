@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import useMeemongPassPolicy from '@/features/ad-block/hook/use-meemong-pass-policy';
@@ -156,7 +156,7 @@ function NewPostDetailPageContent({
 export default function NewPostDetailPage() {
   const { postId } = useParams();
   const searchParams = useSearchParams();
-  const { back } = useRouterWithUser();
+  const { back, push } = useRouterWithUser();
 
   const source = normalizeSource(searchParams.get(SEARCH_PARAMS.SOURCE));
   const isFromMain = searchParams.get('isFromMain') === 'true';
@@ -169,7 +169,15 @@ export default function NewPostDetailPage() {
     }
   }, [shouldCloseWebViewOnBack, back]);
 
-  if (!postId) return null;
+  // 이전 버전 Flutter 앱은 작성하기 버튼 클릭 시 postId=0 으로 웹뷰를 열었음.
+  // 0은 유효하지 않은 ID이므로 작성 페이지로 리디렉션한다.
+  useEffect(() => {
+    if (postId === '0') {
+      push('/posts/create');
+    }
+  }, [postId, push]);
+
+  if (!postId || postId === '0') return null;
 
   return (
     <NewPostDetailProvider postId={postId.toString()} onNotFound={handleNotFound}>
