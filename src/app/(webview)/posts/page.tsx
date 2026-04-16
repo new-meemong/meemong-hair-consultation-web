@@ -7,6 +7,7 @@ import { useCallback, useMemo } from 'react';
 import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import ConsultingPostListContainer from '@/widgets/post/ui/consulting-post/consulting-post-list-container';
 import ExperienceGroupListContainer from '@/widgets/post/ui/experience-group/experience-group-list-container';
+import ModelBreakReleaseBottomSheet from '@/features/posts/ui/model-break-release-bottom-sheet';
 import type { PostListTab } from '@/features/posts/types/post-list-tab';
 import PromotionBanner from '@/features/banner/ui/promotion-banner';
 import { ROUTES } from '@/shared';
@@ -18,6 +19,7 @@ import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import { getPostTabs } from '@/features/posts/constants/post-tabs';
+import { useModelWriteGuard } from '@/features/posts/hooks/use-model-write-guard';
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import { useOptionalBrand } from '@/shared/context/brand-context';
 import usePostListBrandTab from '@/features/posts/hooks/use-post-list-brand-tab';
@@ -52,13 +54,26 @@ export default function PostsPage() {
 
   const listTabs = getPostListTabs(user?.role ?? USER_ROLE.MODEL);
 
-  const handleWriteButtonClick = useCallback(() => {
+  const navigateToWritePage = useCallback(() => {
     const targetRoute = brand ? ROUTES.WEB_POSTS_CREATE(brand.config.slug) : ROUTES.POSTS_CREATE;
 
     router.push(targetRoute, {
       [SEARCH_PARAMS.POST_TAB]: activePostTab,
     });
   }, [brand, router, activePostTab]);
+
+  const {
+    isBreakSheetOpen,
+    isBreakReleaseSubmitting,
+    closeBreakSheet,
+    handleBreakReleaseAndWrite,
+    handleWriteButtonClick,
+  } = useModelWriteGuard({
+    token: auth?.user?.token,
+    slug: brand?.config.slug,
+    isUserModel,
+    onProceedWrite: navigateToWritePage,
+  });
 
   const getListContainer = useCallback(() => {
     switch (activePostTab) {
@@ -160,6 +175,13 @@ export default function PostsPage() {
           <WritePostButton onClick={handleWriteButtonClick} aria-label="글쓰기" />
         </div>
       )}
+
+      <ModelBreakReleaseBottomSheet
+        open={isBreakSheetOpen}
+        isSubmitting={isBreakReleaseSubmitting}
+        onClose={closeBreakSheet}
+        onConfirm={handleBreakReleaseAndWrite}
+      />
     </div>
   );
 }
