@@ -28,6 +28,7 @@ import usePostListRegionTab from '@/features/posts/hooks/use-post-list-region-ta
 import usePostListTab from '@/features/posts/hooks/use-post-list-tab';
 import { usePostTab } from '@/features/posts/hooks/use-post-tab';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { useSearchParams } from 'next/navigation';
 
 export default function PostsPage() {
   const auth = useOptionalAuthContext();
@@ -38,6 +39,10 @@ export default function PostsPage() {
 
   const router = useRouterWithUser();
   const source = router.source;
+
+  const searchParams = useSearchParams();
+  const supportsFullWebviewPostCreate =
+    searchParams.get(SEARCH_PARAMS.SUPPORTS_FULL_WEBVIEW_POST_CREATE) === 'true';
 
   const [activePostTab, setActivePostTab] = usePostTab();
   const [activePostListTab, setActivePostListTab] = usePostListTab();
@@ -57,7 +62,7 @@ export default function PostsPage() {
   const listTabs = getPostListTabs(user?.role ?? USER_ROLE.MODEL);
 
   const navigateToWritePage = useCallback(() => {
-    if (source === 'app') {
+    if (source === 'app' && supportsFullWebviewPostCreate) {
       const opened = openInAppWebView(
         `/hair-consultation/posts/create?${SEARCH_PARAMS.POST_TAB}=${activePostTab}`,
       );
@@ -68,7 +73,7 @@ export default function PostsPage() {
     router.push(targetRoute, {
       [SEARCH_PARAMS.POST_TAB]: activePostTab,
     });
-  }, [activePostTab, brand, router, source]);
+  }, [activePostTab, brand, router, source, supportsFullWebviewPostCreate]);
 
   const {
     isBreakSheetOpen,

@@ -8,4 +8,5 @@ export const SEARCH_PARAMS = {
   POST_WRITER_SEX: 'postWriterSex',
   SOURCE: 'source',
   SUPPORTS_EXPERIENCE_GROUP_CHAT: 'supportsExperienceGroupChat',
+  SUPPORTS_FULL_WEBVIEW_POST_CREATE: 'supportsFullWebviewPostCreate',
 } as const;
