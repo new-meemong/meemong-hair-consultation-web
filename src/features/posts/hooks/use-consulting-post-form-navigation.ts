@@ -13,17 +13,26 @@ export default function usePostFormNavigation<
   type,
   onSavedContentReload,
   skipReload = false,
+  onBack,
 }: {
   onSavedContentReload: (savedContent: UserWritingContent[T]) => void;
   type: T;
   skipReload?: boolean;
+  onBack?: () => void;
 }) {
   const [initialize, setInitialize] = useState(false);
 
   const { savedContent, saveContent } = useWritingContent(type);
   const hasSavedContent = savedContent !== null && savedContent !== undefined;
 
-  const { back } = useRouterWithUser();
+  const { back: routerBack } = useRouterWithUser();
+  const back = useCallback(() => {
+    if (onBack) {
+      onBack();
+    } else {
+      routerBack();
+    }
+  }, [onBack, routerBack]);
 
   const showReloadSavedPostFormModal = useShowReloadSavedPostFormModal({
     onClose: back,
@@ -45,7 +54,14 @@ export default function usePostFormNavigation<
       showReloadSavedPostFormModal();
     }
     setInitialize(true);
-  }, [showReloadSavedPostFormModal, initialize, hasSavedContent, skipReload, onSavedContentReload, savedContent]);
+  }, [
+    showReloadSavedPostFormModal,
+    initialize,
+    hasSavedContent,
+    skipReload,
+    onSavedContentReload,
+    savedContent,
+  ]);
 
   const leaveForm = useCallback(
     (writingContent: UserWritingContent[T], isDirty: boolean) => {

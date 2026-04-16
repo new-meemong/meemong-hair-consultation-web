@@ -1,14 +1,15 @@
+import { closeAppWebView, normalizeSource } from '@/shared/lib/app-bridge';
 import { useEffect, useState } from 'react';
 
 import { FormProvider } from 'react-hook-form';
 import HairConsultationForm from '@/features/posts/ui/hair-consultation-form/hair-consultation-form';
 import type { HairConsultationFormValues } from '@/features/posts/types/hair-consultation-form-values';
 import { ROUTES } from '@/shared';
-import { useOptionalBrand } from '@/shared/context/brand-context';
 import { SiteHeader } from '@/widgets/header';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import type { WritingStep } from '@/features/posts/types/user-writing-content';
 import useHairConsultationForm from '@/features/posts/hooks/use-hair-consultation-form';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import usePostFormNavigation from '@/features/posts/hooks/use-consulting-post-form-navigation';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { useSearchParams } from 'next/navigation';
@@ -16,9 +17,10 @@ import { useSearchParams } from 'next/navigation';
 export default function HairConsultationFormContainer() {
   const [currentStep, setCurrentStep] = useState(1);
   const searchParams = useSearchParams();
-  const { replace } = useRouterWithUser();
+  const { replace, source } = useRouterWithUser();
   const brand = useOptionalBrand();
   const skipReload = searchParams.get('skipReload') === '1';
+  const isFromApp = normalizeSource(source) === 'app';
 
   const { method, submit, isPending } = useHairConsultationForm();
 
@@ -35,6 +37,7 @@ export default function HairConsultationFormContainer() {
     onSavedContentReload: handlePageReload,
     type: USER_WRITING_CONTENT_KEYS.hairConsultation,
     skipReload,
+    onBack: isFromApp ? () => closeAppWebView('close') : undefined,
   });
 
   const handleBackClick = () => {
