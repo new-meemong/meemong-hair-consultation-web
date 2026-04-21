@@ -142,7 +142,7 @@ export default function useHairConsultationForm() {
           type: 'success',
           message: '업로드가 완료되었습니다!',
         });
-        replace(brand ? ROUTES.WEB_MY(brand.config.slug) : ROUTES.POSTS);
+        replace(brand ? ROUTES.WEB_CONSULTATION_COMPLETE(brand.config.slug) : ROUTES.POSTS);
       },
       onError: (error) => {
         showSnackBar({
