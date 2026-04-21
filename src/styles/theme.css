@@ -7,9 +7,9 @@
   --color-label-default: #262524;
   --color-label-strong: #000000;
   --color-label-sub: #51514f;
-  --color-label-info: #8b8b89;
-  --color-label-placeholder: #cececc;
-  --color-label-disable: #e1e2e4;
+  --color-label-info: #777777;
+  --color-label-placeholder: #a9a9a9;
+  --color-label-disable: #cececc;
 
   /* Background */
   --color-alternative: #f4f4f4;
@@ -26,9 +26,12 @@
 
   /* Status */
   --color-positive: #2cb36d;
+  --color-primary: #ff9142;
+  --color-primary-default: #ff9142;
+  --color-primary-medium: #ff7d1f;
   --color-cautionary: #ff9142;
   --color-primary-deep: #ff6b00;
-  --color-negative: #ff3300;
+  --color-negative: #ff2b00;
   --color-negative-light: #ff613a;
 
   /* Rank */
