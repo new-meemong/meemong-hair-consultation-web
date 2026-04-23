@@ -5,13 +5,14 @@ import type {
 import { format, subMonths } from 'date-fns';
 
 import type { HairConsultationFormValues } from '../types/hair-consultation-form-values';
-import { MY_IMAGE_TYPE } from '../constants/my-image-type';
+import { MY_IMAGE_TYPE, REQUIRED_MY_IMAGE_TYPES } from '../constants/my-image-type';
 import type { ValueOf } from '@/shared/type/types';
 import { apiClient } from '@/shared/api/client';
 import { createWebApiClient } from '@/shared/lib/web-api';
 import { getBrandSelectionPayload } from '@/shared/config/brands';
 import { getHairConsultationsQueryKeyPrefix } from '../api/use-get-hair-consultations';
 import { getWebUserData } from '@/shared/lib/auth';
+import { normalizeHairConsultationContent } from '../lib/normalize-hair-consultation-content';
 import { resizeImageFile } from '@/shared/lib/resize-image-file';
 import useCreateHairConsultationMutation from '../api/use-create-hair-consultation-mutation';
 import { useGetBrandByCode } from '@/entities/brands/api/use-get-brand-by-code';
@@ -129,13 +130,31 @@ export function useCreateHairConsultation() {
   ) => {
     setIsUploadingImages(true);
     try {
+      const normalizedData = normalizeHairConsultationContent(data);
+      const originalAspirationImageCount = Array.isArray(data.aspirationImages?.images)
+        ? data.aspirationImages.images.length
+        : 0;
+
       const myImageOrder: ValueOf<typeof MY_IMAGE_TYPE>[] = [
         MY_IMAGE_TYPE.RECENT,
         MY_IMAGE_TYPE.FRONT,
         MY_IMAGE_TYPE.SIDE,
         MY_IMAGE_TYPE.WHOLE_BODY,
       ];
-      const orderedMyImages = [...data.myImages].sort(
+      const validMyImages = normalizedData.myImages.filter((item) =>
+        myImageOrder.includes(item.type),
+      );
+      const hasAllRequiredMyImages = REQUIRED_MY_IMAGE_TYPES.every((requiredType) =>
+        validMyImages.some((image) => image.type === requiredType),
+      );
+
+      if (!hasAllRequiredMyImages) {
+        throw new Error(
+          '필수 사진이 누락되었거나 만료되었어요. 정면/측면/현재 머리 사진을 다시 업로드해주세요.',
+        );
+      }
+
+      const orderedMyImages = [...validMyImages].sort(
         (a, b) => myImageOrder.indexOf(a.type) - myImageOrder.indexOf(b.type),
       );
 
@@ -150,8 +169,21 @@ export function useCreateHairConsultation() {
         }),
       );
 
-      const aspirationOriginals = data.aspirationImages.images ?? [];
-      const aspirationResized = data.aspirationImages.resizedImages ?? [];
+      const aspirationOriginals = normalizedData.aspirationImages.images ?? [];
+      const aspirationResized = normalizedData.aspirationImages.resizedImages ?? [];
+      const aspirationImageDescription =
+        normalizedData.aspirationImages.description.trim() || undefined;
+
+      if (
+        originalAspirationImageCount > aspirationOriginals.length &&
+        aspirationOriginals.length === 0 &&
+        !aspirationImageDescription
+      ) {
+        throw new Error(
+          '참고 이미지 정보가 만료되었어요. 이미지를 다시 업로드하거나 상세 설명을 입력해주세요.',
+        );
+      }
+
       const aspirationFiles = await ensureResizedImages(aspirationOriginals, aspirationResized);
 
       const aspirationImages =
@@ -162,7 +194,6 @@ export function useCreateHairConsultation() {
               })),
             )
           : undefined;
-      const aspirationImageDescription = data.aspirationImages.description.trim() || undefined;
       const treatmentSummary =
         data.treatments && data.treatments.length > 0
           ? data.treatments.map((item) => item.treatmentType).join(', ')

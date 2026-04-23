@@ -1,7 +1,8 @@
-import { useFormContext, useWatch } from 'react-hook-form';
+import { type FieldErrors, useFormContext, useWatch } from 'react-hook-form';
 
 import type { FormStep } from '../type/form-step';
 import type { KeyOf } from '../type/types';
+import { showGlobalErrorOnce } from '../lib/global-overlay';
 import MultiStepFormItem from './multi-step-form-item';
 import ProgressPagination from './progress-pagination';
 import { Separator } from './separator';
@@ -11,7 +12,8 @@ type MultiStepFormProps<T extends Record<string, unknown>> = {
   setCurrentStep: (step: number) => void;
   steps: (FormStep<T> | FormStep<T>[])[];
   canMoveNext: (name: KeyOf<T> | Array<KeyOf<T>>) => boolean;
-  onSubmit: (values: T) => void;
+  onSubmit: (values: T) => void | Promise<void>;
+  onInvalid?: (errors: FieldErrors<T>) => void;
   lastStepButtonLabel: string;
   isSubmitting?: boolean;
 };
@@ -22,6 +24,7 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
   steps,
   canMoveNext,
   onSubmit,
+  onInvalid,
   lastStepButtonLabel,
   isSubmitting = false,
 }: MultiStepFormProps<T>) {
@@ -36,7 +39,17 @@ export default function MultiStepForm<T extends Record<string, unknown>>({
   const handleNextButtonClick = () => {
     if (!isLastStep || isSubmitting) return;
 
-    onSubmit(method.getValues());
+    void method.handleSubmit(
+      (values) => onSubmit(values),
+      (errors) => {
+        if (onInvalid) {
+          onInvalid(errors);
+          return;
+        }
+
+        showGlobalErrorOnce('입력을 확인해주세요.');
+      },
+    )();
   };
 
   const disabledToNext = () => {

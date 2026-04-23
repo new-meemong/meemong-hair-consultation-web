@@ -1,5 +1,6 @@
 const DEFAULT_OUTPUT_TYPE = 'image/jpeg';
 const DEFAULT_QUALITY = 0.9;
+const INVALID_IMAGE_FILE_MESSAGE = '이미지 파일이 유효하지 않아요. 사진을 다시 업로드해주세요.';
 
 const getOutputType = (inputType: string) => {
   if (inputType === 'image/png' || inputType === 'image/webp') return inputType;
@@ -32,6 +33,9 @@ const loadImage = (file: File): Promise<HTMLImageElement | ImageBitmap> => {
 
 export const resizeImageFile = async (file: File, maxSize: number): Promise<File> => {
   if (typeof window === 'undefined') return file;
+  if (!(file instanceof File)) {
+    throw new Error(INVALID_IMAGE_FILE_MESSAGE);
+  }
   if (!file.type.startsWith('image/')) return file;
 
   const image = await loadImage(file);

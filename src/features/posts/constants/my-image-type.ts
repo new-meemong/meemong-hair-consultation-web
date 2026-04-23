@@ -4,3 +4,9 @@ export const MY_IMAGE_TYPE = {
   SIDE: 'SIDE',
   WHOLE_BODY: 'WHOLE_BODY',
 } as const;
+
+export const REQUIRED_MY_IMAGE_TYPES = [
+  MY_IMAGE_TYPE.FRONT,
+  MY_IMAGE_TYPE.SIDE,
+  MY_IMAGE_TYPE.RECENT,
+] as const;

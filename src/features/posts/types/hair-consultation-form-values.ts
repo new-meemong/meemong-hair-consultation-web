@@ -8,7 +8,7 @@ import {
 } from '../constants/hair-consultation-create-options';
 
 import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '../constants/hair-consultation-form-field-name';
-import { MY_IMAGE_TYPE } from '@/features/posts/constants/my-image-type';
+import { MY_IMAGE_TYPE, REQUIRED_MY_IMAGE_TYPES } from '@/features/posts/constants/my-image-type';
 import z from 'zod';
 
 const MY_IMAGE_TYPES = [
@@ -63,12 +63,19 @@ export const hairConsultationFormSchema = z.object({
     )
     .min(1),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.TREATMENT_DETAIL]: z.string().optional(),
-  [HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES]: z.array(
-    z.object({
-      type: z.enum(MY_IMAGE_TYPES),
-      image: z.custom<File>((val) => typeof File === 'undefined' || val instanceof File),
-    }),
-  ),
+  [HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES]: z
+    .array(
+      z.object({
+        type: z.enum(MY_IMAGE_TYPES),
+        image: z.custom<File>((val) => typeof File === 'undefined' || val instanceof File),
+      }),
+    )
+    .refine(
+      (images) => REQUIRED_MY_IMAGE_TYPES.every((type) => images.some((image) => image.type === type)),
+      {
+        message: '정면/측면/현재 머리 사진은 모두 필수입니다.',
+      },
+    ),
   [HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES]: z.object({
     images: z.array(z.custom<File>((val) => typeof File === 'undefined' || val instanceof File)).optional(),
     resizedImages: z.array(z.custom<File>((val) => typeof File === 'undefined' || val instanceof File)).optional(),

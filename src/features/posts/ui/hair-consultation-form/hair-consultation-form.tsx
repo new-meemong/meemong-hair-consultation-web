@@ -13,6 +13,7 @@ import type { HairConsultationFormValues } from '../../types/hair-consultation-f
 import type { KeyOf } from '@/shared/type/types';
 import MultiStepForm from '@/shared/ui/multi-step-form';
 import { useSex } from '@/features/auth/hooks/use-sex';
+import { isFile } from '../../lib/normalize-hair-consultation-content';
 
 const BASE_FORM_STEPS: FormStep<HairConsultationFormValues>[] = [
   {
@@ -180,7 +181,7 @@ export default function HairConsultationForm({
 
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES) {
       const formValue = method.getValues(name) as HairConsultationFormValues['aspirationImages'];
-      const hasImages = Array.isArray(formValue?.images) && formValue.images.length > 0;
+      const hasImages = formValue?.images?.some(isFile) ?? false;
       const hasDescription = !!formValue?.description?.trim();
       return hasImages || hasDescription;
     }
@@ -188,9 +189,10 @@ export default function HairConsultationForm({
     if (name === HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES) {
       const formValue = method.getValues(name);
       if (!Array.isArray(formValue)) return false;
-      const hasFront = formValue.some((item) => item.type === 'FRONT');
-      const hasSide = formValue.some((item) => item.type === 'SIDE');
-      const hasRecent = formValue.some((item) => item.type === 'RECENT');
+      const validImages = formValue.filter((item) => isFile(item?.image));
+      const hasFront = validImages.some((item) => item.type === 'FRONT');
+      const hasSide = validImages.some((item) => item.type === 'SIDE');
+      const hasRecent = validImages.some((item) => item.type === 'RECENT');
       return hasFront && hasSide && hasRecent;
     }
 

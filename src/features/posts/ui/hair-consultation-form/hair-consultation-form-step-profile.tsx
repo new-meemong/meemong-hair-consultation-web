@@ -100,75 +100,63 @@ export default function HairConsultationFormStepProfile() {
   }, [selectedPersonalColor]);
   const personalColorBaseColor = PERSONAL_COLOR_BASE_COLOR_MAP[personalColorType];
 
-  const handleHairLengthEdit = useCallback(() => {
+  const saveCurrentWritingContent = useCallback(() => {
     const writingContent = {
       step: 1,
       content: getValues(),
     };
     saveContent(writingContent);
+  }, [getValues, saveContent]);
+
+  const handleHairLengthEdit = useCallback(() => {
+    saveCurrentWritingContent();
     replace(
       brand
         ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairLength')
         : ROUTES.POSTS_CREATE_HAIR_LENGTH,
       { skipReload: '1' },
     );
-  }, [brand, getValues, replace, saveContent]);
+  }, [brand, replace, saveCurrentWritingContent]);
 
   const handleHairConcernEdit = useCallback(() => {
-    const writingContent = {
-      step: 1,
-      content: getValues(),
-    };
-    saveContent(writingContent);
+    saveCurrentWritingContent();
     replace(
       brand
         ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairConcerns')
         : ROUTES.POSTS_CREATE_HAIR_CONCERNS,
       { skipReload: '1' },
     );
-  }, [brand, getValues, replace, saveContent]);
+  }, [brand, replace, saveCurrentWritingContent]);
 
   const handleHairTextureEdit = useCallback(() => {
-    const writingContent = {
-      step: 1,
-      content: getValues(),
-    };
-    saveContent(writingContent);
+    saveCurrentWritingContent();
     replace(
       brand
         ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'hairTexture')
         : ROUTES.POSTS_CREATE_HAIR_TEXTURE,
       { skipReload: '1' },
     );
-  }, [brand, getValues, replace, saveContent]);
+  }, [brand, replace, saveCurrentWritingContent]);
 
   const handleSkinBrightnessEdit = useCallback(() => {
-    const writingContent = {
-      step: 1,
-      content: getValues(),
-    };
-    saveContent(writingContent);
+    saveCurrentWritingContent();
     replace(
       brand
         ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'skinBrightness')
         : ROUTES.POSTS_CREATE_SKIN_BRIGHTNESS,
       { skipReload: '1' },
     );
-  }, [brand, getValues, replace, saveContent]);
+  }, [brand, replace, saveCurrentWritingContent]);
 
   const handlePersonalColorEdit = useCallback(() => {
-    const writingContent = {
-      step: 1,
-      content: getValues(),
-    };
-    saveContent(writingContent);
+    saveCurrentWritingContent();
     replace(
       brand
         ? ROUTES.WEB_CONSULTATION_STEP(brand.config.slug, 'personalColor')
         : ROUTES.POSTS_CREATE_PERSONAL_COLOR,
       { skipReload: '1' },
     );
-  }, [brand, getValues, replace, saveContent]);
+  }, [brand, replace, saveCurrentWritingContent]);
 
   const renderEditHeader = (
     title: string,

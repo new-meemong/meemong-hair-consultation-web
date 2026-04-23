@@ -1,5 +1,9 @@
 import { closeAppWebView, normalizeSource } from '@/shared/lib/app-bridge';
-import { useEffect, useState } from 'react';
+import {
+  hasLostHairConsultationImages,
+  normalizeHairConsultationContent,
+} from '@/features/posts/lib/normalize-hair-consultation-content';
+import { useEffect, useRef, useState } from 'react';
 
 import { FormProvider } from 'react-hook-form';
 import HairConsultationForm from '@/features/posts/ui/hair-consultation-form/hair-consultation-form';
@@ -10,14 +14,17 @@ import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import type { WritingStep } from '@/features/posts/types/user-writing-content';
 import useHairConsultationForm from '@/features/posts/hooks/use-hair-consultation-form';
 import { useOptionalBrand } from '@/shared/context/brand-context';
+import { useOverlayContext } from '@/shared/context/overlay-context';
 import usePostFormNavigation from '@/features/posts/hooks/use-consulting-post-form-navigation';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { useSearchParams } from 'next/navigation';
 
 export default function HairConsultationFormContainer() {
   const [currentStep, setCurrentStep] = useState(1);
+  const hasShownLostImageNoticeRef = useRef(false);
   const searchParams = useSearchParams();
   const { replace, source } = useRouterWithUser();
+  const { showSnackBar } = useOverlayContext();
   const brand = useOptionalBrand();
   const skipReload = searchParams.get('skipReload') === '1';
   const isFromApp = normalizeSource(source) === 'app';
@@ -29,8 +36,18 @@ export default function HairConsultationFormContainer() {
   const handlePageReload = (savedContent: WritingStep<HairConsultationFormValues>) => {
     if (!savedContent) return;
 
+    const normalizedContent = normalizeHairConsultationContent(savedContent.content);
+    const hasLostImages = hasLostHairConsultationImages(savedContent.content, normalizedContent);
+    if (hasLostImages && !hasShownLostImageNoticeRef.current) {
+      showSnackBar({
+        type: 'error',
+        message: '임시저장에서는 사진이 유지되지 않아 다시 첨부가 필요해요.',
+      });
+      hasShownLostImageNoticeRef.current = true;
+    }
+
     setCurrentStep(savedContent.step);
-    method.reset(savedContent.content);
+    method.reset(normalizedContent);
   };
 
   const { leaveForm } = usePostFormNavigation({
