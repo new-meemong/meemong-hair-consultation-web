@@ -33,9 +33,11 @@ export default function ConsultingResponseButton({
   const brand = useOptionalBrand();
   const isWebBrandModel = brand ? !!getWebUserData(brand.config.slug)?.userId : false;
   const isUserModel = auth?.isUserModel ?? isWebBrandModel;
+  const isUserDesigner = auth?.isUserDesigner ?? false;
   const STORE_CONSULTING_TEXT = '매장상담이 필요합니다';
 
   const hidden = !isUserModel && !isCommentWriter;
+  const shouldHideRecommendedTreatment = isUserDesigner && !isCommentWriter;
   const analysisChips = [
     { label: '얼굴형', value: analysisFaceShape },
     { label: '앞머리', value: analysisBangs },
@@ -77,11 +79,17 @@ export default function ConsultingResponseButton({
         </div>
       </div>
       <div className="p-3 bg-white">
-        <p className="typo-body-2-semibold text-label-info">추천시술</p>
-        <div className="mt-[6px] flex items-center gap-1">
+        {!shouldHideRecommendedTreatment && (
+          <p className="typo-body-2-semibold text-label-info">추천시술</p>
+        )}
+        <div
+          className={cn('flex items-center gap-1', !shouldHideRecommendedTreatment && 'mt-[6px]')}
+        >
           {hasAnswerImages && <PictureRedIcon className="size-6 shrink-0" />}
           <p className="typo-body-2-regular text-label-default whitespace-nowrap overflow-hidden text-ellipsis">
-            {treatmentText || '-'}
+            {shouldHideRecommendedTreatment
+              ? '추천 시술은 고객만 확인 가능합니다'
+              : treatmentText || '-'}
           </p>
         </div>
         {!hidden && (
