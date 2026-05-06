@@ -159,6 +159,7 @@ export default function HairConsultationCommentContainer({
       postWriterSex={postDetail.hairConsultPostingCreateUserSex}
       fetchNextPage={handleFetchNextPage}
       onReplyClick={onReplyClick ?? handlers.handleReplyClick}
+      hideReplyButton
       focusedCommentId={commentFormState.commentId}
       onDelete={handleDelete}
       onEdit={(commentId) => handlers.handleEditComment(commentId, mergedComments)}

@@ -13,6 +13,7 @@ interface CommentListProps {
   postWriterSex?: ValueOf<typeof USER_SEX>;
   fetchNextPage: () => void;
   onReplyClick: (commentId: number) => void;
+  hideReplyButton?: boolean;
   focusedCommentId: number | null;
   onDelete: (commentId: number) => void;
   onEdit: (commentId: number) => void;
@@ -27,6 +28,7 @@ export function CommentList({
   postWriterSex,
   fetchNextPage,
   onReplyClick,
+  hideReplyButton = false,
   focusedCommentId,
   onDelete,
   onEdit,
@@ -49,6 +51,7 @@ export function CommentList({
             postWriterId={postWriterId}
             postWriterSex={postWriterSex}
             onReplyClick={onReplyClick}
+            hideReplyButton={hideReplyButton}
             isFocused={isFocused(comment.id)}
             onDelete={() => onDelete(comment.id)}
             onEdit={() => onEdit(comment.id)}

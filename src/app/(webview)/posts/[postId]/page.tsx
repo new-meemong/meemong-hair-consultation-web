@@ -14,6 +14,7 @@ import { NewPostDetailProvider, usePostDetail } from '@/features/posts/context/p
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { USER_GUIDE_KEYS } from '@/shared/constants/local-storage';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { closeAppWebView, normalizeSource } from '@/shared/lib/app-bridge';
 import useShowGuide from '@/shared/hooks/use-show-guide';
@@ -32,7 +33,9 @@ function NewPostDetailPageContent({
   shouldCloseWebViewOnBack,
 }: NewPostDetailPageContentProps) {
   const auth = useOptionalAuthContext();
+  const brand = useOptionalBrand();
   const isUserDesigner = auth?.isUserDesigner ?? false;
+  const isUserModel = auth?.isUserModel ?? brand != null;
   const user = auth?.user ?? null;
   useMeemongPassPolicy(); // prefetch ad-block status so canSkipMong is ready before user clicks an answer
   const { back } = useRouterWithUser();
@@ -43,6 +46,7 @@ function NewPostDetailPageContent({
   const { isDesignerBlockedFromBrandPost, postBrandName } = useHairConsultationBrandAccess(postId);
   const showBrandStaffOnlyPostSheet = useShowBrandStaffOnlyPostSheet();
   const isWriter = user != null && postDetail.hairConsultPostingCreateUserId === user.id;
+  const canShowCommentForm = !isUserModel;
   const { data: answersData } = useGetHairConsultationAnswers(postId, {
     __limit: 100,
   });
@@ -128,27 +132,53 @@ function NewPostDetailPageContent({
           />
         </PostDetailContainer>
       </div>
-      <CommentFormContainer
-        postId={postId.toString()}
-        onSubmit={handleCommentFormSubmit}
-        commentFormState={commentFormState}
-        isPending={isFormPending}
-        textareaRef={textareaRef}
-        isConsulting={true}
-        isAnsweredByDesigner={hasAnsweredCurrentDesigner}
-        consultingChatTarget={
-          currentDesignerAnswer
-            ? {
-                receiverId: postDetail.hairConsultPostingCreateUserId,
-                receiverName: postDetail.hairConsultPostingCreateUserName,
-                answerId: currentDesignerAnswer.id.toString(),
-              }
-            : undefined
-        }
-        onRestrictedBrandAttempt={
-          isDesignerBlockedFromBrandPost ? handleRestrictedBrandAttempt : undefined
-        }
-      />
+      {/*
+        모델 댓글 입력 UI 비노출 정책으로 기존 상시 렌더링은 주석 유지.
+        <CommentFormContainer
+          postId={postId.toString()}
+          onSubmit={handleCommentFormSubmit}
+          commentFormState={commentFormState}
+          isPending={isFormPending}
+          textareaRef={textareaRef}
+          isConsulting={true}
+          isAnsweredByDesigner={hasAnsweredCurrentDesigner}
+          consultingChatTarget={
+            currentDesignerAnswer
+              ? {
+                  receiverId: postDetail.hairConsultPostingCreateUserId,
+                  receiverName: postDetail.hairConsultPostingCreateUserName,
+                  answerId: currentDesignerAnswer.id.toString(),
+                }
+              : undefined
+          }
+          onRestrictedBrandAttempt={
+            isDesignerBlockedFromBrandPost ? handleRestrictedBrandAttempt : undefined
+          }
+        />
+      */}
+      {canShowCommentForm && (
+        <CommentFormContainer
+          postId={postId.toString()}
+          onSubmit={handleCommentFormSubmit}
+          commentFormState={commentFormState}
+          isPending={isFormPending}
+          textareaRef={textareaRef}
+          isConsulting={true}
+          isAnsweredByDesigner={hasAnsweredCurrentDesigner}
+          consultingChatTarget={
+            currentDesignerAnswer
+              ? {
+                  receiverId: postDetail.hairConsultPostingCreateUserId,
+                  receiverName: postDetail.hairConsultPostingCreateUserName,
+                  answerId: currentDesignerAnswer.id.toString(),
+                }
+              : undefined
+          }
+          onRestrictedBrandAttempt={
+            isDesignerBlockedFromBrandPost ? handleRestrictedBrandAttempt : undefined
+          }
+        />
+      )}
     </div>
   );
 }

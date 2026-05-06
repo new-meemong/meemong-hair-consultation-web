@@ -32,6 +32,7 @@ type CommentListItemProps = {
   postWriterId: number;
   postWriterSex?: ValueOf<typeof USER_SEX>;
   onReplyClick: (commentId: number) => void;
+  hideReplyButton?: boolean;
   isFocused: boolean;
   onDelete: () => void;
   onEdit: () => void;
@@ -46,6 +47,7 @@ export default function CommentListItem({
   postWriterId,
   postWriterSex,
   onReplyClick,
+  hideReplyButton = false,
   isFocused,
   onDelete,
   onEdit,
@@ -192,7 +194,15 @@ export default function CommentListItem({
               />
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
-              {!isReply && !isConsultingAnswer && (
+              {/*
+                헤어컨설팅 답글달기 버튼 비활성화. 복구 시 hideReplyButton 조건을 제거하면 됩니다.
+                {!isReply && !isConsultingAnswer && (
+                  <Button variant="text" theme="text" size="text" onClick={handleReplyClick}>
+                    답글달기
+                  </Button>
+                )}
+              */}
+              {!hideReplyButton && !isReply && !isConsultingAnswer && (
                 <Button variant="text" theme="text" size="text" onClick={handleReplyClick}>
                   답글달기
                 </Button>
