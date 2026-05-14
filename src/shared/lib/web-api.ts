@@ -101,8 +101,10 @@ export function createWebApiClient(token: string, slug?: string) {
             console.log('Error Message:', error.message);
           }
 
-          if (response?.status === 403 && typeof window !== 'undefined' && slug) {
-            localStorage.removeItem(WEB_USER_DATA_KEY(slug));
+          if (response?.status === 403 && typeof window !== 'undefined') {
+            if (slug) {
+              localStorage.removeItem(WEB_USER_DATA_KEY(slug));
+            }
             window.dispatchEvent(new CustomEvent(AUTH_TOKEN_EXPIRED_EVENT));
           }
 

@@ -25,6 +25,7 @@ export interface UserGuideData {
 
 export type AuthenticatedUser = User & {
   brand?: MyBrand | null;
+  brandLookupFailed?: boolean;
 };
 
 export type UserData = AuthenticatedUser & UserWritingContent;

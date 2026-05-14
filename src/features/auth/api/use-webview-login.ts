@@ -1,10 +1,9 @@
-import { getMyBrand } from '@/entities/brands/api/get-my-brand';
 import type { MyBrand } from '@/entities/brands/model/my-brand';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
-import { useMutation } from '@tanstack/react-query';
-
 import type { User } from '@/entities/user/model/user';
 import { apiClientWithoutAuth } from '@/shared/api/client';
+import { getMyBrand } from '@/entities/brands/api/get-my-brand';
+import { useMutation } from '@tanstack/react-query';
 
 const WEBVIEW_API_KEY = process.env.NEXT_PUBLIC_WEBVIEW_API_KEY;
 
@@ -13,7 +12,8 @@ type LoginRequest = {
 };
 
 type WebviewLoginUser = User & {
-  brand: MyBrand | null;
+  brand?: MyBrand | null;
+  brandLookupFailed?: boolean;
 };
 
 export function useWebviewLogin({
@@ -30,12 +30,15 @@ export function useWebviewLogin({
         webviewAPIKey: WEBVIEW_API_KEY,
       });
 
-      let brand: MyBrand | null = null;
+      let brand: MyBrand | null | undefined =
+        loginResponse.data.role === USER_ROLE.DESIGNER ? undefined : null;
+      let brandLookupFailed = false;
 
       if (loginResponse.data.token && loginResponse.data.role === USER_ROLE.DESIGNER) {
         try {
           brand = await getMyBrand(loginResponse.data.token);
         } catch (error) {
+          brandLookupFailed = true;
           console.error('내 브랜드 조회 실패:', error);
         }
       }
@@ -45,6 +48,7 @@ export function useWebviewLogin({
         data: {
           ...loginResponse.data,
           brand,
+          brandLookupFailed,
         },
       };
     },

@@ -12,6 +12,8 @@ import {
   useState,
 } from 'react';
 
+import { getMyBrand } from '@/entities/brands/api/get-my-brand';
+import type { MyBrand } from '@/entities/brands/model/my-brand';
 import { isDesigner, isModel } from '@/entities/user/lib/user-role';
 import { useWebviewLogin } from '@/features/auth/api/use-webview-login';
 import { AUTH_TOKEN_EXPIRED_EVENT } from '@/shared/api/client';
@@ -34,6 +36,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const DESIGNER_BRAND_SYNC_THROTTLE_MS = 5 * 1000;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
@@ -42,10 +45,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isInitialized, setIsInitialized] = useState(false);
 
   const [user, setUser] = useState<UserData | null>(() => getCurrentUser());
+  const [completedInitialDesignerBrandSyncUserId, setCompletedInitialDesignerBrandSyncUserId] =
+    useState<string | null>(null);
 
   const loginInFlightRef = useRef<Promise<unknown> | null>(null);
+  const brandSyncInFlightRef = useRef<Promise<void> | null>(null);
   const lastRefreshAtRef = useRef(0);
   const lastUserIdRef = useRef<string | null>(null);
+  const lastDesignerBrandSyncStartedAtRef = useRef(0);
+  const currentUserRef = useRef<UserData | null>(user);
+  currentUserRef.current = user;
 
   const { mutateAsync: loginAsync, isError } = useWebviewLogin({
     onSuccess: (response) => {
@@ -53,6 +62,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (userResponseData.token) {
         setUserData(userResponseData);
         setUser(getDefaultUserData(userResponseData));
+
+        if (
+          userId &&
+          userResponseData.id === Number(userId) &&
+          isDesigner(userResponseData) &&
+          userResponseData.brand !== undefined
+        ) {
+          setCompletedInitialDesignerBrandSyncUserId(userId);
+        }
       }
     },
     onSettled: () => {
@@ -73,8 +91,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return tokenExpiryMs - Date.now() < refreshThresholdMs;
   }, [tokenExpiryMs, user?.token]);
 
+  const shouldSyncDesignerBrand = useMemo(() => {
+    if (!user?.token) return false;
+    // 브랜드 코드는 네이티브 앱에서 변경될 수 있어 캐시된 brand:null을 최종값으로 보지 않는다.
+    return isDesigner(user) && (user.brand === null || user.brandLookupFailed === true);
+  }, [user?.Role, user?.brand, user?.brandLookupFailed, user?.role, user?.token]);
+
+  const isTokenLoaded = Boolean(user?.token);
+
+  const isBrandLoaded = useMemo(
+    () => user?.brand !== undefined || user?.brandLookupFailed === true,
+    [user?.brand, user?.brandLookupFailed],
+  );
+
+  const isSameUser = userId !== null && user?.id === Number(userId);
+
+  const shouldBlockInitialDesignerBrandSync =
+    userId !== null &&
+    isBrandLoaded &&
+    isTokenLoaded &&
+    shouldSyncDesignerBrand &&
+    completedInitialDesignerBrandSyncUserId !== userId;
+
   const refreshToken = useCallback(
-    async (_reason: string) => {
+    async (reason: string) => {
       if (!userId) return;
       if (loginInFlightRef.current) {
         await loginInFlightRef.current;
@@ -83,6 +123,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const now = Date.now();
       if (now - lastRefreshAtRef.current < 1000) return;
 
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('[AuthProvider] refreshToken:', reason);
+      }
+
       loginInFlightRef.current = loginAsync({ userId }).finally(() => {
         loginInFlightRef.current = null;
         lastRefreshAtRef.current = Date.now();
@@ -90,6 +134,81 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await loginInFlightRef.current;
     },
     [loginAsync, userId],
+  );
+
+  const updateDesignerBrandLookup = useCallback(
+    (expectedUserId: number, data: { brand?: MyBrand | null; brandLookupFailed: boolean }) => {
+      setUser((prev) => {
+        if (!prev || prev.id !== expectedUserId) return prev;
+
+        const updatedUser: UserData = {
+          ...prev,
+          brandLookupFailed: data.brandLookupFailed,
+        };
+        if ('brand' in data) {
+          updatedUser.brand = data.brand;
+        }
+
+        updateUserData(updatedUser);
+        return updatedUser;
+      });
+    },
+    [],
+  );
+
+  const syncDesignerBrand = useCallback(
+    async (reason: string, options: { markInitialComplete?: boolean } = {}) => {
+      const currentUser = currentUserRef.current;
+      if (!userId || !currentUser || !isDesigner(currentUser)) return;
+
+      const expectedUserId = Number(userId);
+      if (currentUser.id !== expectedUserId || !currentUser.token) return;
+
+      if (currentUser.brand !== null && currentUser.brandLookupFailed !== true) return;
+
+      if (brandSyncInFlightRef.current) {
+        try {
+          await brandSyncInFlightRef.current;
+        } finally {
+          if (options.markInitialComplete) {
+            setCompletedInitialDesignerBrandSyncUserId(userId);
+          }
+        }
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastDesignerBrandSyncStartedAtRef.current < DESIGNER_BRAND_SYNC_THROTTLE_MS) {
+        if (options.markInitialComplete) {
+          setCompletedInitialDesignerBrandSyncUserId(userId);
+        }
+        return;
+      }
+
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('[AuthProvider] syncDesignerBrand:', reason);
+      }
+
+      lastDesignerBrandSyncStartedAtRef.current = now;
+
+      brandSyncInFlightRef.current = getMyBrand(currentUser.token)
+        .then((brand) => {
+          updateDesignerBrandLookup(expectedUserId, { brand, brandLookupFailed: false });
+        })
+        .catch((error) => {
+          console.error('내 브랜드 재조회 실패:', error);
+          updateDesignerBrandLookup(expectedUserId, { brandLookupFailed: true });
+        })
+        .finally(() => {
+          brandSyncInFlightRef.current = null;
+          if (options.markInitialComplete) {
+            setCompletedInitialDesignerBrandSyncUserId(userId);
+          }
+        });
+
+      await brandSyncInFlightRef.current;
+    },
+    [updateDesignerBrandLookup, userId],
   );
 
   const updateUser = (userData: Partial<UserData>) => {
@@ -109,18 +228,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (hasUserIdChanged) {
       lastUserIdRef.current = userId;
       setIsInitialized(false);
+      setCompletedInitialDesignerBrandSyncUserId(null);
     }
-    const isSameUser = user?.id === Number(userId);
-    const isBrandLoaded = user?.brand !== undefined;
-    if (!isSameUser || !isBrandLoaded) {
-      void refreshToken(!isSameUser ? 'user-change' : 'brand-missing');
+
+    if (!isSameUser || !isTokenLoaded || !isBrandLoaded) {
+      const reason = !isSameUser
+        ? 'user-change'
+        : !isTokenLoaded
+          ? 'token-missing'
+          : 'brand-missing';
+      void refreshToken(reason);
       return;
     }
 
     if (!isInitialized) {
       setIsInitialized(true);
     }
-  }, [isInitialized, refreshToken, userId, user?.brand, user?.id]);
+  }, [isBrandLoaded, isInitialized, isSameUser, isTokenLoaded, refreshToken, userId]);
 
   useEffect(() => {
     if (!userId || !user?.token) return;
@@ -129,17 +253,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [refreshToken, shouldRefreshToken, user?.token, userId]);
 
   useEffect(() => {
+    if (!userId || !shouldSyncDesignerBrand) return;
+    if (completedInitialDesignerBrandSyncUserId === userId) return;
+    void syncDesignerBrand('initial-designer-brand-sync', { markInitialComplete: true });
+  }, [completedInitialDesignerBrandSyncUserId, shouldSyncDesignerBrand, syncDesignerBrand, userId]);
+
+  useEffect(() => {
     if (!userId) return;
 
     const handleVisibility = () => {
-      if (document.visibilityState === 'visible' && shouldRefreshToken) {
-        void refreshToken('visibility');
+      if (document.visibilityState === 'visible') {
+        if (shouldRefreshToken) {
+          void refreshToken('visibility');
+          return;
+        }
+
+        void syncDesignerBrand('visibility-designer-brand-sync');
       }
     };
     const handleFocus = () => {
       if (shouldRefreshToken) {
         void refreshToken('focus');
+        return;
       }
+
+      void syncDesignerBrand('focus-designer-brand-sync');
     };
 
     document.addEventListener('visibilitychange', handleVisibility);
@@ -149,7 +287,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('focus', handleFocus);
     };
-  }, [refreshToken, shouldRefreshToken, userId]);
+  }, [refreshToken, shouldRefreshToken, syncDesignerBrand, userId]);
 
   useEffect(() => {
     if (!userId) return;
@@ -176,10 +314,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   if (userId === null) return <div>유저아이디가 누락되었습니다</div>;
 
-  const isSameUser = user?.id === Number(userId);
-  const isBrandLoaded = user?.brand !== undefined;
-
-  if (!user || !isInitialized || !isSameUser || !isBrandLoaded) {
+  if (
+    !user ||
+    !isInitialized ||
+    !isSameUser ||
+    !isTokenLoaded ||
+    !isBrandLoaded ||
+    shouldBlockInitialDesignerBrandSync
+  ) {
     return isError ? <div>로그인 실패</div> : null;
   }
 
