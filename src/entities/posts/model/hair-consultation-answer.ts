@@ -13,7 +13,8 @@ export type HairConsultationAnswerUser = {
   id: number;
   displayName: string;
   profilePictureURL: string | null;
-  role: ValueOf<typeof USER_ROLE>;
+  role?: ValueOf<typeof USER_ROLE>;
+  Role?: ValueOf<typeof USER_ROLE>;
 };
 
 export type HairConsultationAnswer = {

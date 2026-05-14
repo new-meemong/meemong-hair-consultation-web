@@ -1,6 +1,7 @@
 import type { ApiListResponse } from '@/shared/api/client';
 import type { CommentWithReplyStatus } from '../model/comment';
 import type { HairConsultationCommentWithReplies } from '../model/hair-consultation-comment';
+import { getUserRole } from '@/entities/user/lib/user-role';
 import type { InfiniteData } from '@tanstack/react-query';
 import convertToCommentWithReplyStatusCore from './convertToCommentWithReplyStatusCore';
 
@@ -19,7 +20,7 @@ export default function convertToCommentWithReplyStatusFromHairConsultationComme
       profilePictureURL: comment.user.profilePictureURL,
       address: comment.user.address ?? undefined,
       companyName: comment.user.companyName ?? null,
-      role: comment.user.role,
+      role: getUserRole(comment.user),
     },
     isReply,
     isAnonymous: false,

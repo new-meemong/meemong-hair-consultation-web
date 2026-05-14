@@ -5,7 +5,8 @@ export type ExperienceGroupCommentUser = {
   id: number;
   displayName: string;
   profilePictureURL: string;
-  role: ValueOf<typeof USER_ROLE>;
+  role?: ValueOf<typeof USER_ROLE>;
+  Role?: ValueOf<typeof USER_ROLE>;
 };
 
 export type ExperienceGroupComment = {

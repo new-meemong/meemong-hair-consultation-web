@@ -24,7 +24,7 @@ vi.mock('@/entities/brands/api/get-my-brand', () => ({
   getMyBrand: mocks.getMyBrand,
 }));
 
-const baseUser = {
+const baseUserWithoutRole = {
   id: 1,
   email: 'designer@example.com',
   profilePictureURL: null,
@@ -34,7 +34,6 @@ const baseUser = {
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
   loginSession: 'session',
-  role: USER_ROLE.DESIGNER,
   loginType: 'KAKAO',
   fcmToken: null,
   sex: '여자',
@@ -49,6 +48,20 @@ const baseUser = {
   isExistPassword: false,
   appIdentifierId: null,
   token: 'token',
+};
+
+const baseUser = {
+  ...baseUserWithoutRole,
+  role: USER_ROLE.DESIGNER,
+};
+
+const registeredBrand = {
+  id: 32,
+  code: 'V2920',
+  name: '보그헤어',
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+  deletedAt: null,
 };
 
 function makeWrapper() {
@@ -89,6 +102,48 @@ describe('useWebviewLogin', () => {
 
     expect(response.data.brand).toBeUndefined();
     expect(response.data.brandLookupFailed).toBe(true);
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('Role 필드만 있는 디자이너도 브랜드를 조회한다', async () => {
+    vi.mocked(apiClientWithoutAuth.post).mockResolvedValue({
+      data: {
+        ...baseUserWithoutRole,
+        Role: USER_ROLE.DESIGNER,
+      },
+      success: true,
+    });
+    vi.mocked(getMyBrand).mockResolvedValue(registeredBrand);
+
+    const { result } = renderHook(() => useWebviewLogin(), { wrapper: makeWrapper() });
+
+    const response = await act(async () => result.current.mutateAsync({ userId: '1' }));
+
+    expect(getMyBrand).toHaveBeenCalledWith('token');
+    expect(response.data.role).toBe(USER_ROLE.DESIGNER);
+    expect(response.data.brand).toEqual(registeredBrand);
+    expect(response.data.brandLookupFailed).toBe(false);
+  });
+
+  it('role과 Role이 모두 없으면 비정상 응답을 기록하고 브랜드 조회를 건너뛴다', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.mocked(apiClientWithoutAuth.post).mockResolvedValue({
+      data: baseUserWithoutRole,
+      success: true,
+    });
+
+    const { result } = renderHook(() => useWebviewLogin(), { wrapper: makeWrapper() });
+
+    const response = await act(async () => result.current.mutateAsync({ userId: '1' }));
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith('webview-login 응답에 role/Role이 없습니다.', {
+      userId: 1,
+    });
+    expect(getMyBrand).not.toHaveBeenCalled();
+    expect(response.data.role).toBeUndefined();
+    expect(response.data.brand).toBeNull();
+    expect(response.data.brandLookupFailed).toBe(false);
+
     consoleErrorSpy.mockRestore();
   });
 });

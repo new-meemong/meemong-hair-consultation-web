@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/shared';
 import type { CommentUser } from '@/entities/comment/model/comment';
 import LockIcon from '@/assets/icons/lock.svg';
 import ProfileIcon from '@/assets/icons/profile.svg';
-import { USER_ROLE } from '@/entities/user/constants/user-role';
+import { isDesigner } from '@/entities/user/lib/user-role';
 import { cn } from '@/lib/utils';
 import { getWebUserData } from '@/shared/lib/auth';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
@@ -62,7 +62,7 @@ export default function CommentAuthorProfile({
       ? `${formatCommentNickname(normalizedDisplayName)}(글쓴이)`
       : formatCommentNickname(normalizedDisplayName);
 
-  const isCommentAuthorDesigner = author.role === USER_ROLE.DESIGNER;
+  const isCommentAuthorDesigner = isDesigner(author);
 
   const showInvalidChatRequestBottomSheet = useShowInvalidChatRequestSheet();
 

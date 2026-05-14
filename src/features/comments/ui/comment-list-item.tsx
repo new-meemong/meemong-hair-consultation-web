@@ -7,8 +7,8 @@ import ConsultingResponseButton from './consulting-response-button';
 import MoreIcon from '@/assets/icons/more-vertical.svg';
 import ReplyIcon from '@/assets/icons/reply.svg';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-import { USER_ROLE } from '@/entities/user/constants/user-role';
 import { USER_SEX } from '@/entities/user/constants/user-sex';
+import { isDesigner } from '@/entities/user/lib/user-role';
 import type { ValueOf } from '@/shared/type/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -155,7 +155,7 @@ export default function CommentListItem({
     !isPostWriter &&
     !isCommentWriter &&
     !isConsultingAnswer &&
-    author.role === USER_ROLE.DESIGNER;
+    isDesigner(author);
   const isSecret =
     isOtherDesignerGeneralCommentInNewPost ||
     (isUserDesigner &&

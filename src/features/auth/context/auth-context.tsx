@@ -91,11 +91,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return tokenExpiryMs - Date.now() < refreshThresholdMs;
   }, [tokenExpiryMs, user?.token]);
 
-  const shouldSyncDesignerBrand = useMemo(() => {
-    if (!user?.token) return false;
-    // 브랜드 코드는 네이티브 앱에서 변경될 수 있어 캐시된 brand:null을 최종값으로 보지 않는다.
-    return isDesigner(user) && (user.brand === null || user.brandLookupFailed === true);
-  }, [user?.Role, user?.brand, user?.brandLookupFailed, user?.role, user?.token]);
+  // 브랜드 코드는 네이티브 앱에서 변경될 수 있어 캐시된 brand:null을 최종값으로 보지 않는다.
+  const shouldSyncDesignerBrand =
+    user != null &&
+    Boolean(user.token) &&
+    isDesigner(user) &&
+    (user.brand === null || user.brandLookupFailed === true);
 
   const isTokenLoaded = Boolean(user?.token);
 

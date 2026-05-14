@@ -7,7 +7,8 @@ export type CommentUser = {
   profilePictureURL: string | null;
   address?: string;
   companyName?: string | null;
-  role: ValueOf<typeof USER_ROLE>;
+  role?: ValueOf<typeof USER_ROLE>;
+  Role?: ValueOf<typeof USER_ROLE>;
 };
 
 export type Comment = {

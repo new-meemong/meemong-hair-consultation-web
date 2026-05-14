@@ -1,6 +1,7 @@
 import type { ApiListResponse } from '@/shared/api/client';
 import type { CommentWithReplyStatus } from '@/entities/comment/model/comment';
 import type { HairConsultationAnswer } from '@/entities/posts/model/hair-consultation-answer';
+import { getUserRole } from '@/entities/user/lib/user-role';
 import type { InfiniteData } from '@tanstack/react-query';
 
 export default function convertToCommentWithReplyStatusFromHairConsultationAnswer(
@@ -34,7 +35,7 @@ export default function convertToCommentWithReplyStatusFromHairConsultationAnswe
           displayName: answer.user.displayName,
           profilePictureURL: answer.user.profilePictureURL,
           companyName: null,
-          role: answer.user.role,
+          role: getUserRole(answer.user),
         },
         isReply: false,
         isAnonymous: false,
