@@ -16,6 +16,7 @@ import { SiteHeader } from '@/widgets/header';
 import Tab from '@/shared/ui/tab';
 import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
 import { USER_ROLE } from '@/entities/user/constants/user-role';
+import { getUserRole } from '@/entities/user/lib/user-role';
 import { WritePostButton } from '@/features/posts/ui/write-post-button';
 import { getPostListTabs } from '@/features/posts/lib/get-post-list-tabs';
 import { getPostTabs } from '@/features/posts/constants/post-tabs';
@@ -46,6 +47,7 @@ export default function PostsPage() {
 
   const [activePostTab, setActivePostTab] = usePostTab();
   const [activePostListTab, setActivePostListTab] = usePostListTab();
+  const currentUserRole = user ? getUserRole(user) : undefined;
 
   const { containerRef } = useScrollRestoration(POSTS_PAGE_KEY);
 
@@ -59,7 +61,7 @@ export default function PostsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const listTabs = getPostListTabs(user?.role ?? USER_ROLE.MODEL);
+  const listTabs = getPostListTabs(currentUserRole ?? USER_ROLE.MODEL);
 
   const navigateToWritePage = useCallback(() => {
     if (source === 'app' && supportsFullWebviewPostCreate) {
@@ -108,7 +110,7 @@ export default function PostsPage() {
     }
   }, [activePostTab, activePostListTab, selectedBrandId, userSelectedRegionData]);
 
-  const postTabs = useMemo(() => getPostTabs(user?.role), [user?.role]);
+  const postTabs = useMemo(() => getPostTabs(currentUserRole), [currentUserRole]);
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">

@@ -41,6 +41,15 @@ const vogBrand = {
   deletedAt: null,
 };
 
+const parkjunBrand = {
+  id: 33,
+  code: 'PKJBTL',
+  name: '박준뷰티랩',
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+  deletedAt: null,
+};
+
 function createCachedUser({
   role = USER_ROLE.DESIGNER,
   brand = null,
@@ -301,5 +310,39 @@ describe('AuthProvider brand sync', () => {
     await waitFor(() => expect(screen.getByText('authenticated')).toBeTruthy());
     expect(loginAsync).toHaveBeenCalledWith({ userId: '1' });
     expect(getMyBrand).not.toHaveBeenCalled();
+  });
+
+  it('디자이너의 cached brand가 있어도 첫 mount에서 최신 브랜드로 갱신한다', async () => {
+    cacheUser(createCachedUser({ brand: vogBrand }));
+    vi.mocked(getMyBrand).mockResolvedValue(parkjunBrand);
+
+    renderAuthProvider();
+
+    await waitFor(() => expect(screen.getByText('authenticated')).toBeTruthy());
+    await waitFor(() => expect(getMyBrand).toHaveBeenCalledWith(TOKEN));
+
+    const storedUser = JSON.parse(localStorage.getItem(USER_DATA_KEY) ?? '{}');
+    expect(storedUser.brand).toEqual(parkjunBrand);
+    expect(mocks.loginAsync).not.toHaveBeenCalled();
+  });
+
+  it('Role만 남은 오래된 디자이너 캐시는 role로 정규화하고 기존 브랜드를 유지한다', async () => {
+    vi.mocked(getMyBrand).mockResolvedValue(vogBrand);
+    const cachedUser = createCachedUser({ brand: vogBrand });
+    delete cachedUser.role;
+    cachedUser.Role = USER_ROLE.DESIGNER;
+    cacheUser(cachedUser);
+
+    renderAuthProvider();
+
+    await waitFor(() => expect(screen.getByText('authenticated')).toBeTruthy());
+    await waitFor(() => expect(getMyBrand).toHaveBeenCalledWith(TOKEN));
+
+    const storedUser = JSON.parse(localStorage.getItem(USER_DATA_KEY) ?? '{}');
+    expect(storedUser.role).toBe(USER_ROLE.DESIGNER);
+    expect(storedUser.Role).toBeUndefined();
+    expect(storedUser.brand).toEqual(vogBrand);
+    expect(mocks.loginAsync).not.toHaveBeenCalled();
+    expect(getMyBrand).toHaveBeenCalledWith(TOKEN);
   });
 });

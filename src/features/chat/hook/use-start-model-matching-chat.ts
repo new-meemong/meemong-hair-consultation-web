@@ -6,6 +6,7 @@ import { ChatChannelTypeEnum } from '@/features/chat/constants/chat-channel-type
 import type { UserDetail } from '@/entities/user/model/user-detail';
 import { db } from '@/shared/lib/firebase';
 import { getUser } from '@/features/auth/api/use-get-user';
+import { getUserRole } from '@/entities/user/lib/user-role';
 import { openChatChannelInApp } from '@/shared/lib/app-bridge';
 import { useCallback } from 'react';
 import useIsFromApp from '@/features/chat/hook/use-is-from-app';
@@ -31,7 +32,7 @@ const mapOtherUser = (user: UserDetail) => ({
   Email: user.email,
   FcmToken: user.fcmToken,
   ProfilePictureURL: user.profilePictureURL,
-  Role: user.role ?? user.Role,
+  Role: getUserRole(user),
   Sex: user.sex,
   UserID: String(user.id),
   id: user.id,

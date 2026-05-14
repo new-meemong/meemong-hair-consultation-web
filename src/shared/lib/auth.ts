@@ -8,6 +8,7 @@ import {
 import type { MyBrand } from '@/entities/brands/model/my-brand';
 import type { SelectedRegion } from '@/features/region/types/selected-region';
 import type { User } from '@/entities/user/model/user';
+import { normalizeUserRole } from '@/entities/user/lib/user-role';
 import type { UserWritingContent } from '@/features/posts/types/user-writing-content';
 
 export interface JWTPayload {
@@ -34,6 +35,11 @@ const USER_DATA_KEY = 'user_data';
 const USER_GUIDE_DATA_KEY_PREFIX = 'user_guide_data_';
 const USER_SELECTED_REGION_DATA_KEY_PREFIX = 'user_selected_region_data_';
 
+const normalizeUserDataRole = <T extends AuthenticatedUser>(user: T): T => {
+  const normalizedUser = normalizeUserRole(user);
+  return normalizedUser as T;
+};
+
 export const decodeJWTPayload = (token: string): JWTPayload | null => {
   try {
     const base64Url = token.split('.')[1];
@@ -52,8 +58,10 @@ export const decodeJWTPayload = (token: string): JWTPayload | null => {
 };
 
 export const getDefaultUserData = (user: AuthenticatedUser): UserData => {
+  const normalizedUser = normalizeUserDataRole(user);
+
   return {
-    ...user,
+    ...normalizedUser,
     [USER_WRITING_CONTENT_KEYS.consultingPost]: null,
     [USER_WRITING_CONTENT_KEYS.hairConsultation]: null,
     [USER_WRITING_CONTENT_KEYS.consultingResponse]: [],
@@ -76,8 +84,12 @@ export const getCurrentUser = (): UserData | null => {
   if (!userData) return null;
 
   try {
-    const parsedData = JSON.parse(userData);
-    return parsedData;
+    const parsedData = JSON.parse(userData) as UserData;
+    const normalizedData = normalizeUserDataRole(parsedData);
+    if (normalizedData.role !== parsedData.role || 'Role' in parsedData) {
+      localStorage.setItem(USER_DATA_KEY, JSON.stringify(normalizedData));
+    }
+    return normalizedData;
   } catch (error) {
     console.error('User data 파싱 실패:', error);
     return null;

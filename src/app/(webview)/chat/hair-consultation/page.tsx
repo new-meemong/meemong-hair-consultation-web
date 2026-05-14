@@ -8,14 +8,17 @@ import Banner from '@/features/banner/ui/banner';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import ChatChannelListItem from '@/features/chat/ui/chat-channel-list-item';
 import ChatChannelListItemSkeleton from '@/features/chat/ui/chat-channel-list-item-skeleton';
+import { USER_ROLE } from '@/entities/user/constants/user-role';
+import { getUserRole } from '@/entities/user/lib/user-role';
 import { useDynamicSkeletonCount } from '@/shared/hooks/use-dynamic-skeleton-count';
 
 export default function HairConsultationChatPage() {
   const { user } = useAuthContext();
   const userId = user?.id;
+  const userRole = user ? (getUserRole(user) ?? USER_ROLE.MODEL) : USER_ROLE.MODEL;
 
   const { data } = useGetBanner({
-    userType: user?.role,
+    userType: userRole,
     bannerType: '채팅배너',
   });
 

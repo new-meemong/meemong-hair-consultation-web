@@ -4,7 +4,7 @@ import HairChatButtonIcon1 from '@/assets/icons/hair-chat-button-icon1.svg';
 import HairChatButtonIcon2 from '@/assets/icons/hair-chat-button-icon2.svg';
 import HairChatButtonIcon3 from '@/assets/icons/hair-chat-button-icon3.svg';
 import { ROUTES } from '@/shared';
-import { USER_ROLE } from '@/entities/user/constants/user-role';
+import { isDesigner } from '@/entities/user/lib/user-role';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 import { cn } from '@/shared/lib/utils';
 import openUrlInApp from '@/shared/lib/open-url-in-app';
@@ -82,11 +82,7 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
   // 채팅방 참여자 중 디자이너(role 2)를 찾아서 그 디자이너의 designerInfo.storelink 사용
   const storeUrl = useMemo(() => {
     // otherUser가 디자이너(role 2)인 경우
-    if (
-      userChannel?.otherUser &&
-      (userChannel.otherUser.role === USER_ROLE.DESIGNER ||
-        userChannel.otherUser.Role === USER_ROLE.DESIGNER)
-    ) {
+    if (userChannel?.otherUser && isDesigner(userChannel.otherUser)) {
       const otherUser = userChannel.otherUser as {
         designerInfo?: {
           storelink?: string;
@@ -99,7 +95,7 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
     }
 
     // otherUser가 디자이너가 아닌 경우, 현재 사용자가 디자이너(role 2)인지 확인
-    if (user && (user.role === USER_ROLE.DESIGNER || user.Role === USER_ROLE.DESIGNER)) {
+    if (user && isDesigner(user)) {
       const currentUser = user as {
         designerInfo?: {
           storelink?: string;

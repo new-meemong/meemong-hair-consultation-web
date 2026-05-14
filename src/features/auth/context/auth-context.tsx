@@ -91,13 +91,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return tokenExpiryMs - Date.now() < refreshThresholdMs;
   }, [tokenExpiryMs, user?.token]);
 
-  // 브랜드 코드는 네이티브 앱에서 변경될 수 있어 캐시된 brand:null을 최종값으로 보지 않는다.
-  const shouldSyncDesignerBrand =
-    user != null &&
-    Boolean(user.token) &&
-    isDesigner(user) &&
-    (user.brand === null || user.brandLookupFailed === true);
-
   const isTokenLoaded = Boolean(user?.token);
 
   const isBrandLoaded = useMemo(
@@ -105,13 +98,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [user?.brand, user?.brandLookupFailed],
   );
 
+  const shouldSyncDesignerBrand =
+    user != null && Boolean(user.token) && isDesigner(user) && isBrandLoaded;
+
+  // 브랜드 코드는 네이티브 앱에서 변경될 수 있어 캐시된 brand:null을 최종값으로 보지 않는다.
+  const shouldBlockForMissingDesignerBrand =
+    user != null &&
+    shouldSyncDesignerBrand &&
+    (user.brand === null || user.brandLookupFailed === true);
+
   const isSameUser = userId !== null && user?.id === Number(userId);
 
   const shouldBlockInitialDesignerBrandSync =
     userId !== null &&
     isBrandLoaded &&
     isTokenLoaded &&
-    shouldSyncDesignerBrand &&
+    shouldBlockForMissingDesignerBrand &&
     completedInitialDesignerBrandSyncUserId !== userId;
 
   const refreshToken = useCallback(
@@ -164,8 +166,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const expectedUserId = Number(userId);
       if (currentUser.id !== expectedUserId || !currentUser.token) return;
-
-      if (currentUser.brand !== null && currentUser.brandLookupFailed !== true) return;
 
       if (brandSyncInFlightRef.current) {
         try {
