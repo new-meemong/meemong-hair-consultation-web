@@ -25,6 +25,7 @@ import type { ApiError } from '@/shared/api/client';
 import type { BangStyleOptionNew } from '@/features/posts/constants/bang-style';
 import type { ComponentProps } from 'react';
 import type { HTTPError } from 'ky';
+import type { HairConsultationDetail } from '@/entities/posts/model/hair-consultation-detail';
 import type { HairLengthOption } from '@/features/posts/constants/hair-length-options';
 import Image from 'next/image';
 import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
@@ -94,6 +95,17 @@ const normalizeText = (value: string) =>
 
 const isMaleSex = (sex: string | number | null | undefined) =>
   sex === '남자' || sex === 'MALE' || sex === 'male' || sex === 1 || sex === '1';
+
+const getConsultationPostWriterId = (detail?: HairConsultationDetail | null) => {
+  const writerIds = [
+    detail?.user?.id,
+    detail?.hairConsultationCreateUserId,
+    detail?.hairConsultationCreateUser?.userId,
+  ].filter((id): id is number => typeof id === 'number');
+  const uniqueWriterIds = new Set(writerIds);
+
+  return uniqueWriterIds.size === 1 ? writerIds[0] : null;
+};
 
 const ALL_BANG_STYLE_OPTIONS = [...BANG_STYLE_OPTIONS_NEW.MALE, ...BANG_STYLE_OPTIONS_NEW.FEMALE];
 const MALE_HAIR_LENGTH_FEEDBACK_IMAGE_MAP: Record<string, ImageSource> = {
@@ -311,7 +323,11 @@ export default function NewConsultingResponsePage() {
     postIdString,
     responseIdString,
   );
-  const { data: consultationDetailResponse } = useGetHairConsultationDetail(postIdString);
+  const {
+    data: consultationDetailResponse,
+    isLoading: isConsultationDetailLoading,
+    refetch: refetchConsultationDetail,
+  } = useGetHairConsultationDetail(postIdString);
 
   useEffect(() => {
     if (error && 'response' in error) {
@@ -342,12 +358,12 @@ export default function NewConsultingResponsePage() {
 
   if (!answer) return null;
 
-  const postWriterId =
-    consultationDetail?.user?.id ??
-    consultationDetail?.hairConsultationCreateUserId ??
-    consultationDetail?.hairConsultationCreateUser?.userId;
+  const postWriterId = getConsultationPostWriterId(consultationDetail);
   const isResponseWriter = user != null && user.id === answer.user.id;
   const isPostWriter = postWriterId != null && user != null && user.id === postWriterId;
+  const shouldSkipAdditionalConsultationMong = isUserModel && isPostWriter;
+  const isCheckingPostWriter =
+    !brand && isUserModel && postWriterId == null && isConsultationDetailLoading;
   const shouldShowBottomActions = brand ? true : isUserModel && !isResponseWriter;
 
   const handleDesignerProfileClick = () => {
@@ -364,19 +380,42 @@ export default function NewConsultingResponsePage() {
     });
   };
 
+  const startConsultingResponseChat = async (isMyHairConsultationPost = isPostWriter) => {
+    setIsStartingChat(true);
+    try {
+      const started = await startChat({
+        receiverId: answer.user.id,
+        postId: postIdString,
+        answerId: responseIdString,
+        entrySource: 'CONSULTING_RESPONSE',
+        isMyHairConsultationPost,
+      });
+      if (!started) {
+        showSnackBar({
+          type: 'error',
+          message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
+        });
+      }
+    } finally {
+      setIsStartingChat(false);
+    }
+  };
+
   const startChatWithMong = async () => {
-    const finalPostId = postIdString;
-    const finalAnswerId = responseIdString;
-    const createType = isPostWriter
-      ? MEEMONG_PASS_CREATE_TYPES.MY_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL
-      : MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
+    // 유료 확인 시트가 stale render에서 열려도 내 글 추가 상담은 차감하지 않는다.
+    if (shouldSkipAdditionalConsultationMong) {
+      await startConsultingResponseChat();
+      return;
+    }
+
+    const createType = MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
 
     setIsStartingChat(true);
     try {
       const existingChat = await findExistingChat({
         receiverId: answer.user.id,
-        postId: finalPostId,
-        answerId: finalAnswerId,
+        postId: postIdString,
+        answerId: responseIdString,
         entrySource: 'CONSULTING_RESPONSE',
         isMyHairConsultationPost: isPostWriter,
       });
@@ -384,8 +423,8 @@ export default function NewConsultingResponsePage() {
         existingChat ??
         (await prepareChat({
           receiverId: answer.user.id,
-          postId: finalPostId,
-          answerId: finalAnswerId,
+          postId: postIdString,
+          answerId: responseIdString,
           entrySource: 'CONSULTING_RESPONSE',
           isMyHairConsultationPost: isPostWriter,
         }));
@@ -432,27 +471,56 @@ export default function NewConsultingResponsePage() {
     }
     if (isStartingChat) return;
 
+    let isMyHairConsultationPost = isPostWriter;
+
+    if (isUserModel && postWriterId == null) {
+      if (isConsultationDetailLoading) {
+        showSnackBar({
+          type: 'error',
+          message: '게시글 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.',
+        });
+        return;
+      }
+
+      setIsStartingChat(true);
+      try {
+        const latestConsultationDetailResponse = await refetchConsultationDetail();
+        const latestPostWriterId = getConsultationPostWriterId(
+          latestConsultationDetailResponse.data?.data,
+        );
+
+        if (latestPostWriterId == null) {
+          showSnackBar({
+            type: 'error',
+            message: '게시글 정보를 불러오지 못했어요. 다시 시도해주세요.',
+          });
+          return;
+        }
+
+        isMyHairConsultationPost = user != null && user.id === latestPostWriterId;
+      } finally {
+        setIsStartingChat(false);
+      }
+    }
+
     if (!isUserModel) {
-      await startChat({
-        receiverId: answer.user.id,
-        postId: postIdString,
-        answerId: responseIdString,
-        entrySource: 'CONSULTING_RESPONSE',
-        isMyHairConsultationPost: isPostWriter,
-      });
+      await startConsultingResponseChat(isMyHairConsultationPost);
       return;
     }
 
-    const createType = isPostWriter
-      ? MEEMONG_PASS_CREATE_TYPES.MY_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL
-      : MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
+    if (isMyHairConsultationPost) {
+      await startConsultingResponseChat(isMyHairConsultationPost);
+      return;
+    }
+
+    const createType = MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
 
     const existingChat = await findExistingChat({
       receiverId: answer.user.id,
       postId: postIdString,
       answerId: responseIdString,
       entrySource: 'CONSULTING_RESPONSE',
-      isMyHairConsultationPost: isPostWriter,
+      isMyHairConsultationPost,
     });
 
     if (existingChat) {
@@ -472,24 +540,7 @@ export default function NewConsultingResponsePage() {
     }
 
     if (canSkipMong(createType)) {
-      setIsStartingChat(true);
-      try {
-        const started = await startChat({
-          receiverId: answer.user.id,
-          postId: postIdString,
-          answerId: responseIdString,
-          entrySource: 'CONSULTING_RESPONSE',
-          isMyHairConsultationPost: isPostWriter,
-        });
-        if (!started) {
-          showSnackBar({
-            type: 'error',
-            message: '채팅 연결에 실패했어요. 잠시 후 다시 시도해주세요.',
-          });
-        }
-      } finally {
-        setIsStartingChat(false);
-      }
+      await startConsultingResponseChat(isMyHairConsultationPost);
       return;
     }
 
@@ -814,7 +865,7 @@ export default function NewConsultingResponsePage() {
               size="lg"
               className="flex-1 rounded-4"
               onClick={handleChatClick}
-              disabled={isStartingChat}
+              disabled={isStartingChat || isCheckingPostWriter}
             >
               {isStartingChat ? '연결 중...' : '추가 상담하기'}
             </Button>
