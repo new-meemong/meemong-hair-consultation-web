@@ -42,6 +42,53 @@ vi.mock('./vog', () => ({
   },
 }));
 
+vi.mock('./visual-salon', () => ({
+  visualSalonConfig: {
+    slug: 'visual-salon',
+    name: '비주얼살롱',
+    displayName: '비주얼살롱 헤어컨설팅',
+    brandCode: 'V7452',
+    logo: {
+      src: { src: '/logos/visual-salon.png', width: 360, height: 202 },
+      width: 160,
+      height: 90,
+    },
+    smallLogo: { src: { src: '/logos/visual-salon-small.png', width: 192, height: 108 } },
+    theme: {},
+    features: { chat: false, mong: false, growthPass: false },
+  },
+}));
+
+vi.mock('./26do-hair', () => ({
+  twentySixDoHairConfig: {
+    slug: '26do-hair',
+    name: '26도헤어',
+    displayName: '26도헤어 헤어컨설팅',
+    brandCode: 'T0710',
+    logo: {
+      src: { src: '/logos/26do-hair.png', width: 360, height: 330 },
+      width: 120,
+      height: 110,
+    },
+    smallLogo: { src: { src: '/logos/26do-hair-small.png', width: 192, height: 176 } },
+    theme: {},
+    features: { chat: false, mong: false, growthPass: false },
+  },
+}));
+
+vi.mock('./amton', () => ({
+  amtonConfig: {
+    slug: 'amton',
+    name: '에이엠톤',
+    displayName: '에이엠톤 헤어컨설팅',
+    brandCode: 'A1402',
+    logo: { src: { src: '/logos/amton.png', width: 360, height: 124 }, width: 160, height: 55 },
+    smallLogo: { src: { src: '/logos/amton-small.png', width: 192, height: 66 } },
+    theme: {},
+    features: { chat: false, mong: false, growthPass: false },
+  },
+}));
+
 describe('getBrandConfig', () => {
   it('유효한 slug(meemong)는 BrandConfig를 반환한다', () => {
     const config = getBrandConfig('meemong');
@@ -55,6 +102,18 @@ describe('getBrandConfig', () => {
     expect(config).not.toBeNull();
     expect(config?.slug).toBe('vog');
     expect(config?.brandCode).toBe('V2920');
+  });
+
+  it.each([
+    ['visual-salon', '비주얼살롱', 'V7452'],
+    ['26do-hair', '26도헤어', 'T0710'],
+    ['amton', '에이엠톤', 'A1402'],
+  ])('유효한 slug(%s)는 BrandConfig를 반환한다', (slug, name, brandCode) => {
+    const config = getBrandConfig(slug);
+    expect(config).not.toBeNull();
+    expect(config?.slug).toBe(slug);
+    expect(config?.name).toBe(name);
+    expect(config?.brandCode).toBe(brandCode);
   });
 
   it('미등록 slug는 null을 반환한다', () => {

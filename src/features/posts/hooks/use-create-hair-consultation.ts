@@ -12,6 +12,7 @@ import { createWebApiClient } from '@/shared/lib/web-api';
 import { getBrandSelectionPayload } from '@/shared/config/brands';
 import { getHairConsultationsQueryKeyPrefix } from '../api/use-get-hair-consultations';
 import { getWebUserData } from '@/shared/lib/auth';
+import { hasBrandCode } from '@/shared/config/brands/brand-code';
 import { normalizeHairConsultationContent } from '../lib/normalize-hair-consultation-content';
 import { resizeImageFile } from '@/shared/lib/resize-image-file';
 import useCreateHairConsultationMutation from '../api/use-create-hair-consultation-mutation';
@@ -57,13 +58,15 @@ export function useCreateHairConsultation() {
   const brand = useOptionalBrand();
   const webToken = brand?.config.slug ? (getWebUserData(brand.config.slug)?.token ?? null) : null;
   const webApiClient = webToken && brand ? createWebApiClient(webToken, brand.config.slug) : null;
+  const brandCode = brand?.config.brandCode ?? null;
+  const requiresBrandSelection = brandCode !== null;
   const { data: brandData, isLoading: isBrandLoading } = useGetBrandByCode(
-    brand?.config.brandCode ?? null,
+    brandCode,
     webToken,
     brand?.config.slug,
   );
   // 브랜드 코드가 있는데 아직 brandData 조회 중이면 제출 불가
-  const isBrandPending = !!brand?.config.brandCode && isBrandLoading;
+  const isBrandPending = requiresBrandSelection && hasBrandCode(brandCode) && isBrandLoading;
 
   const getPresignedUploadData = async (filename: string) => {
     let lastError: unknown;
@@ -130,6 +133,16 @@ export function useCreateHairConsultation() {
   ) => {
     setIsUploadingImages(true);
     try {
+      const brandId = brandData?.id ?? null;
+
+      if (requiresBrandSelection && !hasBrandCode(brandCode)) {
+        throw new Error(`${brand?.config.name ?? '브랜드'} 코드가 설정되지 않았어요.`);
+      }
+
+      if (requiresBrandSelection && brandId === null) {
+        throw new Error(`${brand?.config.name ?? '브랜드'} 정보를 확인하지 못했어요.`);
+      }
+
       const normalizedData = normalizeHairConsultationContent(data);
       const originalAspirationImageCount = Array.isArray(data.aspirationImages?.images)
         ? data.aspirationImages.images.length
@@ -254,7 +267,7 @@ export function useCreateHairConsultation() {
         personalColor: data.personalColor,
         desiredDateType,
         desiredCostPrice,
-        ...getBrandSelectionPayload(brandData?.id ?? null),
+        ...getBrandSelectionPayload(requiresBrandSelection ? brandId : null),
         aspirationImages,
         myImages: myImageList,
         treatments,

@@ -1,11 +1,12 @@
 import { apiClient } from '@/shared/api/client';
 import { brandRegistry } from '@/shared/config/brands';
+import { hasBrandCode } from '@/shared/config/brands/brand-code';
 import { useQueries } from '@tanstack/react-query';
 
 type BrandByCodeResponse = { id: number; code: string; name: string };
 
 const brandedEntries = Object.values(brandRegistry).filter(
-  (b): b is typeof b & { brandCode: string } => b.brandCode !== null,
+  (b): b is typeof b & { brandCode: string } => hasBrandCode(b.brandCode),
 );
 
 export function useGetBrandIdMap(): Map<number, string> {

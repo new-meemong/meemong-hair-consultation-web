@@ -1,13 +1,20 @@
 import { type BrandConfig, BrandConfigSchema } from '@/shared/config/brand-config';
 
+import { amtonConfig } from './amton';
 import { ALLOWED_BRAND_SLUGS } from './allowed-slugs';
+import { hasBrandCode } from './brand-code';
 import { meemongConfig } from './meemong';
+import { twentySixDoHairConfig } from './26do-hair';
+import { visualSalonConfig } from './visual-salon';
 import { vogConfig } from './vog';
 
 export const brandRegistry = {
   meemong: meemongConfig,
   // parkjun: parkjunConfig,
   vog: vogConfig,
+  'visual-salon': visualSalonConfig,
+  '26do-hair': twentySixDoHairConfig,
+  amton: amtonConfig,
 } as const;
 
 export type BrandSlug = keyof typeof brandRegistry;
@@ -16,7 +23,7 @@ export type BrandSlug = keyof typeof brandRegistry;
 // 브랜드 등록 시 이 목록과 충돌하지 않는지 아래 startupValidation에서 자동 검증
 const RESERVED_SLUGS = ['api', 'posts', 'chat', 'report', 'welcome', 'login', 'signup'] as const;
 
-// 서버 기동 시점 1회 실행 — 두 가지 일관성 검증
+// 서버 기동 시점 1회 실행 — 브랜드 설정 일관성 검증
 const registryKeys = Object.keys(brandRegistry);
 
 // 1) registry와 allowed-slugs 동기화 검증 — 한쪽만 추가하면 즉시 오류
@@ -37,6 +44,19 @@ const reservedConflicts = registryKeys.filter((slug) =>
 if (reservedConflicts.length > 0) {
   throw new Error(
     `[BrandRegistry] 예약 슬러그와 충돌하는 브랜드가 등록됨: ${reservedConflicts.join(', ')}`,
+  );
+}
+
+// 3) 브랜드 코드 미설정 검증
+// null은 meemong의 ALL 타입이므로 허용하고, 빈 문자열은 배포 설정 누락으로 간주
+const unconfiguredBrandCodeSlugs = Object.entries(brandRegistry)
+  .filter(([, config]) => config.brandCode !== null && !hasBrandCode(config.brandCode))
+  .map(([slug]) => slug);
+if (unconfiguredBrandCodeSlugs.length > 0) {
+  throw new Error(
+    `[BrandRegistry] 브랜드 코드가 설정되지 않은 브랜드가 등록됨: ${unconfiguredBrandCodeSlugs.join(
+      ', ',
+    )}`,
   );
 }
 
