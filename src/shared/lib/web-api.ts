@@ -4,6 +4,7 @@ import {
   type ApiError,
   type ApiListResponse,
 } from '@/shared/api/client';
+import { APP_VERSION } from '@/shared/constants/app-version';
 import { WEB_USER_DATA_KEY } from '@/shared/constants/local-storage';
 import ky, { type HTTPError } from 'ky';
 
@@ -17,7 +18,7 @@ export function createWebApiClient(token: string, slug?: string) {
     headers: {
       Authorization: token,
       platform: 'HAIR_CONSULTING_WEB',
-      'web-version': '1.1.1',
+      'web-version': APP_VERSION,
     },
     timeout: 30000,
     hooks: {

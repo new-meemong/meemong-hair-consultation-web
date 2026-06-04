@@ -1,7 +1,12 @@
 import type { NextConfig } from 'next';
 
+import packageJson from './package.json';
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_APP_VERSION: process.env.NEXT_PUBLIC_APP_VERSION || packageJson.version,
+  },
   async redirects() {
     return [
       {

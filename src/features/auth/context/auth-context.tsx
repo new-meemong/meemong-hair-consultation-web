@@ -26,6 +26,7 @@ import {
   updateUserData,
   type UserData,
 } from '@/shared/lib/auth';
+import { clearDatadogUser, syncDatadogUser } from '@/shared/lib/datadog';
 
 type AuthContextType = {
   user: UserData;
@@ -115,6 +116,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isTokenLoaded &&
     shouldBlockForMissingDesignerBrand &&
     completedInitialDesignerBrandSyncUserId !== userId;
+
+  const authenticatedUser =
+    user &&
+    isInitialized &&
+    isSameUser &&
+    isTokenLoaded &&
+    isBrandLoaded &&
+    !shouldBlockInitialDesignerBrandSync
+      ? user
+      : null;
 
   const refreshToken = useCallback(
     async (reason: string) => {
@@ -313,24 +324,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener(AUTH_TOKEN_EXPIRED_EVENT, handleTokenExpired);
   }, [userId, refreshToken]);
 
+  useEffect(() => {
+    if (!authenticatedUser) {
+      clearDatadogUser();
+      return;
+    }
+
+    syncDatadogUser(authenticatedUser);
+  }, [authenticatedUser]);
+
   if (userId === null) return <div>유저아이디가 누락되었습니다</div>;
 
-  if (
-    !user ||
-    !isInitialized ||
-    !isSameUser ||
-    !isTokenLoaded ||
-    !isBrandLoaded ||
-    shouldBlockInitialDesignerBrandSync
-  ) {
+  if (!authenticatedUser) {
     return isError ? <div>로그인 실패</div> : null;
   }
 
-  const isUserModel = isModel(user);
-  const isUserDesigner = isDesigner(user);
+  const isUserModel = isModel(authenticatedUser);
+  const isUserDesigner = isDesigner(authenticatedUser);
 
   return (
-    <AuthContext.Provider value={{ user, isUserModel, isUserDesigner, updateUser }}>
+    <AuthContext.Provider
+      value={{ user: authenticatedUser, isUserModel, isUserDesigner, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

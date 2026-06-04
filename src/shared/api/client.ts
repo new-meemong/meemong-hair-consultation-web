@@ -1,5 +1,6 @@
 import type { HTTPError, SearchParamsOption } from 'ky';
 import { getToken, removeUserData } from '../lib/auth';
+import { APP_VERSION } from '@/shared/constants/app-version';
 
 import ky from 'ky';
 
@@ -43,7 +44,7 @@ const createApiInstance = () => {
 
           request.headers.set('Authorization', `${token}`);
           request.headers.set('platform', 'HAIR_CONSULTING_WEB');
-          request.headers.set('web-version', '1.1.1');
+          request.headers.set('web-version', APP_VERSION);
         },
         // Request 로깅
         (request) => {
@@ -208,7 +209,7 @@ const createApiInstanceWithoutAuth = () => {
       beforeRequest: [
         (request) => {
           request.headers.set('platform', 'HAIR_CONSULTING_WEB');
-          request.headers.set('web-version', '1.1.1');
+          request.headers.set('web-version', APP_VERSION);
         },
         // Request 로깅
         (request) => {

@@ -1,6 +1,7 @@
 'use client';
 
-import { Component, type ReactNode, useEffect, useRef } from 'react';
+import { addNextjsError } from '@datadog/browser-rum-nextjs';
+import { Component, type ErrorInfo, type ReactNode, useEffect, useRef } from 'react';
 
 import { useOverlayContext } from './context/overlay-context';
 import { getErrorMessage } from './lib/error-handler';
@@ -36,7 +37,7 @@ function ErrorFallback({ error, onHandled }: { error: Error; onHandled?: () => v
 
 export class ErrorBoundary extends Component<Props, State> {
   private errorCount = 0;
-  private lastErrorMessage = '';
+  private lastErrorMessage: string | null = null;
 
   constructor(props: Props) {
     super(props);
@@ -47,7 +48,7 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Error caught by error boundary:', error);
 
     const currentErrorMessage = error.message;
@@ -56,11 +57,19 @@ export class ErrorBoundary extends Component<Props, State> {
     } else {
       this.errorCount = 1;
       this.lastErrorMessage = currentErrorMessage;
+      addNextjsError(error, errorInfo);
     }
 
     if (this.errorCount >= MAX_ERROR_RETRY_COUNT) {
       console.error('Too many repeated errors, stopping auto-recovery');
       return;
+    }
+  }
+
+  componentDidUpdate(_prevProps: Props, prevState: State) {
+    if (prevState.hasError && !this.state.hasError) {
+      this.errorCount = 0;
+      this.lastErrorMessage = null;
     }
   }
 
