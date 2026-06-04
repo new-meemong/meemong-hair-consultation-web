@@ -18,10 +18,7 @@ const sessionSampleRate = getDatadogSampleRate(
   process.env.NEXT_PUBLIC_DATADOG_SESSION_SAMPLE_RATE,
   100,
 );
-const sessionReplaySampleRate = getDatadogSampleRate(
-  process.env.NEXT_PUBLIC_DATADOG_SESSION_REPLAY_SAMPLE_RATE,
-  20,
-);
+const sessionReplaySampleRate = 100;
 
 datadogRum.init({
   applicationId:
