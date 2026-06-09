@@ -1,4 +1,4 @@
-import { type Analytics, getAnalytics, isSupported } from 'firebase/analytics';
+import { type Analytics, getAnalytics, initializeAnalytics, isSupported } from 'firebase/analytics';
 // Import the functions you need from the SDKs you need
 import { getApps, initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
@@ -27,8 +27,40 @@ const db = getFirestore(app, firestoreDatabaseId);
 
 // Analytics는 클라이언트 사이드에서만 초기화
 let analytics: Analytics | null = null;
-if (typeof window !== 'undefined') {
-  isSupported().then((yes) => yes && (analytics = getAnalytics(app)));
+let analyticsPromise: Promise<Analytics | null> | null = null;
+
+function getFirebaseAnalytics(): Promise<Analytics | null> {
+  if (typeof window === 'undefined') {
+    return Promise.resolve(null);
+  }
+
+  if (analytics) {
+    return Promise.resolve(analytics);
+  }
+
+  analyticsPromise ??= isSupported()
+    .then((yes) => {
+      if (!yes) return null;
+
+      try {
+        analytics = initializeAnalytics(app, {
+          config: {
+            send_page_view: false,
+          },
+        });
+      } catch {
+        analytics = getAnalytics(app);
+      }
+
+      return analytics;
+    })
+    .catch(() => null);
+
+  return analyticsPromise;
 }
 
-export { analytics, app, db };
+if (typeof window !== 'undefined') {
+  void getFirebaseAnalytics();
+}
+
+export { analytics, app, db, getFirebaseAnalytics };

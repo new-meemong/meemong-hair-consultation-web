@@ -16,6 +16,7 @@
 ### 아키텍처 문서
 
 - [아키텍처](./architecture.md) - 프로젝트의 FSD (Feature Sliced Design) 아키텍처 설명
+- [Analytics Tracking](./analytics.md) - Firebase/Amplitude/Mixpanel 화면 추적 및 웹뷰 구분 규칙
 
 ## 📝 문서 작성 가이드
 

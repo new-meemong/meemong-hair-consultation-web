@@ -4,9 +4,11 @@ import { DatadogAppRouter } from '@datadog/browser-rum-nextjs';
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import Script from 'next/script';
+import { Suspense } from 'react';
 
 import { OverlayProvider } from '@/shared/context/overlay-context';
 import { ErrorBoundary } from '@/shared/error-boundary';
+import { AnalyticsProvider } from '@/shared/lib/analytics/analytics-provider';
 import { QueryProvider } from '@/shared/ui/providers/query-provider';
 
 const pretendard = localFont({
@@ -44,7 +46,11 @@ export default function RootLayout({
         <DatadogAppRouter />
         <OverlayProvider>
           <QueryProvider>
-            <ErrorBoundary>{children}</ErrorBoundary>
+            <ErrorBoundary>
+              <Suspense fallback={<div />}>
+                <AnalyticsProvider>{children}</AnalyticsProvider>
+              </Suspense>
+            </ErrorBoundary>
           </QueryProvider>
         </OverlayProvider>
         <Script id="send-message-to-flutter" strategy="afterInteractive">

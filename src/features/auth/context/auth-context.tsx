@@ -26,6 +26,7 @@ import {
   updateUserData,
   type UserData,
 } from '@/shared/lib/auth';
+import { syncAnalyticsAuthenticatedUser } from '@/shared/lib/analytics/identity';
 import { clearDatadogUser, syncDatadogUser } from '@/shared/lib/datadog';
 
 type AuthContextType = {
@@ -331,6 +332,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     syncDatadogUser(authenticatedUser);
+    void syncAnalyticsAuthenticatedUser(authenticatedUser);
   }, [authenticatedUser]);
 
   if (userId === null) return <div>유저아이디가 누락되었습니다</div>;
