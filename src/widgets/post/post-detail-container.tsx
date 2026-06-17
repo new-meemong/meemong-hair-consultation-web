@@ -7,7 +7,7 @@ type PostDetailContainerProps = {
   hideAuthorProfile?: boolean;
   isWriter?: boolean;
   compactTitleSpacing?: boolean;
-  hideTopAdvisor?: boolean;
+  hideSalonPickAd?: boolean;
   className?: string;
 };
 
@@ -17,7 +17,7 @@ export const PostDetailContainer = ({
   hideAuthorProfile,
   isWriter,
   compactTitleSpacing,
-  hideTopAdvisor,
+  hideSalonPickAd,
   className,
 }: PostDetailContainerProps) => {
   return (
@@ -28,7 +28,7 @@ export const PostDetailContainer = ({
           hideAuthorProfile={hideAuthorProfile}
           isWriter={isWriter}
           compactTitleSpacing={compactTitleSpacing}
-          hideTopAdvisor={hideTopAdvisor}
+          hideSalonPickAd={hideSalonPickAd}
         />
         {children}
       </div>

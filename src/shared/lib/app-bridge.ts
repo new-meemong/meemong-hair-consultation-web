@@ -20,6 +20,10 @@ type BridgeWindow = Window & {
   OpenChatChannel?: {
     postMessage: (value: string) => void;
   };
+  ExternalLink?: {
+    postMessage: (value: string) => void;
+  };
+  externalLink?: (url: string) => void;
 };
 
 type OpenChatChannelMessage = {
@@ -61,6 +65,13 @@ function hasCloseWebViewBridge(): boolean {
   );
 }
 
+function hasExternalLinkBridge(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  const w = window as BridgeWindow;
+  return !!w.ExternalLink && typeof w.ExternalLink.postMessage === 'function';
+}
+
 export function openInAppWebView(path: string, options?: OpenInAppWebViewOptions): boolean {
   if (!hasGoAppRouterBridge()) return false;
 
@@ -75,6 +86,23 @@ export function openInAppWebView(path: string, options?: OpenInAppWebViewOptions
     }
 
     w.GoAppRouter?.postMessage(JSON.stringify(path));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+export function openExternalLinkInApp(url: string): boolean {
+  if (!hasExternalLinkBridge()) return false;
+
+  try {
+    const w = window as BridgeWindow;
+    if (typeof w.externalLink === 'function') {
+      w.externalLink(url);
+      return true;
+    }
+
+    w.ExternalLink?.postMessage(JSON.stringify(url));
     return true;
   } catch (_) {
     return false;

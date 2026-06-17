@@ -7,6 +7,7 @@ export const SEARCH_PARAMS = {
   BRAND_ID: 'brandId',
   POST_WRITER_SEX: 'postWriterSex',
   SOURCE: 'source',
+  POST_CREATE_COMPLETED: 'postCreateCompleted',
   SUPPORTS_EXPERIENCE_GROUP_CHAT: 'supportsExperienceGroupChat',
   SUPPORTS_FULL_WEBVIEW_POST_CREATE: 'supportsFullWebviewPostCreate',
 } as const;

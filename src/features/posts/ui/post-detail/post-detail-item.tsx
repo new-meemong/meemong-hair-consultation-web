@@ -4,19 +4,19 @@ import EyeIcon from '@/assets/icons/eye.svg';
 import { LikeButton } from '@/features/likes/ui/like-button';
 import PostDetailConsultingContentNew from './post-detail-consulting-content-new';
 import PostDetailContent from './post-detail-content';
-import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
+import SalonPickDetailAdSlot from '@/features/salon-pick/ui/salon-pick-detail-ad-slot';
 import { usePostDetail } from '../../context/post-detail-context';
 
 function PostDetailItem({
   hideAuthorProfile,
   isWriter,
   compactTitleSpacing,
-  hideTopAdvisor,
+  hideSalonPickAd,
 }: {
   hideAuthorProfile?: boolean;
   isWriter?: boolean;
   compactTitleSpacing?: boolean;
-  hideTopAdvisor?: boolean;
+  hideSalonPickAd?: boolean;
 }) {
   const { postDetail, isConsultingPost } = usePostDetail();
   const { id, likeCount, commentCount, isFavorited, viewCount } = postDetail;
@@ -47,12 +47,7 @@ function PostDetailItem({
           label={viewCount.toString()}
         />
       </div>
-      <div className="w-full h-1.5 bg-alternative" />
-      {!hideTopAdvisor && (
-        <div className="py-3">
-          <TopAdvisorCarousel />
-        </div>
-      )}
+      {!hideSalonPickAd && <SalonPickDetailAdSlot />}
     </>
   );
 }

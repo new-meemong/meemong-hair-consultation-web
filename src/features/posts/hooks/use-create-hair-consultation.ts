@@ -2,6 +2,7 @@ import type {
   CreateHairConsultationRequest,
   HairConsultationMyImageRequest,
 } from '@/entities/posts/api/create-hair-consultation-request';
+import type { CreateHairConsultationResponse } from '@/entities/posts/api/create-hair-consultation-response';
 import { format, subMonths } from 'date-fns';
 
 import type { HairConsultationFormValues } from '../types/hair-consultation-form-values';
@@ -129,7 +130,13 @@ export function useCreateHairConsultation() {
 
   const handleCreateHairConsultation = async (
     data: HairConsultationFormValues,
-    { onSuccess, onError }: { onSuccess: () => void; onError?: (error: unknown) => void },
+    {
+      onSuccess,
+      onError,
+    }: {
+      onSuccess: (response: CreateHairConsultationResponse | null) => void;
+      onError?: (error: unknown) => void;
+    },
   ) => {
     setIsUploadingImages(true);
     try {
@@ -276,9 +283,12 @@ export function useCreateHairConsultation() {
       };
 
       if (webApiClient) {
-        await webApiClient.post('hair-consultations', request);
+        const response = await webApiClient.post<CreateHairConsultationResponse>(
+          'hair-consultations',
+          request,
+        );
         void queryClient.invalidateQueries({ queryKey: [getHairConsultationsQueryKeyPrefix()] });
-        onSuccess();
+        onSuccess(response ?? null);
       } else {
         await createHairConsultation(request, { onSuccess, onError });
       }

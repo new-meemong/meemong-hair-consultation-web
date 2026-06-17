@@ -3,7 +3,9 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useMemo } from 'react';
 
 import { AD_TYPE } from '@/features/ad/constants/ad-type';
+import { CONSULT_TYPE } from '@/entities/posts/constants/consult-type';
 import { ROUTES } from '@/shared';
+import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { USER_WRITING_CONTENT_KEYS } from '@/shared/constants/local-storage';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -14,6 +16,7 @@ import { useSex } from '@/features/auth/hooks/use-sex';
 import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useGetUser } from '@/features/auth/api/use-get-user';
 import type { UserDetail } from '@/entities/user/model/user-detail';
+import { getCreatedHairConsultationId } from '@/entities/posts/api/create-hair-consultation-response';
 import { getErrorMessage } from '@/shared/lib/error-handler';
 
 import { useCreateHairConsultation } from './use-create-hair-consultation';
@@ -135,14 +138,32 @@ export default function useHairConsultationForm() {
 
   const submit = (values: HairConsultationFormValues) => {
     handleCreateHairConsultation(values, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         showAdIfAllowed({ adType: AD_TYPE.CREATING_HAIR_CONSULTING });
         saveContent(null);
         showSnackBar({
           type: 'success',
           message: '업로드가 완료되었습니다!',
         });
-        replace(brand ? ROUTES.WEB_CONSULTATION_COMPLETE(brand.config.slug) : ROUTES.POSTS);
+
+        if (brand) {
+          replace(ROUTES.WEB_CONSULTATION_COMPLETE(brand.config.slug));
+          return;
+        }
+
+        const postId = getCreatedHairConsultationId(response);
+        if (postId !== null) {
+          replace(ROUTES.POSTS_DETAIL(postId), {
+            [SEARCH_PARAMS.POST_CREATE_COMPLETED]: 'true',
+          });
+          return;
+        }
+
+        replace(ROUTES.POSTS, {
+          [SEARCH_PARAMS.POST_TAB]: CONSULT_TYPE.CONSULTING,
+          [SEARCH_PARAMS.POST_LIST_TAB]: 'my',
+          [SEARCH_PARAMS.POST_CREATE_COMPLETED]: 'true',
+        });
       },
       onError: (error) => {
         showSnackBar({

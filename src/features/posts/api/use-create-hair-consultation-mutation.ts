@@ -20,11 +20,17 @@ export default function useCreateHairConsultationMutation() {
 
   const mutate = async (
     data: CreateHairConsultationRequest,
-    { onSuccess, onError }: { onSuccess: () => void; onError?: (error: unknown) => void },
+    {
+      onSuccess,
+      onError,
+    }: {
+      onSuccess: (response: CreateHairConsultationResponse | null) => void;
+      onError?: (error: unknown) => void;
+    },
   ) => {
     try {
-      await mutation.mutateAsync(data);
-      onSuccess();
+      const response = await mutation.mutateAsync(data);
+      onSuccess(response.data ?? null);
     } catch (error) {
       onError?.(error);
     }
