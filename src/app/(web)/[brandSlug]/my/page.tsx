@@ -23,8 +23,10 @@ import { Loader } from '@/shared/ui/loader';
 import { ROUTES } from '@/shared/lib/routes';
 import ShareIcon from '@/assets/icons/share.svg';
 import { createWebApiClient } from '@/shared/lib/web-api';
+import { brandRegistry } from '@/shared/config/brands';
+import { getBrandNameByReference } from '@/entities/brands/lib/get-brand-name-by-reference';
 import { useBrand } from '@/shared/context/brand-context';
-import { useGetBrandByCode } from '@/entities/brands/api/use-get-brand-by-code';
+import { useGetBrandIdMap } from '@/entities/brands/api/use-get-brand-id-map';
 import { useRouter } from 'next/navigation';
 
 type ModelData = {
@@ -56,6 +58,7 @@ type SentConsultation = {
   desiredCostPrice: number;
   viewCount: number;
   commentCount: number;
+  brandIds?: number[];
   brands?: { id: number }[];
 };
 
@@ -75,9 +78,7 @@ function formatPhone(phone: string): string {
 export default function MyPage() {
   const router = useRouter();
   const { config: brand } = useBrand();
-
-  const webToken = getWebUserData(brand.slug)?.token ?? null;
-  const { data: brandData } = useGetBrandByCode(brand.brandCode, webToken, brand.slug);
+  const brandIdMap = useGetBrandIdMap();
 
   const [model, setModel] = useState<ModelData | null>(null);
   const [inProgress, _setInProgress] = useState<InProgressConsultation | null>(null);
@@ -306,11 +307,12 @@ export default function MyPage() {
                   key={c.id}
                   consultation={c}
                   brandSlug={brand.slug}
-                  brandName={
-                    brandData && c.brands?.some((b) => b.id === brandData.id)
-                      ? brand.name
-                      : undefined
-                  }
+                  brandName={getBrandNameByReference({
+                    brands: c.brands,
+                    brandIds: c.brandIds,
+                    brandIdMap,
+                    fallbackBrandName: brandRegistry.meemong.name,
+                  })}
                 />
               ))}
             </div>

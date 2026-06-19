@@ -35,8 +35,14 @@ export function useContextualApiClient(): IApiClient {
     }
     const webClient = createWebApiClient(webToken, slug);
     return {
-      async get<T>(endpoint: string): Promise<ApiResponse<T>> {
-        const data = await webClient.get<T>(endpoint);
+      async get<T>(
+        endpoint: string,
+        options?: { searchParams?: URLSearchParams },
+      ): Promise<ApiResponse<T>> {
+        const searchParams = options?.searchParams
+          ? Object.fromEntries(options.searchParams.entries())
+          : undefined;
+        const data = await webClient.get<T>(endpoint, searchParams ? { searchParams } : undefined);
         return { data, success: true };
       },
       async getList<T extends Record<string, unknown>>(

@@ -8,8 +8,11 @@ import { PostDetailContainer } from '@/widgets/post/post-detail-container';
 import PostDetailMoreButton from '@/features/posts/ui/post-detail/post-detail-more-button';
 import { ROUTES } from '@/shared/lib/routes';
 import { SiteHeader } from '@/widgets/header';
+import { brandRegistry } from '@/shared/config/brands';
+import { getBrandNameByReference } from '@/entities/brands/lib/get-brand-name-by-reference';
 import { getWebUserData } from '@/shared/lib/auth';
 import { useBrand } from '@/shared/context/brand-context';
+import { useGetBrandIdMap } from '@/entities/brands/api/use-get-brand-id-map';
 import { useHairConsultationCommentFormState } from '@/features/comments/hooks/use-hair-consultation-comment-form-state';
 import { useParams } from 'next/navigation';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
@@ -18,8 +21,15 @@ function MyPostDetailPageContent({ postId }: { postId: string }) {
   const { back, replace } = useRouterWithUser();
   const { postDetail } = usePostDetail();
   const { config: brand } = useBrand();
+  const brandIdMap = useGetBrandIdMap();
   const webUserId = getWebUserData(brand.slug)?.userId ?? null;
   const isWriter = webUserId != null && postDetail.hairConsultPostingCreateUserId === webUserId;
+  const consultationBrandName = getBrandNameByReference({
+    brands: postDetail.brands,
+    brandIds: postDetail.brandIds,
+    brandIdMap,
+    fallbackBrandName: brandRegistry.meemong.name,
+  });
 
   useEffect(() => {
     if (webUserId != null && !isWriter) {
@@ -54,9 +64,13 @@ function MyPostDetailPageContent({ postId }: { postId: string }) {
       >
         <PostDetailContainer
           topContent={
-            <div className="px-5 pt-6">
-              <p className="typo-body-3-regular text-label-info">{brand.name} 컨설팅</p>
-            </div>
+            consultationBrandName ? (
+              <div className="px-5 pt-6">
+                <p className="typo-body-3-regular text-label-info">
+                  {consultationBrandName} 컨설팅
+                </p>
+              </div>
+            ) : undefined
           }
           hideAuthorProfile
           isWriter={isWriter}

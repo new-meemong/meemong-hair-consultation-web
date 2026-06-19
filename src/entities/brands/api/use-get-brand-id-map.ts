@@ -1,6 +1,6 @@
-import { apiClient } from '@/shared/api/client';
 import { brandRegistry } from '@/shared/config/brands';
 import { hasBrandCode } from '@/shared/config/brands/brand-code';
+import { useContextualApiClient } from '@/shared/api/hooks/use-contextual-api-client';
 import { useQueries } from '@tanstack/react-query';
 
 type BrandByCodeResponse = { id: number; code: string; name: string };
@@ -10,13 +10,14 @@ const brandedEntries = Object.values(brandRegistry).filter(
 );
 
 export function useGetBrandIdMap(): Map<number, string> {
+  const client = useContextualApiClient();
+
   return useQueries({
     queries: brandedEntries.map((brand) => ({
       queryKey: ['brands', 'code', brand.brandCode],
       queryFn: async () => {
-        const res = await apiClient.get<BrandByCodeResponse>('brands/code', {
-          searchParams: { code: brand.brandCode },
-        });
+        const searchParams = new URLSearchParams({ code: brand.brandCode });
+        const res = await client.get<BrandByCodeResponse>('brands/code', { searchParams });
         return { id: res.data.id, name: brand.name };
       },
       staleTime: Infinity,

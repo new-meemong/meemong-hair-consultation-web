@@ -24,6 +24,11 @@ type Aspirations = {
   aspirationDescription: string | null;
 };
 
+type BrandReference = {
+  id: number;
+  logoImageURL?: string;
+};
+
 export type PostDetail = {
   id: number;
   title: string;
@@ -60,5 +65,7 @@ export type PostDetail = {
   desiredDateType?: string | null;
   desiredDateDescription?: string | null;
   desiredDate?: string | null;
+  brandIds?: number[];
+  brands?: BrandReference[];
   isBrandConsultation?: boolean;
 };

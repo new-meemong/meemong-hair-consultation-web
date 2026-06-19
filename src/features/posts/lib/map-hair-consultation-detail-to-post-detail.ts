@@ -178,6 +178,8 @@ export default function mapHairConsultationDetailToPostDetail(
     maxPaymentPrice: detail.desiredCostPrice,
     desiredDateType: detail.desiredDateType,
     desiredDateDescription: detail.desiredDateDescription ?? detail.desiredDate,
+    brandIds: detail.brandIds,
+    brands: detail.brands,
     isBrandConsultation: Boolean(
       (detail.brandIds && detail.brandIds.length > 0) ||
         (detail.brands && detail.brands.length > 0),
