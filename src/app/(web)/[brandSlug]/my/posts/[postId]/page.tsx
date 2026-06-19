@@ -61,7 +61,7 @@ function MyPostDetailPageContent({ postId }: { postId: string }) {
           hideAuthorProfile
           isWriter={isWriter}
           compactTitleSpacing
-          hideSalonPickAd
+          hideDetailBannerSlot
         >
           <HairConsultationCommentContainer
             hairConsultationId={postId}

@@ -5,19 +5,36 @@ import { LikeButton } from '@/features/likes/ui/like-button';
 import PostDetailConsultingContentNew from './post-detail-consulting-content-new';
 import PostDetailContent from './post-detail-content';
 import SalonPickDetailAdSlot from '@/features/salon-pick/ui/salon-pick-detail-ad-slot';
+import TopAdvisorCarousel from '@/features/auth/ui/top-advisor-carousel';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
+import DetailBannerFrame from '@/shared/ui/detail-banner-frame';
 import { usePostDetail } from '../../context/post-detail-context';
+
+function HairConsultationDetailBannerSlot({ isUserDesigner }: { isUserDesigner: boolean }) {
+  if (isUserDesigner) {
+    return (
+      <DetailBannerFrame>
+        <TopAdvisorCarousel />
+      </DetailBannerFrame>
+    );
+  }
+
+  return <SalonPickDetailAdSlot />;
+}
 
 function PostDetailItem({
   hideAuthorProfile,
   isWriter,
   compactTitleSpacing,
-  hideSalonPickAd,
+  hideDetailBannerSlot,
 }: {
   hideAuthorProfile?: boolean;
   isWriter?: boolean;
   compactTitleSpacing?: boolean;
-  hideSalonPickAd?: boolean;
+  hideDetailBannerSlot?: boolean;
 }) {
+  const auth = useOptionalAuthContext();
+  const isUserDesigner = auth?.isUserDesigner ?? false;
   const { postDetail, isConsultingPost } = usePostDetail();
   const { id, likeCount, commentCount, isFavorited, viewCount } = postDetail;
 
@@ -47,7 +64,9 @@ function PostDetailItem({
           label={viewCount.toString()}
         />
       </div>
-      {!hideSalonPickAd && <SalonPickDetailAdSlot />}
+      {!hideDetailBannerSlot && (
+        <HairConsultationDetailBannerSlot isUserDesigner={isUserDesigner} />
+      )}
     </>
   );
 }

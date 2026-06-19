@@ -7,6 +7,7 @@ import type { SalonPickProduct } from '@/entities/salon-pick-product/model/salon
 import { trackSalonPickProductClick } from '@/features/salon-pick/api/track-salon-pick-product-click';
 import useGetSalonPickProducts from '@/features/salon-pick/api/use-get-salon-pick-products';
 import { openExternalLinkInApp } from '@/shared/lib/app-bridge';
+import DetailBannerFrame from '@/shared/ui/detail-banner-frame';
 import { type CarouselApi, Carousel, CarouselContent, CarouselItem } from '@/shared/ui/carousel';
 
 const AUTO_SCROLL_INTERVAL_MS = 2000;
@@ -137,54 +138,51 @@ export default function SalonPickDetailAdSlot() {
   }
 
   return (
-    <>
-      <div className="w-full h-1.5 bg-alternative" />
-      <div className="py-3">
-        <Carousel
-          setApi={setCarouselApi}
-          opts={{
-            loop: false,
-            align: 'start',
-            containScroll: false,
-            watchDrag: shouldUseCarousel,
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="ml-0">
-            {carouselProducts.map((product, index) => {
-              const bannerImageUrl = normalizeUrl(product.bannerImageUrl);
-              const isDuplicateSlide = index >= products.length;
+    <DetailBannerFrame>
+      <Carousel
+        setApi={setCarouselApi}
+        opts={{
+          loop: false,
+          align: 'start',
+          containScroll: false,
+          watchDrag: shouldUseCarousel,
+        }}
+        className="w-full"
+      >
+        <CarouselContent className="ml-0">
+          {carouselProducts.map((product, index) => {
+            const bannerImageUrl = normalizeUrl(product.bannerImageUrl);
+            const isDuplicateSlide = index >= products.length;
 
-              return (
-                <CarouselItem
-                  key={`${product.id}-${index}`}
-                  className="basis-[calc(100%_-_32px)] pl-0"
-                  aria-hidden={isDuplicateSlide || undefined}
+            return (
+              <CarouselItem
+                key={`${product.id}-${index}`}
+                className="basis-[calc(100%_-_32px)] pl-0"
+                aria-hidden={isDuplicateSlide || undefined}
+              >
+                <button
+                  type="button"
+                  className="ml-5 block w-[calc(100%_-_8px)] overflow-hidden rounded-[4px] bg-alternative text-left"
+                  aria-label={`${product.productName || '살롱픽'} 광고 보기`}
+                  tabIndex={isDuplicateSlide ? -1 : undefined}
+                  onClick={() => handleClick(product)}
                 >
-                  <button
-                    type="button"
-                    className="ml-5 block w-[calc(100%_-_8px)] overflow-hidden rounded-[4px] bg-alternative text-left"
-                    aria-label={`${product.productName || '살롱픽'} 광고 보기`}
-                    tabIndex={isDuplicateSlide ? -1 : undefined}
-                    onClick={() => handleClick(product)}
-                  >
-                    <span className="relative block aspect-[336/80] w-full">
-                      <Image
-                        src={bannerImageUrl}
-                        alt={product.productName || '살롱픽 광고'}
-                        fill
-                        unoptimized
-                        sizes="calc(100vw - 40px)"
-                        className="object-cover"
-                      />
-                    </span>
-                  </button>
-                </CarouselItem>
-              );
-            })}
-          </CarouselContent>
-        </Carousel>
-      </div>
-    </>
+                  <span className="relative block aspect-[336/80] w-full">
+                    <Image
+                      src={bannerImageUrl}
+                      alt={product.productName || '살롱픽 광고'}
+                      fill
+                      unoptimized
+                      sizes="calc(100vw - 40px)"
+                      className="object-cover"
+                    />
+                  </span>
+                </button>
+              </CarouselItem>
+            );
+          })}
+        </CarouselContent>
+      </Carousel>
+    </DetailBannerFrame>
   );
 }
