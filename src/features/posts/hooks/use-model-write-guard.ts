@@ -1,6 +1,8 @@
 'use client';
 
-import { getModelBreakStatus, releaseModelBreakStatus } from '@/features/posts/api/model-break';
+import { getModelBreakStatus, releaseModelBreakStatus } from '@/entities/user/api/model-profile';
+import { getErrorMessage } from '@/shared/lib/error-handler';
+import { showGlobalSnackBar } from '@/shared/lib/global-overlay';
 import { useCallback, useState } from 'react';
 
 type UseModelWriteGuardParams = {
@@ -35,7 +37,10 @@ export function useModelWriteGuard({
       onProceedWrite();
     } catch (error) {
       console.error('휴식모드 해제 실패', error);
-      window.alert('휴식모드 해제에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      showGlobalSnackBar({
+        type: 'error',
+        message: getErrorMessage(error),
+      });
     } finally {
       setIsBreakReleaseSubmitting(false);
     }
@@ -57,7 +62,10 @@ export function useModelWriteGuard({
       onProceedWrite();
     } catch (error) {
       console.error('휴식 상태 확인 실패', error);
-      window.alert('계정 상태를 확인하지 못했습니다. 잠시 후 다시 시도해주세요.');
+      showGlobalSnackBar({
+        type: 'error',
+        message: getErrorMessage(error),
+      });
     }
   }, [isUserModel, onProceedWrite, slug, token]);
 

@@ -1,31 +1,25 @@
 'use client';
 
 import { getApiError, getErrorMessage, isTokenExpiredError } from '@/shared/lib/error-handler';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
+import AccountBreakReleaseBottomSheet from '@/features/auth/ui/account-break-release-bottom-sheet';
 import Checkbox from '@/shared/ui/checkbox';
 import Image from 'next/image';
 import { Loader } from '@/shared/ui/loader';
 import { ROUTES } from '@/shared/lib/routes';
 import { SiteHeader } from '@/widgets/header/ui/site-header';
 import { apiClientWithoutAuth } from '@/shared/api/client';
-import { createWebApiClient } from '@/shared/lib/web-api';
+import {
+  getModelProfile,
+  isModelOnBreak,
+  type ModelProfile,
+  releaseModelBreakStatus,
+} from '@/entities/user/api/model-profile';
 import { setWebUserData } from '@/shared/lib/auth';
 import { showGlobalSnackBar } from '@/shared/lib/global-overlay';
 import { useBrand } from '@/shared/context/brand-context';
 import { useRouter } from 'next/navigation';
-
-async function fetchAndStoreSex(token: string, slug: string) {
-  try {
-    const api = createWebApiClient(token);
-    const profile = await api.get<{ user: { sex?: '남자' | '여자' } }>('models/me/my-page');
-    if (profile.user.sex) {
-      setWebUserData(slug, { sex: profile.user.sex });
-    }
-  } catch {
-    // my page에서 재시도
-  }
-}
 
 type LinkedUser = {
   id: number;
@@ -33,6 +27,15 @@ type LinkedUser = {
   createdAt: string;
   loginType: string;
   profilePictureURL: string | null;
+};
+
+type LinkedAccount = {
+  id: number;
+  token: string;
+};
+
+type PendingLinkedAccount = LinkedAccount & {
+  profile?: ModelProfile;
 };
 
 const LOGIN_TYPE_LABEL: Record<string, string> = {
@@ -59,6 +62,9 @@ export default function AccountLinkPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingBreakAccount, setPendingBreakAccount] = useState<PendingLinkedAccount | null>(null);
+  const [isBreakSheetOpen, setIsBreakSheetOpen] = useState(false);
+  const [isBreakReleaseSubmitting, setIsBreakReleaseSubmitting] = useState(false);
 
   useEffect(() => {
     const formData = JSON.parse(sessionStorage.getItem(SIGNUP_FORM_KEY(brand.slug)) ?? '{}');
@@ -76,24 +82,58 @@ export default function AccountLinkPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brand.slug]);
 
+  const completeAccountLink = useCallback(
+    (account: LinkedAccount, profile?: ModelProfile) => {
+      setWebUserData(brand.slug, {
+        userId: account.id,
+        token: account.token,
+        ...(profile?.user?.sex ? { sex: profile.user.sex } : {}),
+      });
+      sessionStorage.removeItem(SIGNUP_FORM_KEY(brand.slug));
+      router.push(ROUTES.WEB_MY(brand.slug));
+    },
+    [brand.slug, router],
+  );
+
+  const proceedAfterBreakCheck = useCallback(
+    async (account: LinkedAccount) => {
+      const profile = await getModelProfile(account.token, brand.slug);
+      if (isModelOnBreak(profile)) {
+        setPendingBreakAccount({ ...account, profile });
+        setIsBreakSheetOpen(true);
+        return;
+      }
+
+      completeAccountLink(account, profile);
+    },
+    [brand.slug, completeAccountLink],
+  );
+
+  const selectUser = (userId: number) => {
+    setSelectedId(userId);
+    if (pendingBreakAccount?.id !== userId) {
+      setPendingBreakAccount(null);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!selectedId || isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const formData = JSON.parse(sessionStorage.getItem(SIGNUP_FORM_KEY(brand.slug)) ?? '{}');
-      const response = await apiClientWithoutAuth.post<{ id: number; token: string }>(
-        'auth/phone/model-connect',
-        {
-          authToken: formData.authToken,
-          userId: selectedId,
-          accessType: 'APP',
-        },
-      );
+      if (pendingBreakAccount?.id === selectedId) {
+        await proceedAfterBreakCheck(pendingBreakAccount);
+        return;
+      }
 
-      setWebUserData(brand.slug, { userId: response.data.id, token: response.data.token });
-      void fetchAndStoreSex(response.data.token, brand.slug);
-      sessionStorage.removeItem(SIGNUP_FORM_KEY(brand.slug));
-      router.push(ROUTES.WEB_MY(brand.slug));
+      const formData = JSON.parse(sessionStorage.getItem(SIGNUP_FORM_KEY(brand.slug)) ?? '{}');
+      const response = await apiClientWithoutAuth.post<LinkedAccount>('auth/phone/model-connect', {
+        authToken: formData.authToken,
+        userId: selectedId,
+        accessType: 'APP',
+      });
+
+      setPendingBreakAccount(response.data);
+      await proceedAfterBreakCheck(response.data);
     } catch (error) {
       if (isTokenExpiredError(error)) {
         showGlobalSnackBar({
@@ -122,6 +162,31 @@ export default function AccountLinkPage() {
     }
   };
 
+  const handleBreakSheetClose = () => {
+    if (!isBreakReleaseSubmitting) {
+      setIsBreakSheetOpen(false);
+    }
+  };
+
+  const handleBreakReleaseAndProceed = async () => {
+    if (!pendingBreakAccount || isBreakReleaseSubmitting) return;
+
+    setIsBreakReleaseSubmitting(true);
+    try {
+      await releaseModelBreakStatus(pendingBreakAccount.token, brand.slug);
+      setIsBreakSheetOpen(false);
+      completeAccountLink(pendingBreakAccount, pendingBreakAccount.profile);
+    } catch (error) {
+      console.error('휴식 계정 해제 실패', error);
+      showGlobalSnackBar({
+        type: 'error',
+        message: getErrorMessage(error),
+      });
+    } finally {
+      setIsBreakReleaseSubmitting(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen">
       <SiteHeader title="미몽 계정연결" showBackButton onBackClick={() => router.back()} />
@@ -146,7 +211,7 @@ export default function AccountLinkPage() {
                 key={user.id}
                 type="button"
                 className="flex items-center gap-4 p-4 border border-border-default rounded-[6px] text-left"
-                onClick={() => setSelectedId(user.id)}
+                onClick={() => selectUser(user.id)}
               >
                 {/* 프로필 이미지 */}
                 <div className="shrink-0 size-[82px] rounded-[6px] overflow-hidden bg-alternative">
@@ -181,7 +246,7 @@ export default function AccountLinkPage() {
                   shape="round"
                   id={`user-${user.id}`}
                   checked={selectedId === user.id}
-                  onChange={() => setSelectedId(user.id)}
+                  onChange={() => selectUser(user.id)}
                   onClick={(e) => e.stopPropagation()}
                 />
               </button>
@@ -201,6 +266,13 @@ export default function AccountLinkPage() {
           컨설팅 시작하기
         </button>
       </div>
+
+      <AccountBreakReleaseBottomSheet
+        open={isBreakSheetOpen}
+        isSubmitting={isBreakReleaseSubmitting}
+        onClose={handleBreakSheetClose}
+        onConfirm={handleBreakReleaseAndProceed}
+      />
     </div>
   );
 }

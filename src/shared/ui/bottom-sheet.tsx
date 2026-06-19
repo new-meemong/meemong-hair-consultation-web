@@ -35,7 +35,9 @@ export function BottomSheet({
     >
       {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
       <DrawerContent
-        className={cn('w-full bg-white border-none rounded-t-12 px-6 pb-5')}
+        className={cn(
+          'w-full bg-white border-none rounded-t-12 px-6 pb-[max(20px,env(safe-area-inset-bottom))]',
+        )}
         hideHandle={hideHandle}
       >
         <div

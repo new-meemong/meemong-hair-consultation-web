@@ -1,19 +1,26 @@
 import { createWebApiClient } from '@/shared/lib/web-api';
 
-type ModelProfile = {
+export type ModelProfile = {
   isBreakTime?: boolean;
   breakTime?: {
     status?: boolean;
   } | null;
+  user?: {
+    sex?: '남자' | '여자';
+  };
 };
 
-function isModelOnBreak(profile: ModelProfile): boolean {
+export function isModelOnBreak(profile: ModelProfile): boolean {
   return profile.isBreakTime === true || profile.breakTime?.status === true;
 }
 
-export async function getModelBreakStatus(token: string, slug?: string): Promise<boolean> {
+export async function getModelProfile(token: string, slug?: string): Promise<ModelProfile> {
   const api = createWebApiClient(token, slug);
-  const profile = await api.get<ModelProfile>('models/me/my-page');
+  return api.get<ModelProfile>('models/me/my-page');
+}
+
+export async function getModelBreakStatus(token: string, slug?: string): Promise<boolean> {
+  const profile = await getModelProfile(token, slug);
   return isModelOnBreak(profile);
 }
 
