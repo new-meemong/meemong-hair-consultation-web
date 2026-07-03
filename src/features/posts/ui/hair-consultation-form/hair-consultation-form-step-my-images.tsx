@@ -1,10 +1,6 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import NextImage, { type StaticImageData } from 'next/image';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { resizeImageFile } from '@/shared/lib/resize-image-file';
-
-const RESIZE_MAX_SIZE = 1024;
-
-import Image, { type StaticImageData } from 'next/image';
 import { XIcon } from 'lucide-react';
 
 import CameraIcon from '@/assets/icons/camera.svg';
@@ -26,6 +22,12 @@ import { MY_IMAGE_TYPE } from '@/features/posts/constants/my-image-type';
 import type { ValueOf } from '@/shared/type/types';
 import { AppTypography } from '@/shared/styles/typography';
 import { useOverlayContext } from '@/shared/context/overlay-context';
+import { useFileObjectUrls } from '@/shared/hooks/use-file-object-urls';
+import { resizeImageFile } from '@/shared/lib/resize-image-file';
+
+type MyImageValue = HairConsultationFormValues['myImages'][number];
+
+const RESIZE_MAX_SIZE = 1024;
 
 export default function HairConsultationFormStepMyImages() {
   const { setValue, getValues, control } = useFormContext<HairConsultationFormValues>();
@@ -41,6 +43,16 @@ export default function HairConsultationFormStepMyImages() {
     control,
     name: HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES,
   });
+  const currentImageValues = useMemo(() => currentImages ?? [], [currentImages]);
+  const currentImageFiles = useMemo(
+    () => currentImageValues.map(({ image }) => image),
+    [currentImageValues],
+  );
+  const fileObjectUrls = useFileObjectUrls(currentImageFiles);
+  const fileObjectUrlMap = useMemo(
+    () => new Map(fileObjectUrls.map(({ file, url }) => [file, url])),
+    [fileObjectUrls],
+  );
 
   type GuideConfig = {
     title: string;
@@ -103,28 +115,25 @@ export default function HairConsultationFormStepMyImages() {
 
   const getCurrentImage = useCallback(
     (type: ValueOf<typeof MY_IMAGE_TYPE>) => {
-      const currentImage = currentImages?.find(
-        (img: { type: ValueOf<typeof MY_IMAGE_TYPE>; image: File }) => img.type === type,
-      );
+      const currentImage = currentImageValues.find((img) => img.type === type);
+      const previewUrl = currentImage ? fileObjectUrlMap.get(currentImage.image) : undefined;
 
-      return currentImage
+      return currentImage && previewUrl
         ? {
             type: IMAGE_TYPE.FILE,
             name: currentImage.image.name,
-            src: URL.createObjectURL(currentImage.image),
+            src: previewUrl,
           }
         : null;
     },
-    [currentImages],
+    [currentImageValues, fileObjectUrlMap],
   );
 
   const handleImageUpload = useCallback(
     async ({ file, type }: { file: File; type: ValueOf<typeof MY_IMAGE_TYPE> }) => {
       const resizedFile = await resizeImageFile(file, RESIZE_MAX_SIZE);
       const currentImages = getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES) || [];
-      const filteredImages = currentImages.filter(
-        (img: { type: ValueOf<typeof MY_IMAGE_TYPE>; image: File }) => img.type !== type,
-      );
+      const filteredImages = currentImages.filter((img: MyImageValue) => img.type !== type);
       const newImage = { type, image: resizedFile };
 
       setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES, [...filteredImages, newImage], {
@@ -139,9 +148,7 @@ export default function HairConsultationFormStepMyImages() {
   const handleImageDelete = useCallback(
     ({ type }: { type: ValueOf<typeof MY_IMAGE_TYPE> }) => {
       const currentImages = getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES) || [];
-      const newImages = currentImages.filter(
-        (img: { type: ValueOf<typeof MY_IMAGE_TYPE>; image: File }) => img.type !== type,
-      );
+      const newImages = currentImages.filter((img: MyImageValue) => img.type !== type);
       setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES, newImages);
     },
     [getValues, setValue],
@@ -174,12 +181,14 @@ export default function HairConsultationFormStepMyImages() {
               className="w-full h-full"
               onClick={() => setActiveGuideType(type)}
             >
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element -- Blob previews need native eager painting in Android WebViews. */}
+              <img
                 src={currentImage.src}
                 alt={currentImage.name}
-                fill
-                className="object-cover rounded-6"
-                sizes="120px"
+                className="h-full w-full rounded-6 object-cover"
+                loading="eager"
+                decoding="sync"
+                draggable={false}
               />
             </button>
             <Button
@@ -264,14 +273,14 @@ export default function HairConsultationFormStepMyImages() {
             </div>
 
             <div className="mt-7 flex items-center justify-between">
-              <Image
+              <NextImage
                 src={activeGuide.goodImage}
                 alt={`${activeGuide.title} 올바른 예시`}
                 width={163}
                 height={163}
                 className="rounded-6"
               />
-              <Image
+              <NextImage
                 src={activeGuide.badImage}
                 alt={`${activeGuide.title} 잘못된 예시`}
                 width={163}

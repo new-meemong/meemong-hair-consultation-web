@@ -4,7 +4,7 @@ import ImageFormItem, { type Image } from './image-form-item';
 import ImageUploaderItem from './image-uploader-item';
 import { IMAGE_TYPE } from '../constants/image-type';
 import { getImages } from '../lib/get-images';
-
+import { useFileObjectUrls } from '../hooks/use-file-object-urls';
 
 const IMAGE_UPLOADER_LIST_MAX_COUNT = 6;
 
@@ -27,7 +27,8 @@ export default function ImageUploaderList({
   maxImageCount,
   itemSize = 120,
 }: ImageUploaderListProps) {
-  const images = getImages(imageFiles, imageUrls);
+  const fileObjectUrls = useFileObjectUrls(imageFiles);
+  const images = getImages(fileObjectUrls, imageUrls);
 
   const canUpload = images.length < maxImageCount;
 

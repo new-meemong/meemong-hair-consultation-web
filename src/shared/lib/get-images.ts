@@ -1,11 +1,12 @@
 import { IMAGE_TYPE } from '../constants/image-type';
+import type { FileObjectUrl } from '../hooks/use-file-object-urls';
 import type { Image } from '../ui/image-form-item';
 
-export function getImages(imageFiles: File[], imageUrls: string[]): Image[] {
-  const convertedImageFiles = imageFiles.map((file) => ({
+export function getImages(fileObjectUrls: FileObjectUrl[], imageUrls: string[]): Image[] {
+  const convertedImageFiles = fileObjectUrls.map(({ file, url }) => ({
     type: IMAGE_TYPE.FILE,
     name: file.name,
-    src: URL.createObjectURL(file),
+    src: url,
   }));
 
   const convertedImageUrls = imageUrls.map((url) => ({

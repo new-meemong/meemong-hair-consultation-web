@@ -1,11 +1,9 @@
 import { XIcon } from 'lucide-react';
-import Image from 'next/image';
-
+import NextImage from 'next/image';
 
 import { Button } from '@/shared';
-import type { IMAGE_TYPE } from '@/shared/constants/image-type';
+import { IMAGE_TYPE } from '@/shared/constants/image-type';
 import type { ValueOf } from '@/shared/type/types';
-
 
 export type Image = {
   type: ValueOf<typeof IMAGE_TYPE>;
@@ -24,14 +22,29 @@ export default function ImageFormItem({
   handleImageDelete,
   size = 120,
 }: ImageFormItemProps) {
+  const isFilePreview = image.type === IMAGE_TYPE.FILE;
+
   return (
     <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
-      <Image
-        src={image.src}
-        alt={`업로드 이미지 ${image.name}`}
-        fill
-        className="object-cover rounded-md"
-      />
+      {isFilePreview ? (
+        // eslint-disable-next-line @next/next/no-img-element -- Blob previews need native eager painting in Android WebViews.
+        <img
+          src={image.src}
+          alt={`업로드 이미지 ${image.name}`}
+          className="h-full w-full rounded-md object-cover"
+          loading="eager"
+          decoding="sync"
+          draggable={false}
+        />
+      ) : (
+        <NextImage
+          src={image.src}
+          alt={`업로드 이미지 ${image.name}`}
+          fill
+          className="object-cover rounded-md"
+          sizes={`${size}px`}
+        />
+      )}
       <Button
         type="button"
         variant="icon"
