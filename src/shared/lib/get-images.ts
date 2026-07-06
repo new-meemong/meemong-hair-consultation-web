@@ -7,6 +7,7 @@ export function getImages(fileObjectUrls: FileObjectUrl[], imageUrls: string[]):
     type: IMAGE_TYPE.FILE,
     name: file.name,
     src: url,
+    file,
   }));
 
   const convertedImageUrls = imageUrls.map((url) => ({

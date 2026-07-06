@@ -37,7 +37,7 @@ export default function ImageUploaderList({
       const newImageUrls = imageUrls.filter((url) => url !== image.src);
       setImageUrls?.(newImageUrls);
     } else {
-      const newImageFiles = imageFiles.filter((file) => file.name !== image.name);
+      const newImageFiles = imageFiles.filter((file) => file !== image.file);
       setImageFiles(newImageFiles);
     }
   };

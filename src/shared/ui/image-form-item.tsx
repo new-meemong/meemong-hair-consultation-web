@@ -3,13 +3,22 @@ import NextImage from 'next/image';
 
 import { Button } from '@/shared';
 import { IMAGE_TYPE } from '@/shared/constants/image-type';
-import type { ValueOf } from '@/shared/type/types';
 
-export type Image = {
-  type: ValueOf<typeof IMAGE_TYPE>;
+type ImageBase = {
   name: string;
   src: string;
 };
+
+export type FileImage = ImageBase & {
+  type: typeof IMAGE_TYPE.FILE;
+  file: File;
+};
+
+export type UrlImage = ImageBase & {
+  type: typeof IMAGE_TYPE.URL;
+};
+
+export type Image = FileImage | UrlImage;
 
 type ImageFormItemProps = {
   image: Image;

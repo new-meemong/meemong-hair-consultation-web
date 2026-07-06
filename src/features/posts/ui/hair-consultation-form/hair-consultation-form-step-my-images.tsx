@@ -123,6 +123,7 @@ export default function HairConsultationFormStepMyImages() {
             type: IMAGE_TYPE.FILE,
             name: currentImage.image.name,
             src: previewUrl,
+            file: currentImage.image,
           }
         : null;
     },
