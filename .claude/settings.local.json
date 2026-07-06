@@ -1,6 +1,12 @@
 {
   "permissions": {
-    "allow": ["mcp__ide__getDiagnostics", "Bash(npm install:*)", "Bash(npx eslint:*)"],
+    "allow": [
+      "mcp__ide__getDiagnostics",
+      "Bash(npm install:*)",
+      "Bash(npx eslint:*)",
+      "Skill(artifact-design)",
+      "Skill(artifact-design:*)"
+    ],
     "deny": [],
     "ask": []
   }

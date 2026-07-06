@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import FormItem from '@/shared/ui/form-item';
@@ -6,6 +7,7 @@ import { HAIR_CONSULTATION_FORM_FIELD_NAME } from '../../constants/hair-consulta
 import type { HairConsultationFormValues } from '../../types/hair-consultation-form-values';
 import ImageUploaderList from '@/shared/ui/image-uploader-list';
 import { Textarea } from '@/shared';
+import { requestImagePreviewPaint } from '@/shared/lib/request-image-preview-paint';
 import { resizeImageFile } from '@/shared/lib/resize-image-file';
 
 const MAX_IMAGE_COUNT = 3;
@@ -27,27 +29,71 @@ export default function HairConsultationFormStepAspirationImages() {
 
   const currentImages = useMemo(() => watchedImages ?? [], [watchedImages]);
 
-  const handleImageUpload = useCallback(
+  const replaceAspirationImagesWithResizedFiles = useCallback(
     async (files: File[]) => {
-      const currentDescription = getValues(
-        `${HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES}.description`,
-      );
-      const resizedFiles = await Promise.all(
-        files.map((file) => resizeImageFile(file, RESIZE_MAX_SIZE)),
-      );
-      const newImages = [...currentImages, ...resizedFiles];
+      try {
+        const resizeResults = await Promise.allSettled(
+          files.map(async (file) => [file, await resizeImageFile(file, RESIZE_MAX_SIZE)] as const),
+        );
+        const resizedFileEntries: Array<readonly [File, File]> = [];
 
-      setValue(
-        HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES,
-        {
-          images: newImages,
-          resizedImages: newImages,
-          description: currentDescription,
-        },
-        { shouldDirty: true },
-      );
+        resizeResults.forEach((result) => {
+          if (result.status !== 'fulfilled') return;
+
+          const [file, resizedFile] = result.value;
+          if (resizedFile !== file) {
+            resizedFileEntries.push([file, resizedFile]);
+          }
+        });
+
+        const resizedFileMap = new Map(resizedFileEntries);
+        if (resizedFileMap.size === 0) return;
+
+        const currentValue = getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES);
+        const currentImageFiles = currentValue?.images ?? [];
+        const nextImageFiles = currentImageFiles.map((file) => resizedFileMap.get(file) ?? file);
+        const didReplace = nextImageFiles.some((file, index) => file !== currentImageFiles[index]);
+        if (!didReplace) return;
+
+        setValue(
+          HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES,
+          {
+            images: nextImageFiles,
+            resizedImages: nextImageFiles,
+            description: currentValue?.description ?? '',
+          },
+          { shouldDirty: true },
+        );
+        requestImagePreviewPaint();
+      } catch {
+        // Keep the original preview files if background resizing fails.
+      }
     },
-    [currentImages, setValue, getValues],
+    [getValues, setValue],
+  );
+
+  const handleImageUpload = useCallback(
+    (files: File[]) => {
+      const currentValue = getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES);
+      const currentImageFiles = currentValue?.images ?? currentImages;
+      const newImages = [...currentImageFiles, ...files];
+
+      flushSync(() => {
+        setValue(
+          HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES,
+          {
+            images: newImages,
+            resizedImages: [],
+            description: currentValue?.description ?? '',
+          },
+          { shouldDirty: true },
+        );
+      });
+      requestImagePreviewPaint(() => {
+        void replaceAspirationImagesWithResizedFiles(files);
+      });
+    },
+    [currentImages, setValue, getValues, replaceAspirationImagesWithResizedFiles],
   );
 
   const setImageFiles = useCallback(
@@ -58,7 +104,7 @@ export default function HairConsultationFormStepAspirationImages() {
 
       setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.ASPIRATION_IMAGES, {
         images: newImageFiles,
-        resizedImages: newImageFiles,
+        resizedImages: [],
         description: currentDescription,
       });
     },

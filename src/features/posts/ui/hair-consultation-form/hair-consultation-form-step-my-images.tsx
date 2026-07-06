@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import NextImage, { type StaticImageData } from 'next/image';
+import { flushSync } from 'react-dom';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { XIcon } from 'lucide-react';
 
@@ -23,10 +24,10 @@ import type { ValueOf } from '@/shared/type/types';
 import { AppTypography } from '@/shared/styles/typography';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useFileObjectUrls } from '@/shared/hooks/use-file-object-urls';
+import { requestImagePreviewPaint } from '@/shared/lib/request-image-preview-paint';
 import { resizeImageFile } from '@/shared/lib/resize-image-file';
 
 type MyImageValue = HairConsultationFormValues['myImages'][number];
-
 const RESIZE_MAX_SIZE = 1024;
 
 export default function HairConsultationFormStepMyImages() {
@@ -130,20 +131,51 @@ export default function HairConsultationFormStepMyImages() {
     [currentImageValues, fileObjectUrlMap],
   );
 
-  const handleImageUpload = useCallback(
+  const replaceMyImageWithResizedFile = useCallback(
     async ({ file, type }: { file: File; type: ValueOf<typeof MY_IMAGE_TYPE> }) => {
-      const resizedFile = await resizeImageFile(file, RESIZE_MAX_SIZE);
+      try {
+        const resizedFile = await resizeImageFile(file, RESIZE_MAX_SIZE);
+        if (resizedFile === file) return;
+
+        const currentImages = getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES) || [];
+        const shouldReplace = currentImages.some(
+          (image: MyImageValue) => image.type === type && image.image === file,
+        );
+        if (!shouldReplace) return;
+
+        const nextImages = currentImages.map((image: MyImageValue) =>
+          image.type === type && image.image === file ? { ...image, image: resizedFile } : image,
+        );
+
+        setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES, nextImages, {
+          shouldDirty: true,
+        });
+        requestImagePreviewPaint();
+      } catch {
+        // Keep the original preview file if background resizing fails.
+      }
+    },
+    [getValues, setValue],
+  );
+
+  const handleImageUpload = useCallback(
+    ({ file, type }: { file: File; type: ValueOf<typeof MY_IMAGE_TYPE> }) => {
       const currentImages = getValues(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES) || [];
       const filteredImages = currentImages.filter((img: MyImageValue) => img.type !== type);
-      const newImage = { type, image: resizedFile };
+      const newImage = { type, image: file };
 
-      setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES, [...filteredImages, newImage], {
-        shouldDirty: true,
+      flushSync(() => {
+        setValue(HAIR_CONSULTATION_FORM_FIELD_NAME.MY_IMAGES, [...filteredImages, newImage], {
+          shouldDirty: true,
+        });
+        setActiveGuideType(null);
       });
       showSnackBar({ type: 'success', message: '이미지가 업로드 되었습니다' });
-      setActiveGuideType(null);
+      requestImagePreviewPaint(() => {
+        void replaceMyImageWithResizedFile({ file, type });
+      });
     },
-    [getValues, setValue, showSnackBar],
+    [getValues, setValue, showSnackBar, replaceMyImageWithResizedFile],
   );
 
   const handleImageDelete = useCallback(
@@ -158,8 +190,9 @@ export default function HairConsultationFormStepMyImages() {
   const handleInputChange =
     (type: ValueOf<typeof MY_IMAGE_TYPE>) => (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files || e.target.files.length === 0) return;
-      void handleImageUpload({ file: e.target.files[0], type });
+      const file = e.target.files[0];
       e.target.value = '';
+      handleImageUpload({ file, type });
     };
 
   const handleUploadClick = () => {
