@@ -37,6 +37,7 @@ export default function PostsPage() {
   const isUserModel = auth?.isUserModel ?? false;
   const isUserDesigner = auth?.isUserDesigner ?? false;
   const brand = useOptionalBrand();
+  const isBrandConsultation = Boolean(brand);
 
   const router = useRouterWithUser();
   const source = router.source;
@@ -114,8 +115,7 @@ export default function PostsPage() {
 
   return (
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">
-      {/* 헤더 */}
-      <SiteHeader title="헤어상담" />
+      {isBrandConsultation && <SiteHeader title="헤어상담" />}
       <div className="flex flex-col flex-1 min-h-0">
         <Tab options={postTabs} value={activePostTab} onChange={setActivePostTab} />
         <div ref={containerRef} className="flex flex-col gap-5 flex-1 overflow-y-auto">
