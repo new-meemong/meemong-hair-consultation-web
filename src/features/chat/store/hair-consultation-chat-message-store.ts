@@ -19,6 +19,7 @@ import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
 import { create } from 'zustand';
 import { db } from '@/shared/lib/firebase';
 import { getDbPath } from '../lib/get-db-path';
+import { updateDesignerLastChatReceivedAtAfterSend } from '../api/update-designer-last-chat-received-at';
 
 interface HairConsultationChatMessageState {
   messages: HairConsultationChatMessageType[];
@@ -145,6 +146,8 @@ export const useHairConsultationChatMessageStore = create<HairConsultationChatMe
         });
 
         await Promise.all([updateSenderMeta, updateReceiverMeta]);
+
+        void updateDesignerLastChatReceivedAtAfterSend(receiverId);
 
         // 서버 unreadCount 동기화는 서버에서 메시지 전송 시 자동으로 처리됨
         // 여기서는 Firestore 업데이트만 수행
