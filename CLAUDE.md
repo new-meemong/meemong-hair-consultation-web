@@ -49,6 +49,12 @@ src/
 
 각 레이어 내부 디렉토리 구조: `api/`, `model/`, `lib/`, `ui/`, `constants/`, `hooks/`, `types/`.
 
+### 디자인 시스템 마이그레이션
+
+- 신규 MEEMONG 디자인 시스템 UI는 레거시 공용 컴포넌트를 인플레이스 교체하지 않고 `Meemong*` 공용 컴포넌트로 병행 추가한 뒤 화면별로 점진 전환합니다.
+- 최신 디자인 타이포그래피는 `MeemongTypography` 토큰만 사용합니다.
+- 화면 코드는 primitive 팔레트를 직접 참조하지 않고 용도에 맞는 시멘틱 색상 토큰을 사용합니다.
+
 ### 인증
 
 - `AuthProvider` (`src/features/auth/context/auth-context.tsx`)가 URL 쿼리 파라미터에서 `userId`를 읽어 웹뷰 로그인 API를 호출하여 JWT를 발급받습니다.

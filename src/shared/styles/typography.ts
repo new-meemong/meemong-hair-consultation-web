@@ -68,3 +68,22 @@ export const AppTypography = {
 } as const;
 
 export type AppTypographyKey = keyof typeof AppTypography;
+
+/**
+ * MEEMONG 디자인 시스템의 최신 타이포그래피 토큰입니다.
+ *
+ * AppTypography는 레거시 화면 호환을 위해 유지하며, 새 UI에서는 이 토큰만 사용합니다.
+ */
+export const MeemongTypography = {
+  heading2Bold: 'meemong-heading-2-bold',
+  body1SemiBold: 'meemong-body-1-semibold',
+  body2Medium: 'meemong-body-2-medium',
+  body2Regular: 'meemong-body-2-regular',
+  body3Regular: 'meemong-body-3-regular',
+  body4Regular: 'meemong-body-4-regular',
+  title1SemiBold: 'meemong-title-1-semibold',
+  title2SemiBold: 'meemong-title-2-semibold',
+  title3SemiBold: 'meemong-title-3-semibold',
+} as const;
+
+export type MeemongTypographyKey = keyof typeof MeemongTypography;

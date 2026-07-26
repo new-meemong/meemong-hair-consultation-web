@@ -13,6 +13,7 @@ export type HairConsultationAnswerUser = {
   id: number;
   displayName: string;
   profilePictureURL: string | null;
+  address?: string | null;
   role?: ValueOf<typeof USER_ROLE>;
   Role?: ValueOf<typeof USER_ROLE>;
 };

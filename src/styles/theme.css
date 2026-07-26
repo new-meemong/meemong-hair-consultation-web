@@ -39,4 +39,33 @@
   --color-rank-second: #898886;
   --color-rank-third: #a7866e;
   --color-rank-etc: #cececc;
+
+  /* MEEMONG Design System — current */
+  --color-brand-core: #1d2024;
+
+  --color-primitive-gray-900: #2f343c;
+  --color-primitive-gray-600: #707783;
+  --color-primitive-gray-500: #99a2ad;
+
+  --color-text-primary: var(--color-primitive-gray-900);
+  --color-text-secondary: #525a66;
+  --color-text-tertiary: var(--color-primitive-gray-500);
+  --color-text-inverse: #ffffff;
+
+  --color-icon-inverse: #ffffff;
+
+  --color-background-white: #ffffff;
+  --color-background-weak: #f8f9fb;
+
+  --color-fill-white: #ffffff;
+  --color-fill-strong: var(--color-primitive-gray-900);
+  --color-fill-medium: var(--color-primitive-gray-600);
+  --color-fill-disabled: var(--color-primitive-gray-500);
+
+  --color-border-weak: #eff1f4;
+  --color-border-regular: #dfe2e7;
+  --color-divider-weak: #eff1f4;
+
+  --color-status-information-regular: #0079ff;
+  --color-status-information-weak: #ebf3ff;
 }

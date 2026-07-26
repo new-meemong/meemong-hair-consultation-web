@@ -1,6 +1,17 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage, Button } from '@/shared';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  MeemongBottomActionBar,
+  MeemongButton,
+  MeemongCallout,
+  MeemongChip,
+  MeemongContentsTitle,
+  MeemongDivider,
+  MeemongTopBar,
+} from '@/shared';
 import {
   BANG_STYLE,
   BANG_STYLE_LABEL,
@@ -29,9 +40,7 @@ import type { HairConsultationDetail } from '@/entities/posts/model/hair-consult
 import type { HairLengthOption } from '@/features/posts/constants/hair-length-options';
 import Image from 'next/image';
 import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
-import ProfileIcon from '@/assets/icons/profile.svg';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-import { SiteHeader } from '@/widgets/header';
 import faceTypeFeedback1 from '@/assets/face-type-feedback/face_type_feedback1.png';
 import faceTypeFeedback2 from '@/assets/face-type-feedback/face_type_feedback2.png';
 import faceTypeFeedback3 from '@/assets/face-type-feedback/face_type_feedback3.png';
@@ -80,12 +89,19 @@ import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
 import useStartChat from '@/features/chat/hook/use-start-chat';
+import { cn } from '@/shared/lib/utils';
+import formatAddress from '@/features/auth/lib/format-address';
+import { MeemongTypography } from '@/shared/styles/typography';
+import HairConsultingImage from '@/features/posts/ui/consulting-response/hair-consulting-image';
 
-const formatDateTime = (value: string) => {
+const formatAnswerDate = (value: string) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return format(date, 'MM/dd hh:mm');
+  return format(date, 'yyyy.MM.dd');
 };
+
+const formatDesignerName = (displayName: string) =>
+  displayName.includes('디자이너') ? displayName : `${displayName} 디자이너`;
 
 const isAdviceRequired = (advice: boolean | number | null | undefined) =>
   advice === true || advice === 1;
@@ -236,39 +252,46 @@ const getFaceTypeFeedbackImage = (value: string | null | undefined) => {
 
 function StoreConsultingNotice() {
   return (
-    <div className="mt-2 rounded-6 bg-alternative p-3">
-      <p className="typo-body-2-regular text-label-info">매장 상담이 필요합니다.</p>
+    <div className="rounded-8 bg-background-weak p-3">
+      <p className={cn('text-text-secondary', MeemongTypography.body4Regular)}>
+        매장 상담이 필요합니다.
+      </p>
     </div>
+  );
+}
+
+function SubsectionTitle({ children }: { children: string }) {
+  return (
+    <h3 className={cn('px-1 text-text-tertiary', MeemongTypography.title3SemiBold)}>{children}</h3>
   );
 }
 
 function RecommendationPreviewRows({ items }: { items: RecommendationPreviewItem[] }) {
   if (items.length === 0) {
-    return <p className="mt-2 typo-body-2-regular text-label-sub">-</p>;
+    return <p className={cn('text-text-tertiary', MeemongTypography.body3Regular)}>-</p>;
   }
 
   return (
-    <div className="mt-2 flex flex-col gap-3">
+    <div className="flex flex-col gap-2">
       {items.map((item) => (
-        <div key={item.key} className="flex items-center gap-4">
-          <div className="size-[162px] shrink-0 overflow-hidden rounded-6 bg-alternative">
-            {item.imageSrc ? (
-              <Image
-                src={item.imageSrc}
-                alt={item.label}
-                width={162}
-                height={162}
-                className="size-[162px] object-cover"
-              />
-            ) : (
-              <div className="flex size-[162px] items-center justify-center typo-body-2-regular text-label-placeholder">
-                이미지 없음
-              </div>
-            )}
-          </div>
-          <div className="flex min-w-0 flex-1 flex-col justify-center">
-            <p className="typo-body-1-semibold text-label-default">{item.label}</p>
-            <p className="mt-2 typo-body-2-regular text-label-sub break-words">
+        <div key={item.key} className="flex min-h-[140px] items-start gap-2">
+          {item.imageSrc ? (
+            <HairConsultingImage src={item.imageSrc} alt={item.label} />
+          ) : (
+            <div
+              className={cn(
+                'flex size-[140px] shrink-0 items-center justify-center rounded-8 border border-border-weak bg-background-weak text-text-tertiary',
+                MeemongTypography.body4Regular,
+              )}
+            >
+              이미지 없음
+            </div>
+          )}
+          <div className="flex min-w-0 flex-1 flex-col gap-1 pt-0.5">
+            <p className={cn('break-words text-text-primary', MeemongTypography.body1SemiBold)}>
+              {item.label}
+            </p>
+            <p className={cn('break-words text-text-primary', MeemongTypography.body3Regular)}>
               {item.description}
             </p>
           </div>
@@ -295,11 +318,18 @@ export default function NewConsultingResponsePage() {
     );
     showModal({
       id: 'app-only-feature-modal',
-      text: '디자이너 프로필 보기 및 추가상담은\n미몽 앱에서 가능합니다.',
+      text: (
+        <div
+          className={cn('whitespace-pre-line text-text-primary', MeemongTypography.body2Regular)}
+        >
+          {'디자이너 프로필 보기 및 추가상담은\n미몽 앱에서 가능합니다.'}
+        </div>
+      ),
       buttons: [
         {
           label: '앱 다운로드',
-          className: 'typo-headline-bold text-border-active',
+          typographyClassName: MeemongTypography.title2SemiBold,
+          className: 'text-status-information-regular',
           onClick: () => {
             window.open(
               isIOS
@@ -309,7 +339,11 @@ export default function NewConsultingResponsePage() {
             );
           },
         },
-        { label: '닫기' },
+        {
+          label: '닫기',
+          typographyClassName: MeemongTypography.body2Medium,
+          className: 'text-text-primary',
+        },
       ],
     });
   };
@@ -590,14 +624,14 @@ export default function NewConsultingResponsePage() {
             <DrawerTitle showCloseButton />
             <DrawerDescription>
               <span className="flex flex-col gap-2">
-                <span className="typo-title-2-semibold text-label-strong">
+                <span className={cn('text-text-primary', MeemongTypography.heading2Bold)}>
                   {answer.user.displayName} 디자이너와
                   <br />
                   추가 상담을 시작할까요?
                 </span>
-                <span className="typo-body-1-long-regular text-label-sub">
+                <span className={cn('text-text-secondary', MeemongTypography.body2Regular)}>
                   내 잔여 몽:{' '}
-                  <span className="typo-body-1-semibold text-negative-light">
+                  <span className={cn('text-negative-light', MeemongTypography.title2SemiBold)}>
                     {currentMongAmount != null ? `${currentMongAmount}몽` : '불러오는 중'}
                   </span>
                 </span>
@@ -607,19 +641,15 @@ export default function NewConsultingResponsePage() {
           <DrawerFooter
             buttons={[
               <DrawerClose asChild key="cancel">
-                <Button theme="white" size="lg" className="rounded-4">
-                  취소
-                </Button>
+                <MeemongButton tone="secondary">취소</MeemongButton>
               </DrawerClose>,
               <DrawerClose asChild key="confirm">
-                <Button
-                  size="lg"
-                  className="rounded-4"
+                <MeemongButton
                   disabled={price == null || isStartingChat}
                   onClick={startChatWithMong}
                 >
                   {price != null ? `${price}몽 사용` : '채팅하기'}
-                </Button>
+                </MeemongButton>
               </DrawerClose>,
             ]}
           />
@@ -682,223 +712,265 @@ export default function NewConsultingResponsePage() {
       ? `${(answer.price ?? 0).toLocaleString()}원`
       : `${(answer.minPrice ?? 0).toLocaleString()}원 ~ ${(answer.maxPrice ?? 0).toLocaleString()}원`;
 
+  const designerDisplayName = answer.user.displayName?.trim() || '디자이너';
+  const designerNameWithRole = formatDesignerName(designerDisplayName);
+  const designerAddress = answer.user.address ? formatAddress(answer.user.address) : null;
+
   return (
-    <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen bg-white">
-      <SiteHeader title="컨설팅 답변" showBackButton />
-      <div
-        className="flex-1 overflow-y-auto"
-        style={
-          shouldShowBottomActions
-            ? { paddingBottom: 'calc(100px + env(safe-area-inset-bottom))' }
-            : undefined
-        }
-      >
-        <div className="flex w-full flex-col items-start gap-4 bg-label-default px-5 py-8">
-          <Avatar className="size-12 items-center justify-center rounded-full overflow-hidden">
-            {answer.user.profilePictureURL ? (
-              <AvatarImage src={answer.user.profilePictureURL} className="size-12 rounded-full" />
-            ) : (
-              <AvatarFallback>
-                <ProfileIcon className="size-12 bg-label-info" />
-              </AvatarFallback>
-            )}
-          </Avatar>
-          <div className="flex flex-col gap-2">
-            <p className="typo-title-3-semibold text-white whitespace-pre-line">
-              {`${answer.user.displayName} 디자이너가 보낸\n컨설팅 답변입니다`}
-            </p>
-            <p className="typo-body-2-regular text-label-placeholder">
-              {`${formatDateTime(answer.createdAt)} 작성`}
-            </p>
-          </div>
+    <main className="mx-auto h-dvh min-w-[375px] w-full overflow-y-auto bg-background-white scrollbar-hide">
+      <div className="flex min-h-full flex-col">
+        <div className="bg-brand-core">
+          <MeemongTopBar reverse onBackClick={back} />
+
+          <section className="flex flex-col gap-4 px-4 pt-4 pb-6">
+            <div className="flex flex-col gap-1">
+              <h1
+                className={cn(
+                  'whitespace-pre-line text-text-inverse',
+                  MeemongTypography.heading2Bold,
+                )}
+              >
+                {`${designerDisplayName}님의\n컨설팅 답변이 도착했어요`}
+              </h1>
+              <p className={cn('text-text-tertiary', MeemongTypography.body4Regular)}>
+                {formatAnswerDate(answer.createdAt)}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleDesignerProfileClick}
+              className="flex w-full items-center gap-2 rounded-10 bg-fill-strong px-4 py-3 text-left"
+            >
+              <Avatar className="size-11 rounded-full">
+                {answer.user.profilePictureURL ? (
+                  <AvatarImage
+                    src={answer.user.profilePictureURL}
+                    className="size-11 rounded-full"
+                  />
+                ) : (
+                  <AvatarFallback className="size-11 rounded-full bg-fill-medium text-text-inverse">
+                    <span className={MeemongTypography.title2SemiBold}>
+                      {designerDisplayName.slice(0, 1)}
+                    </span>
+                  </AvatarFallback>
+                )}
+              </Avatar>
+
+              <div className="flex min-w-0 flex-1 flex-col justify-center">
+                <p className={cn('truncate text-text-inverse', MeemongTypography.body2Medium)}>
+                  {designerNameWithRole}
+                </p>
+                {designerAddress && (
+                  <div
+                    className={cn(
+                      'flex min-w-0 items-center gap-1 text-text-tertiary',
+                      MeemongTypography.body4Regular,
+                    )}
+                  >
+                    <span className="truncate">{designerAddress}</span>
+                  </div>
+                )}
+              </div>
+              <span className="sr-only">프로필 보기</span>
+            </button>
+          </section>
         </div>
 
-        <div className="px-5 pt-7">
-          <p className="typo-headline-semibold text-label-default">얼굴형/헤어 분석 결과</p>
+        <section className="flex flex-col gap-6 px-4 py-6">
+          <div className="flex w-full flex-col gap-4">
+            <MeemongContentsTitle title="얼굴형 분석 결과" />
 
-          <div className="mt-7">
-            <p className="typo-body-1-semibold text-label-default">얼굴형</p>
-            {!needsFaceShapeConsulting && (
-              <p className="mt-1 typo-body-2-regular text-label-info">
-                올려주신 사진을 바탕으로 얼굴형을 진단했어요.
-              </p>
-            )}
-            {needsFaceShapeConsulting ? (
-              <StoreConsultingNotice />
-            ) : faceTypeOption ? (
-              <div className="mt-2 flex items-center gap-4">
-                <div className="size-[162px] shrink-0 overflow-hidden rounded-6 border-1 border-border-default bg-label-default">
-                  <Image
+            <div className="flex flex-col gap-1">
+              <SubsectionTitle>얼굴형</SubsectionTitle>
+              {needsFaceShapeConsulting ? (
+                <StoreConsultingNotice />
+              ) : faceTypeOption ? (
+                <div className="flex min-h-[140px] items-start gap-2">
+                  <HairConsultingImage
                     src={
                       getFaceTypeFeedbackImage(faceTypeOption.value) ?? faceTypeOption.emptyImage
                     }
                     alt={faceTypeOption.label}
-                    width={162}
-                    height={162}
-                    className="size-[162px] object-cover"
                   />
+                  <div className="flex min-w-0 flex-1 flex-col gap-1 pt-0.5">
+                    <p
+                      className={cn(
+                        'break-words text-text-primary',
+                        MeemongTypography.body1SemiBold,
+                      )}
+                    >
+                      {faceTypeOption.label}
+                    </p>
+                    <p
+                      className={cn(
+                        'break-words text-text-primary',
+                        MeemongTypography.body3Regular,
+                      )}
+                    >
+                      {faceTypeOption.description}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex min-w-0 flex-1 flex-col justify-center">
-                  <p className="typo-body-1-semibold text-label-default">{faceTypeOption.label}</p>
-                  <p className="mt-2 typo-body-2-regular text-label-sub break-words">
-                    {faceTypeOption.description}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <p className="mt-2 typo-body-2-regular text-label-sub">-</p>
-            )}
+              ) : (
+                <p className={cn('text-text-tertiary', MeemongTypography.body3Regular)}>-</p>
+              )}
+            </div>
           </div>
 
-          <div className="mt-7">
-            <p className="typo-body-1-semibold text-label-default">추천 앞머리 스타일</p>
-            {!needsBangStyleConsulting && (
-              <p className="mt-1 typo-body-2-regular text-label-info">
-                사진 속 스타일은 예시입니다. 전체 스타일이 아닌 앞머리 연출법만 확인해주세요.
-              </p>
-            )}
-            {needsBangStyleConsulting ? (
-              <StoreConsultingNotice />
-            ) : (
-              <RecommendationPreviewRows items={bangStyleItems} />
-            )}
-          </div>
+          <MeemongDivider />
 
-          <div className="mt-7">
-            <p className="typo-body-1-semibold text-label-default">추천 기장</p>
-            {!needsHairLengthConsulting && (
-              <p className="mt-1 typo-body-2-regular text-label-info">
-                사진 속 스타일은 예시입니다. 전체 스타일이 아닌 기장만 확인해주세요.
-              </p>
-            )}
-            {needsHairLengthConsulting ? (
-              <StoreConsultingNotice />
-            ) : (
-              <RecommendationPreviewRows items={hairLengthItems} />
-            )}
-          </div>
+          <div className="flex w-full flex-col gap-4">
+            <MeemongContentsTitle title="추천 헤어 스타일" />
 
-          {shouldShowLayerSection && (
-            <div className="mt-7">
-              <p className="typo-body-1-semibold text-label-default">추천 레이어</p>
-              {needsHairLayerConsulting ? (
+            <div className="flex flex-col gap-1">
+              <SubsectionTitle>추천 앞머리</SubsectionTitle>
+              {needsBangStyleConsulting ? (
                 <StoreConsultingNotice />
               ) : (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {(answer.hairLayers ?? []).map((layer, index) => (
-                    <span
-                      key={`${layer}-${index}`}
-                      className="rounded-full bg-alternative px-4 py-2 typo-body-2-regular text-label-sub"
-                    >
-                      {layer}
-                    </span>
+                <RecommendationPreviewRows items={bangStyleItems} />
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <SubsectionTitle>추천 기장</SubsectionTitle>
+              {needsHairLengthConsulting ? (
+                <StoreConsultingNotice />
+              ) : (
+                <RecommendationPreviewRows items={hairLengthItems} />
+              )}
+            </div>
+
+            {shouldShowLayerSection && (
+              <div className="flex flex-col gap-2">
+                <SubsectionTitle>추천 레이어</SubsectionTitle>
+                {needsHairLayerConsulting ? (
+                  <StoreConsultingNotice />
+                ) : (
+                  <div className="flex flex-wrap gap-1">
+                    {(answer.hairLayers ?? []).map((layer, index) => (
+                      <MeemongChip key={`${layer}-${index}`}>{layer}</MeemongChip>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2">
+              <SubsectionTitle>추천 컬</SubsectionTitle>
+              {needsHairCurlConsulting ? (
+                <StoreConsultingNotice />
+              ) : hairCurlValues.length === 0 ? (
+                <p className={cn('text-text-tertiary', MeemongTypography.body3Regular)}>-</p>
+              ) : (
+                <div className="flex flex-wrap gap-1">
+                  {hairCurlValues.map((hairCurl, index) => (
+                    <MeemongChip key={`${hairCurl}-${index}`}>{hairCurl}</MeemongChip>
                   ))}
                 </div>
               )}
             </div>
-          )}
+          </div>
 
-          <div className="mt-7">
-            <p className="typo-body-1-semibold text-label-default">추천 컬</p>
-            {needsHairCurlConsulting ? (
-              <StoreConsultingNotice />
-            ) : hairCurlValues.length === 0 ? (
-              <p className="mt-2 typo-body-2-regular text-label-sub">-</p>
-            ) : (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {hairCurlValues.map((hairCurl, index) => (
-                  <span
-                    key={`${hairCurl}-${index}`}
-                    className="rounded-full bg-alternative px-4 py-2 typo-body-2-regular text-label-sub"
-                  >
-                    {hairCurl}
-                  </span>
-                ))}
+          <MeemongCallout
+            title="제공해 주신 사진을 바탕으로 분석한 결과예요"
+            description="정확한 상담은 매장 방문을 통해 진행해 주세요"
+          />
+        </section>
+
+        <MeemongDivider thickness="8px" />
+
+        <section className="flex flex-col gap-5 overflow-hidden px-4 py-6">
+          <MeemongContentsTitle
+            title="추천하는 시술"
+            description={`${designerDisplayName}님이 분석 결과에 맞는 시술을 제안했어요`}
+          />
+
+          <div className="flex w-full flex-col gap-4">
+            {answer.styleImages && answer.styleImages.length > 0 && (
+              <div className="overflow-x-auto scrollbar-hide">
+                <div className="flex w-max gap-2">
+                  {answer.styleImages.map((imageUrl: string, index: number) => (
+                    <Image
+                      key={`${imageUrl}-${index}`}
+                      src={imageUrl}
+                      alt={`추천 시술 이미지 ${index + 1}`}
+                      width={140}
+                      height={140}
+                      unoptimized
+                      className="size-[140px] shrink-0 rounded-8 object-cover"
+                    />
+                  ))}
+                </div>
               </div>
             )}
-          </div>
 
-          <div className="mt-7 rounded-6 bg-alternative p-2.5">
-            <p className="typo-body-3-regular text-label-info">
-              제공해주신 사진을 기반으로 분석된 결과입니다. 정확한 상담은 매장 방문 후 디자이너님과
-              직접 상담하시는 것을 권장합니다.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-7 h-1.5 w-full bg-alternative" />
-
-        <div className="px-5 pt-7 pb-7">
-          <p className="typo-headline-semibold text-label-default">추천하는 시술</p>
-          <p className="mt-1 typo-body-2-regular text-label-info">
-            {`${answer.user.displayName} 디자이너님이 시술을 제안했어요`}
-          </p>
-
-          {answer.styleImages && answer.styleImages.length > 0 && (
-            <div className="mt-7 overflow-x-auto scrollbar-hide">
-              <div className="flex w-max gap-2">
-                {answer.styleImages.map((imageUrl: string, index: number) => (
-                  <img
-                    key={`${imageUrl}-${index}`}
-                    src={imageUrl}
-                    alt={`treatment-style-image-${index + 1}`}
-                    className="size-[140px] shrink-0 rounded-6 object-cover"
-                  />
-                ))}
+            <div className="flex w-full flex-col gap-2 rounded-12 border border-border-weak px-3 py-4">
+              <div className="flex min-w-0 items-center">
+                <p
+                  className={cn(
+                    'w-14 shrink-0 text-text-tertiary',
+                    MeemongTypography.title3SemiBold,
+                  )}
+                >
+                  시술명
+                </p>
+                <p
+                  title={answer.title || '-'}
+                  className={cn(
+                    'min-w-0 flex-1 truncate text-text-primary',
+                    MeemongTypography.body2Medium,
+                  )}
+                >
+                  {answer.title || '-'}
+                </p>
+              </div>
+              <div className="flex min-w-0 items-center">
+                <p
+                  className={cn(
+                    'w-14 shrink-0 text-text-tertiary',
+                    MeemongTypography.title3SemiBold,
+                  )}
+                >
+                  가격
+                </p>
+                <p
+                  title={priceText}
+                  className={cn(
+                    'min-w-0 flex-1 truncate text-text-primary',
+                    MeemongTypography.body2Medium,
+                  )}
+                >
+                  {priceText}
+                </p>
               </div>
             </div>
-          )}
 
-          <div className={answer.styleImages && answer.styleImages.length > 0 ? 'mt-4' : 'mt-7'}>
-            <div className="flex items-start">
-              <p className="w-[60px] shrink-0 text-left typo-body-1-long-semibold text-label-default">
-                시술명
+            {answer.description && (
+              <p
+                className={cn(
+                  'whitespace-pre-wrap break-words text-text-primary',
+                  MeemongTypography.body2Regular,
+                )}
+              >
+                {answer.description}
               </p>
-              <p className="ml-6 flex-1 text-left typo-body-2-regular text-label-default">
-                {answer.title || '-'}
-              </p>
-            </div>
-            <div className="mt-1 flex items-start">
-              <p className="w-[60px] shrink-0 text-left typo-body-1-long-semibold text-label-default">
-                가격
-              </p>
-              <p className="ml-6 flex-1 text-left typo-body-2-regular text-label-default">
-                {priceText}
-              </p>
-            </div>
-            <div className="mt-4 border-b-1 border-border-default" />
-            <div className="mt-4">
-              <p className="typo-body-1-semibold text-label-default">종합의견</p>
-              <p className="mt-1 typo-body-2-regular text-label-sub whitespace-pre-wrap">
-                {answer.description || '-'}
-              </p>
-            </div>
+            )}
           </div>
-        </div>
-      </div>
+        </section>
 
-      {shouldShowBottomActions && (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t-1 border-border-default bg-white">
-          <div className="mx-auto flex min-w-[375px] w-full gap-2 px-5 pt-3 pb-[max(12px,env(safe-area-inset-bottom))]">
-            <Button
-              theme="white"
-              size="lg"
-              className="flex-1 rounded-4"
-              onClick={handleDesignerProfileClick}
-            >
-              디자이너 프로필 보기
-            </Button>
-            <Button
-              size="lg"
-              className="flex-1 rounded-4"
+        {shouldShowBottomActions && (
+          <MeemongBottomActionBar className="mt-auto">
+            <MeemongButton
+              className="w-full"
               onClick={handleChatClick}
               disabled={isStartingChat || isCheckingPostWriter}
             >
               {isStartingChat ? '연결 중...' : '추가 상담하기'}
-            </Button>
-          </div>
-        </div>
-      )}
-    </div>
+            </MeemongButton>
+          </MeemongBottomActionBar>
+        )}
+      </div>
+    </main>
   );
 }

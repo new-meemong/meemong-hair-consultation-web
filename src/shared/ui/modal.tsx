@@ -9,6 +9,7 @@ export type ModalButtonProps = {
   onClick?: () => void;
   disabled?: boolean;
   variant?: 'default' | 'primary'; // default: body-1-long-regular, primary: headline-medium
+  typographyClassName?: string;
   className?: string;
 };
 
@@ -29,6 +30,7 @@ function ModalButton({
   onClose,
   disabled = false,
   variant = 'default',
+  typographyClassName,
   className,
 }: ModalButtonProps & { onClose: () => void }) {
   const handleClick = () => {
@@ -43,7 +45,7 @@ function ModalButton({
     <button
       className={cn(
         'w-full px-7 py-5 text-center',
-        typographyClass,
+        typographyClassName ?? typographyClass,
         textColor,
         className,
         disabled && 'opacity-40 cursor-not-allowed',
@@ -62,8 +64,6 @@ export default function Modal({ id, text, buttons }: ModalProps) {
   const handleClose = () => {
     closeModal(id);
   };
-
-  console.log(typeof text === 'string');
 
   return (
     <DialogContent showCloseButton={false}>
