@@ -55,6 +55,11 @@ const nextConfig: NextConfig = {
         hostname: 'job-storage.meemong.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'd2ix6zr2mwdd96.cloudfront.net',
+        pathname: '/**',
+      },
     ],
   },
   devIndicators: false,

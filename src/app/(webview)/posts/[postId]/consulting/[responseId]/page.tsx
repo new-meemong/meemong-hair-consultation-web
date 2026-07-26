@@ -93,6 +93,7 @@ import { cn } from '@/shared/lib/utils';
 import formatAddress from '@/features/auth/lib/format-address';
 import { MeemongTypography } from '@/shared/styles/typography';
 import HairConsultingImage from '@/features/posts/ui/consulting-response/hair-consulting-image';
+import Dot from '@/shared/ui/dot';
 
 const formatAnswerDate = (value: string) => {
   const date = new Date(value);
@@ -102,6 +103,12 @@ const formatAnswerDate = (value: string) => {
 
 const formatDesignerName = (displayName: string) =>
   displayName.includes('디자이너') ? displayName : `${displayName} 디자이너`;
+
+const formatDistance = (distance: number | null | undefined) => {
+  if (distance == null || !Number.isFinite(distance) || distance < 0) return null;
+
+  return `${new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 1 }).format(distance)}km`;
+};
 
 const isAdviceRequired = (advice: boolean | number | null | undefined) =>
   advice === true || advice === 1;
@@ -715,6 +722,7 @@ export default function NewConsultingResponsePage() {
   const designerDisplayName = answer.user.displayName?.trim() || '디자이너';
   const designerNameWithRole = formatDesignerName(designerDisplayName);
   const designerAddress = answer.user.address ? formatAddress(answer.user.address) : null;
+  const designerDistance = formatDistance(answer.user.distance);
 
   return (
     <main className="mx-auto h-dvh min-w-[375px] w-full overflow-y-auto bg-background-white scrollbar-hide">
@@ -761,14 +769,18 @@ export default function NewConsultingResponsePage() {
                 <p className={cn('truncate text-text-inverse', MeemongTypography.body2Medium)}>
                   {designerNameWithRole}
                 </p>
-                {designerAddress && (
+                {(designerAddress || designerDistance) && (
                   <div
                     className={cn(
                       'flex min-w-0 items-center gap-1 text-text-tertiary',
                       MeemongTypography.body4Regular,
                     )}
                   >
-                    <span className="truncate">{designerAddress}</span>
+                    {designerAddress && <span className="truncate">{designerAddress}</span>}
+                    {designerAddress && designerDistance && (
+                      <Dot size="1" className="shrink-0 bg-current" />
+                    )}
+                    {designerDistance && <span className="shrink-0">{designerDistance}</span>}
                   </div>
                 )}
               </div>
