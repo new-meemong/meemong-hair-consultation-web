@@ -20,6 +20,9 @@ type BridgeWindow = Window & {
   OpenChatChannel?: {
     postMessage: (value: string) => void;
   };
+  OpenHairConsultationBilling?: {
+    postMessage: (value: string) => void;
+  };
   ExternalLink?: {
     postMessage: (value: string) => void;
   };
@@ -31,6 +34,17 @@ type OpenChatChannelMessage = {
   chatChannelId: string;
   postId?: string;
   answerId?: string;
+  entrySource?: ChatEntrySource;
+  isMyHairConsultationPost?: boolean;
+};
+
+export type HairConsultationBillingMessage = {
+  type: 'VIEW_ANSWER' | 'START_CONSULTATION_CHAT';
+  designerName: string;
+  receiverId?: number;
+  answerId?: number | string;
+  targetPath?: string;
+  postId?: string;
   entrySource?: ChatEntrySource;
   isMyHairConsultationPost?: boolean;
 };
@@ -53,6 +67,13 @@ export function hasOpenChatChannelBridge(): boolean {
 
   const w = window as BridgeWindow;
   return !!w.OpenChatChannel && typeof w.OpenChatChannel.postMessage === 'function';
+}
+
+function hasHairConsultationBillingBridge(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  const w = window as BridgeWindow;
+  return typeof w.OpenHairConsultationBilling?.postMessage === 'function';
 }
 
 function hasCloseWebViewBridge(): boolean {
@@ -144,6 +165,18 @@ export function openChatChannelInApp(message: OpenChatChannelMessage): boolean {
     }
 
     w.OpenChatChannel?.postMessage(JSON.stringify(message));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+export function openHairConsultationBillingInApp(message: HairConsultationBillingMessage): boolean {
+  if (!hasHairConsultationBillingBridge()) return false;
+
+  try {
+    const w = window as BridgeWindow;
+    w.OpenHairConsultationBilling?.postMessage(JSON.stringify(message));
     return true;
   } catch (_) {
     return false;

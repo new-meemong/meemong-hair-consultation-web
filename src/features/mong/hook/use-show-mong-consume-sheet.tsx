@@ -18,6 +18,7 @@ import type { USER_SEX } from '@/entities/user/constants/user-sex';
 import type { ValueOf } from '@/shared/type/types';
 import { apiClient } from '@/shared/api/client';
 import { goStorePage } from '@/shared/lib/go-store-page';
+import { openHairConsultationBillingInApp } from '@/shared/lib/app-bridge';
 import { useCallback } from 'react';
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
@@ -44,7 +45,7 @@ export default function useShowMongConsumeSheet() {
 
   const showMongConsumeSheet = useCallback(
     async ({
-      designerName: _designerName,
+      designerName,
       answerId,
       postId,
       postListTab,
@@ -86,6 +87,22 @@ export default function useShowMongConsumeSheet() {
       // 미몽패스 활성화 상태면 바텀시트 없이 바로 이동
       if (canSkipMong(createType)) {
         push(targetRoute, responseNavigationParams);
+        return { alreadyPaid: false };
+      }
+
+      const responseQuery = new URLSearchParams();
+      Object.entries(responseNavigationParams).forEach(([key, value]) => {
+        responseQuery.set(key, String(value));
+      });
+      const queryString = responseQuery.toString();
+      const targetPath = queryString ? `${targetRoute}?${queryString}` : targetRoute;
+      const openedNativeBilling = openHairConsultationBillingInApp({
+        type: 'VIEW_ANSWER',
+        designerName,
+        answerId,
+        targetPath,
+      });
+      if (openedNativeBilling) {
         return { alreadyPaid: false };
       }
 

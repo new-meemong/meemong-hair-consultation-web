@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { openExternalLinkInApp, openInAppWebView } from './app-bridge';
+import {
+  openExternalLinkInApp,
+  openHairConsultationBillingInApp,
+  openInAppWebView,
+} from './app-bridge';
 
 type TestBridgeWindow = Window & {
   GoAppRouter?: {
@@ -8,6 +12,9 @@ type TestBridgeWindow = Window & {
   };
   goAppRouter?: (payload: string) => void;
   ExternalLink?: {
+    postMessage: (value: string) => void;
+  };
+  OpenHairConsultationBilling?: {
     postMessage: (value: string) => void;
   };
   externalLink?: (url: string) => void;
@@ -92,5 +99,39 @@ describe('openExternalLinkInApp', () => {
 
     expect(openExternalLinkInApp('https://naver.com')).toBe(true);
     expect(postMessage).toHaveBeenCalledWith(JSON.stringify('https://naver.com'));
+  });
+});
+
+describe('openHairConsultationBillingInApp', () => {
+  afterEach(() => {
+    Reflect.deleteProperty(bridgeWindow, 'OpenHairConsultationBilling');
+  });
+
+  it('returns false when the native channel does not exist', () => {
+    expect(
+      openHairConsultationBillingInApp({
+        type: 'VIEW_ANSWER',
+        designerName: '지우',
+        answerId: 42,
+        targetPath: '/posts/10/consulting/42',
+      }),
+    ).toBe(false);
+  });
+
+  it('sends the hair consultation billing request to the native channel', () => {
+    const postMessage = vi.fn();
+    bridgeWindow.OpenHairConsultationBilling = { postMessage };
+    const message = {
+      type: 'START_CONSULTATION_CHAT' as const,
+      designerName: '지우',
+      receiverId: 2,
+      postId: '10',
+      answerId: '42',
+      entrySource: 'CONSULTING_RESPONSE' as const,
+      isMyHairConsultationPost: false,
+    };
+
+    expect(openHairConsultationBillingInApp(message)).toBe(true);
+    expect(postMessage).toHaveBeenCalledWith(JSON.stringify(message));
   });
 });

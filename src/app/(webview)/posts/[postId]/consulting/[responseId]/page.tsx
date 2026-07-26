@@ -43,6 +43,7 @@ import faceTypeFeedback8 from '@/assets/face-type-feedback/face_type_feedback8.p
 import { format } from 'date-fns';
 import { getApiError } from '@/shared/lib/error-handler';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
+import { openHairConsultationBillingInApp } from '@/shared/lib/app-bridge';
 import hairBangStyleFeedbackF1 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f1.png';
 import hairBangStyleFeedbackF2 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f2.png';
 import hairBangStyleFeedbackF3 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f3.png';
@@ -541,6 +542,19 @@ export default function NewConsultingResponsePage() {
 
     if (canSkipMong(createType)) {
       await startConsultingResponseChat(isMyHairConsultationPost);
+      return;
+    }
+
+    const openedNativeBilling = openHairConsultationBillingInApp({
+      type: 'START_CONSULTATION_CHAT',
+      designerName: answer.user.displayName,
+      receiverId: answer.user.id,
+      postId: postIdString,
+      answerId: responseIdString,
+      entrySource: 'CONSULTING_RESPONSE',
+      isMyHairConsultationPost,
+    });
+    if (openedNativeBilling) {
       return;
     }
 

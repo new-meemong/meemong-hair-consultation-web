@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderHook } from '@testing-library/react';
+import { openHairConsultationBillingInApp } from '@/shared/lib/app-bridge';
 import { useOptionalBrand } from '@/shared/context/brand-context';
 import useShowMongConsumeSheet from './use-show-mong-consume-sheet';
 
@@ -55,6 +56,10 @@ vi.mock('@/shared/api/client', () => ({
   },
 }));
 
+vi.mock('@/shared/lib/app-bridge', () => ({
+  openHairConsultationBillingInApp: vi.fn(() => false),
+}));
+
 const mockBrandConfig = {
   config: {
     slug: 'test-brand',
@@ -71,6 +76,7 @@ const mockBrandConfig = {
 describe('useShowMongConsumeSheet', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(openHairConsultationBillingInApp).mockReturnValue(false);
   });
 
   it('브랜드 웹에서는 바텀시트 없이 /{brand}/posts/{postId}/consulting/{responseId}로 이동한다', async () => {
@@ -105,6 +111,29 @@ describe('useShowMongConsumeSheet', () => {
     });
 
     expect(mockShowBottomSheet).toHaveBeenCalled();
+    expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  it('지원 앱에서는 Flutter 결제 시트로 답변 확인을 위임한다', async () => {
+    vi.mocked(useOptionalBrand).mockReturnValue(null);
+    vi.mocked(openHairConsultationBillingInApp).mockReturnValue(true);
+
+    const { result } = renderHook(() => useShowMongConsumeSheet());
+
+    await result.current({
+      designerName: '지우',
+      answerId: 42,
+      postId: 'post-1',
+      postListTab: 'my',
+    });
+
+    expect(openHairConsultationBillingInApp).toHaveBeenCalledWith({
+      type: 'VIEW_ANSWER',
+      designerName: '지우',
+      answerId: 42,
+      targetPath: '/posts/post-1/consulting/42?postListTab=my',
+    });
+    expect(mockShowBottomSheet).not.toHaveBeenCalled();
     expect(mockPush).not.toHaveBeenCalled();
   });
 });
