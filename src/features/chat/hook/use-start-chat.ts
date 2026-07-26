@@ -21,6 +21,7 @@ type UseStartChatParams = {
   answerId?: string;
   entrySource?: ChatEntrySource;
   isMyHairConsultationPost?: boolean;
+  nativeAccessReason?: 'EXISTING_CHAT' | 'MEEMONG_PASS' | 'MONG_WITHDRAWN';
 };
 
 type PreparedHairConsultationChat = {
@@ -29,6 +30,7 @@ type PreparedHairConsultationChat = {
   answerId?: string;
   entrySource?: ChatEntrySource;
   isMyHairConsultationPost?: boolean;
+  nativeAccessReason?: 'EXISTING_CHAT' | 'MEEMONG_PASS' | 'MONG_WITHDRAWN';
 };
 
 /**
@@ -53,6 +55,7 @@ export default function useStartChat() {
       answerId,
       entrySource,
       isMyHairConsultationPost,
+      nativeAccessReason,
     }: UseStartChatParams): Promise<PreparedHairConsultationChat | null> => {
       if (!user?.id) {
         console.error('사용자 정보가 없습니다.');
@@ -75,6 +78,7 @@ export default function useStartChat() {
           answerId,
           entrySource,
           isMyHairConsultationPost,
+          nativeAccessReason,
         };
       } catch (error) {
         console.error('기존 채팅 조회 중 오류 발생:', error);
@@ -91,6 +95,7 @@ export default function useStartChat() {
       answerId,
       entrySource,
       isMyHairConsultationPost,
+      nativeAccessReason,
     }: UseStartChatParams): Promise<PreparedHairConsultationChat | null> => {
       if (!user?.id) {
         console.error('사용자 정보가 없습니다.');
@@ -117,6 +122,7 @@ export default function useStartChat() {
           answerId,
           entrySource,
           isMyHairConsultationPost,
+          nativeAccessReason,
         };
       } catch (error) {
         console.error('채팅 준비 중 오류 발생:', error);
@@ -133,6 +139,7 @@ export default function useStartChat() {
       answerId,
       entrySource,
       isMyHairConsultationPost,
+      nativeAccessReason,
     }: PreparedHairConsultationChat) => {
       if (!user?.id) {
         console.error('사용자 정보가 없습니다.');
@@ -149,6 +156,7 @@ export default function useStartChat() {
           answerId: answerId ?? undefined,
           entrySource,
           isMyHairConsultationPost,
+          nativeAccessReason,
         });
 
         if (opened) {
@@ -174,6 +182,7 @@ export default function useStartChat() {
       answerId,
       entrySource,
       isMyHairConsultationPost,
+      nativeAccessReason,
     }: UseStartChatParams) => {
       const preparedChat = await prepareChat({
         receiverId,
@@ -181,6 +190,7 @@ export default function useStartChat() {
         answerId,
         entrySource,
         isMyHairConsultationPost,
+        nativeAccessReason,
       });
 
       if (!preparedChat) {

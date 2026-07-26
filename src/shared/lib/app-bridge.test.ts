@@ -1,9 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  openChatChannelInApp,
   openExternalLinkInApp,
   openHairConsultationBillingInApp,
   openInAppWebView,
+  registerHairConsultationBillingInApp,
 } from './app-bridge';
 
 type TestBridgeWindow = Window & {
@@ -15,6 +17,9 @@ type TestBridgeWindow = Window & {
     postMessage: (value: string) => void;
   };
   OpenHairConsultationBilling?: {
+    postMessage: (value: string) => void;
+  };
+  OpenChatChannel?: {
     postMessage: (value: string) => void;
   };
   externalLink?: (url: string) => void;
@@ -132,6 +137,35 @@ describe('openHairConsultationBillingInApp', () => {
     };
 
     expect(openHairConsultationBillingInApp(message)).toBe(true);
+    expect(postMessage).toHaveBeenCalledWith(JSON.stringify(message));
+  });
+
+  it('registers support for the native billing protocol', () => {
+    const postMessage = vi.fn();
+    bridgeWindow.OpenHairConsultationBilling = { postMessage };
+
+    expect(registerHairConsultationBillingInApp()).toBe(true);
+    expect(postMessage).toHaveBeenCalledWith(JSON.stringify({ type: 'REGISTER' }));
+  });
+});
+
+describe('openChatChannelInApp', () => {
+  afterEach(() => {
+    Reflect.deleteProperty(bridgeWindow, 'OpenChatChannel');
+  });
+
+  it('sends the native access reason with the chat request', () => {
+    const postMessage = vi.fn();
+    bridgeWindow.OpenChatChannel = { postMessage };
+    const message = {
+      userId: '1',
+      chatChannelId: 'hair_1_2',
+      entrySource: 'CONSULTING_RESPONSE' as const,
+      isMyHairConsultationPost: false,
+      nativeAccessReason: 'EXISTING_CHAT' as const,
+    };
+
+    expect(openChatChannelInApp(message)).toBe(true);
     expect(postMessage).toHaveBeenCalledWith(JSON.stringify(message));
   });
 });

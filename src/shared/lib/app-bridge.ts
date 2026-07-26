@@ -36,6 +36,7 @@ type OpenChatChannelMessage = {
   answerId?: string;
   entrySource?: ChatEntrySource;
   isMyHairConsultationPost?: boolean;
+  nativeAccessReason?: 'EXISTING_CHAT' | 'MEEMONG_PASS' | 'MONG_WITHDRAWN';
 };
 
 export type HairConsultationBillingMessage = {
@@ -177,6 +178,18 @@ export function openHairConsultationBillingInApp(message: HairConsultationBillin
   try {
     const w = window as BridgeWindow;
     w.OpenHairConsultationBilling?.postMessage(JSON.stringify(message));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+export function registerHairConsultationBillingInApp(): boolean {
+  if (!hasHairConsultationBillingBridge()) return false;
+
+  try {
+    const w = window as BridgeWindow;
+    w.OpenHairConsultationBilling?.postMessage(JSON.stringify({ type: 'REGISTER' }));
     return true;
   } catch (_) {
     return false;

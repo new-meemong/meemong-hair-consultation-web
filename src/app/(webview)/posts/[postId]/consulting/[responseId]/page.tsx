@@ -43,7 +43,10 @@ import faceTypeFeedback8 from '@/assets/face-type-feedback/face_type_feedback8.p
 import { format } from 'date-fns';
 import { getApiError } from '@/shared/lib/error-handler';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
-import { openHairConsultationBillingInApp } from '@/shared/lib/app-bridge';
+import {
+  openHairConsultationBillingInApp,
+  registerHairConsultationBillingInApp,
+} from '@/shared/lib/app-bridge';
 import hairBangStyleFeedbackF1 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f1.png';
 import hairBangStyleFeedbackF2 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f2.png';
 import hairBangStyleFeedbackF3 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f3.png';
@@ -331,6 +334,10 @@ export default function NewConsultingResponsePage() {
   } = useGetHairConsultationDetail(postIdString);
 
   useEffect(() => {
+    registerHairConsultationBillingInApp();
+  }, []);
+
+  useEffect(() => {
     if (error && 'response' in error) {
       const httpError = error as HTTPError & {
         response?: { data?: { error?: ApiError }; status?: number };
@@ -442,7 +449,10 @@ export default function NewConsultingResponsePage() {
         await createMongWithdraw({ createType });
       }
 
-      const opened = await openPreparedChat(preparedChat);
+      const opened = await openPreparedChat({
+        ...preparedChat,
+        nativeAccessReason: existingChat ? 'EXISTING_CHAT' : 'MONG_WITHDRAWN',
+      });
       if (!opened) {
         showSnackBar({
           type: 'error',
@@ -527,7 +537,10 @@ export default function NewConsultingResponsePage() {
     if (existingChat) {
       setIsStartingChat(true);
       try {
-        const opened = await openPreparedChat(existingChat);
+        const opened = await openPreparedChat({
+          ...existingChat,
+          nativeAccessReason: 'EXISTING_CHAT',
+        });
         if (!opened) {
           showSnackBar({
             type: 'error',
@@ -537,11 +550,6 @@ export default function NewConsultingResponsePage() {
       } finally {
         setIsStartingChat(false);
       }
-      return;
-    }
-
-    if (canSkipMong(createType)) {
-      await startConsultingResponseChat(isMyHairConsultationPost);
       return;
     }
 
@@ -555,6 +563,11 @@ export default function NewConsultingResponsePage() {
       isMyHairConsultationPost,
     });
     if (openedNativeBilling) {
+      return;
+    }
+
+    if (canSkipMong(createType)) {
+      await startConsultingResponseChat(isMyHairConsultationPost);
       return;
     }
 
