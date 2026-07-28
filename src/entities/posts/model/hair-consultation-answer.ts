@@ -14,7 +14,7 @@ export type HairConsultationAnswerUser = {
   displayName: string;
   profilePictureURL: string | null;
   address?: string | null;
-  /** 현재 열람자와 디자이너 매장 간 거리(km) */
+  /** 현재 열람자와 디자이너 매장 간 거리(m) */
   distance?: number | null;
   role?: ValueOf<typeof USER_ROLE>;
   Role?: ValueOf<typeof USER_ROLE>;
