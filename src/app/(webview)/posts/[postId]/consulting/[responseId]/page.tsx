@@ -87,6 +87,7 @@ import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
+import useShowAnswerViewMongConsumeSnackBar from '@/features/mong/hook/use-show-answer-view-mong-consume-snack-bar';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
 import useStartChat from '@/features/chat/hook/use-start-chat';
 import { cn } from '@/shared/lib/utils';
@@ -359,10 +360,15 @@ export default function NewConsultingResponsePage() {
   const responseIdString = responseId?.toString() ?? '';
   const [isStartingChat, setIsStartingChat] = useState(false);
 
-  const { data: response, error } = useGetHairConsultationAnswerDetail(
-    postIdString,
-    responseIdString,
-  );
+  const {
+    data: response,
+    dataUpdatedAt: answerDataUpdatedAt,
+    error,
+  } = useGetHairConsultationAnswerDetail(postIdString, responseIdString);
+  useShowAnswerViewMongConsumeSnackBar({
+    dataUpdatedAt: answerDataUpdatedAt,
+    mongConsumePreset: response?.data.mongConsumePreset,
+  });
   const {
     data: consultationDetailResponse,
     isLoading: isConsultationDetailLoading,

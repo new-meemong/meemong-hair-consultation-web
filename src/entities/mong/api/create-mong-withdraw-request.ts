@@ -31,6 +31,8 @@ type ChatWithdrawCreateType =
 // NOTE:
 // 'HAIR_CONSULTATIONS_COMMENTS_DESIGNER'는 댓글 POST API에서 과금되므로
 // withdraw createType 목록에 포함하지 않습니다.
+// 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL'는 답변 상세 GET API에서 과금되며,
+// GET /mong-moneys/withdraw의 결제 이력 조회에만 사용합니다.
 
 export type CreateMongWithdrawRequest =
   | {
@@ -61,11 +63,4 @@ export type CreateMongWithdrawRequest =
       mongType?: MongType;
       refId: number; // ExperienceGroups.id
       refType: 'ExperienceGroups';
-    }
-  | {
-      // 레거시: 헤어 컨설팅 답변 보기 차감
-      createType: 'VIEW_MY_HAIR_CONSULTATIONS_ANSWERS_MODEL';
-      mongType?: MongType;
-      refId: number; // HairConsultationsAnswers.id
-      refType: 'HairConsultationsAnswers';
     };

@@ -1,3 +1,5 @@
+import type { MongConsumePresetPaymentResult } from '@/entities/mong/api/mong-consume-preset';
+
 export type CreateHairConsultationCommentResponse = {
   isReported: boolean;
   id: number;
@@ -8,15 +10,5 @@ export type CreateHairConsultationCommentResponse = {
   commentType: 'COMMENT' | 'REPLY';
   updatedAt: string;
   createdAt: string;
-  mongConsumePreset: {
-    id: number;
-    title: string;
-    type: string;
-    subType: string;
-    price: number;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string | null;
-    isPaidThisTime: boolean;
-  } | null;
+  mongConsumePreset: MongConsumePresetPaymentResult | null;
 };

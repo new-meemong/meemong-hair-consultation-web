@@ -55,3 +55,7 @@ export type MongConsumePreset = {
   updatedAt: string;
   deletedAt: string | null;
 };
+
+export type MongConsumePresetPaymentResult = MongConsumePreset & {
+  isPaidThisTime: boolean;
+};
