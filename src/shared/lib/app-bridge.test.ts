@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  closeAppWebView,
   openChatChannelInApp,
   openExternalLinkInApp,
   openHairConsultationBillingInApp,
@@ -10,6 +11,9 @@ import {
 
 type TestBridgeWindow = Window & {
   GoAppRouter?: {
+    postMessage: (value: string) => void;
+  };
+  GoBack?: {
     postMessage: (value: string) => void;
   };
   goAppRouter?: (payload: string) => void;
@@ -104,6 +108,45 @@ describe('openExternalLinkInApp', () => {
 
     expect(openExternalLinkInApp('https://naver.com')).toBe(true);
     expect(postMessage).toHaveBeenCalledWith(JSON.stringify('https://naver.com'));
+  });
+});
+
+describe('closeAppWebView', () => {
+  afterEach(() => {
+    Reflect.deleteProperty(bridgeWindow, 'GoBack');
+    Reflect.deleteProperty(window, 'closeWebview');
+  });
+
+  it('returns false when only the layout wrapper exists', () => {
+    bridgeWindow.closeWebview = vi.fn();
+
+    expect(closeAppWebView()).toBe(false);
+    expect(bridgeWindow.closeWebview).not.toHaveBeenCalled();
+  });
+
+  it('uses the wrapper when the native channel exists', () => {
+    const closeWebview = vi.fn();
+    const postMessage = vi.fn();
+
+    bridgeWindow.closeWebview = closeWebview;
+    bridgeWindow.GoBack = { postMessage };
+
+    expect(closeAppWebView()).toBe(true);
+    expect(closeWebview).toHaveBeenCalledWith('close');
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  it('falls back to the native channel', () => {
+    const postMessage = vi.fn();
+
+    bridgeWindow.GoBack = { postMessage };
+
+    expect(closeAppWebView()).toBe(true);
+    expect(postMessage).toHaveBeenCalledWith(JSON.stringify('close'));
+  });
+
+  it('returns false when no close bridge exists', () => {
+    expect(closeAppWebView()).toBe(false);
   });
 });
 

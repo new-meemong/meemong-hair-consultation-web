@@ -81,10 +81,9 @@ function hasCloseWebViewBridge(): boolean {
   if (typeof window === 'undefined') return false;
 
   const w = window as BridgeWindow;
-  return (
-    typeof w.closeWebview === 'function' ||
-    (!!w.GoBack && typeof w.GoBack.postMessage === 'function')
-  );
+  // window.closeWebview 래퍼는 레이아웃 스크립트에서 항상 주입되므로,
+  // 실제 네이티브 브리지(GoBack.postMessage) 존재 여부로 판단한다.
+  return !!w.GoBack && typeof w.GoBack.postMessage === 'function';
 }
 
 function hasExternalLinkBridge(): boolean {

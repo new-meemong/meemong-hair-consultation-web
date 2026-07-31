@@ -1,5 +1,5 @@
 import { AD_TYPE } from '@/features/ad/constants/ad-type';
-import openUrlInApp from '@/shared/lib/open-url-in-app';
+import { openExternalUrl } from '@/shared/lib/open-external-url';
 import { showAdIfAllowed } from '@/shared/lib/show-ad-if-allowed';
 import { useCallback } from 'react';
 import useGetGrowthPassStatus from '@/features/growth-pass/api/use-get-growth-pass-status';
@@ -20,13 +20,13 @@ export default function useShowExperienceGroupLinkSheet() {
     async ({ url }: ShowExperienceGroupLinkSheetParams) => {
       // 성장패스가 활성화되어 있으면 광고 없이 바로 링크로 이동
       if (growthPassStatus?.data?.isActive) {
-        openUrlInApp(url);
+        openExternalUrl(url);
         return { growthPassActive: true };
       }
 
       // 성장패스 미사용자는 광고 노출 후 링크 이동
       showAdIfAllowed({ adType: AD_TYPE.SNS_URL_IN_EXPERIENCE_GROUP });
-      openUrlInApp(url);
+      openExternalUrl(url);
       return { growthPassActive: false };
     },
     [growthPassStatus],

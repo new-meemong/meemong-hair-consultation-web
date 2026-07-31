@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import type { Banner } from '@/entities/banner/model/banner';
-import openUrlInApp from '@/shared/lib/open-url-in-app';
+import { openExternalUrl } from '@/shared/lib/open-external-url';
 
 type BannerProps = {
   banner: Banner;
@@ -9,7 +9,7 @@ type BannerProps = {
 
 export default function Banner({ banner }: BannerProps) {
   const handleClick = () => {
-    openUrlInApp(banner.redirectUrl);
+    openExternalUrl(banner.redirectUrl);
   };
 
   return (

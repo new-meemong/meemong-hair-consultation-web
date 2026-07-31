@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { SalonPickProduct } from '@/entities/salon-pick-product/model/salon-pick-product';
 import { trackSalonPickProductClick } from '@/features/salon-pick/api/track-salon-pick-product-click';
 import useGetSalonPickProducts from '@/features/salon-pick/api/use-get-salon-pick-products';
-import { openExternalLinkInApp } from '@/shared/lib/app-bridge';
+import { openExternalUrl } from '@/shared/lib/open-external-url';
 import DetailBannerFrame from '@/shared/ui/detail-banner-frame';
 import { type CarouselApi, Carousel, CarouselContent, CarouselItem } from '@/shared/ui/carousel';
 
@@ -128,9 +128,7 @@ export default function SalonPickDetailAdSlot() {
       return;
     }
 
-    if (!openExternalLinkInApp(productLinkUrl)) {
-      window.open(productLinkUrl, '_blank', 'noopener,noreferrer');
-    }
+    openExternalUrl(productLinkUrl);
   };
 
   if (products.length === 0) {

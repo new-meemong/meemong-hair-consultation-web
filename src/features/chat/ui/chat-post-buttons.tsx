@@ -7,7 +7,7 @@ import { ROUTES } from '@/shared';
 import { isDesigner } from '@/entities/user/lib/user-role';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 import { cn } from '@/shared/lib/utils';
-import openUrlInApp from '@/shared/lib/open-url-in-app';
+import { openExternalUrl } from '@/shared/lib/open-external-url';
 import { useAuthContext } from '@/features/auth/context/auth-context';
 import useGetHairConsultationDetail from '@/features/posts/api/use-get-hair-consultation-detail';
 import { useMemo } from 'react';
@@ -145,12 +145,8 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
       return;
     }
 
-    // 웹에서는 window.open 사용, 앱에서는 openUrlInApp 사용
-    if (typeof window.externalLink === 'function') {
-      openUrlInApp(storeUrl);
-    } else {
-      window.open(storeUrl, '_blank', 'noopener,noreferrer');
-    }
+    // 앱에서는 네이티브 채널을 우선하고 브라우저에서는 새 탭으로 연다.
+    openExternalUrl(storeUrl);
   };
 
   // 버튼 공통 스타일

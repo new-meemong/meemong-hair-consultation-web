@@ -15,7 +15,7 @@ import type { GetMongWithdrawResponse } from '@/entities/mong/api/get-mong-withd
 import type { HTTPError } from 'ky';
 import { apiClient } from '@/shared/api/client';
 import { goStorePage } from '@/shared/lib/go-store-page';
-import openUrlInApp from '@/shared/lib/open-url-in-app';
+import { openExternalUrl } from '@/shared/lib/open-external-url';
 import { useCallback } from 'react';
 import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-withdraw-mutation';
 import useGetGrowthPassStatus from '@/features/growth-pass/api/use-get-growth-pass-status';
@@ -43,7 +43,7 @@ export default function useShowExperienceGroupLinkSheetBottomSheet() {
   const showExperienceGroupLinkSheet = useCallback(
     async ({ designerName, experienceGroupId, url }: ShowExperienceGroupLinkSheetParams) => {
       if (growthPassStatus?.data?.isActive) {
-        openUrlInApp(url);
+        openExternalUrl(url);
         return { alreadyPaid: false, growthPassActive: true };
       }
 
@@ -61,7 +61,8 @@ export default function useShowExperienceGroupLinkSheetBottomSheet() {
         );
 
         if (withdrawResponse?.data?.isPaid === true) {
-          openUrlInApp(url);
+          // 이 휴면 플로우를 다시 연결할 때는 await 이후 브라우저 팝업 정책을 재검토한다.
+          openExternalUrl(url);
           return { alreadyPaid: true };
         }
       } catch (error) {
@@ -74,7 +75,8 @@ export default function useShowExperienceGroupLinkSheetBottomSheet() {
       }
 
       if (isMongConsumeDisabled) {
-        openUrlInApp(url);
+        // 이 휴면 플로우를 다시 연결할 때는 await 이후 브라우저 팝업 정책을 재검토한다.
+        openExternalUrl(url);
         return { alreadyPaid: false, mongConsumeDisabled: true };
       }
 
@@ -132,7 +134,8 @@ export default function useShowExperienceGroupLinkSheetBottomSheet() {
                           refId: experienceGroupId,
                           refType: 'ExperienceGroups',
                         });
-                        openUrlInApp(url);
+                        // 이 휴면 플로우를 다시 연결할 때는 await 이후 브라우저 팝업 정책을 재검토한다.
+                        openExternalUrl(url);
                       } catch (error) {
                         if (error && typeof error === 'object' && 'response' in error) {
                           const httpError = error as HTTPError;
