@@ -1,67 +1,58 @@
 # 미몽 헤어상담 웹
 
-## 1. 프로젝트 개요
+Flutter 앱에 임베드되어 모델의 헤어상담 요청과 디자이너의 상담 답변, 관련 채팅을 제공하는 Next.js 웹뷰입니다.
 
-미몽 헤어상담
+## 주요 기능
 
-- 헤어 스타일 관련 정보와 상담을 제공하는 웹 플랫폼
+- 모델 헤어상담 작성 및 조회
+- 디자이너 상담 답변 작성 및 조회
+- 상담 댓글과 실시간 채팅
+- Flutter 앱 브리지 기반 화면 이동과 외부 링크 처리
 
-### 주요 기능
+## 문서
 
-- 모델 게시판
-- 디자이너 게시판
+- [문서 안내](./docs/README.md)
+- [기능 문서](./docs/features/)
+- [데이터베이스 문서](./docs/database/)
+- [아키텍처 문서](./docs/architecture.md)
 
-## 📚 문서
+## 기술 스택
 
-프로젝트의 상세 문서는 [`docs/`](./docs/README.md) 디렉토리에서 확인할 수 있습니다.
+- Next.js 15
+- React 19
+- TypeScript 5
+- Tailwind CSS 4
+- TanStack Query
+- Zustand
+- Firebase
+- Vitest
 
-- [기능 문서](./docs/features/) - 주요 기능별 구현 로직
-- [데이터베이스 문서](./docs/database/) - Firestore 구조 및 데이터 모델
-- [아키텍처 문서](./docs/architecture.md) - 프로젝트 아키텍처 설명
+## 실행 환경
 
-## 2. 기술 스택
+- Node.js 22.x
+- npm
 
-- **프레임워크**: Next.js v15
-- **UI 라이브러리**: React v19
-- **스타일링**: Tailwind CSS v4
-- **컴포넌트 라이브러리**: shadcn-ui
-- **언어**: TypeScript v5
-- **패키지 매니저**: Bun
-
-## 3. 실행 방법
-
-### 실행 환경
-
-- Node.js v21.6.2
-- Bun 설치
-
-### 개발 환경 설정
-
-1. 저장소 클론
+## 시작하기
 
 ```bash
-git clone https://github.com/new-meemong/meemong-hair-consultation-web.git
-cd meemong-hair-consultation-web
+npm ci
+npm run dev
 ```
 
-2. 의존성 설치
+개발 서버는 기본적으로 `http://localhost:3002`에서 실행됩니다.
+
+## 검증 및 빌드
 
 ```bash
-bun install
+npm run test -- --run
+npm run lint
+npm run build
 ```
 
-3. 개발 서버 실행
+프로덕션 빌드 실행:
 
 ```bash
-bun dev
+npm run start
 ```
 
-### 빌드 및 배포
-
-```bash
-# 프로덕션 빌드
-bun run build
-
-# 프로덕션 서버 실행
-bun start
-```
+에이전트용 프로젝트 규칙은 [AGENTS.md](./AGENTS.md)를 참고합니다.
