@@ -152,6 +152,10 @@ describe('useExperienceGroupForm', () => {
     expect(mocks.showAdIfAllowed).toHaveBeenCalledWith({
       adType: 'creating-experience-group',
     });
+    expect(mocks.replace).toHaveBeenCalledWith('/posts', {
+      postTab: 'experienceGroup',
+      postListTab: 'my',
+    });
     expect(mocks.closeAppWebView).not.toHaveBeenCalled();
     expect(mocks.mutate.mock.invocationCallOrder[0]).toBeLessThan(
       mocks.showAdIfAllowed.mock.invocationCallOrder[0],

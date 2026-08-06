@@ -26,4 +26,20 @@ describe('buildHairConsultationMessageLink', () => {
       ),
     ).toBe('https://meemong-hair-consultation-web.vercel.app/posts/1#answer');
   });
+
+  it('uses the configured public web origin before the API-based fallback', () => {
+    expect(
+      buildHairConsultationMessageLink(
+        localChatUrl,
+        'https://api-test.meemong.com',
+        'https://hair.meemong.com/some-path',
+      ),
+    ).toBe('https://hair.meemong.com/chat/hair-consultation/channel_1');
+  });
+
+  it('falls back safely when the configured web origin is invalid', () => {
+    expect(
+      buildHairConsultationMessageLink(localChatUrl, 'https://api.meemong.com', 'not-a-url'),
+    ).toBe('https://meemong-hair-consultation-web.vercel.app/chat/hair-consultation/channel_1');
+  });
 });

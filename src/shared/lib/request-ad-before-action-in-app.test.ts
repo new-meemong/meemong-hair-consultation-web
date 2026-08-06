@@ -1,12 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  AD_COMPLETION_TIMEOUT_MS,
   AD_BEFORE_ACTION_RESULT,
   requestAdBeforeActionInApp,
 } from './request-ad-before-action-in-app';
 
 describe('requestAdBeforeActionInApp', () => {
   afterEach(() => {
+    vi.useRealTimers();
     Reflect.deleteProperty(window, 'ShowAdBeforeAction');
     Reflect.deleteProperty(window, '__meemongResolveAdBeforeAction');
   });
@@ -52,6 +54,18 @@ describe('requestAdBeforeActionInApp', () => {
       requestId: request.requestId,
       isCompleted: false,
     });
+
+    await expect(resultPromise).resolves.toBe(AD_BEFORE_ACTION_RESULT.NOT_COMPLETED);
+  });
+
+  it('네이티브 응답이 유실되면 제한 시간 뒤 잠금을 해제할 수 있도록 notCompleted를 반환한다', async () => {
+    vi.useFakeTimers();
+    window.ShowAdBeforeAction = { postMessage: vi.fn() };
+
+    const resultPromise = requestAdBeforeActionInApp({
+      adType: 'creating-experience-group',
+    });
+    await vi.advanceTimersByTimeAsync(AD_COMPLETION_TIMEOUT_MS);
 
     await expect(resultPromise).resolves.toBe(AD_BEFORE_ACTION_RESULT.NOT_COMPLETED);
   });

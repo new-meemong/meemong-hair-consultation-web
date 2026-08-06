@@ -30,7 +30,9 @@ type AdBeforeActionBridgeWindow = Window & {
   __meemongResolveAdBeforeAction?: (payload: AdBeforeActionCompletionPayload) => void;
 };
 
-const AD_COMPLETION_TIMEOUT_MS = 10 * 60 * 1000;
+// 광고 시청 시간은 충분히 허용하되 네이티브 응답 유실 시 작성 화면을
+// 10분 동안 잠그지 않도록 제한한다.
+export const AD_COMPLETION_TIMEOUT_MS = 2 * 60 * 1000;
 const pendingAdRequests = new Map<string, PendingAdRequest>();
 
 const installAdCompletionHandler = (bridgeWindow: AdBeforeActionBridgeWindow) => {

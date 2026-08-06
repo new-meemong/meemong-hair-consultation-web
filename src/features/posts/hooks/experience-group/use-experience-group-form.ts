@@ -79,6 +79,7 @@ export default function useExperienceGroupForm() {
         if (isUserModel && showLegacyAdAfterUpload) {
           replace(ROUTES.POSTS, {
             [SEARCH_PARAMS.POST_TAB]: CONSULT_TYPE.EXPERIENCE_GROUP,
+            [SEARCH_PARAMS.POST_LIST_TAB]: 'my',
           });
           showAdIfAllowed({
             adType: AD_TYPE.CREATING_EXPERIENCE_GROUP,
