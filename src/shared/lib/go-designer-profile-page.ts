@@ -1,4 +1,5 @@
 import type { ChatEntrySource } from '@/features/chat/type/chat-entry-source';
+import type { ChatOriginEntrySource } from '@/shared/lib/chat-start-request';
 import { openInAppWebView } from './app-bridge';
 
 export function goDesignerProfilePage(
@@ -7,6 +8,7 @@ export function goDesignerProfilePage(
     postId?: string;
     answerId?: string;
     entrySource?: ChatEntrySource;
+    originEntrySource?: ChatOriginEntrySource;
     isTopAdvisorDesigner?: boolean;
     isMyHairConsultationPost?: boolean;
     isConsultingAnswerComment?: boolean;
@@ -24,6 +26,9 @@ export function goDesignerProfilePage(
   }
   if (options?.entrySource) {
     params.set('entrySource', options.entrySource);
+  }
+  if (options?.originEntrySource) {
+    params.set('originEntrySource', options.originEntrySource);
   }
   if (options?.isTopAdvisorDesigner) {
     params.set('isTopAdvisorDesigner', 'true');

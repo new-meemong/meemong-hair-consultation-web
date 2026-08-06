@@ -1,5 +1,7 @@
 import z from 'zod';
 
+import { isValidUrl } from '@/shared/lib/is-valid-url';
+
 import { EXPERIENCE_GROUP_FORM_FIELD_NAME } from '../constants/experience-group/experience-group-form-field-name';
 import { EXPERIENCE_GROUP_PRICE_TYPE } from '../constants/experience-group-price-type';
 
@@ -17,7 +19,9 @@ export const experienceGroupFormSchema = z.object({
   [EXPERIENCE_GROUP_FORM_FIELD_NAME.SNS_TYPES]: z.array(
     z.object({
       snsType: z.string(),
-      url: z.string(),
+      url: z.string().refine(isValidUrl, {
+        message: '올바른 SNS 주소를 입력해주세요.',
+      }),
     }),
   ),
 });

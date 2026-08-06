@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 const createUrlWithUserId = (
   path: string,
@@ -34,19 +34,39 @@ export function useRouterWithUser() {
   const searchParams = useSearchParams();
   const userId = searchParams.get(SEARCH_PARAMS.USER_ID);
   const source = searchParams.get(SEARCH_PARAMS.SOURCE);
+  const supportsFullWebviewPostCreate = searchParams.get(
+    SEARCH_PARAMS.SUPPORTS_FULL_WEBVIEW_POST_CREATE,
+  );
+  const persistentAppCapabilityParams = useMemo<Record<string, string>>(() => {
+    const params: Record<string, string> = {};
+    if (supportsFullWebviewPostCreate != null) {
+      params[SEARCH_PARAMS.SUPPORTS_FULL_WEBVIEW_POST_CREATE] = supportsFullWebviewPostCreate;
+    }
+    return params;
+  }, [supportsFullWebviewPostCreate]);
 
   const push = useCallback(
     (path: string, params?: Record<string, string>) => {
-      router.push(createUrlWithUserId(path, userId, source, params));
+      router.push(
+        createUrlWithUserId(path, userId, source, {
+          ...persistentAppCapabilityParams,
+          ...params,
+        }),
+      );
     },
-    [router, userId, source],
+    [router, userId, source, persistentAppCapabilityParams],
   );
 
   const replace = useCallback(
     (path: string, params?: Record<string, string>) => {
-      router.replace(createUrlWithUserId(path, userId, source, params));
+      router.replace(
+        createUrlWithUserId(path, userId, source, {
+          ...persistentAppCapabilityParams,
+          ...params,
+        }),
+      );
     },
-    [router, userId, source],
+    [router, userId, source, persistentAppCapabilityParams],
   );
 
   const back = useCallback(() => {

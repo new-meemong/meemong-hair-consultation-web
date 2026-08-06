@@ -12,7 +12,7 @@ import { SiteHeader } from '@/widgets/header';
 export default function ExperienceGroupFormContainer() {
   const [currentStep, setCurrentStep] = useState(1);
 
-  const { method, submit } = useExperienceGroupForm();
+  const { method, submit, isSubmitting } = useExperienceGroupForm();
 
   const { isDirty } = method.formState;
 
@@ -44,6 +44,7 @@ export default function ExperienceGroupFormContainer() {
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
         onSubmit={submit}
+        isSubmitting={isSubmitting}
       />
     </FormProvider>
   );

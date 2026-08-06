@@ -7,6 +7,7 @@ import { isDesigner } from '@/entities/user/lib/user-role';
 import { cn } from '@/lib/utils';
 import { getWebUserData } from '@/shared/lib/auth';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
+import { ChatOriginEntrySource } from '@/shared/lib/chat-start-request';
 import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useShowInvalidChatRequestSheet } from '@/features/chat/hook/use-show-invalid-chat-request-sheet';
@@ -106,6 +107,8 @@ export default function CommentAuthorProfile({
       postId: finalPostId,
       answerId: finalAnswerId,
       entrySource: 'POST_COMMENT',
+      originEntrySource:
+        ChatOriginEntrySource.HAIR_CONSULTATION_POST_COMMENT_DESIGNER_PROFILE_MENU_INQUIRY,
       isMyHairConsultationPost: isPostWriter,
       isConsultingAnswerComment: isConsultingAnswer,
     });

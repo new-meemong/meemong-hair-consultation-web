@@ -11,7 +11,6 @@ import { EXPERIENCE_GROUP_FORM_FIELD_NAME } from '../../constants/experience-gro
 import { EXPERIENCE_GROUP_PRICE_TYPE } from '../../constants/experience-group-price-type';
 import type { ExperienceGroupFormValues } from '../../types/experience-group-form-values';
 
-
 const EXPERIENCE_GROUP_FORM_STEPS: FormStep<ExperienceGroupFormValues>[] = [
   {
     name: EXPERIENCE_GROUP_FORM_FIELD_NAME.PRICE_TYPE,
@@ -36,12 +35,14 @@ type ExperienceGroupFormProps = {
   currentStep: number;
   setCurrentStep: (step: number) => void;
   onSubmit: (values: ExperienceGroupFormValues) => void;
+  isSubmitting?: boolean;
 };
 
 export default function ExperienceGroupForm({
   currentStep,
   setCurrentStep,
   onSubmit,
+  isSubmitting = false,
 }: ExperienceGroupFormProps) {
   const method = useFormContext<ExperienceGroupFormValues>();
 
@@ -98,6 +99,7 @@ export default function ExperienceGroupForm({
       canMoveNext={canMoveNextStep}
       onSubmit={onSubmit}
       lastStepButtonLabel="완료"
+      isSubmitting={isSubmitting}
     />
   );
 }

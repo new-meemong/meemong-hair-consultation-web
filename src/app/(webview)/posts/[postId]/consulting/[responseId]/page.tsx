@@ -39,7 +39,7 @@ import type { HTTPError } from 'ky';
 import type { HairConsultationDetail } from '@/entities/posts/model/hair-consultation-detail';
 import type { HairLengthOption } from '@/features/posts/constants/hair-length-options';
 import Image from 'next/image';
-import { MEEMONG_PASS_CREATE_TYPES } from '@/features/ad-block/lib/meemong-pass-policy';
+import { resolveModelHairConsultationResponseDetailChatCreateType } from '@/features/chat/lib/hair-consultation-chat-billing-policy';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import faceTypeFeedback1 from '@/assets/face-type-feedback/face_type_feedback1.png';
 import faceTypeFeedback2 from '@/assets/face-type-feedback/face_type_feedback2.png';
@@ -55,7 +55,13 @@ import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 import {
   openHairConsultationBillingInApp,
   registerHairConsultationBillingInApp,
+  startChatChannelInApp,
 } from '@/shared/lib/app-bridge';
+import {
+  ChatOriginEntrySource,
+  ChatV2ChannelType,
+  ChatV2PostType,
+} from '@/shared/lib/chat-start-request';
 import hairBangStyleFeedbackF1 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f1.png';
 import hairBangStyleFeedbackF2 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f2.png';
 import hairBangStyleFeedbackF3 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f3.png';
@@ -411,7 +417,6 @@ export default function NewConsultingResponsePage() {
   const postWriterId = getConsultationPostWriterId(consultationDetail);
   const isResponseWriter = user != null && user.id === answer.user.id;
   const isPostWriter = postWriterId != null && user != null && user.id === postWriterId;
-  const shouldSkipAdditionalConsultationMong = isUserModel && isPostWriter;
   const isCheckingPostWriter =
     !brand && isUserModel && postWriterId == null && isConsultationDetailLoading;
   const shouldShowBottomActions = brand ? true : isUserModel && !isResponseWriter;
@@ -425,6 +430,8 @@ export default function NewConsultingResponsePage() {
       postId: postIdString,
       answerId: responseIdString,
       entrySource: 'CONSULTING_RESPONSE',
+      originEntrySource:
+        ChatOriginEntrySource.HAIR_CONSULTATION_RESPONSE_DETAIL_DESIGNER_PROFILE_MENU_INQUIRY,
       isMyHairConsultationPost: isPostWriter,
       isConsultingDetailEntry: true,
     });
@@ -452,13 +459,11 @@ export default function NewConsultingResponsePage() {
   };
 
   const startChatWithMong = async () => {
-    // 유료 확인 시트가 stale render에서 열려도 내 글 추가 상담은 차감하지 않는다.
-    if (shouldSkipAdditionalConsultationMong) {
+    const createType = resolveModelHairConsultationResponseDetailChatCreateType(isPostWriter);
+    if (createType == null) {
       await startConsultingResponseChat();
       return;
     }
-
-    const createType = MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
 
     setIsStartingChat(true);
     try {
@@ -556,24 +561,43 @@ export default function NewConsultingResponsePage() {
       }
     }
 
+    if (
+      startChatChannelInApp({
+        channelType: ChatV2ChannelType.HAIR_CONSULTATION,
+        postType: ChatV2PostType.HAIR_CONSULTATION,
+        postId: postIdString,
+        answerId: responseIdString,
+        targetUserId: answer.user.id.toString(),
+        targetDisplayName: answer.user.displayName,
+        originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_RESPONSE_DETAIL_DIRECT_CHAT,
+        joinType: isUserModel ? 'MODEL' : 'DESIGNER',
+        isMyHairConsultationPost,
+      })
+    ) {
+      return;
+    }
+
+    // StartChatChannel이 없는 구버전 앱에서만 아래 레거시 생성·과금
+    // 프로토콜을 사용한다. 신규 앱은 반드시 위 공통 v2 시작 경로에서 끝난다.
+
     if (!isUserModel) {
       await startConsultingResponseChat(isMyHairConsultationPost);
       return;
     }
 
-    if (isMyHairConsultationPost) {
+    const createType =
+      resolveModelHairConsultationResponseDetailChatCreateType(isMyHairConsultationPost);
+    if (createType == null) {
       await startConsultingResponseChat(isMyHairConsultationPost);
       return;
     }
-
-    const createType = MEEMONG_PASS_CREATE_TYPES.OTHER_HAIR_CONSULTATIONS_ANSWER_CHAT_MODEL;
 
     const existingChat = await findExistingChat({
       receiverId: answer.user.id,
       postId: postIdString,
       answerId: responseIdString,
       entrySource: 'CONSULTING_RESPONSE',
-      isMyHairConsultationPost,
+      isMyHairConsultationPost: false,
     });
 
     if (existingChat) {
@@ -602,7 +626,7 @@ export default function NewConsultingResponsePage() {
       postId: postIdString,
       answerId: responseIdString,
       entrySource: 'CONSULTING_RESPONSE',
-      isMyHairConsultationPost,
+      isMyHairConsultationPost: false,
     });
     if (openedNativeBilling) {
       return;

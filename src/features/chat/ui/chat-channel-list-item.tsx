@@ -154,7 +154,7 @@ export default function ChatChannelListItem({ chatChannel }: ChatChannelListItem
     (otherUser as FirestoreUser)?.profileUrl || otherUser?.profilePictureURL || '/profile.svg';
 
   return (
-    <div className="relative w-full overflow-hidden z-1 flex items-center">
+    <div className="relative w-full overflow-hidden z-1 flex items-center touch-pan-y">
       <div
         className={cn(
           'flex gap-4 px-6 py-5 transform transition-transform duration-300 ease-in-out bg-white z-1 w-full items-center h-full',

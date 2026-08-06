@@ -47,6 +47,7 @@ export default function ChatMessageActionBox({ userChannel }: ChatMessageActionB
 
       await sendMessage({
         channelId: userChannel.channelId,
+        schemaVersion: userChannel.schemaVersion,
         receiverId: userChannel.otherUser.id.toString(),
         message: createChatImagesMessage(response.dataList.map((img) => img.imageURL)),
         messageType: HairConsultationChatMessageTypeEnum.IMAGE,

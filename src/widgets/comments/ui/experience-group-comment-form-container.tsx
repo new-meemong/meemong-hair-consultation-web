@@ -17,6 +17,12 @@ import useCreateMongWithdrawMutation from '@/features/mong/api/use-create-mong-w
 import useGetMongConsumePresets from '@/features/mong/api/use-get-mong-consume-presets';
 import useGetMongCurrent from '@/features/mong/api/use-get-mong-current';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
+import { startChatChannelInApp } from '@/shared/lib/app-bridge';
+import {
+  ChatOriginEntrySource,
+  ChatV2ChannelType,
+  ChatV2PostType,
+} from '@/shared/lib/chat-start-request';
 import { CommentForm, type CommentFormValues } from '@/features/comments/ui/comment-form';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useOverlayContext } from '@/shared/context/overlay-context';
@@ -25,6 +31,7 @@ import { Button } from '@/shared/ui/button';
 import { useSearchParams } from 'next/navigation';
 
 type ExperienceGroupCommentFormContainerProps = {
+  experienceGroupId: string;
   receiverId: number;
   receiverName: string;
   commentFormState: CommentFormState;
@@ -39,6 +46,7 @@ type ExperienceGroupCommentFormContainerProps = {
 };
 
 export default function ExperienceGroupCommentFormContainer({
+  experienceGroupId,
   receiverId,
   receiverName,
   commentFormState,
@@ -99,6 +107,19 @@ export default function ExperienceGroupCommentFormContainer({
     isChatClickLockedRef.current = true;
 
     try {
+      if (
+        startChatChannelInApp({
+          channelType: ChatV2ChannelType.MODEL_MATCHING,
+          postType: ChatV2PostType.EXPERIENCE_GROUP,
+          postId: experienceGroupId,
+          targetUserId: receiverId.toString(),
+          targetDisplayName: receiverName,
+          originEntrySource: ChatOriginEntrySource.EXPERIENCE_GROUP_DETAIL_CHAT,
+        })
+      ) {
+        return;
+      }
+
       const existingChat = await findExistingModelMatchingChat({
         receiverId,
         entrySource: 'POST_COMMENT',
@@ -241,6 +262,7 @@ export default function ExperienceGroupCommentFormContainer({
     }
   }, [
     createMongWithdraw,
+    experienceGroupId,
     findExistingModelMatchingChat,
     isFromApp,
     isStartingChat,

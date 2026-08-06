@@ -7,6 +7,7 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useGetUser } from '@/features/auth/api/use-get-user';
 import useIsFromApp from '@/features/chat/hook/use-is-from-app';
 import useSendMessage from '@/features/chat/hook/use-send-message';
+import { HAIR_CONSULTATION_CHAT_MESSAGE_SEND_UNAVAILABLE_ERROR } from '@/features/chat/lib/hair-consultation-chat-v2-policy';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import { useHairConsultationChatMessageStore } from '@/features/chat/store/hair-consultation-chat-message-store';
 import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
@@ -17,6 +18,7 @@ import ChatPostButtons from '@/features/chat/ui/chat-post-buttons';
 import MessageSection from '@/features/chat/ui/message-section';
 import { useLoadingContext } from '@/shared/context/loading-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
+import { closeAppWebView } from '@/shared/lib/app-bridge';
 import { SiteHeader } from '@/widgets/header';
 
 export default function HairConsultationChatDetailPage() {
@@ -27,16 +29,15 @@ export default function HairConsultationChatDetailPage() {
   const { back } = useRouterWithUser();
 
   const handleBackClick = () => {
-    if (isFromApp) {
-      window.closeWebview('close');
-    } else {
-      back();
-    }
+    if (isFromApp && closeAppWebView()) return;
+    back();
   };
 
   const [userChannel, setUserChannel] = useState<UserHairConsultationChatChannelType | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [isMessageSendUnavailableAfterFailure, setIsMessageSendUnavailableAfterFailure] =
+    useState(false);
 
   const { user } = useAuthContext();
   const userId = user.id.toString();
@@ -67,26 +68,16 @@ export default function HairConsultationChatDetailPage() {
     subscribeToMine: state.subscribeToMine,
   }));
 
-  // 웹/앱 모두에서 채널이 없을 때 해당 채널 구독
-  // => 직접 URL로 접근한 경우나 앱에서 접근한 경우를 처리
+  // 상세 화면이 열려 있는 동안 내 메타를 계속 구독해 상대 이탈 상태도 즉시 반영한다.
   useEffect(() => {
-    if (!chatChannelId || !userId || userChannel) return;
+    if (!chatChannelId || !userId) return;
 
-    // 리스트에 채널이 없을 때 해당 채널 구독
-    const foundUserChannel = userHairConsultationChatChannels.find(
-      (channel) => channel.channelId === chatChannelId,
-    );
-
-    if (!foundUserChannel) {
-      const unsubscribe = subscribeToMine(chatChannelId, userId);
-      return () => unsubscribe();
-    }
-  }, [chatChannelId, userId, subscribeToMine, userChannel, userHairConsultationChatChannels]);
+    const unsubscribe = subscribeToMine(chatChannelId, userId);
+    return () => unsubscribe();
+  }, [chatChannelId, userId, subscribeToMine]);
 
   // userHairConsultationChatChannels에서 채널 찾아서 userChannel로 설정
   useEffect(() => {
-    if (userChannel) return;
-
     const foundUserChannel = userHairConsultationChatChannels.find(
       (channel) => channel.channelId === params.id,
     );
@@ -115,7 +106,7 @@ export default function HairConsultationChatDetailPage() {
       return () => clearTimeout(timer);
     }
     // userHairConsultationChatChannels가 비어있는 경우는 아직 로딩 중이므로 기다림
-  }, [userHairConsultationChatChannels, params.id, userChannel]);
+  }, [userHairConsultationChatChannels, params.id]);
 
   // 메시지 구독 (채널 ID만 있으면 구독 가능, userChannel과 무관)
   useEffect(() => {
@@ -137,13 +128,14 @@ export default function HairConsultationChatDetailPage() {
   const { data: otherUserResponse } = useGetUser(otherUserId || '');
   const otherUserFromServer = otherUserResponse?.data;
 
+  const resolvedUserChannelId = userChannel?.channelId;
   useEffect(() => {
-    if (!userId || !chatChannelId || !userChannel) return;
+    if (!userId || !chatChannelId || !resolvedUserChannelId) return;
 
     // 채팅방 입장 시 상대방 정보 업데이트 (항상 서버에서 가져와서 Firestore 업데이트)
     updateChannelUserInfo(chatChannelId, userId);
     resetUnreadCount(chatChannelId, userId);
-  }, [userId, chatChannelId, userChannel, updateChannelUserInfo, resetUnreadCount]);
+  }, [userId, chatChannelId, resolvedUserChannelId, updateChannelUserInfo, resetUnreadCount]);
 
   const sendMessage = useSendMessage();
 
@@ -155,12 +147,17 @@ export default function HairConsultationChatDetailPage() {
     }
 
     try {
-      return await sendMessage({
+      const result = await sendMessage({
         channelId: chatChannelId,
+        schemaVersion: userChannel?.schemaVersion,
         receiverId: receiverId.toString(),
         message: message,
         messageType: HairConsultationChatMessageTypeEnum.TEXT,
       });
+      if (result.errorCode === HAIR_CONSULTATION_CHAT_MESSAGE_SEND_UNAVAILABLE_ERROR) {
+        setIsMessageSendUnavailableAfterFailure(true);
+      }
+      return result;
     } catch (error) {
       console.error('메시지 전송 실패:', error);
       return { success: false, channelId: null };
@@ -226,6 +223,10 @@ export default function HairConsultationChatDetailPage() {
 
   // 서버에서 가져온 유저 정보를 사용 (없으면 Firestore 데이터 fallback)
   const otherUser = otherUserFromServer || userChannel?.otherUser;
+  const isMessageSendUnavailable =
+    userChannel.deletedAt != null ||
+    userChannel.otherUserLeft === true ||
+    isMessageSendUnavailableAfterFailure;
   return (
     <div className="h-screen flex flex-col">
       <SiteHeader
@@ -250,10 +251,16 @@ export default function HairConsultationChatDetailPage() {
           userChannel={userChannel && otherUser ? { ...userChannel, otherUser } : userChannel}
         />
       </div>
-      <ChatMessageForm
-        onSubmit={handleSendMessage}
-        userChannel={userChannel && otherUser ? { ...userChannel, otherUser } : userChannel}
-      />
+      {isMessageSendUnavailable ? (
+        <div className="px-5 py-4 text-center typo-body-2-regular text-label-info shadow-emphasize">
+          상대방이 나간 채팅방입니다.
+        </div>
+      ) : (
+        <ChatMessageForm
+          onSubmit={handleSendMessage}
+          userChannel={userChannel && otherUser ? { ...userChannel, otherUser } : userChannel}
+        />
+      )}
     </div>
   );
 }

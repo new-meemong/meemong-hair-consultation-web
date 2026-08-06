@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { registerShowSnackBar } from '@/shared/lib/global-overlay';
 import { BottomSheet, type BottomSheetProps } from '@/shared/ui/bottom-sheet';
@@ -35,7 +36,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
   const [snackBars, setSnackBars] = useState<SnackBarWithId[]>([]);
 
   const showModal = useCallback((props: ShowModalProps) => {
-    const id = props.id ?? crypto.randomUUID();
+    const id = props.id ?? uuidv4();
 
     setModals((prev) => {
       if (prev.some((modal) => modal.id === id)) {
@@ -52,7 +53,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const showBottomSheet = useCallback((props: ShowBottomSheetProps) => {
-    const id = props.id ?? crypto.randomUUID();
+    const id = props.id ?? uuidv4();
 
     setBottomSheets((prev) => {
       if (prev.some((sheet) => sheet.id === id)) {
@@ -85,7 +86,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
   };
 
   const showSnackBar = useCallback((props: Omit<SnackBarProps, 'id' | 'onClose'>) => {
-    const id = crypto.randomUUID();
+    const id = uuidv4();
 
     setSnackBars((prev) => {
       if (prev.some((bar) => bar.id === id)) {
@@ -114,7 +115,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
   // expose global snackbar handler
   useEffect(() => {
     registerShowSnackBar((props) => {
-      const id = crypto.randomUUID();
+      const id = uuidv4();
       setSnackBars((prev) => [...prev, { ...props, id, open: true }]);
     });
   }, []);

@@ -84,6 +84,16 @@ export default function RootLayout({
 
             window.openChatChannel = openChatChannel;
 
+            function startChatChannel(message) {
+              if(window.StartChatChannel) {
+                window.StartChatChannel.postMessage(JSON.stringify(message));
+              } else {
+                console.log("StartChatChannel channel is not available.");
+              }
+            }
+
+            window.startChatChannel = startChatChannel;
+
             function externalLink(url){
               if(window.ExternalLink) {
                 window.ExternalLink.postMessage(JSON.stringify(url));
@@ -108,9 +118,12 @@ export default function RootLayout({
 
             window.customBackAction = null;
 
-            function showAdIfAllowed({adType}) {
+            function showAdIfAllowed({adType, closeWebViewOnCompletion}) {
               if(window.ShowAdIfAllowed) {
-                window.ShowAdIfAllowed.postMessage(JSON.stringify({adType}));
+                window.ShowAdIfAllowed.postMessage(JSON.stringify({
+                  adType,
+                  closeWebViewOnCompletion
+                }));
               } else {
                 console.log("ShowAdIfAllowed channel is not available.");
               }

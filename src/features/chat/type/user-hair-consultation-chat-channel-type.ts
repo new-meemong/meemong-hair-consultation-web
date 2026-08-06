@@ -6,6 +6,26 @@ import type { User } from '@/entities/user/model/user';
 
 export interface UserHairConsultationChatChannelType {
   channelId: string;
+  schemaVersion?: number;
+  postType?: 'HAIR_CONSULTATION';
+  originEntrySource?: string;
+  lastActivityAt?: Timestamp | FieldValue;
+  openState?: string;
+  openMethod?: string;
+  openedAt?: Timestamp | FieldValue | null;
+  billingCreateType?: string | null;
+  openedMongAmount?: number | null;
+  billingCycle?: number;
+  hasFirstReply?: boolean;
+  awaitingReply?: boolean;
+  awaitingReplyStartedAt?: Timestamp | FieldValue | null;
+  isRefunded?: boolean;
+  refundedAt?: Timestamp | FieldValue | null;
+  hasReceivedFirst?: boolean;
+  isOpenUsingMong?: boolean;
+  deleteReason?: string | null;
+  otherUserLeft?: boolean;
+  otherUserDeactivated?: boolean;
   unreadCount: number | FieldValue;
   isBlockChannel: boolean;
 

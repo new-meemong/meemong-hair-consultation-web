@@ -1,4 +1,5 @@
 import type { ChatEntrySource } from '@/features/chat/type/chat-entry-source';
+import type { ChatStartRequest } from '@/shared/lib/chat-start-request';
 
 export type AppSource = 'app' | 'web';
 export type GoAppRouterPayload = {
@@ -20,6 +21,10 @@ type BridgeWindow = Window & {
   OpenChatChannel?: {
     postMessage: (value: string) => void;
   };
+  StartChatChannel?: {
+    postMessage: (value: string) => void;
+  };
+  startChatChannel?: (message: ChatStartRequest) => void;
   OpenHairConsultationBilling?: {
     postMessage: (value: string) => void;
   };
@@ -39,16 +44,26 @@ type OpenChatChannelMessage = {
   nativeAccessReason?: 'EXISTING_CHAT' | 'MEEMONG_PASS' | 'MONG_WITHDRAWN';
 };
 
-export type HairConsultationBillingMessage = {
-  type: 'VIEW_ANSWER' | 'START_CONSULTATION_CHAT';
+export type HairConsultationAnswerAccessMessage = {
+  type: 'VIEW_ANSWER';
   designerName: string;
-  receiverId?: number;
-  answerId?: number | string;
-  targetPath?: string;
-  postId?: string;
-  entrySource?: ChatEntrySource;
-  isMyHairConsultationPost?: boolean;
+  answerId: number | string;
+  targetPath: string;
 };
+
+export type LegacyHairConsultationChatBillingMessage = {
+  type: 'START_CONSULTATION_CHAT';
+  designerName: string;
+  receiverId: number;
+  answerId: number | string;
+  postId: string;
+  entrySource: ChatEntrySource;
+  isMyHairConsultationPost: false;
+};
+
+export type HairConsultationBillingBridgeMessage =
+  | HairConsultationAnswerAccessMessage
+  | LegacyHairConsultationChatBillingMessage;
 
 export function normalizeSource(source: string | null | undefined): AppSource {
   return source === 'app' ? 'app' : 'web';
@@ -68,6 +83,29 @@ export function hasOpenChatChannelBridge(): boolean {
 
   const w = window as BridgeWindow;
   return !!w.OpenChatChannel && typeof w.OpenChatChannel.postMessage === 'function';
+}
+
+export function hasStartChatChannelBridge(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  const w = window as BridgeWindow;
+  return !!w.StartChatChannel && typeof w.StartChatChannel.postMessage === 'function';
+}
+
+export function startChatChannelInApp(request: ChatStartRequest): boolean {
+  if (!hasStartChatChannelBridge()) return false;
+
+  try {
+    const w = window as BridgeWindow;
+    if (typeof w.startChatChannel === 'function') {
+      w.startChatChannel(request);
+      return true;
+    }
+    w.StartChatChannel?.postMessage(JSON.stringify(request));
+    return true;
+  } catch (_) {
+    return false;
+  }
 }
 
 function hasHairConsultationBillingBridge(): boolean {
@@ -130,7 +168,7 @@ export function openExternalLinkInApp(url: string): boolean {
   }
 }
 
-export function closeAppWebView(message: string = 'close'): boolean {
+export function closeAppWebView(message: unknown = 'close'): boolean {
   if (!hasCloseWebViewBridge()) return false;
 
   try {
@@ -171,7 +209,9 @@ export function openChatChannelInApp(message: OpenChatChannelMessage): boolean {
   }
 }
 
-export function openHairConsultationBillingInApp(message: HairConsultationBillingMessage): boolean {
+export function openHairConsultationBillingInApp(
+  message: HairConsultationBillingBridgeMessage,
+): boolean {
   if (!hasHairConsultationBillingBridge()) return false;
 
   try {

@@ -7,7 +7,9 @@ import {
   openHairConsultationBillingInApp,
   openInAppWebView,
   registerHairConsultationBillingInApp,
+  startChatChannelInApp,
 } from './app-bridge';
+import { ChatOriginEntrySource, ChatV2ChannelType, ChatV2PostType } from './chat-start-request';
 
 type TestBridgeWindow = Window & {
   GoAppRouter?: {
@@ -26,6 +28,10 @@ type TestBridgeWindow = Window & {
   OpenChatChannel?: {
     postMessage: (value: string) => void;
   };
+  StartChatChannel?: {
+    postMessage: (value: string) => void;
+  };
+  startChatChannel?: (message: unknown) => void;
   externalLink?: (url: string) => void;
 };
 
@@ -73,6 +79,50 @@ describe('openInAppWebView', () => {
     expect(postMessage).toHaveBeenCalledWith(
       JSON.stringify('/hair-consultation/experience-groups/1'),
     );
+  });
+});
+
+describe('startChatChannelInApp', () => {
+  const request = {
+    channelType: ChatV2ChannelType.HAIR_CONSULTATION,
+    postType: ChatV2PostType.HAIR_CONSULTATION,
+    postId: '10',
+    answerId: '42',
+    targetUserId: '2',
+    originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_RESPONSE_DETAIL_DIRECT_CHAT,
+    joinType: 'MODEL' as const,
+    isMyHairConsultationPost: false,
+  };
+
+  afterEach(() => {
+    Reflect.deleteProperty(bridgeWindow, 'StartChatChannel');
+    Reflect.deleteProperty(bridgeWindow, 'startChatChannel');
+  });
+
+  it('returns false when only the layout wrapper exists', () => {
+    bridgeWindow.startChatChannel = vi.fn();
+
+    expect(startChatChannelInApp(request)).toBe(false);
+    expect(bridgeWindow.startChatChannel).not.toHaveBeenCalled();
+  });
+
+  it('uses the wrapper when the native channel exists', () => {
+    const startChatChannel = vi.fn();
+    const postMessage = vi.fn();
+    bridgeWindow.startChatChannel = startChatChannel;
+    bridgeWindow.StartChatChannel = { postMessage };
+
+    expect(startChatChannelInApp(request)).toBe(true);
+    expect(startChatChannel).toHaveBeenCalledWith(request);
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  it('falls back to the native channel', () => {
+    const postMessage = vi.fn();
+    bridgeWindow.StartChatChannel = { postMessage };
+
+    expect(startChatChannelInApp(request)).toBe(true);
+    expect(postMessage).toHaveBeenCalledWith(JSON.stringify(request));
   });
 });
 
@@ -145,6 +195,16 @@ describe('closeAppWebView', () => {
     expect(postMessage).toHaveBeenCalledWith(JSON.stringify('close'));
   });
 
+  it('preserves a structured close target for the native route handler', () => {
+    const postMessage = vi.fn();
+    const message = { type: 'close', target: 'experienceGroupMyList' };
+
+    bridgeWindow.GoBack = { postMessage };
+
+    expect(closeAppWebView(message)).toBe(true);
+    expect(postMessage).toHaveBeenCalledWith(JSON.stringify(message));
+  });
+
   it('returns false when no close bridge exists', () => {
     expect(closeAppWebView()).toBe(false);
   });
@@ -166,7 +226,7 @@ describe('openHairConsultationBillingInApp', () => {
     ).toBe(false);
   });
 
-  it('sends the hair consultation billing request to the native channel', () => {
+  it('keeps the legacy chat billing request for old apps without StartChatChannel', () => {
     const postMessage = vi.fn();
     bridgeWindow.OpenHairConsultationBilling = { postMessage };
     const message = {
@@ -176,7 +236,7 @@ describe('openHairConsultationBillingInApp', () => {
       postId: '10',
       answerId: '42',
       entrySource: 'CONSULTING_RESPONSE' as const,
-      isMyHairConsultationPost: false,
+      isMyHairConsultationPost: false as const,
     };
 
     expect(openHairConsultationBillingInApp(message)).toBe(true);

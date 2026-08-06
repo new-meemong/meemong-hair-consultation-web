@@ -1,13 +1,14 @@
 import {
-  Timestamp,
+  arrayRemove,
+  arrayUnion,
   collection,
+  deleteField,
   doc,
   getDoc,
   increment,
   onSnapshot,
   runTransaction,
   serverTimestamp,
-  setDoc,
   updateDoc,
 } from 'firebase/firestore';
 import { create } from 'zustand';
@@ -19,7 +20,13 @@ import { db } from '@/shared/lib/firebase';
 import { updateChattingUnreadCount } from '../api/use-update-user-unread-count';
 
 import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
+import {
+  CHAT_V2_USER_DELETED_REASON,
+  buildHairConsultationLeaveMessage,
+  resolveHairConsultationChatV2StartPointerId,
+} from '../lib/hair-consultation-chat-v2-policy';
 import { getDbPath } from '../lib/get-db-path';
+import { sortHairConsultationChatChannels } from '../lib/sort-hair-consultation-chat-channels';
 import { sortParticipantIds } from '../lib/sort-participant-ids';
 import type { ChatEntrySource } from '../type/chat-entry-source';
 import type { HairConsultationChatChannelType } from '../type/hair-consultation-chat-channel-type';
@@ -138,8 +145,15 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
             participantRefs.forEach((ref) => {
               transaction.update(ref, {
                 deletedAt: null,
+                deleteReason: null,
+                otherUserLeft: false,
+                otherUserDeactivated: false,
                 updatedAt: serverTimestamp(),
               });
+            });
+            transaction.update(channelRef, {
+              participantsIds: arrayUnion(...participantIds),
+              updatedAt: serverTimestamp(),
             });
             return { channelId: channelRef.id, isCreated: true };
           }
@@ -278,7 +292,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
               };
             }) as UserHairConsultationChatChannelType[];
 
-          const sortedChannels = sortChannels(channels);
+          const sortedChannels = sortHairConsultationChatChannels(channels);
 
           set({
             userHairConsultationChatChannels: sortedChannels,
@@ -541,52 +555,84 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
 
   leaveChannel: async (channelId: string, userId: string, userName: string) => {
     try {
-      // 0. 현재 unreadCount 값을 읽어옴
       const userMetaRef = doc(db, getDbPath(userId), channelId);
-      const userMetaSnap = await getDoc(userMetaRef);
-      const currentUnreadCount = userMetaSnap.exists() ? userMetaSnap.data().unreadCount || 0 : 0;
-
-      // 1. 시스템 메시지 전송
+      const channelRef = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelId);
       const messageRef = doc(
         collection(
           db,
           `${ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS}/${channelId}/messages`,
         ),
       );
+      const currentUnreadCount = await runTransaction(db, async (transaction) => {
+        const [userMetaSnapshot, channelSnapshot] = await Promise.all([
+          transaction.get(userMetaRef),
+          transaction.get(channelRef),
+        ]);
+        if (!userMetaSnapshot.exists()) {
+          throw new Error('hair_consultation_leave_metadata_not_found');
+        }
 
-      await setDoc(messageRef, {
-        id: messageRef.id,
-        message: `${userName}님이 나갔습니다.`,
-        messageType: HairConsultationChatMessageTypeEnum.SYSTEM,
-        metaPathList: [],
-        senderId: 'system',
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+        const userMetaData = userMetaSnapshot.data();
+        const otherUserId =
+          typeof userMetaData.otherUserId === 'string' && userMetaData.otherUserId.trim().length > 0
+            ? userMetaData.otherUserId.trim()
+            : null;
+        const otherUserMetaRef =
+          otherUserId === null ? null : doc(db, getDbPath(otherUserId), channelId);
+        const startPointerId = resolveHairConsultationChatV2StartPointerId(channelSnapshot.data());
+        const startPointerRef =
+          startPointerId === null ? null : doc(db, 'chatRoomStartPointers', startPointerId);
+        const [otherUserMetaSnapshot, startPointerSnapshot] = await Promise.all([
+          otherUserMetaRef === null ? Promise.resolve(null) : transaction.get(otherUserMetaRef),
+          startPointerRef === null ? Promise.resolve(null) : transaction.get(startPointerRef),
+        ]);
+        const timestamp = serverTimestamp();
 
-      // 2. 유저의 채널 메타데이터 업데이트
-      await updateDoc(userMetaRef, {
-        deletedAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-
-      // 3. 채널의 참여자 목록에서 유저 제거
-      const channelRef = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelId);
-      const channelSnap = await getDoc(channelRef);
-
-      if (channelSnap.exists()) {
-        const channelData = channelSnap.data();
-        const updatedParticipants = channelData.participantsIds.filter(
-          (id: string) => id !== userId,
-        );
-
-        await updateDoc(channelRef, {
-          participantsIds: updatedParticipants,
-          updatedAt: serverTimestamp(),
+        transaction.set(messageRef, {
+          id: messageRef.id,
+          message: buildHairConsultationLeaveMessage(userName),
+          messageType: HairConsultationChatMessageTypeEnum.SYSTEM,
+          metaPathList: [],
+          senderId: 'system',
+          createdAt: timestamp,
+          updatedAt: timestamp,
         });
-      }
+        transaction.update(userMetaRef, {
+          deletedAt: timestamp,
+          deleteReason: CHAT_V2_USER_DELETED_REASON,
+          unreadCount: 0,
+          updatedAt: timestamp,
+        });
+        if (otherUserMetaRef !== null && otherUserMetaSnapshot?.exists()) {
+          transaction.update(otherUserMetaRef, {
+            otherUserLeft: true,
+            otherUserDeactivated: false,
+            updatedAt: timestamp,
+          });
+        }
+        if (channelSnapshot.exists()) {
+          transaction.update(channelRef, {
+            participantsIds: arrayRemove(userId),
+            updatedAt: timestamp,
+          });
+        }
+        if (
+          startPointerRef !== null &&
+          startPointerSnapshot?.exists() &&
+          startPointerSnapshot.data().targetChannelId === channelId
+        ) {
+          transaction.update(startPointerRef, {
+            // room 순번은 보존해 다음 방 생성 시 기존 ID와 충돌하지 않게 한다.
+            targetChannelId: deleteField(),
+            targetSourceCollection: deleteField(),
+            updatedAt: timestamp,
+          });
+        }
 
-      // 4. 서버 unreadCount 동기화: 현재 사용자의 unreadCount 감소
+        return typeof userMetaData.unreadCount === 'number' ? userMetaData.unreadCount : 0;
+      });
+
+      // Firestore 원자 전이가 끝난 뒤 서버 누적 안읽음 수를 보정한다.
       if (currentUnreadCount > 0) {
         try {
           await updateChattingUnreadCount(Number(userId), -currentUnreadCount);
@@ -603,26 +649,3 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
     }
   },
 }));
-
-// 채널 데이터를 정렬하는 함수
-const sortChannels = (channels: UserHairConsultationChatChannelType[]) => {
-  return channels.sort((a, b) => {
-    // 둘 다 고정된 경우 pinnedAt으로 비교
-    if (a.isPinned && b.isPinned) {
-      const aTime = a.pinnedAt instanceof Timestamp ? a.pinnedAt.toMillis() : 0;
-      const bTime = b.pinnedAt instanceof Timestamp ? b.pinnedAt.toMillis() : 0;
-      return bTime - aTime;
-    }
-
-    // 고정된 항목을 위로
-    if (a.isPinned) return -1;
-    if (b.isPinned) return 1;
-
-    // 나머지는 lastMessage.updatedAt으로 정렬
-    const aTime =
-      a.lastMessage.updatedAt instanceof Timestamp ? a.lastMessage.updatedAt.toMillis() : 0;
-    const bTime =
-      b.lastMessage.updatedAt instanceof Timestamp ? b.lastMessage.updatedAt.toMillis() : 0;
-    return bTime - aTime;
-  });
-};

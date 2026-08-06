@@ -10,9 +10,8 @@ import {
   onSnapshot,
   orderBy,
   query,
+  runTransaction,
   serverTimestamp,
-  setDoc,
-  updateDoc,
 } from 'firebase/firestore';
 
 import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
@@ -20,6 +19,12 @@ import { create } from 'zustand';
 import { db } from '@/shared/lib/firebase';
 import { getDbPath } from '../lib/get-db-path';
 import { updateDesignerLastChatReceivedAtAfterSend } from '../api/update-designer-last-chat-received-at';
+import { resolveChatV2MessageStateTransition } from '../lib/chat-v2-message-state-transition';
+import {
+  HAIR_CONSULTATION_CHAT_MESSAGE_SEND_UNAVAILABLE_ERROR,
+  canStartHairConsultationReplyRefundWait,
+  isHairConsultationChatMessageSendUnavailable,
+} from '../lib/hair-consultation-chat-v2-policy';
 
 interface HairConsultationChatMessageState {
   messages: HairConsultationChatMessageType[];
@@ -37,7 +42,7 @@ interface HairConsultationChatMessageState {
     message: string;
     messageType: HairConsultationChatMessageTypeEnum;
     metaPathList?: MetaPathType[];
-  }) => Promise<{ success: boolean; channelId: string | null }>;
+  }) => Promise<{ success: boolean; channelId: string | null; errorCode?: string }>;
 
   clearMessages: () => void;
 }
@@ -107,45 +112,100 @@ export const useHairConsultationChatMessageStore = create<HairConsultationChatMe
           ),
         );
 
+        const activityAt = serverTimestamp();
         const newMessage: Omit<HairConsultationChatMessageType, 'id'> = {
           message,
           messageType,
           metaPathList,
           senderId,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
+          createdAt: activityAt,
+          updatedAt: activityAt,
         };
 
-        await setDoc(messageRef, newMessage);
-
-        // 채널의 lastMessage 업데이트
         const channelRef = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelId);
-        await updateDoc(channelRef, {
-          updatedAt: serverTimestamp(),
-        });
-
-        // 양쪽 사용자의 메타데이터에 lastMessage 업데이트
         const senderMetaRef = doc(db, getDbPath(senderId), channelId);
         const receiverMetaRef = doc(db, getDbPath(receiverId), channelId);
-
         const lastMessageData = {
           id: messageRef.id,
           ...newMessage,
         };
 
-        // 사용자 메타데이터 업데이트
-        const updateSenderMeta = updateDoc(senderMetaRef, {
-          lastMessage: lastMessageData,
-          updatedAt: serverTimestamp(),
-        });
+        await runTransaction(db, async (transaction) => {
+          const [channelSnapshot, senderMetaSnapshot, receiverMetaSnapshot] = await Promise.all([
+            transaction.get(channelRef),
+            transaction.get(senderMetaRef),
+            transaction.get(receiverMetaRef),
+          ]);
+          if (
+            !channelSnapshot.exists() ||
+            !senderMetaSnapshot.exists() ||
+            !receiverMetaSnapshot.exists()
+          ) {
+            throw new Error('hair_consultation_chat_channel_not_found');
+          }
 
-        const updateReceiverMeta = updateDoc(receiverMetaRef, {
-          lastMessage: lastMessageData,
-          updatedAt: serverTimestamp(),
-          unreadCount: increment(1),
-        });
+          const channelData = channelSnapshot.data();
+          const senderMetadata = senderMetaSnapshot.data();
+          const receiverMetadata = receiverMetaSnapshot.data();
+          if (isHairConsultationChatMessageSendUnavailable(senderMetadata, receiverMetadata)) {
+            throw new Error(HAIR_CONSULTATION_CHAT_MESSAGE_SEND_UNAVAILABLE_ERROR);
+          }
 
-        await Promise.all([updateSenderMeta, updateReceiverMeta]);
+          const isV2Channel = channelData.schemaVersion === 2;
+          const channelOpenUserId = channelData.channelOpenUserId;
+          if (
+            isV2Channel &&
+            (typeof channelOpenUserId !== 'string' || channelOpenUserId.trim().length === 0)
+          ) {
+            throw new Error('hair_consultation_v2_channel_invalid');
+          }
+          const transition = isV2Channel
+            ? resolveChatV2MessageStateTransition({
+                messageType,
+                senderId,
+                channelOpenUserId: channelOpenUserId.trim(),
+                channelHasFirstReply: channelData.hasFirstReply === true,
+                senderCanAwaitReplyRefund: canStartHairConsultationReplyRefundWait(senderMetadata),
+                senderIsRefunded: senderMetadata.isRefunded === true,
+                receiverAwaitingReply: receiverMetadata.awaitingReply === true,
+              })
+            : {
+                marksFirstReply: false,
+                startsSenderAwaitingReply: false,
+                clearsReceiverAwaitingReply: false,
+              };
+
+          transaction.set(messageRef, newMessage);
+          transaction.update(channelRef, {
+            lastActivityAt: activityAt,
+            updatedAt: activityAt,
+            ...(transition.marksFirstReply ? { hasFirstReply: true } : {}),
+          });
+          transaction.update(senderMetaRef, {
+            lastMessage: lastMessageData,
+            lastActivityAt: activityAt,
+            updatedAt: activityAt,
+            ...(transition.startsSenderAwaitingReply
+              ? {
+                  awaitingReply: true,
+                  awaitingReplyStartedAt: activityAt,
+                }
+              : {}),
+          });
+          transaction.update(receiverMetaRef, {
+            lastMessage: lastMessageData,
+            lastActivityAt: activityAt,
+            updatedAt: activityAt,
+            unreadCount: increment(1),
+            ...(transition.marksFirstReply ? { hasFirstReply: true } : {}),
+            ...(transition.clearsReceiverAwaitingReply
+              ? {
+                  awaitingReply: false,
+                  awaitingReplyStartedAt: null,
+                }
+              : {}),
+          });
+        });
 
         void updateDesignerLastChatReceivedAtAfterSend(receiverId);
 
@@ -155,8 +215,18 @@ export const useHairConsultationChatMessageStore = create<HairConsultationChatMe
         return { success: true, channelId };
       } catch (error) {
         console.error('Error sending message:', error);
-        set({ error: '메시지 전송에 실패했습니다.' });
-        return { success: false, channelId: null };
+        const errorCode =
+          error instanceof Error &&
+          error.message === HAIR_CONSULTATION_CHAT_MESSAGE_SEND_UNAVAILABLE_ERROR
+            ? HAIR_CONSULTATION_CHAT_MESSAGE_SEND_UNAVAILABLE_ERROR
+            : undefined;
+        set({
+          error:
+            errorCode === HAIR_CONSULTATION_CHAT_MESSAGE_SEND_UNAVAILABLE_ERROR
+              ? '상대방이 나간 채팅방입니다.'
+              : '메시지 전송에 실패했습니다.',
+        });
+        return { success: false, channelId: null, ...(errorCode ? { errorCode } : {}) };
       }
     },
 

@@ -56,11 +56,15 @@ export default function HairConsultationChatPage() {
   const skeletonCount = useDynamicSkeletonCount(100);
 
   if (loading) {
-    return <ChatChannelListItemSkeleton count={skeletonCount} />;
+    return (
+      <div className="min-w-[375px] w-full h-screen mx-auto overflow-y-auto overscroll-contain touch-pan-y scrollbar-hide">
+        <ChatChannelListItemSkeleton count={skeletonCount} />
+      </div>
+    );
   }
 
   return (
-    <div className="min-w-[375px] w-full h-screen mx-auto pb-20">
+    <div className="min-w-[375px] w-full h-screen mx-auto overflow-y-auto overscroll-contain touch-pan-y scrollbar-hide pb-20">
       {chatChannelUserMetas.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full">
           <p className="typo-body-1-medium text-label-placeholder">아직 받은 채팅이 없습니다</p>

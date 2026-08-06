@@ -11,7 +11,10 @@ import { EXPERIENCE_GROUP_LINK_CLICK_STORAGE_KEY } from '@/features/posts/consta
 import ExperienceGroupCommentContainer from '@/widgets/comments/ui/experience-group-comment-container';
 import ExperienceGroupDetailContainer from '@/widgets/post/ui/experience-group/experience-group-detail-container';
 import ExperienceGroupDetailMoreButton from '@/features/posts/ui/experience-group-detail/experience-group-detail-more-button';
+import { resolveExperienceGroupDetailLoadState } from '@/features/posts/lib/resolve-experience-group-detail-load-state';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
+import { MeemongButton, Loader } from '@/shared/ui';
+import { MeemongTypography } from '@/shared/styles/typography';
 import { SiteHeader } from '@/widgets/header';
 import { getGetExperienceGroupCommentsQueryKeyPrefix } from '@/features/comments/api/use-get-experience-group-comments';
 import { useAuthContext } from '@/features/auth/context/auth-context';
@@ -40,10 +43,20 @@ export default function ExperienceGroupDetailPage() {
   const wasHiddenRef = useRef(false);
   const isAutoCommentPostingRef = useRef(false);
 
-  const { data: response, refetch: refetchDetail } = useGetExperienceGroupDetail(
-    id?.toString() ?? '',
-  );
+  const {
+    data: response,
+    error: detailError,
+    isError: isDetailError,
+    isPending: isDetailPending,
+    refetch: refetchDetail,
+  } = useGetExperienceGroupDetail(id?.toString() ?? '');
   const experienceGroupDetail = response?.data;
+  const detailLoadState = resolveExperienceGroupDetailLoadState({
+    isPending: isDetailPending,
+    isError: isDetailError,
+    error: detailError,
+    hasData: experienceGroupDetail != null,
+  });
 
   const isWriter = experienceGroupDetail?.user.id === user.id;
 
@@ -177,7 +190,45 @@ export default function ExperienceGroupDetailPage() {
     back();
   }, [source, back]);
 
-  if (!id || !experienceGroupDetail) return null;
+  if (!id) return null;
+
+  if (detailLoadState === 'loading') {
+    return (
+      <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen bg-fill-white">
+        <SiteHeader title="협찬 신청" showBackButton onBackClick={handleBackClick} />
+        <div className="flex-1 flex items-center justify-center">
+          <Loader size="md" theme="dark" />
+        </div>
+      </div>
+    );
+  }
+
+  if (detailLoadState !== 'ready' || !experienceGroupDetail) {
+    const isNotFound = detailLoadState === 'notFound';
+    return (
+      <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen bg-fill-white">
+        <SiteHeader title="협찬 신청" showBackButton onBackClick={handleBackClick} />
+        <div className="flex-1 flex flex-col items-center justify-center px-5 text-center">
+          <p className={`${MeemongTypography.title2SemiBold} text-text-primary`}>
+            {isNotFound ? '게시글을 찾을 수 없어요' : '게시글을 불러오지 못했어요'}
+          </p>
+          <p className={`${MeemongTypography.body2Regular} mt-2 text-text-secondary`}>
+            {isNotFound
+              ? '삭제되었거나 더 이상 볼 수 없는 게시글입니다.'
+              : '네트워크 상태를 확인한 뒤 다시 시도해주세요.'}
+          </p>
+          <div className="mt-6 flex w-full max-w-[335px] flex-col gap-2">
+            {!isNotFound && (
+              <MeemongButton tone="secondary" onClick={() => void refetchDetail()}>
+                다시 시도
+              </MeemongButton>
+            )}
+            <MeemongButton onClick={handleBackClick}>목록으로 돌아가기</MeemongButton>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-w-[375px] w-full mx-auto flex flex-col h-screen">
@@ -204,6 +255,7 @@ export default function ExperienceGroupDetailPage() {
       </div>
       {isUserDesigner ? (
         <ExperienceGroupCommentFormContainer
+          experienceGroupId={id.toString()}
           receiverId={experienceGroupDetail.user.id}
           receiverName={experienceGroupDetail.user.displayName}
           onSubmit={handleCommentFormSubmit}

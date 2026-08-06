@@ -11,7 +11,6 @@ import { Textarea } from '@/shared';
 import ChatMessageActionBox from './chat-message-action-box';
 import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
 
-
 const CHAT_MESSAGE_INPUT_FIELD_NAME = {
   content: 'content',
 } as const;
@@ -39,7 +38,8 @@ export default function ChatMessageForm({ onSubmit, userChannel }: ChatMessageFo
   });
 
   const handleSubmit = async (data: ChatMessageInputValues) => {
-    await onSubmit(data);
+    const result = await onSubmit(data);
+    if (!result.success) return;
 
     method.reset();
     if (textareaRef.current) {
@@ -63,6 +63,7 @@ export default function ChatMessageForm({ onSubmit, userChannel }: ChatMessageFo
       >
         <div className="flex gap-3 rounded-12 bg-alternative px-3 py-2 items-center">
           <button
+            type="button"
             className="size-7 flex items-center justify-center rounded-6 bg-label-default"
             onClick={handleShowActionBox}
           >

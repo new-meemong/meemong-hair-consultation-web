@@ -22,6 +22,12 @@ import { ROUTES } from '@/shared';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { getApiError } from '@/shared/lib/error-handler';
+import { startChatChannelInApp } from '@/shared/lib/app-bridge';
+import {
+  ChatOriginEntrySource,
+  ChatV2ChannelType,
+  ChatV2PostType,
+} from '@/shared/lib/chat-start-request';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { detectExternalContact } from '@/shared/lib/detect-external-contact';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
@@ -130,6 +136,22 @@ export default function CommentFormContainer({
     isConsultingChatClickLockedRef.current = true;
 
     try {
+      if (
+        startChatChannelInApp({
+          channelType: ChatV2ChannelType.HAIR_CONSULTATION,
+          postType: ChatV2PostType.HAIR_CONSULTATION,
+          postId,
+          answerId: consultingChatTarget.answerId,
+          targetUserId: consultingChatTarget.receiverId.toString(),
+          targetDisplayName: consultingChatTarget.receiverName,
+          originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_POST_COMMENT_DIRECT_CHAT,
+          joinType: 'DESIGNER',
+          isMyHairConsultationPost: false,
+        })
+      ) {
+        return;
+      }
+
       const existingChat = await findExistingChat({
         receiverId: consultingChatTarget.receiverId,
         postId,

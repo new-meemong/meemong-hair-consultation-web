@@ -9,5 +9,7 @@ export const SEARCH_PARAMS = {
   SOURCE: 'source',
   POST_CREATE_COMPLETED: 'postCreateCompleted',
   SUPPORTS_EXPERIENCE_GROUP_CHAT: 'supportsExperienceGroupChat',
+  SUPPORTS_EXPERIENCE_GROUP_LIST_RETURN: 'supportsExperienceGroupListReturn',
   SUPPORTS_FULL_WEBVIEW_POST_CREATE: 'supportsFullWebviewPostCreate',
+  SUPPORTS_NATIVE_POST_CREATE_RETURN: 'supportsNativePostCreateReturn',
 } as const;
