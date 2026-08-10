@@ -17,6 +17,10 @@ export enum ChatV2PostType {
   RESUME = 'RESUME',
 }
 
+/**
+ * Shared wire contract with Flutter and the job WebView client.
+ * Update all three definitions and their contract tests together.
+ */
 export enum ChatOriginEntrySource {
   MODEL_ANNOUNCEMENT_DETAIL_APPLY_CHAT = 'MODEL_ANNOUNCEMENT_DETAIL_APPLY_CHAT',
   QUICK_MATCHING_GENERAL_DETAIL_CHAT = 'QUICK_MATCHING_GENERAL_DETAIL_CHAT',
@@ -31,6 +35,8 @@ export enum ChatOriginEntrySource {
   RESUME_DETAIL_OFFER_CHAT = 'RESUME_DETAIL_OFFER_CHAT',
   MODEL_PROFILE_DIRECT_CHAT = 'MODEL_PROFILE_DIRECT_CHAT',
   DESIGNER_PROFILE_MENU_INQUIRY = 'DESIGNER_PROFILE_MENU_INQUIRY',
+  QUICK_MATCHING_GENERAL_DESIGNER_PROFILE_MENU_INQUIRY = 'QUICK_MATCHING_GENERAL_DESIGNER_PROFILE_MENU_INQUIRY',
+  QUICK_MATCHING_PREMIUM_DESIGNER_PROFILE_MENU_INQUIRY = 'QUICK_MATCHING_PREMIUM_DESIGNER_PROFILE_MENU_INQUIRY',
   RECENT_ACCESS_RECOMMENDED_MODEL_PROFILE_CHAT = 'RECENT_ACCESS_RECOMMENDED_MODEL_PROFILE_CHAT',
   NEW_MODEL_PROFILE_CHAT = 'NEW_MODEL_PROFILE_CHAT',
   RECENT_FEMALE_MODEL_PROFILE_CHAT = 'RECENT_FEMALE_MODEL_PROFILE_CHAT',
@@ -51,15 +57,23 @@ export enum ChatOriginEntrySource {
   INSTAGRAM_NOTIFICATION_MODEL_PROFILE_CHAT = 'INSTAGRAM_NOTIFICATION_MODEL_PROFILE_CHAT',
 }
 
+/**
+ * Shared nullable pricing contract with Flutter and the job WebView client.
+ * Update all three definitions and contract tests together.
+ */
 export enum ChatOriginPricingType {
   PAY = 'pay',
   NEW = 'new',
-  RECENT_FEMALE = 'recent_female',
   RECENT_MALE = 'recent_male',
+  RECENT_FEMALE = 'recent_female',
   LONG_TIME = 'longTime',
   BEAUTY = 'beauty',
   FAVORITE = 'favorite',
   THUNDER_DEFAULT = 'thunder_default',
+  FAVORITE_NOTIFICATION_DESIGNER = 'favorite_notification_designer',
+  VIEW_HAIR_CONSULTATION_ANSWER_NOTIFICATION_DESIGNER = 'view_hair_consultation_answer_notification_designer',
+  VIEW_STORELINK_NOTIFICATION_DESIGNER = 'view_storelink_notification_designer',
+  VIEW_INSTAGRAM_NOTIFICATION_DESIGNER = 'view_instagram_notification_designer',
 }
 
 export type ChatStartRequest = {
