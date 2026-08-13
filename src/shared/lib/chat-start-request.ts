@@ -88,3 +88,46 @@ export type ChatStartRequest = {
   isMyHairConsultationPost?: boolean;
   targetDisplayName?: string;
 };
+
+type HairConsultationDirectChatOrigin =
+  | ChatOriginEntrySource.HAIR_CONSULTATION_POST_COMMENT_DIRECT_CHAT
+  | ChatOriginEntrySource.HAIR_CONSULTATION_RESPONSE_DETAIL_DIRECT_CHAT;
+
+type HairConsultationChatStartRequestInput = {
+  postId: string;
+  answerId: string;
+  targetUserId: string;
+  originEntrySource: HairConsultationDirectChatOrigin;
+  joinType: 'MODEL' | 'DESIGNER';
+  isMyHairConsultationPost: boolean;
+  targetDisplayName?: string;
+};
+
+/**
+ * 헤어컨설팅의 직접 채팅 CTA가 Flutter v2 시작 경계에 전달할 요청을 만든다.
+ *
+ * 방 identity는 원문 글이 아니라 답변 단위이므로 `answerId`를 필수 입력으로
+ * 유지한다. 프로필 경유 메뉴 문의는 modelMatching 공고 방을 사용하므로 이
+ * 빌더의 범위가 아니다.
+ */
+export function buildHairConsultationChatStartRequest({
+  postId,
+  answerId,
+  targetUserId,
+  originEntrySource,
+  joinType,
+  isMyHairConsultationPost,
+  targetDisplayName,
+}: HairConsultationChatStartRequestInput): ChatStartRequest {
+  return {
+    channelType: ChatV2ChannelType.HAIR_CONSULTATION,
+    postType: ChatV2PostType.HAIR_CONSULTATION,
+    postId,
+    answerId,
+    targetUserId,
+    originEntrySource,
+    joinType,
+    isMyHairConsultationPost,
+    ...(targetDisplayName !== undefined && { targetDisplayName }),
+  };
+}

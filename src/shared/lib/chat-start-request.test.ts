@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { ChatOriginEntrySource, ChatOriginPricingType } from './chat-start-request';
+import {
+  buildHairConsultationChatStartRequest,
+  ChatOriginEntrySource,
+  ChatOriginPricingType,
+  ChatV2ChannelType,
+  ChatV2PostType,
+} from './chat-start-request';
 
 describe('ChatOriginEntrySource contract', () => {
   it('matches the shared Flutter 33-value wire contract', () => {
@@ -56,5 +62,40 @@ describe('ChatOriginEntrySource contract', () => {
       'view_storelink_notification_designer',
       'view_instagram_notification_designer',
     ]);
+  });
+});
+
+describe('buildHairConsultationChatStartRequest', () => {
+  it.each([
+    {
+      originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_POST_COMMENT_DIRECT_CHAT,
+      joinType: 'DESIGNER' as const,
+    },
+    {
+      originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_RESPONSE_DETAIL_DIRECT_CHAT,
+      joinType: 'MODEL' as const,
+    },
+  ])('keeps the original post and required answer identity for $originEntrySource', (input) => {
+    const request = buildHairConsultationChatStartRequest({
+      postId: '100',
+      answerId: '200',
+      targetUserId: '22',
+      targetDisplayName: '지우',
+      originEntrySource: input.originEntrySource,
+      joinType: input.joinType,
+      isMyHairConsultationPost: false,
+    });
+
+    expect(request).toEqual({
+      channelType: ChatV2ChannelType.HAIR_CONSULTATION,
+      postType: ChatV2PostType.HAIR_CONSULTATION,
+      postId: '100',
+      answerId: '200',
+      targetUserId: '22',
+      targetDisplayName: '지우',
+      originEntrySource: input.originEntrySource,
+      joinType: input.joinType,
+      isMyHairConsultationPost: false,
+    });
   });
 });

@@ -58,9 +58,8 @@ import {
   startChatChannelInApp,
 } from '@/shared/lib/app-bridge';
 import {
+  buildHairConsultationChatStartRequest,
   ChatOriginEntrySource,
-  ChatV2ChannelType,
-  ChatV2PostType,
 } from '@/shared/lib/chat-start-request';
 import hairBangStyleFeedbackF1 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f1.png';
 import hairBangStyleFeedbackF2 from '@/assets/hair-bang-style-feedback/hair_bang_style_fedback_f2.png';
@@ -527,6 +526,15 @@ export default function NewConsultingResponsePage() {
       showAppOnlyModal();
       return;
     }
+    // 이 상세 CTA는 모델이 디자이너 답변에 문의하는 경로다. 역할이 확인되지
+    // 않은 상태를 DESIGNER로 보정해 Flutter에 보내지 않는다.
+    if (!isUserModel) {
+      showSnackBar({
+        type: 'error',
+        message: '사용자 정보를 확인하지 못했습니다. 다시 로그인해주세요.',
+      });
+      return;
+    }
     if (isStartingChat) return;
 
     let isMyHairConsultationPost = isPostWriter;
@@ -562,17 +570,17 @@ export default function NewConsultingResponsePage() {
     }
 
     if (
-      startChatChannelInApp({
-        channelType: ChatV2ChannelType.HAIR_CONSULTATION,
-        postType: ChatV2PostType.HAIR_CONSULTATION,
-        postId: postIdString,
-        answerId: responseIdString,
-        targetUserId: answer.user.id.toString(),
-        targetDisplayName: answer.user.displayName,
-        originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_RESPONSE_DETAIL_DIRECT_CHAT,
-        joinType: isUserModel ? 'MODEL' : 'DESIGNER',
-        isMyHairConsultationPost,
-      })
+      startChatChannelInApp(
+        buildHairConsultationChatStartRequest({
+          postId: postIdString,
+          answerId: responseIdString,
+          targetUserId: answer.user.id.toString(),
+          targetDisplayName: answer.user.displayName,
+          originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_RESPONSE_DETAIL_DIRECT_CHAT,
+          joinType: 'MODEL',
+          isMyHairConsultationPost,
+        }),
+      )
     ) {
       return;
     }

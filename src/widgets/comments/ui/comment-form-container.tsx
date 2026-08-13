@@ -24,9 +24,8 @@ import { useOverlayContext } from '@/shared/context/overlay-context';
 import { getApiError } from '@/shared/lib/error-handler';
 import { startChatChannelInApp } from '@/shared/lib/app-bridge';
 import {
+  buildHairConsultationChatStartRequest,
   ChatOriginEntrySource,
-  ChatV2ChannelType,
-  ChatV2PostType,
 } from '@/shared/lib/chat-start-request';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import { detectExternalContact } from '@/shared/lib/detect-external-contact';
@@ -137,17 +136,17 @@ export default function CommentFormContainer({
 
     try {
       if (
-        startChatChannelInApp({
-          channelType: ChatV2ChannelType.HAIR_CONSULTATION,
-          postType: ChatV2PostType.HAIR_CONSULTATION,
-          postId,
-          answerId: consultingChatTarget.answerId,
-          targetUserId: consultingChatTarget.receiverId.toString(),
-          targetDisplayName: consultingChatTarget.receiverName,
-          originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_POST_COMMENT_DIRECT_CHAT,
-          joinType: 'DESIGNER',
-          isMyHairConsultationPost: false,
-        })
+        startChatChannelInApp(
+          buildHairConsultationChatStartRequest({
+            postId,
+            answerId: consultingChatTarget.answerId,
+            targetUserId: consultingChatTarget.receiverId.toString(),
+            targetDisplayName: consultingChatTarget.receiverName,
+            originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_POST_COMMENT_DIRECT_CHAT,
+            joinType: 'DESIGNER',
+            isMyHairConsultationPost: false,
+          }),
+        )
       ) {
         return;
       }
