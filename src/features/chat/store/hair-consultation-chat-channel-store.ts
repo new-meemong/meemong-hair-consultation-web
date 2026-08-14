@@ -1,8 +1,6 @@
 import {
-  arrayRemove,
   arrayUnion,
   collection,
-  deleteField,
   doc,
   getDoc,
   increment,
@@ -21,10 +19,10 @@ import { updateChattingUnreadCount } from '../api/use-update-user-unread-count';
 
 import { ChatChannelTypeEnum } from '../constants/chat-channel-type';
 import {
-  CHAT_V2_USER_DELETED_REASON,
-  buildHairConsultationLeaveMessage,
-  resolveHairConsultationChatV2StartPointerId,
-} from '../lib/hair-consultation-chat-v2-policy';
+  applyHairConsultationLeaveWrites,
+  resolveHairConsultationLeaveWriteTargets,
+} from '../lib/apply-hair-consultation-leave-writes';
+import { resolveHairConsultationChatV2StartPointerId } from '../lib/hair-consultation-chat-v2-policy';
 import { getDbPath } from '../lib/get-db-path';
 import { sortHairConsultationChatChannels } from '../lib/sort-hair-consultation-chat-channels';
 import { sortParticipantIds } from '../lib/sort-participant-ids';
@@ -587,47 +585,29 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           startPointerRef === null ? Promise.resolve(null) : transaction.get(startPointerRef),
         ]);
         const timestamp = serverTimestamp();
+        const writeTargets = resolveHairConsultationLeaveWriteTargets({
+          otherUserMetaRef,
+          otherUserMetaExists: otherUserMetaSnapshot?.exists() === true,
+          channelRef,
+          channelExists: channelSnapshot.exists(),
+          startPointerRef,
+          startPointerExists: startPointerSnapshot?.exists() === true,
+          startPointerTargetChannelId: startPointerSnapshot?.exists()
+            ? startPointerSnapshot.data().targetChannelId
+            : null,
+          channelId,
+        });
 
-        transaction.set(messageRef, {
-          id: messageRef.id,
-          message: buildHairConsultationLeaveMessage(userName),
-          messageType: HairConsultationChatMessageTypeEnum.SYSTEM,
-          metaPathList: [],
-          senderId: 'system',
-          createdAt: timestamp,
-          updatedAt: timestamp,
+        applyHairConsultationLeaveWrites({
+          transaction,
+          messageRef,
+          userMetaRef,
+          ...writeTargets,
+          userId,
+          userName,
+          systemMessageType: HairConsultationChatMessageTypeEnum.SYSTEM,
+          timestamp,
         });
-        transaction.update(userMetaRef, {
-          deletedAt: timestamp,
-          deleteReason: CHAT_V2_USER_DELETED_REASON,
-          unreadCount: 0,
-          updatedAt: timestamp,
-        });
-        if (otherUserMetaRef !== null && otherUserMetaSnapshot?.exists()) {
-          transaction.update(otherUserMetaRef, {
-            otherUserLeft: true,
-            otherUserDeactivated: false,
-            updatedAt: timestamp,
-          });
-        }
-        if (channelSnapshot.exists()) {
-          transaction.update(channelRef, {
-            participantsIds: arrayRemove(userId),
-            updatedAt: timestamp,
-          });
-        }
-        if (
-          startPointerRef !== null &&
-          startPointerSnapshot?.exists() &&
-          startPointerSnapshot.data().targetChannelId === channelId
-        ) {
-          transaction.update(startPointerRef, {
-            // room 순번은 보존해 다음 방 생성 시 기존 ID와 충돌하지 않게 한다.
-            targetChannelId: deleteField(),
-            targetSourceCollection: deleteField(),
-            updatedAt: timestamp,
-          });
-        }
 
         return typeof userMetaData.unreadCount === 'number' ? userMetaData.unreadCount : 0;
       });
