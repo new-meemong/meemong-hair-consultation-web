@@ -6,6 +6,7 @@ import {
   ChatOriginPricingType,
   ChatV2ChannelType,
   ChatV2PostType,
+  type HairConsultationDirectChatOrigin,
 } from './chat-start-request';
 
 describe('ChatOriginEntrySource contract', () => {
@@ -66,19 +67,30 @@ describe('ChatOriginEntrySource contract', () => {
 });
 
 describe('buildHairConsultationChatStartRequest', () => {
-  it.each([
+  it.each<{
+    answerId: string;
+    originEntrySource: HairConsultationDirectChatOrigin;
+    joinType: 'MODEL' | 'DESIGNER';
+  }>([
     {
+      answerId: '200',
       originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_POST_COMMENT_DIRECT_CHAT,
-      joinType: 'DESIGNER' as const,
+      joinType: 'DESIGNER',
     },
     {
+      answerId: '200',
       originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_RESPONSE_DETAIL_DIRECT_CHAT,
-      joinType: 'MODEL' as const,
+      joinType: 'MODEL',
     },
-  ])('keeps the original post and required answer identity for $originEntrySource', (input) => {
+    {
+      answerId: '300',
+      originEntrySource: ChatOriginEntrySource.HAIR_CONSULTATION_RESPONSE_DETAIL_DIRECT_CHAT,
+      joinType: 'MODEL',
+    },
+  ])('keeps answer $answerId as the room identity for $originEntrySource', (input) => {
     const request = buildHairConsultationChatStartRequest({
       postId: '100',
-      answerId: '200',
+      answerId: input.answerId,
       targetUserId: '22',
       targetDisplayName: '지우',
       originEntrySource: input.originEntrySource,
@@ -90,7 +102,7 @@ describe('buildHairConsultationChatStartRequest', () => {
       channelType: ChatV2ChannelType.HAIR_CONSULTATION,
       postType: ChatV2PostType.HAIR_CONSULTATION,
       postId: '100',
-      answerId: '200',
+      answerId: input.answerId,
       targetUserId: '22',
       targetDisplayName: '지우',
       originEntrySource: input.originEntrySource,

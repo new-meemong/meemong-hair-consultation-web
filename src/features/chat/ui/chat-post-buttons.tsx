@@ -16,8 +16,7 @@ import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 type ChatPostButtonsProps = {
   postId: string | null | undefined;
-  answerId?: string | null;
-  userChannel?: UserHairConsultationChatChannelType | null;
+  userChannel?: Partial<Pick<UserHairConsultationChatChannelType, 'answerId' | 'otherUser'>> | null;
 };
 
 /**
@@ -25,7 +24,7 @@ type ChatPostButtonsProps = {
  * 모델 채팅방: 내 질문, 받은 답변, 예약 링크
  * 디자이너 채팅방: 고객 글, 내 답변, 예약 링크
  */
-export default function ChatPostButtons({ postId, answerId, userChannel }: ChatPostButtonsProps) {
+export default function ChatPostButtons({ postId, userChannel }: ChatPostButtonsProps) {
   const { user, isUserModel } = useAuthContext();
   const { push } = useRouterWithUser();
   const showModal = useShowModal();
@@ -55,8 +54,7 @@ export default function ChatPostButtons({ postId, answerId, userChannel }: ChatP
     return postWriterId === user.id;
   }, [postDetail, user.id, isPostNotFound]);
 
-  // answerId는 userChannel에서도 확인 (props로 전달된 answerId가 없을 수 있음)
-  const actualAnswerId = answerId || userChannel?.answerId || '';
+  const actualAnswerId = userChannel?.answerId || '';
 
   // 컨설팅 답변 존재 여부 확인
   // 채팅방에서는 answerId가 있으면 답변이 존재한다고 간주

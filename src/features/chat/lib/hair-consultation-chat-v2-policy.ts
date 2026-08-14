@@ -1,4 +1,19 @@
+import type { UserHairConsultationChatChannelType } from '../type/user-hair-consultation-chat-channel-type';
+
 type ChatMetadata = Record<string, unknown> | undefined;
+
+type ChatChannelUnavailabilityMetadata =
+  | Partial<Pick<UserHairConsultationChatChannelType, 'deletedAt' | 'otherUserLeft'>>
+  | undefined;
+
+type HairConsultationReplyRefundMetadata =
+  | Partial<
+      Pick<
+        UserHairConsultationChatChannelType,
+        'billingCreateType' | 'isOpenUsingMong' | 'openMethod'
+      >
+    >
+  | undefined;
 
 const CHAT_V2_SCHEMA_VERSION = 2;
 const HAIR_CONSULTATION_CHANNEL_TYPE = 'hairConsultation';
@@ -30,15 +45,28 @@ function normalizedParticipantId(value: unknown): string | null {
 }
 
 export function isHairConsultationChatMessageSendUnavailable(
-  senderMetadata: ChatMetadata,
-  receiverMetadata: ChatMetadata,
+  senderMetadata: ChatChannelUnavailabilityMetadata,
+  receiverMetadata: ChatChannelUnavailabilityMetadata,
 ): boolean {
-  return [senderMetadata, receiverMetadata].some(
-    (metadata) => metadata?.deletedAt != null || metadata?.otherUserLeft === true,
-  );
+  return [senderMetadata, receiverMetadata].some(isChatChannelUnavailable);
 }
 
-export function canStartHairConsultationReplyRefundWait(metadata: ChatMetadata): boolean {
+function isChatChannelUnavailable(metadata: ChatChannelUnavailabilityMetadata): boolean {
+  return metadata?.deletedAt != null || metadata?.otherUserLeft === true;
+}
+
+// 삭제·상대 이탈·전송 중 종료 감지는 모두 기존 메시지 열람만 허용하고 신규 전송은
+// 막는 동일 상태이므로, 상세 화면의 읽기 전용 정책과 안내 문구를 하나로 유지한다.
+export function isHairConsultationChatDetailReadOnly(
+  currentUserMetadata: ChatChannelUnavailabilityMetadata,
+  sendUnavailableAfterFailure: boolean,
+): boolean {
+  return sendUnavailableAfterFailure || isChatChannelUnavailable(currentUserMetadata);
+}
+
+export function canStartHairConsultationReplyRefundWait(
+  metadata: HairConsultationReplyRefundMetadata,
+): boolean {
   const billingCreateType = nonEmptyString(metadata?.billingCreateType);
   const openedWithMong = metadata?.isOpenUsingMong === true || metadata?.openMethod === 'MONG';
 

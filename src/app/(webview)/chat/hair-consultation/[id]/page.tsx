@@ -7,7 +7,10 @@ import { useAuthContext } from '@/features/auth/context/auth-context';
 import { useGetUser } from '@/features/auth/api/use-get-user';
 import useIsFromApp from '@/features/chat/hook/use-is-from-app';
 import useSendMessage from '@/features/chat/hook/use-send-message';
-import { HAIR_CONSULTATION_CHAT_MESSAGE_SEND_UNAVAILABLE_ERROR } from '@/features/chat/lib/hair-consultation-chat-v2-policy';
+import {
+  HAIR_CONSULTATION_CHAT_MESSAGE_SEND_UNAVAILABLE_ERROR,
+  isHairConsultationChatDetailReadOnly,
+} from '@/features/chat/lib/hair-consultation-chat-v2-policy';
 import { useHairConsultationChatChannelStore } from '@/features/chat/store/hair-consultation-chat-channel-store';
 import { useHairConsultationChatMessageStore } from '@/features/chat/store/hair-consultation-chat-message-store';
 import { HairConsultationChatMessageTypeEnum } from '@/features/chat/type/hair-consultation-chat-message-type';
@@ -223,10 +226,10 @@ export default function HairConsultationChatDetailPage() {
 
   // 서버에서 가져온 유저 정보를 사용 (없으면 Firestore 데이터 fallback)
   const otherUser = otherUserFromServer || userChannel?.otherUser;
-  const isMessageSendUnavailable =
-    userChannel.deletedAt != null ||
-    userChannel.otherUserLeft === true ||
-    isMessageSendUnavailableAfterFailure;
+  const isMessageSendUnavailable = isHairConsultationChatDetailReadOnly(
+    userChannel,
+    isMessageSendUnavailableAfterFailure,
+  );
   return (
     <div className="h-screen flex flex-col">
       <SiteHeader
@@ -243,7 +246,6 @@ export default function HairConsultationChatDetailPage() {
       {/* 게시물 버튼 추가 - 항상 표시, postId가 없으면 비활성화 상태로 표시 */}
       <ChatPostButtons
         postId={userChannel?.postId ?? ''}
-        answerId={userChannel?.answerId ?? undefined}
         userChannel={userChannel && otherUser ? { ...userChannel, otherUser } : userChannel}
       />
       <div className="flex-1 overflow-hidden">

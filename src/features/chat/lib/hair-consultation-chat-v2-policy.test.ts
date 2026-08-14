@@ -1,17 +1,30 @@
+import { serverTimestamp } from 'firebase/firestore';
 import { describe, expect, it } from 'vitest';
 
 import {
   buildHairConsultationLeaveMessage,
   canStartHairConsultationReplyRefundWait,
+  isHairConsultationChatDetailReadOnly,
   isHairConsultationChatMessageSendUnavailable,
   resolveHairConsultationChatV2StartPointerId,
 } from './hair-consultation-chat-v2-policy';
 
 describe('hair consultation chat v2 policy', () => {
   it('삭제되었거나 상대방이 나간 메타는 전송 불가로 판정한다', () => {
-    expect(isHairConsultationChatMessageSendUnavailable({ deletedAt: {} }, {})).toBe(true);
+    expect(isHairConsultationChatMessageSendUnavailable({ deletedAt: serverTimestamp() }, {})).toBe(
+      true,
+    );
     expect(isHairConsultationChatMessageSendUnavailable({}, { otherUserLeft: true })).toBe(true);
     expect(isHairConsultationChatMessageSendUnavailable({}, {})).toBe(false);
+  });
+
+  it('삭제·상대 이탈·전송 중 종료 감지 시 상세를 읽기 전용으로 전환한다', () => {
+    expect(isHairConsultationChatDetailReadOnly({ deletedAt: serverTimestamp() }, false)).toBe(
+      true,
+    );
+    expect(isHairConsultationChatDetailReadOnly({ otherUserLeft: true }, false)).toBe(true);
+    expect(isHairConsultationChatDetailReadOnly({}, true)).toBe(true);
+    expect(isHairConsultationChatDetailReadOnly({}, false)).toBe(false);
   });
 
   it('받은 채팅을 몽으로 연 결제 타입만 첫 답장 환불 대기를 허용한다', () => {

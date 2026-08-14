@@ -89,7 +89,7 @@ export type ChatStartRequest = {
   targetDisplayName?: string;
 };
 
-type HairConsultationDirectChatOrigin =
+export type HairConsultationDirectChatOrigin =
   | ChatOriginEntrySource.HAIR_CONSULTATION_POST_COMMENT_DIRECT_CHAT
   | ChatOriginEntrySource.HAIR_CONSULTATION_RESPONSE_DETAIL_DIRECT_CHAT;
 

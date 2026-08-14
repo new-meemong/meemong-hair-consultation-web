@@ -588,11 +588,6 @@ export default function NewConsultingResponsePage() {
     // StartChatChannel이 없는 구버전 앱에서만 아래 레거시 생성·과금
     // 프로토콜을 사용한다. 신규 앱은 반드시 위 공통 v2 시작 경로에서 끝난다.
 
-    if (!isUserModel) {
-      await startConsultingResponseChat(isMyHairConsultationPost);
-      return;
-    }
-
     const createType =
       resolveModelHairConsultationResponseDetailChatCreateType(isMyHairConsultationPost);
     if (createType == null) {
