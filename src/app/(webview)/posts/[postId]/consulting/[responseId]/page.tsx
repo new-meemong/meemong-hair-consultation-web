@@ -92,6 +92,7 @@ import { useOptionalBrand } from '@/shared/context/brand-context';
 import { useOverlayContext } from '@/shared/context/overlay-context';
 import { useRouterWithUser } from '@/shared/hooks/use-router-with-user';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
+import useShowImageViewerModal from '@/shared/ui/hooks/use-show-image-viewer-modal';
 import useShowAnswerViewMongConsumeSnackBar from '@/features/mong/hook/use-show-answer-view-mong-consume-snack-bar';
 import useShowMongInsufficientSheet from '@/features/mong/hook/use-show-mong-insufficient-sheet';
 import useStartChat from '@/features/chat/hook/use-start-chat';
@@ -318,6 +319,7 @@ export default function NewConsultingResponsePage() {
   const isUserModel = auth?.isUserModel ?? false;
   const brand = useOptionalBrand();
   const showModal = useShowModal();
+  const showImageViewerModal = useShowImageViewerModal();
   const { startChat, findExistingChat, prepareChat, openPreparedChat } = useStartChat();
 
   const showAppOnlyModal = () => {
@@ -747,6 +749,13 @@ export default function NewConsultingResponsePage() {
       ? `${(answer.price ?? 0).toLocaleString()}원`
       : `${(answer.minPrice ?? 0).toLocaleString()}원 ~ ${(answer.maxPrice ?? 0).toLocaleString()}원`;
 
+  const styleImages = answer.styleImages ?? [];
+
+  const handleStyleImageClick = (index: number) => {
+    if (styleImages.length === 0) return;
+    showImageViewerModal({ images: styleImages, initialIndex: index });
+  };
+
   const designerDisplayName = answer.user.displayName?.trim() || '디자이너';
   const designerNameWithRole = formatDesignerName(designerDisplayName);
   const designerAddress = answer.user.address ? formatAddress(answer.user.address) : null;
@@ -927,19 +936,26 @@ export default function NewConsultingResponsePage() {
           />
 
           <div className="flex w-full flex-col gap-4">
-            {answer.styleImages && answer.styleImages.length > 0 && (
+            {styleImages.length > 0 && (
               <div className="overflow-x-auto scrollbar-hide">
                 <div className="flex w-max gap-2">
-                  {answer.styleImages.map((imageUrl: string, index: number) => (
-                    <Image
+                  {styleImages.map((imageUrl: string, index: number) => (
+                    <button
                       key={`${imageUrl}-${index}`}
-                      src={imageUrl}
-                      alt={`추천 시술 이미지 ${index + 1}`}
-                      width={140}
-                      height={140}
-                      unoptimized
-                      className="size-[140px] shrink-0 rounded-8 object-cover"
-                    />
+                      type="button"
+                      aria-label={`추천 시술 이미지 ${index + 1} 크게 보기`}
+                      className="shrink-0 overflow-hidden rounded-8"
+                      onClick={() => handleStyleImageClick(index)}
+                    >
+                      <Image
+                        src={imageUrl}
+                        alt={`추천 시술 이미지 ${index + 1}`}
+                        width={140}
+                        height={140}
+                        unoptimized
+                        className="size-[140px] object-cover"
+                      />
+                    </button>
                   ))}
                 </div>
               </div>
