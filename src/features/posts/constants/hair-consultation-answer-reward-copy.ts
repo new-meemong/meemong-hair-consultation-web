@@ -1,0 +1,15 @@
+const NEED_STORE_CONSULTATION_LIMIT = {
+  FEMALE_CUSTOMER: 2,
+  MALE_CUSTOMER: 1,
+} as const;
+
+export const HAIR_CONSULTATION_ANSWER_SINCERE_WRITING_CRITERIA = [
+  `여성 고객: '매장 상담이 필요해요' 응답 ${NEED_STORE_CONSULTATION_LIMIT.FEMALE_CUSTOMER}건 이하`,
+  `남성 고객: '매장 상담이 필요해요' 응답 ${NEED_STORE_CONSULTATION_LIMIT.MALE_CUSTOMER}건 이하`,
+] as const;
+
+export const HAIR_CONSULTATION_ANSWER_REWARD_ONBOARDING_DESCRIPTION = [
+  '참고 이미지가 들어간 정성스러운 답변을 달아주세요.',
+  '성실작성 기준은 아래와 같아요.',
+  ...HAIR_CONSULTATION_ANSWER_SINCERE_WRITING_CRITERIA,
+].join('\n');

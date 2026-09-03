@@ -77,8 +77,10 @@ export default function ConsultingResponseFormNew({
 
   const { handleCreateHairConsultationAnswer, isPending: isCreatingHairConsultationAnswer } =
     useCreateHairConsultationAnswer(postId);
-  const { mutateAsync: createEventMong } = useCreateEventMongMutation();
+  const { mutateAsync: createEventMong, isPending: isCreatingEventMong } =
+    useCreateEventMongMutation();
   const showConsultingAnswerCompleteSheet = useShowConsultingAnswerCompleteSheet();
+  const isCompletingConsultingResponse = isCreatingHairConsultationAnswer || isCreatingEventMong;
 
   const navigateToPostDetail = () => {
     replace(ROUTES.POSTS_DETAIL(postId), {
@@ -164,7 +166,7 @@ export default function ConsultingResponseFormNew({
 
       return priceInfo.minPrice != null && priceInfo.maxPrice != null;
     }
-    return !isCreatingHairConsultationAnswer;
+    return true;
   };
 
   return (
@@ -175,6 +177,7 @@ export default function ConsultingResponseFormNew({
       canMoveNext={canMoveNext}
       onSubmit={submit}
       lastStepButtonLabel="저장"
+      isSubmitting={isCompletingConsultingResponse}
     />
   );
 }

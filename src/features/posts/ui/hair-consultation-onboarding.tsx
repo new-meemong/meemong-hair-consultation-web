@@ -1,7 +1,7 @@
 'use client';
 
 import Image, { type StaticImageData } from 'next/image';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import hairConsultationOnboadingDesigner1 from '@/assets/hair-consultation-onboarding/hair_consultation_onboading_designer_1.png';
 import hairConsultationOnboadingDesigner2 from '@/assets/hair-consultation-onboarding/hair_consultation_onboading_designer_2.png';
@@ -14,8 +14,13 @@ import hairConsultationOnboadingModel2 from '@/assets/hair-consultation-onboardi
 import hairConsultationOnboadingModel3_1 from '@/assets/hair-consultation-onboarding/hair_consultation_onboading_model_3_1.png';
 import hairConsultationOnboadingModel3_2 from '@/assets/hair-consultation-onboarding/hair_consultation_onboading_model_3_2.png';
 import hairConsultationOnboadingModel4 from '@/assets/hair-consultation-onboarding/hair_consultation_onboading_model_4.png';
+import { HAIR_CONSULTATION_ANSWER_REWARD_PRESET_CODE } from '@/entities/mong/api/mong-reward-preset';
+import useGetMongRewardPresets from '@/entities/mong/api/use-get-mong-reward-presets';
 import { Button } from '@/shared';
 import { SiteHeader } from '@/widgets/header';
+
+import { HAIR_CONSULTATION_ANSWER_REWARD_ONBOARDING_DESCRIPTION } from '../constants/hair-consultation-answer-reward-copy';
+import { getHairConsultationAnswerRewardAmount } from '../lib/get-hair-consultation-answer-reward-criteria';
 
 type HairConsultationOnboardingRole = 'model' | 'designer';
 
@@ -56,16 +61,20 @@ const MODEL_ONBOARDING_PAGES: HairConsultationOnboardingPage[] = [
   },
 ];
 
-const DESIGNER_ONBOARDING_PAGES: HairConsultationOnboardingPage[] = [
+const createDesignerOnboardingPages = (
+  withImageRewardAmount: number | null,
+): HairConsultationOnboardingPage[] => [
   {
     title: '고객을 모집하고 싶어요!',
     description: '답변이 마음에 들면 고객이 먼저 채팅해요.\n디자이너는 먼저 채팅할 수 없어요',
     images: [hairConsultationOnboadingDesigner1],
   },
   {
-    title: '성실 답변으로 10몽 리워드 받기',
-    description:
-      '4개 이상 항목에 "매장상담이 필요해요"가 아닌,\n참고 이미지가 들어간 정성스러운 답변을 달아주세요.',
+    title:
+      withImageRewardAmount === null
+        ? '성실 답변으로 몽 리워드 받기'
+        : `성실 답변으로 ${withImageRewardAmount}몽 리워드 받기`,
+    description: HAIR_CONSULTATION_ANSWER_REWARD_ONBOARDING_DESCRIPTION,
     images: [hairConsultationOnboadingDesigner2],
   },
   {
@@ -124,10 +133,18 @@ export default function HairConsultationOnboarding({
   role,
   onComplete,
 }: HairConsultationOnboardingProps) {
-  const pages = useMemo(
-    () => (role === 'model' ? MODEL_ONBOARDING_PAGES : DESIGNER_ONBOARDING_PAGES),
-    [role],
+  const { data: rewardPresetsData } = useGetMongRewardPresets(
+    { isActive: true },
+    { enabled: role === 'designer' },
   );
+  const withImageRewardAmount = getHairConsultationAnswerRewardAmount(
+    rewardPresetsData?.dataList,
+    HAIR_CONSULTATION_ANSWER_REWARD_PRESET_CODE.WITH_STYLE_IMAGE,
+  );
+  const pages =
+    role === 'model'
+      ? MODEL_ONBOARDING_PAGES
+      : createDesignerOnboardingPages(withImageRewardAmount);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
   const isFirstPage = currentPageIndex === 0;
