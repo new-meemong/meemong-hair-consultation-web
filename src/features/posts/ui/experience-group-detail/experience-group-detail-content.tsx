@@ -6,22 +6,21 @@ import PostDetailAuthorProfile from '../post-detail/post-detail-author-profile';
 import PostDetailContentItem from '../post-detail-content-item';
 import { formatDate } from 'date-fns';
 import { useAuthContext } from '@/features/auth/context/auth-context';
-import useShowExperienceGroupLinkSheet from '@/features/mong/hook/use-show-experience-group-link-sheet';
+import useOpenExperienceGroupLink from '@/features/mong/hook/use-open-experience-group-link';
 import useShowModal from '@/shared/ui/hooks/use-show-modal';
 
 function SnsLink({
   snsType,
   url,
   experienceGroupId,
-  designerName,
+  openExperienceGroupLink,
 }: {
   snsType: string;
   url: string;
   experienceGroupId: number;
-  designerName: string;
+  openExperienceGroupLink: (url: string) => Promise<void>;
 }) {
   const { isUserModel, isUserDesigner } = useAuthContext();
-  const showExperienceGroupLinkSheet = useShowExperienceGroupLinkSheet();
   const showModal = useShowModal();
 
   const handleClick = async () => {
@@ -52,11 +51,7 @@ function SnsLink({
         // Ignore storage failures and continue opening the link.
       }
 
-      await showExperienceGroupLinkSheet({
-        designerName,
-        experienceGroupId,
-        url,
-      });
+      await openExperienceGroupLink(url);
     }
   };
   return (
@@ -82,6 +77,7 @@ type ExperienceGroupDetailContentProps = {
 export default function ExperienceGroupDetailContent({
   experienceGroupDetail,
 }: ExperienceGroupDetailContentProps) {
+  const openExperienceGroupLink = useOpenExperienceGroupLink();
   const { user, isAnonymous, createdAt, title, content, snsTypes, priceType, price } =
     experienceGroupDetail;
   const authorName = isAnonymous ? '익명' : (user.displayName ?? '익명');
@@ -139,7 +135,7 @@ export default function ExperienceGroupDetailContent({
                 snsType={snsType.snsType}
                 url={snsType.url}
                 experienceGroupId={experienceGroupDetail.id}
-                designerName={authorName}
+                openExperienceGroupLink={openExperienceGroupLink}
               />
             ))}
           </div>
