@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { normalizeHairConsultationConcerns } from '@/entities/posts/model/hair-consultation-concern';
 import { useForm } from 'react-hook-form';
 import { useEffect, useMemo } from 'react';
 
@@ -26,7 +27,6 @@ import {
   type HairConsultationFormValues,
 } from '../types/hair-consultation-form-values';
 import {
-  HAIR_CONSULTATION_CONCERN_OPTIONS,
   HAIR_CONSULTATION_HAIR_LENGTH_VALUES,
   HAIR_CONSULTATION_HAIR_TEXTURE_VALUES,
   HAIR_CONSULTATION_PERSONAL_COLOR_VALUES,
@@ -58,18 +58,6 @@ const normalizeEnumValue = <T extends readonly string[]>(
   return options.includes(value as T[number]) ? (value as T[number]) : fallback;
 };
 
-const normalizeEnumArray = <T extends readonly string[]>(
-  value: unknown,
-  options: T,
-  fallback: T[number][],
-) => {
-  if (!Array.isArray(value)) return fallback;
-  const filtered = value.filter(
-    (item): item is T[number] => typeof item === 'string' && options.includes(item as T[number]),
-  );
-  return filtered.length > 0 ? filtered : fallback;
-};
-
 export default function useHairConsultationForm() {
   const { replace } = useRouterWithUser();
   const { showSnackBar } = useOverlayContext();
@@ -99,10 +87,8 @@ export default function useHairConsultationForm() {
         HAIR_CONSULTATION_HAIR_LENGTH_VALUES,
         DEFAULT_HAIR_CONSULTATION_FORM_VALUES[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_LENGTH],
       ),
-      [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS]: normalizeEnumArray(
+      [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS]: normalizeHairConsultationConcerns(
         profileSource?.hairConcerns,
-        HAIR_CONSULTATION_CONCERN_OPTIONS,
-        DEFAULT_HAIR_CONSULTATION_FORM_VALUES[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS],
       ),
       [HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_TEXTURE]: normalizeEnumValue(
         profileSource?.hairTexture,

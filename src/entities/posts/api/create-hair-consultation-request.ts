@@ -1,18 +1,6 @@
-export type HairConsultationConcern =
-  | '어울리는 스타일'
-  | '어울리는 컬러'
-  | '탈모'
-  | '적은 숱'
-  | '얇은 모발'
-  | '볼륨 부족'
-  | '스타일링 어려움'
-  | '펌이 금방풀림'
-  | '심한 곱슬'
-  | '심한 직모'
-  | '모발손상'
-  | '지성두피'
-  | '건조한 두피'
-  | '특별한 문제는 없어요';
+import type { HairConsultationConcern } from '../model/hair-consultation-concern';
+
+export type { HairConsultationConcern } from '../model/hair-consultation-concern';
 
 export type HairConsultationHairLength =
   | '크롭'

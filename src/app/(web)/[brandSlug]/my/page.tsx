@@ -1,5 +1,7 @@
 'use client';
 
+import { normalizeHairConsultationConcerns } from '@/entities/posts/model/hair-consultation-concern';
+
 import type {
   HairConsultationConcern,
   HairConsultationHairLength,
@@ -269,7 +271,7 @@ export default function MyPage() {
               />
               <InfoRow
                 label="헤어고민"
-                value={model?.hairConcerns?.join(', ')}
+                value={normalizeHairConsultationConcerns(model?.hairConcerns).join(', ')}
                 onEdit={handleOpenHairConcernEdit}
               />
               <InfoRow

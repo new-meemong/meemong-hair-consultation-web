@@ -253,8 +253,9 @@ export function useCreateHairConsultation() {
           ? data.desiredDate
           : undefined;
 
+      const hairConcerns = normalizedData.hairConcerns;
       if (
-        data.hairConcerns.length === 0 ||
+        hairConcerns.length === 0 ||
         !data.hairLength ||
         !data.skinBrightness ||
         !data.hairTexture ||
@@ -267,7 +268,7 @@ export function useCreateHairConsultation() {
         title: data.title,
         content: data.content,
         hairConsultTreatmentDescription,
-        hairConcerns: data.hairConcerns,
+        hairConcerns,
         hairLength: data.hairLength,
         skinBrightness: data.skinBrightness,
         hairTexture: data.hairTexture,

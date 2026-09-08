@@ -1,9 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { normalizeHairConsultationConcerns } from '@/entities/posts/model/hair-consultation-concern';
 
 import { Button, ToggleChip, ToggleChipGroup } from '@/shared';
-import { AppTypography } from '@/shared/styles/typography';
+import { MeemongTypography } from '@/shared/styles/typography';
 import Checkbox from '@/shared/ui/checkbox';
 import { DEFAULT_HAIR_CONSULTATION_FORM_VALUES } from '@/features/posts/constants/hair-consultation-form-default-values';
 import { HAIR_CONSULTATION_CONCERN_OPTIONS } from '@/features/posts/constants/hair-consultation-create-options';
@@ -22,10 +23,14 @@ type Props = {
 };
 
 export function HairConcernsSelectPage({ onComplete, onBack }: Props) {
-  const { savedContent, saveContent } = useWritingContent(USER_WRITING_CONTENT_KEYS.hairConsultation);
+  const { savedContent, saveContent } = useWritingContent(
+    USER_WRITING_CONTENT_KEYS.hairConsultation,
+  );
 
   const initialValue = useMemo(() => {
-    return savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS] ?? [];
+    return normalizeHairConsultationConcerns(
+      savedContent?.content?.[HAIR_CONSULTATION_FORM_FIELD_NAME.HAIR_CONCERNS],
+    );
   }, [savedContent]);
 
   const [selectedConcerns, setSelectedConcerns] = useState<HairConsultationConcern[]>(initialValue);
@@ -57,12 +62,14 @@ export function HairConcernsSelectPage({ onComplete, onBack }: Props) {
       <div className="flex flex-col gap-7 px-5 pt-7 pb-6 flex-1 overflow-y-auto">
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between gap-2">
-            <span className={`${AppTypography.headlineSemiBold} text-label-default`}>
+            <span className={`${MeemongTypography.title1SemiBold} text-label-default`}>
               평소 헤어 고민을 모두 골라주세요
             </span>
-            <span className={`${AppTypography.body2SemiBold} text-cautionary`}>필수</span>
+            <span className={`${MeemongTypography.body3Regular} font-semibold text-cautionary`}>
+              필수
+            </span>
           </div>
-          <span className={`${AppTypography.body2LongRegular} text-label-info`}>
+          <span className={`${MeemongTypography.body3Regular} text-label-info`}>
             정보가 현재와 다르면 상담 결과가 달라질 수 있어요.
           </span>
         </div>
@@ -81,7 +88,7 @@ export function HairConcernsSelectPage({ onComplete, onBack }: Props) {
                       'rounded-full px-4 py-2.5 h-auto',
                       'data-[state=off]:bg-white data-[state=off]:border data-[state=off]:border-border-default data-[state=off]:text-label-sub',
                       'data-[state=on]:bg-label-default data-[state=on]:text-white data-[state=on]:border-transparent',
-                      'typo-body-2-regular data-[state=on]:typo-body-2-medium',
+                      `${MeemongTypography.body3Regular} data-[state=on]:font-medium`,
                     ].join(' ')}
                   >
                     {option}
@@ -93,7 +100,7 @@ export function HairConcernsSelectPage({ onComplete, onBack }: Props) {
           <div className="mt-[28px] flex items-center justify-end gap-3">
             <label
               htmlFor="hair-concern-special"
-              className={`${AppTypography.body2Regular} text-label-sub cursor-pointer`}
+              className={`${MeemongTypography.body3Regular} text-label-sub cursor-pointer`}
             >
               {SPECIAL_CONCERN}
             </label>

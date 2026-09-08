@@ -1,4 +1,5 @@
 import type { HairConsultationFormValues } from '../types/hair-consultation-form-values';
+import { normalizeHairConsultationConcerns } from '@/entities/posts/model/hair-consultation-concern';
 import { MY_IMAGE_TYPE } from '../constants/my-image-type';
 
 const MY_IMAGE_TYPE_SET: ReadonlySet<string> = new Set(Object.values(MY_IMAGE_TYPE));
@@ -41,6 +42,7 @@ export function normalizeHairConsultationContent(
 
   return {
     ...content,
+    hairConcerns: normalizeHairConsultationConcerns(content.hairConcerns),
     myImages,
     aspirationImages: {
       ...aspirationSource,

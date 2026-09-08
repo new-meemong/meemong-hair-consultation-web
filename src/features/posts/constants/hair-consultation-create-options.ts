@@ -1,5 +1,4 @@
 import type {
-  HairConsultationConcern,
   HairConsultationHairLength,
   HairConsultationHairTexture,
   HairConsultationPersonalColor,
@@ -78,22 +77,7 @@ export const HAIR_CONSULTATION_PERSONAL_COLOR_OPTIONS: ConsultingFormOption[] =
     (value) => ({ label: value, value }) as const satisfies ConsultingFormOption,
   );
 
-export const HAIR_CONSULTATION_CONCERN_OPTIONS = [
-  '어울리는 스타일',
-  '어울리는 컬러',
-  '탈모',
-  '적은 숱',
-  '얇은 모발',
-  '볼륨 부족',
-  '스타일링 어려움',
-  '펌이 금방풀림',
-  '심한 곱슬',
-  '심한 직모',
-  '모발손상',
-  '지성두피',
-  '건조한 두피',
-  '특별한 문제는 없어요',
-] as const satisfies readonly HairConsultationConcern[];
+export { HAIR_CONSULTATION_CONCERNS as HAIR_CONSULTATION_CONCERN_OPTIONS } from '@/entities/posts/model/hair-consultation-concern';
 
 export const HAIR_CONSULTATION_DESIRED_DATE_TYPE_VALUES = [
   '협의 가능',
