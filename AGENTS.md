@@ -75,6 +75,10 @@ Use `docs/README.md` as the index; detailed architecture, feature, and database 
 - Preserve the Firestore database selection in `src/shared/lib/firebase.ts`: production uses `meemong-chat`, and all other environments use `meemong-dev`.
 - Keep Firestore collection names and per-user channel metadata paths consistent with the existing chat stores and helpers.
 
+## Meemong Figma implementation
+
+For Figma implementation, follow [Meemong Figma workflow](../../meemong-flutter-app/docs/meemong-figma-workflow.md), owned by the Meemong Flutter repository for the app and its hair-consultation, jobs/resumes, and shampoo-area webviews. Build or align reusable code components corresponding to Figma components before composing pages; do not duplicate those components per page. Follow this repository's component/layer conventions. If the relative link is unavailable in a different checkout layout, locate `meemong-flutter-app/docs/meemong-figma-workflow.md` in the available workspace before implementing; do not maintain a separate policy copy here.
+
 ## Verification
 
 - Add or update tests for changed domain logic, helpers, stores, and API behavior.
