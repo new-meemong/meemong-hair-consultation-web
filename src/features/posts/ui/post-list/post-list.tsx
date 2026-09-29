@@ -35,8 +35,9 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
       createHairConsultationReadingMutation(postId, { onSuccess: () => {} });
     }
 
+    const chatEntry = tab === 'my' || tab === 'comment' ? 'my_activity' : 'consultation_list';
     if (source === 'app') {
-      const opened = openInAppWebView(`/hair-consultation/posts/${postId}`, {
+      const opened = openInAppWebView(`/hair-consultation/posts/${postId}?chatEntry=${chatEntry}`, {
         reloadOnReturn: false,
       });
       if (opened) {
@@ -49,6 +50,7 @@ export default function PostList({ posts, tab, fetchNextPage }: PostListProps) {
       : ROUTES.POSTS_DETAIL(postId);
     const nextParams: Record<string, string> = {
       [SEARCH_PARAMS.POST_LIST_TAB]: tab,
+      chatEntry,
     };
 
     if (activeBrandId) {

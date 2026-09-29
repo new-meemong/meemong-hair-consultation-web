@@ -98,7 +98,8 @@ describe('buildHairConsultationChatStartRequest', () => {
       isMyHairConsultationPost: false,
     });
 
-    expect(request).toEqual({
+    expect(request.journey).toMatchObject({ entry: 'hair_consultation', targetId: '22', filters: { postId: '100', answerId: input.answerId, isMyHairConsultationPost: false } });
+    expect(request).toMatchObject({
       channelType: ChatV2ChannelType.HAIR_CONSULTATION,
       postType: ChatV2PostType.HAIR_CONSULTATION,
       postId: '100',

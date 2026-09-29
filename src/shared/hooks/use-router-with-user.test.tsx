@@ -48,6 +48,13 @@ describe('useRouterWithUser', () => {
     );
   });
 
+  it('상담 최초 출처를 답변 상세 이동에도 보존한다', () => {
+    mocks.searchParams.chatEntry = 'model_home_consultation';
+    const { result } = renderHook(() => useRouterWithUser());
+    act(() => result.current.push('/posts/1/consulting/2'));
+    expect(mocks.push.mock.calls[0][0]).toContain('chatEntry=model_home_consultation');
+  });
+
   it('지원 정보가 없는 구버전 진입에는 신규 기능을 추가하지 않는다', () => {
     delete mocks.searchParams.supportsFullWebviewPostCreate;
     const { result } = renderHook(() => useRouterWithUser());

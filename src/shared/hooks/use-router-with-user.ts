@@ -37,13 +37,15 @@ export function useRouterWithUser() {
   const supportsFullWebviewPostCreate = searchParams.get(
     SEARCH_PARAMS.SUPPORTS_FULL_WEBVIEW_POST_CREATE,
   );
+  const chatEntry = searchParams.get('chatEntry');
   const persistentAppCapabilityParams = useMemo<Record<string, string>>(() => {
     const params: Record<string, string> = {};
     if (supportsFullWebviewPostCreate != null) {
       params[SEARCH_PARAMS.SUPPORTS_FULL_WEBVIEW_POST_CREATE] = supportsFullWebviewPostCreate;
     }
+    if (chatEntry != null) params.chatEntry = chatEntry;
     return params;
-  }, [supportsFullWebviewPostCreate]);
+  }, [supportsFullWebviewPostCreate, chatEntry]);
 
   const push = useCallback(
     (path: string, params?: Record<string, string>) => {

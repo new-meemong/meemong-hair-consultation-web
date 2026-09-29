@@ -1,3 +1,5 @@
+import { consultationEntry } from './consultation-entry';
+
 export enum ChatV2ChannelType {
   MODEL_MATCHING = 'modelMatching',
   HAIR_CONSULTATION = 'hairConsultation',
@@ -76,7 +78,10 @@ export enum ChatOriginPricingType {
   VIEW_INSTAGRAM_NOTIFICATION_DESIGNER = 'view_instagram_notification_designer',
 }
 
+export type ChatJourney = { version: 1; entry: string; section?: string; steps: string[]; filters: Record<string, string | boolean>; targetId?: string };
+
 export type ChatStartRequest = {
+  journey?: ChatJourney;
   channelType: ChatV2ChannelType;
   postType: ChatV2PostType;
   postId: string;
@@ -121,6 +126,11 @@ export function buildHairConsultationChatStartRequest({
 }: HairConsultationChatStartRequestInput): ChatStartRequest {
   return {
     channelType: ChatV2ChannelType.HAIR_CONSULTATION,
+    journey: {
+      version: 1, entry: consultationEntry(), section: joinType === 'MODEL' ? 'response_detail' : 'author_contact',
+      steps: joinType === 'MODEL' ? ['post', 'response_detail', 'direct_chat'] : ['post', 'answer_written', 'author_chat'],
+      filters: { isMyHairConsultationPost, postId, answerId }, targetId: targetUserId,
+    },
     postType: ChatV2PostType.HAIR_CONSULTATION,
     postId,
     answerId,

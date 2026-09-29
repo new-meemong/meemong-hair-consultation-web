@@ -1,3 +1,4 @@
+import { consultationEntry } from './consultation-entry';
 import type { ChatEntrySource } from '@/features/chat/type/chat-entry-source';
 import type { ChatOriginEntrySource } from '@/shared/lib/chat-start-request';
 import { openInAppWebView } from './app-bridge';
@@ -17,6 +18,13 @@ export function goDesignerProfilePage(
 ) {
   const params = new URLSearchParams();
   params.set('from', 'hairConsultation');
+  params.set('chatJourney', JSON.stringify({
+    version: 1, entry: consultationEntry(), section: options?.isTopAdvisorDesigner ? 'top_advisor' : options?.entrySource ?? 'unknown',
+    steps: [options?.isTopAdvisorDesigner ? 'direct' : options?.entrySource === 'CONSULTING_RESPONSE' ? 'response_detail' : options?.entrySource === 'POST_COMMENT' ? 'post_comment' : 'unknown', 'designer_profile'],
+    filters: { ...(options?.postId ? { postId: options.postId } : {}), ...(options?.answerId ? { answerId: options.answerId } : {}),
+      ...(options?.isMyHairConsultationPost != null ? { isMyHairConsultationPost: options.isMyHairConsultationPost } : {}) },
+    targetId: designerId,
+  }));
   // null이 아닌 경우에만 파라미터 추가 (null은 명시적으로 전달하지 않음)
   if (options?.postId !== undefined && options.postId !== null) {
     params.set('postId', options.postId);
