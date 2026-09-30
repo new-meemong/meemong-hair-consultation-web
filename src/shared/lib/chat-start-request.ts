@@ -64,6 +64,7 @@ export enum ChatOriginEntrySource {
  * Update all three definitions and contract tests together.
  */
 export enum ChatOriginPricingType {
+  DEFAULT_MODEL = 'default_model',
   PAY = 'pay',
   NEW = 'new',
   RECENT_MALE = 'recent_male',

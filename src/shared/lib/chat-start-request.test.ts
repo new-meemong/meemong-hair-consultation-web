@@ -50,6 +50,7 @@ describe('ChatOriginEntrySource contract', () => {
 
   it('matches the shared Flutter pricing wire contract', () => {
     expect(Object.values(ChatOriginPricingType)).toEqual([
+      'default_model',
       'pay',
       'new',
       'recent_male',
