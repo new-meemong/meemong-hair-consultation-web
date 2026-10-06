@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import convertToCommentWithReplyStatusFromExperienceGroup from '@/entities/comment/lib/convertToCommentWithReplyStatusFromExperienceGroup';
 import type { CommentActionHandlers } from '@/entities/comment/model/comment-action-handlers';
-import { useAuthContext } from '@/features/auth/context/auth-context';
 import useGetExperienceGroupComments from '@/features/comments/api/use-get-experience-group-comments';
 import type { CommentFormState } from '@/features/comments/types/comment-form-state';
 import { CommentList } from '@/features/comments/ui/comment-list';
@@ -24,9 +23,7 @@ export default function ExperienceGroupCommentContainer({
     experienceGroupId,
   });
 
-  const { isUserDesigner } = useAuthContext();
-
-  const comments = convertToCommentWithReplyStatusFromExperienceGroup(data, isUserDesigner);
+  const comments = convertToCommentWithReplyStatusFromExperienceGroup(data);
 
   const handleFetchNextPage = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {

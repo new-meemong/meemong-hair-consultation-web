@@ -80,7 +80,7 @@ describe('convertToCommentWithReplyStatus role normalization', () => {
       ],
     };
 
-    const comments = convertToCommentWithReplyStatusFromExperienceGroup(data, false);
+    const comments = convertToCommentWithReplyStatusFromExperienceGroup(data);
 
     expectDesignerRoleWithoutAlias(comments[0].user);
   });
