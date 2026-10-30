@@ -2,6 +2,10 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import {
+  EXPERIENCE_GROUP_BOARD_PATH,
+  isExperienceGroupBoard,
+} from '@/shared/lib/experience-group-board-navigation';
 import { SEARCH_PARAMS } from '@/shared/constants/search-params';
 import { useCallback, useMemo } from 'react';
 
@@ -11,7 +15,16 @@ const createUrlWithUserId = (
   source: string | null,
   params?: Record<string, string>,
 ) => {
-  const url = new URL(path, window.location.origin);
+  const isExperienceBoard = isExperienceGroupBoard(
+    params?.[SEARCH_PARAMS.EXPERIENCE_BOARD],
+    window.location.pathname,
+  );
+  // 작성 완료와 브라우저 삭제 복귀도 전용 게시판으로 모은다.
+  const url = new URL(
+    isExperienceBoard && path === '/posts' ? EXPERIENCE_GROUP_BOARD_PATH : path,
+    window.location.origin,
+  );
+  if (isExperienceBoard) url.searchParams.set(SEARCH_PARAMS.EXPERIENCE_BOARD, 'true');
 
   if (userId) {
     url.searchParams.set(SEARCH_PARAMS.USER_ID, userId);
@@ -38,37 +51,51 @@ export function useRouterWithUser() {
     SEARCH_PARAMS.SUPPORTS_FULL_WEBVIEW_POST_CREATE,
   );
   const chatEntry = searchParams.get('chatEntry');
-  const persistentAppCapabilityParams = useMemo<Record<string, string>>(() => {
+  const experienceBoard = searchParams.get(SEARCH_PARAMS.EXPERIENCE_BOARD);
+  const supportsExperienceGroupListReturn = searchParams.get(
+    SEARCH_PARAMS.SUPPORTS_EXPERIENCE_GROUP_LIST_RETURN,
+  );
+  const persistentNavigationParams = useMemo<Record<string, string>>(() => {
     const params: Record<string, string> = {};
     if (supportsFullWebviewPostCreate != null) {
       params[SEARCH_PARAMS.SUPPORTS_FULL_WEBVIEW_POST_CREATE] = supportsFullWebviewPostCreate;
     }
     if (chatEntry != null) params.chatEntry = chatEntry;
+    if (isExperienceGroupBoard(experienceBoard)) params[SEARCH_PARAMS.EXPERIENCE_BOARD] = 'true';
+    if (supportsExperienceGroupListReturn != null) {
+      params[SEARCH_PARAMS.SUPPORTS_EXPERIENCE_GROUP_LIST_RETURN] =
+        supportsExperienceGroupListReturn;
+    }
     return params;
-  }, [supportsFullWebviewPostCreate, chatEntry]);
+  }, [
+    supportsFullWebviewPostCreate,
+    chatEntry,
+    experienceBoard,
+    supportsExperienceGroupListReturn,
+  ]);
 
   const push = useCallback(
     (path: string, params?: Record<string, string>) => {
       router.push(
         createUrlWithUserId(path, userId, source, {
-          ...persistentAppCapabilityParams,
+          ...persistentNavigationParams,
           ...params,
         }),
       );
     },
-    [router, userId, source, persistentAppCapabilityParams],
+    [router, userId, source, persistentNavigationParams],
   );
 
   const replace = useCallback(
     (path: string, params?: Record<string, string>) => {
       router.replace(
         createUrlWithUserId(path, userId, source, {
-          ...persistentAppCapabilityParams,
+          ...persistentNavigationParams,
           ...params,
         }),
       );
     },
-    [router, userId, source, persistentAppCapabilityParams],
+    [router, userId, source, persistentNavigationParams],
   );
 
   const back = useCallback(() => {

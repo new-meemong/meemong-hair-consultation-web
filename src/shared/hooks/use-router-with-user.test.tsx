@@ -65,4 +65,51 @@ describe('useRouterWithUser', () => {
 
     expect(mocks.push).toHaveBeenCalledWith('/posts/create?userId=71297&source=app');
   });
+  it('체험단 작성 완료는 전용 내 글 목록으로 돌아온다', () => {
+    mocks.searchParams.experienceBoard = 'true';
+    const { result } = renderHook(() => useRouterWithUser());
+    act(() => result.current.replace('/posts', { postTab: 'experienceGroup', postListTab: 'my' }));
+    const url = new URL(mocks.replace.mock.calls[0][0], 'https://example.com');
+    expect(url.pathname).toBe('/experience-groups');
+    expect(url.searchParams.get('experienceBoard')).toBe('true');
+    expect(url.searchParams.get('postListTab')).toBe('my');
+    expect(url.searchParams.get('userId')).toBe('71297');
+  });
+
+  it('체험단 작성과 수정 화면 이동에 게시판 출처를 보존한다', () => {
+    mocks.searchParams.experienceBoard = 'true';
+    const { result } = renderHook(() => useRouterWithUser());
+    for (const path of ['/posts/create', '/posts/experience-groups/42/edit']) {
+      act(() => result.current.push(path, { postTab: 'experienceGroup' }));
+      const url = new URL(mocks.push.mock.lastCall![0], 'https://example.com');
+      expect(url.pathname).toBe(path);
+      expect(url.searchParams.get('experienceBoard')).toBe('true');
+      expect(url.searchParams.get('postTab')).toBe('experienceGroup');
+    }
+  });
+  it('상세 → 수정 → 상세 이동에서 삭제 목록 복귀 지원을 유지한다', () => {
+    mocks.searchParams.supportsExperienceGroupListReturn = 'true';
+    const { result, rerender } = renderHook(() => useRouterWithUser());
+    act(() => result.current.push('/posts/experience-groups/42/edit'));
+    const editUrl = new URL(mocks.push.mock.lastCall![0], 'https://example.com');
+    expect(editUrl.searchParams.get('supportsExperienceGroupListReturn')).toBe('true');
+    mocks.searchParams = Object.fromEntries(editUrl.searchParams);
+    rerender();
+    act(() => result.current.replace('/posts/experience-groups/42'));
+    const detailUrl = new URL(mocks.replace.mock.lastCall![0], 'https://example.com');
+    expect(detailUrl.searchParams.get('supportsExperienceGroupListReturn')).toBe('true');
+  });
+
+  it('쿼리 없이 연 브라우저 체험단 게시판에서도 작성 후 복귀 출처를 유지한다', () => {
+    const previous = window.location.href;
+    window.history.replaceState(null, '', '/experience-groups');
+    try {
+      const { result } = renderHook(() => useRouterWithUser());
+      act(() => result.current.push('/posts/create', { postTab: 'experienceGroup' }));
+      const url = new URL(mocks.push.mock.lastCall![0], 'https://example.com');
+      expect(url.searchParams.get('experienceBoard')).toBe('true');
+    } finally {
+      window.history.replaceState(null, '', previous);
+    }
+  });
 });

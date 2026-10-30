@@ -1,3 +1,6 @@
+import { isExperienceGroupBoard } from '@/shared/lib/experience-group-board-navigation';
+import { useSearchParams } from 'next/navigation';
+
 import { normalizeSource, openInAppWebView } from '@/shared/lib/app-bridge';
 
 import type { ExperienceGroup } from '@/entities/posts/model/experience-group';
@@ -22,6 +25,8 @@ export default function ExperienceGroupList({
   fetchNextPage,
 }: ExperienceGroupListProps) {
   const router = useRouterWithUser();
+  const searchParams = useSearchParams();
+  const experienceBoard = isExperienceGroupBoard(searchParams.get(SEARCH_PARAMS.EXPERIENCE_BOARD));
   const source = normalizeSource(router.source);
 
   const { mutate: createExperienceGroupReadingMutation } =
@@ -33,9 +38,12 @@ export default function ExperienceGroupList({
     }
 
     if (source === 'app') {
-      const opened = openInAppWebView(`/hair-consultation/experience-groups/${id}`, {
-        reloadOnReturn: false,
-      });
+      const opened = openInAppWebView(
+        `/hair-consultation/experience-groups/${id}${experienceBoard ? `?${SEARCH_PARAMS.EXPERIENCE_BOARD}=true` : ''}`,
+        {
+          reloadOnReturn: false,
+        },
+      );
       if (opened) {
         return;
       }
