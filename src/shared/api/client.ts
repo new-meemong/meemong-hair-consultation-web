@@ -172,6 +172,21 @@ export class ApiClient {
     return this.api.get(endpoint, { searchParams }).json<ApiListResponse<T>>();
   }
 
+  async postChatMessageRecord(body: unknown, token: string): Promise<number> {
+    // A 204 has no JSON body; errors are classified by the persistent outbox.
+    try {
+      const response = await this.api.post('chat-messages', {
+        json: body,
+        retry: 0,
+        throwHttpErrors: false,
+        hooks: { beforeRequest: [(request) => request.headers.set('Authorization', token)] },
+      });
+      return response.status;
+    } catch {
+      return 0;
+    }
+  }
+
   async post<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
     return this.api.post(endpoint, { json: data }).json<ApiResponse<T>>();
   }
