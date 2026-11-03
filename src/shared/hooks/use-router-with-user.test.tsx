@@ -55,6 +55,24 @@ describe('useRouterWithUser', () => {
     expect(mocks.push.mock.calls[0][0]).toContain('chatEntry=model_home_consultation');
   });
 
+  it('신규 웹 이전 내역 진입 표시는 상담 상세와 목록 복귀에도 보존한다', () => {
+    mocks.searchParams.legacyHistory = 'true';
+    const { result } = renderHook(() => useRouterWithUser());
+    act(() => result.current.push('/posts/42'));
+    act(() => result.current.replace('/posts'));
+    for (const navigate of [mocks.push, mocks.replace]) {
+      const url = new URL(navigate.mock.lastCall![0], 'https://example.com');
+      expect(url.searchParams.get('legacyHistory')).toBe('true');
+      expect(url.searchParams.get('userId')).toBe('71297');
+    }
+  });
+
+  it('레거시 앱의 기존 진입에는 이전 내역 표시를 추가하지 않는다', () => {
+    const { result } = renderHook(() => useRouterWithUser());
+    act(() => result.current.push('/posts'));
+    expect(mocks.push.mock.lastCall![0]).not.toContain('legacyHistory');
+  });
+
   it('지원 정보가 없는 구버전 진입에는 신규 기능을 추가하지 않는다', () => {
     delete mocks.searchParams.supportsFullWebviewPostCreate;
     const { result } = renderHook(() => useRouterWithUser());

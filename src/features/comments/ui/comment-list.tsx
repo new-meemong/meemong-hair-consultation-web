@@ -16,7 +16,7 @@ interface CommentListProps {
   hideReplyButton?: boolean;
   focusedCommentId: number | null;
   onDelete: (commentId: number) => void;
-  onEdit: (commentId: number) => void;
+  onEdit?: (commentId: number) => void;
   onReport: (commentId: number) => void;
   onTriggerClick: () => void;
 }
@@ -54,7 +54,7 @@ export function CommentList({
             hideReplyButton={hideReplyButton}
             isFocused={isFocused(comment.id)}
             onDelete={() => onDelete(comment.id)}
-            onEdit={() => onEdit(comment.id)}
+            onEdit={onEdit ? () => onEdit(comment.id) : undefined}
             onReport={() => onReport(comment.id)}
             onTriggerClick={() => onTriggerClick()}
             allComments={comments}

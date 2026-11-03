@@ -29,6 +29,7 @@ export const useHairConsultationCommentFormState = ({
   receiverId,
 }: UseHairConsultationCommentFormStateProps) => {
   const auth = useOptionalAuthContext();
+  const isUserModel = auth?.isUserModel ?? false;
   const isUserDesigner = auth?.isUserDesigner ?? false;
   const { showSnackBar } = useOverlayContext();
   const showMongInsufficientSheet = useShowMongInsufficientSheet();
@@ -54,6 +55,7 @@ export const useHairConsultationCommentFormState = ({
 
   const handleReplyClick = useCallback(
     (commentId: number) => {
+      if (isUserModel) return;
       if (commentFormState.commentId === commentId) {
         resetCommentState();
       } else {
@@ -65,22 +67,26 @@ export const useHairConsultationCommentFormState = ({
         });
       }
     },
-    [commentFormState.commentId, resetCommentState],
+    [commentFormState.commentId, isUserModel, resetCommentState],
   );
 
-  const handleEditComment = useCallback((commentId: number, comments?: Comment[]) => {
-    const comment = comments?.find((comment) => comment.id === commentId);
-    if (!comment) return;
+  const handleEditComment = useCallback(
+    (commentId: number, comments?: Comment[]) => {
+      if (isUserModel) return;
+      const comment = comments?.find((comment) => comment.id === commentId);
+      if (!comment) return;
 
-    shouldFocusRef.current = true;
-    setTimeout(() => {
-      setCommentFormState({
-        state: 'edit',
-        commentId,
-        content: comment.content,
-      });
-    }, 0);
-  }, []);
+      shouldFocusRef.current = true;
+      setTimeout(() => {
+        setCommentFormState({
+          state: 'edit',
+          commentId,
+          content: comment.content,
+        });
+      }, 0);
+    },
+    [isUserModel],
+  );
 
   useEffect(() => {
     if (shouldFocusRef.current && textareaRef.current) {
@@ -100,6 +106,8 @@ export const useHairConsultationCommentFormState = ({
 
   const handleCommentFormSubmit = useCallback(
     (data: CommentFormValues, options: { onSuccess: () => void }) => {
+      // Hiding the customer input must also prevent dispatch through retained handlers.
+      if (isUserModel) return;
       const onSuccess = () => {
         options.onSuccess();
         resetCommentState();
@@ -158,6 +166,7 @@ export const useHairConsultationCommentFormState = ({
       handleUpdate,
       hairConsultationId,
       isUserDesigner,
+      isUserModel,
       postListTab,
       receiverId,
       resetCommentState,

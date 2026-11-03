@@ -47,6 +47,7 @@ export function useRouterWithUser() {
   const searchParams = useSearchParams();
   const userId = searchParams.get(SEARCH_PARAMS.USER_ID);
   const source = searchParams.get(SEARCH_PARAMS.SOURCE);
+  const legacyHistory = searchParams.get(SEARCH_PARAMS.LEGACY_HISTORY);
   const supportsFullWebviewPostCreate = searchParams.get(
     SEARCH_PARAMS.SUPPORTS_FULL_WEBVIEW_POST_CREATE,
   );
@@ -57,6 +58,7 @@ export function useRouterWithUser() {
   );
   const persistentNavigationParams = useMemo<Record<string, string>>(() => {
     const params: Record<string, string> = {};
+    if (legacyHistory === 'true') params[SEARCH_PARAMS.LEGACY_HISTORY] = 'true';
     if (supportsFullWebviewPostCreate != null) {
       params[SEARCH_PARAMS.SUPPORTS_FULL_WEBVIEW_POST_CREATE] = supportsFullWebviewPostCreate;
     }
@@ -68,6 +70,7 @@ export function useRouterWithUser() {
     }
     return params;
   }, [
+    legacyHistory,
     supportsFullWebviewPostCreate,
     chatEntry,
     experienceBoard,

@@ -47,11 +47,20 @@ export default function PostBoard({
   const source = router.source;
 
   const searchParams = useSearchParams();
+  // Only the V3 history entry hides creation and the sponsorship tab.
+  // Existing app entries, brand intake and the dedicated sponsorship board keep their flows.
+  const isLegacyHistoryEntry =
+    !experienceOnly && brand == null && searchParams.get(SEARCH_PARAMS.LEGACY_HISTORY) === 'true';
   const supportsFullWebviewPostCreate =
     searchParams.get(SEARCH_PARAMS.SUPPORTS_FULL_WEBVIEW_POST_CREATE) === 'true';
 
   const [selectedPostTab, setActivePostTab] = usePostTab();
-  const activePostTab = experienceOnly ? CONSULT_TYPE.EXPERIENCE_GROUP : selectedPostTab;
+  const activePostTab = experienceOnly
+    ? CONSULT_TYPE.EXPERIENCE_GROUP
+    : isLegacyHistoryEntry
+      ? CONSULT_TYPE.CONSULTING
+      : selectedPostTab;
+  const canCreatePost = isUserModel && !isLegacyHistoryEntry;
   const [activePostListTab, setActivePostListTab] = usePostListTab();
   const currentUserRole = user ? getUserRole(user) : undefined;
 
@@ -72,6 +81,7 @@ export default function PostBoard({
     .map((tab) => (experienceOnly && tab.id === 'my' ? { ...tab, label: '내 체험단 글' } : tab));
 
   const navigateToWritePage = useCallback(() => {
+    if (!canCreatePost) return;
     if (!experienceOnly && source === 'app' && supportsFullWebviewPostCreate) {
       const opened = openInAppWebView(
         `/hair-consultation/posts/create?${SEARCH_PARAMS.POST_TAB}=${activePostTab}`,
@@ -83,7 +93,15 @@ export default function PostBoard({
     router.push(targetRoute, {
       [SEARCH_PARAMS.POST_TAB]: activePostTab,
     });
-  }, [activePostTab, brand, router, source, supportsFullWebviewPostCreate, experienceOnly]);
+  }, [
+    activePostTab,
+    brand,
+    canCreatePost,
+    router,
+    source,
+    supportsFullWebviewPostCreate,
+    experienceOnly,
+  ]);
 
   const {
     isBreakSheetOpen,
@@ -124,7 +142,7 @@ export default function PostBoard({
     <div className="min-w-[375px] w-full h-screen mx-auto flex flex-col">
       {header}
       <div className="flex flex-col flex-1 min-h-0">
-        {!experienceOnly && (
+        {!experienceOnly && !isLegacyHistoryEntry && (
           <Tab options={postTabs} value={activePostTab} onChange={setActivePostTab} />
         )}
         <div ref={containerRef} className="flex flex-col gap-5 flex-1 overflow-y-auto">
@@ -198,7 +216,7 @@ export default function PostBoard({
       </div>
 
       {/* 글쓰기 버튼 */}
-      {isUserModel && (
+      {canCreatePost && (
         <div className="fixed bottom-5 right-5">
           <WritePostButton onClick={handleWriteButtonClick} aria-label="글쓰기" />
         </div>

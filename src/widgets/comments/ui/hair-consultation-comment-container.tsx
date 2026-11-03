@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { useOptionalAuthContext } from '@/features/auth/context/auth-context';
 
 import type { CommentActionHandlers } from '@/entities/comment/model/comment-action-handlers';
 import type { CommentFormState } from '@/features/comments/types/comment-form-state';
@@ -24,6 +25,7 @@ export default function HairConsultationCommentContainer({
   handlers,
   onReplyClick,
 }: HairConsultationCommentContainerProps) {
+  const isUserModel = useOptionalAuthContext()?.isUserModel ?? false;
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useGetHairConsultationComments(hairConsultationId);
   const { data: answersData } = useGetHairConsultationAnswers(hairConsultationId, {
@@ -162,7 +164,11 @@ export default function HairConsultationCommentContainer({
       hideReplyButton
       focusedCommentId={commentFormState.commentId}
       onDelete={handleDelete}
-      onEdit={(commentId) => handlers.handleEditComment(commentId, mergedComments)}
+      onEdit={
+        isUserModel
+          ? undefined
+          : (commentId) => handlers.handleEditComment(commentId, mergedComments)
+      }
       onReport={() => {}}
       onTriggerClick={handlers.resetCommentState}
     />

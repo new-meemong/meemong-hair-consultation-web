@@ -35,7 +35,7 @@ type CommentListItemProps = {
   hideReplyButton?: boolean;
   isFocused: boolean;
   onDelete: () => void;
-  onEdit: () => void;
+  onEdit?: () => void;
   onReport: () => void;
   onTriggerClick: () => void;
   allComments?: CommentWithReplyStatus[];
@@ -128,7 +128,7 @@ export default function CommentListItem({
   const moreOption = {
     [MORE_ACTION.EDIT]: {
       label: '수정하기',
-      onClick: onEdit,
+      onClick: () => onEdit?.(),
     },
     [MORE_ACTION.DELETE]: {
       label: '삭제하기',
@@ -145,7 +145,7 @@ export default function CommentListItem({
     if (isCommentWriter) {
       return isConsultingAnswer
         ? [moreOption[MORE_ACTION.DELETE]]
-        : [moreOption[MORE_ACTION.EDIT], moreOption[MORE_ACTION.DELETE]];
+        : [...(onEdit ? [moreOption[MORE_ACTION.EDIT]] : []), moreOption[MORE_ACTION.DELETE]];
     }
     return [moreOption[MORE_ACTION.REPORT]];
   };
