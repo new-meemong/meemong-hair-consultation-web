@@ -88,6 +88,8 @@ export function applyHairConsultationLeaveWrites({
     messageType: systemMessageType,
     metaPathList: [],
     senderId: 'system',
+    analyticsKind: 'automatic',
+    isSystemMessage: true,
     createdAt: timestamp,
     updatedAt: timestamp,
   });

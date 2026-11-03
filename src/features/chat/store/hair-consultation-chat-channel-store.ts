@@ -1,3 +1,4 @@
+import { recordAcceptedChatMessage } from '@/shared/lib/chat-message-recording';
 import {
   arrayUnion,
   collection,
@@ -561,6 +562,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           `${ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS}/${channelId}/messages`,
         ),
       );
+      let recordingReceiverId: string | null = null;
       const currentUnreadCount = await runTransaction(db, async (transaction) => {
         const [userMetaSnapshot, channelSnapshot] = await Promise.all([
           transaction.get(userMetaRef),
@@ -575,6 +577,7 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
           typeof userMetaData.otherUserId === 'string' && userMetaData.otherUserId.trim().length > 0
             ? userMetaData.otherUserId.trim()
             : null;
+        recordingReceiverId = otherUserId;
         const otherUserMetaRef =
           otherUserId === null ? null : doc(db, getDbPath(otherUserId), channelId);
         const startPointerId = resolveHairConsultationChatV2StartPointerId(channelSnapshot.data());
@@ -612,6 +615,15 @@ export const useHairConsultationChatChannelStore = create<ChatChannelState>((set
         return typeof userMetaData.unreadCount === 'number' ? userMetaData.unreadCount : 0;
       });
 
+      if (recordingReceiverId)
+        recordAcceptedChatMessage({
+          sourceCollection: ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS,
+          channelId,
+          messageId: messageRef.id,
+          senderId: 'system',
+          recordingUserId: userId,
+          receiverUserId: Number(recordingReceiverId),
+        });
       // Firestore 원자 전이가 끝난 뒤 서버 누적 안읽음 수를 보정한다.
       if (currentUnreadCount > 0) {
         try {

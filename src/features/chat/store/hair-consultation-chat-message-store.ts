@@ -121,6 +121,8 @@ export const useHairConsultationChatMessageStore = create<HairConsultationChatMe
         const newMessage: Omit<HairConsultationChatMessageType, 'id'> = {
           message,
           messageType,
+          analyticsKind: messageType === 'system' ? 'automatic' : 'user',
+          ...(messageType === 'system' ? { isSystemMessage: true } : {}),
           metaPathList,
           senderId,
           createdAt: activityAt,
@@ -212,16 +214,13 @@ export const useHairConsultationChatMessageStore = create<HairConsultationChatMe
           });
         });
 
-        recordAcceptedChatMessage(
-          {
-            sourceCollection: ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS,
-            channelId,
-            messageId: messageRef.id,
-            senderId,
-            receiverUserId: Number(receiverId),
-          },
-          messageType,
-        );
+        recordAcceptedChatMessage({
+          sourceCollection: ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS,
+          channelId,
+          messageId: messageRef.id,
+          senderId,
+          receiverUserId: Number(receiverId),
+        });
         void updateDesignerLastChatReceivedAtAfterSend(receiverId);
 
         // 서버 unreadCount 동기화는 서버에서 메시지 전송 시 자동으로 처리됨

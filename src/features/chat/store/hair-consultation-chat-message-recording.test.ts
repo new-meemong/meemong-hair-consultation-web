@@ -39,38 +39,31 @@ afterEach(() => {
 });
 it.each(['11', '22'])('records only after accepted Firestore send from %s', async (senderId) => {
   const receiverId = senderId === '11' ? '22' : '11';
-  const result = await useHairConsultationChatMessageStore
-    .getState()
-    .sendMessage({
-      channelId: 'room',
-      senderId,
-      receiverId,
-      message: 'hello',
-      messageType: HairConsultationChatMessageTypeEnum.TEXT,
-    });
+  const result = await useHairConsultationChatMessageStore.getState().sendMessage({
+    channelId: 'room',
+    senderId,
+    receiverId,
+    message: 'hello',
+    messageType: HairConsultationChatMessageTypeEnum.TEXT,
+  });
   expect(result.success).toBe(true);
-  expect(state.record).toHaveBeenCalledWith(
-    {
-      sourceCollection: 'hairConsultationChatChannels',
-      channelId: 'room',
-      messageId: 'persisted-message',
-      senderId,
-      receiverUserId: Number(receiverId),
-    },
-    'text',
-  );
+  expect(state.record).toHaveBeenCalledWith({
+    sourceCollection: 'hairConsultationChatChannels',
+    channelId: 'room',
+    messageId: 'persisted-message',
+    senderId,
+    receiverUserId: Number(receiverId),
+  });
 });
 it('does not record failed Firestore writes', async () => {
   state.fail = true;
-  const result = await useHairConsultationChatMessageStore
-    .getState()
-    .sendMessage({
-      channelId: 'room',
-      senderId: '11',
-      receiverId: '22',
-      message: 'hello',
-      messageType: HairConsultationChatMessageTypeEnum.TEXT,
-    });
+  const result = await useHairConsultationChatMessageStore.getState().sendMessage({
+    channelId: 'room',
+    senderId: '11',
+    receiverId: '22',
+    message: 'hello',
+    messageType: HairConsultationChatMessageTypeEnum.TEXT,
+  });
   expect(result.success).toBe(false);
   expect(state.record).not.toHaveBeenCalled();
 });

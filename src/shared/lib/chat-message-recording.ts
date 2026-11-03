@@ -1,6 +1,7 @@
 import { doc, getDocFromServer, Timestamp } from 'firebase/firestore';
 import {
   createChatMessageRecordingQueue,
+  resolveChatMessageRecord,
   type ChatMessageRecord,
 } from './chat-message-recording-queue';
 import { getCurrentUser } from './auth';
@@ -19,29 +20,24 @@ export const chatMessageRecording = createChatMessageRecordingQueue({
     );
     if (!snapshot.exists()) return 'rejected';
     const value = snapshot.data();
-    if (
-      String(value.senderId) !== record.senderId ||
-      value.deletedAt ||
-      value.analyticsKind === 'automatic' ||
-      !['text', 'image', 'file'].includes(value.messageType)
-    )
-      return 'rejected';
-    return !snapshot.metadata.hasPendingWrites && value.createdAt instanceof Timestamp
-      ? 'ready'
-      : 'pending';
+    if (snapshot.metadata.hasPendingWrites || !(value.createdAt instanceof Timestamp))
+      return 'pending';
+    const channel = await getDocFromServer(doc(db, record.sourceCollection, record.channelId));
+    if (!channel.exists()) return 'rejected';
+    return resolveChatMessageRecord(
+      record,
+      value,
+      channel.data(),
+      value.createdAt.toDate().toISOString(),
+    );
   },
   post: async (body, owner) => {
     return apiClient.postChatMessageRecord(body, owner.token);
   },
 });
 
-export function recordAcceptedChatMessage(
-  record: ChatMessageRecord,
-  messageType: string,
-  automatic = false,
-) {
-  if (!automatic && ['text', 'image', 'file'].includes(messageType))
-    chatMessageRecording.enqueue(record);
+export function recordAcceptedChatMessage(record: ChatMessageRecord) {
+  chatMessageRecording.enqueue(record);
 }
 
 if (typeof window !== 'undefined') {

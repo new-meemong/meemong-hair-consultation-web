@@ -62,6 +62,8 @@ describe('applyHairConsultationLeaveWrites', () => {
           messageType: 'SYSTEM',
           metaPathList: [],
           senderId: 'system',
+          analyticsKind: 'automatic',
+          isSystemMessage: true,
           createdAt: timestamp,
           updatedAt: timestamp,
         },

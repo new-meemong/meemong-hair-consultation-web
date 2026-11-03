@@ -17,6 +17,8 @@ export interface HairConsultationChatMessageType {
   messageType: HairConsultationChatMessageTypeEnum;
   metaPathList: MetaPathType[];
   senderId: string;
+  analyticsKind?: 'user' | 'automatic';
+  isSystemMessage?: boolean;
 
   createdAt: Timestamp | FieldValue;
   updatedAt: Timestamp | FieldValue;
