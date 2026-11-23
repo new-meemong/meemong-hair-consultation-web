@@ -249,3 +249,53 @@ export const useHairConsultationChatMessageStore = create<HairConsultationChatMe
     },
   }),
 );
+
+export const deletedMessageText = '메시지가 삭제되었습니다';
+
+export async function deleteOwnMessage(channelId: string, messageId: string, userId: string) {
+  const room = doc(db, ChatChannelTypeEnum.HAIR_CONSULTATION_CHAT_CHANNELS, channelId);
+  const message = doc(room, 'messages', messageId);
+  return runTransaction(db, async (tx) => {
+    const channel = await tx.get(room);
+    const source = (await tx.get(message)).data();
+    const active: unknown = channel.data()?.participantsIds;
+    if (
+      !Array.isArray(active) ||
+      !active.includes(userId) ||
+      !source ||
+      source.senderId !== userId ||
+      source.deletedAt ||
+      source.isSystemMessage ||
+      source.analyticsKind === 'automatic' ||
+      !['text', 'image'].includes(source.messageType)
+    ) {
+      throw new Error('메시지 삭제에 실패했습니다');
+    }
+    const sent = source.createdAt?.toMillis();
+    if (typeof sent !== 'number')
+      throw new Error('메시지 삭제에 실패했습니다');
+    if (Date.now() - sent >= 360000) return 'expired';
+    const metadata = await Promise.all(
+      active.map((id) =>
+        tx.get(doc(db, 'users', id, 'userHairConsultationChatChannels', channelId)),
+      ),
+    );
+    const now = serverTimestamp();
+    tx.update(message, { deletedAt: now, updatedAt: now });
+    for (const snapshot of [channel, ...metadata]) {
+      const last = snapshot.data()?.lastMessage;
+      if (last?.id === messageId) {
+        tx.update(snapshot.ref, {
+          lastMessage: {
+            ...last,
+            message: deletedMessageText,
+            messageType: 'text',
+            metaPathList: [],
+            deletedAt: now,
+          },
+        });
+      }
+    }
+    return 'deleted';
+  });
+}

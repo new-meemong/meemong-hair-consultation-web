@@ -1,3 +1,4 @@
+import { MessageActions } from './message-actions';
 import type { Timestamp } from 'firebase/firestore';
 
 import MyChatMessageTip from '@/assets/icons/my-chat-message-tip.svg';
@@ -10,7 +11,6 @@ import {
   HairConsultationChatMessageTypeEnum,
   type HairConsultationChatMessageType,
 } from '../type/hair-consultation-chat-message-type';
-
 
 function MyChatMessageBox({ message }: { message: string }) {
   return (
@@ -25,9 +25,11 @@ function MyChatMessageBox({ message }: { message: string }) {
 
 type MyMessageProps = {
   message: HairConsultationChatMessageType;
+  userId: string;
+  channelId: string;
 };
 
-export default function MyMessage({ message }: MyMessageProps) {
+export default function MyMessage({ message, userId, channelId }: MyMessageProps) {
   const { otherUserHairConsultationChatChannels } = useHairConsultationChatChannelStore(
     (state) => ({
       otherUserHairConsultationChatChannels: state.otherUserHairConsultationChatChannels,
@@ -53,11 +55,13 @@ export default function MyMessage({ message }: MyMessageProps) {
             </>
           )}
         </div>
-        {message.messageType === HairConsultationChatMessageTypeEnum.IMAGE ? (
-          <ImageMessage message={message.message} />
-        ) : (
-          <MyChatMessageBox message={message.message} />
-        )}
+        <MessageActions message={message} userId={userId} channelId={channelId}>
+          {message.messageType === HairConsultationChatMessageTypeEnum.IMAGE ? (
+            <ImageMessage message={message.message} />
+          ) : (
+            <MyChatMessageBox message={message.message} />
+          )}
+        </MessageActions>
       </div>
     </div>
   );

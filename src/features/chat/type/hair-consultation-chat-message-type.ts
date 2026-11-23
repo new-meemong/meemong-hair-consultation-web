@@ -20,6 +20,7 @@ export interface HairConsultationChatMessageType {
   analyticsKind?: 'user' | 'automatic';
   isSystemMessage?: boolean;
 
+  deletedAt?: Timestamp | null;
   createdAt: Timestamp | FieldValue;
   updatedAt: Timestamp | FieldValue;
 }

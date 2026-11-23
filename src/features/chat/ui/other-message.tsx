@@ -1,3 +1,4 @@
+import { MessageActions } from './message-actions';
 
 import type { Timestamp } from 'firebase/firestore';
 import Image from 'next/image';
@@ -7,7 +8,6 @@ import { isDesigner } from '@/entities/user/lib/user-role';
 import type { User } from '@/entities/user/model/user';
 import { goDesignerProfilePage } from '@/shared/lib/go-designer-profile-page';
 import goModelProfilePage from '@/shared/lib/go-model-profile-page';
-
 
 import ImageMessage from './image-message';
 import MessageDate from './message-date';
@@ -29,10 +29,12 @@ function OtherChatMessageBox({ message }: { message: string }) {
 
 type OtherMessageProps = {
   message: HairConsultationChatMessageType;
+  userId: string;
+  channelId: string;
   otherUser: User;
 };
 
-export default function OtherMessage({ message, otherUser }: OtherMessageProps) {
+export default function OtherMessage({ message, otherUser, userId, channelId }: OtherMessageProps) {
   const { profileUrl } = otherUser;
 
   const handleImageClick = () => {
@@ -54,11 +56,13 @@ export default function OtherMessage({ message, otherUser }: OtherMessageProps) 
           className="size-6 rounded-full object-cover"
           onClick={handleImageClick}
         />
-        {message.messageType === HairConsultationChatMessageTypeEnum.IMAGE ? (
-          <ImageMessage message={message.message} />
-        ) : (
-          <OtherChatMessageBox message={message.message} />
-        )}
+        <MessageActions message={message} userId={userId} channelId={channelId}>
+          {message.messageType === HairConsultationChatMessageTypeEnum.IMAGE ? (
+            <ImageMessage message={message.message} />
+          ) : (
+            <OtherChatMessageBox message={message.message} />
+          )}
+        </MessageActions>
         <MessageDate messageCreatedAt={message.createdAt as Timestamp} />
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { DeletedMessage } from './message-actions';
 import { useEffect, useRef } from 'react';
 
 import ChatDateDivider from './chat-date-divider';
@@ -111,12 +112,19 @@ export default function MessageSection({ userChannel }: MessageSectionProps) {
               <ChatDateDivider date={message.createdAt} />
             )}
 
-            {message.messageType === HairConsultationChatMessageTypeEnum.SYSTEM ? (
+            {message.deletedAt ? (
+              <DeletedMessage />
+            ) : message.messageType === HairConsultationChatMessageTypeEnum.SYSTEM ? (
               <SystemMessage message={message} />
             ) : message.senderId === userId ? (
-              <MyMessage message={message} />
+              <MyMessage channelId={userChannel.channelId} userId={userId} message={message} />
             ) : (
-              <OtherMessage message={message} otherUser={userChannel.otherUser} />
+              <OtherMessage
+                channelId={userChannel.channelId}
+                userId={userId}
+                message={message}
+                otherUser={userChannel.otherUser}
+              />
             )}
           </div>
         );
